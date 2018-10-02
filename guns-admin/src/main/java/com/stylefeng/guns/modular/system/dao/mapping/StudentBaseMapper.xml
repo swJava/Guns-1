@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.StudentBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.StudentBase">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="type" property="type" />
+        <result column="time_create" property="timeCreate" />
+        <result column="time_update" property="timeUpdate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, type, time_create as timeCreate, time_update as timeUpdate
+    </sql>
+
+    <select id="list" resultType="map">
+        select
+        <include refid="Base_Column_List"></include>
+        from student_base
+        <if test="condition != null and condition != ''">
+            where NAME like CONCAT('%',#{condition},'%') or phone like CONCAT('%',#{condition},'%')
+        </if>
+        order by time_create ASC
+    </select>
+
+
+</mapper>

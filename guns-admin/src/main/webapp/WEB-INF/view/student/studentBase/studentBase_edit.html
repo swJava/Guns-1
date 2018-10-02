@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="自增主键" value="${item.id}" underline="true"/>
+                            <#input id="name" name="姓名" value="${item.name}" underline="true"/>
+                            <#input id="phone" name="手机号" value="${item.phone}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="type" name="账号类型:1=学生，2=教师" value="${item.type}" underline="true"/>
+                            <!--<#input id="timeCreate" name="创建时间" value="${item.timeCreate}" underline="true"/>-->
+                            <!--<#input id="timeUpdate" name="更新时间" value="${item.timeUpdate}" />-->
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="StudentBaseInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="StudentBaseInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/student/studentBase/studentBase_info.js"></script>
+@}

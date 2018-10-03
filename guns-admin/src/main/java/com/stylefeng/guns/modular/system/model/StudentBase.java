@@ -37,9 +37,9 @@ public class StudentBase extends Model<StudentBase> {
      * 账号类型:1=学生，2=教师
      */
     private int type;
-//    @TableField("time_create")
+    @TableField("time_create")
     private Date timeCreate;
-//    @TableField("time_update")
+    @TableField("time_update")
     private Date timeUpdate;
 
 

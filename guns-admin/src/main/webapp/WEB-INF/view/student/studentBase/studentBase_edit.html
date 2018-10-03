@@ -11,9 +11,12 @@
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="type" name="账号类型:1=学生，2=教师" value="${item.type}" underline="true"/>
-                            <!--<#input id="timeCreate" name="创建时间" value="${item.timeCreate}" underline="true"/>-->
-                            <!--<#input id="timeUpdate" name="更新时间" value="${item.timeUpdate}" />-->
+
+                    <#select id="type" name="账号类型" underline="true" value="${item.type}">
+                        <option value="1">学生</option>
+                        <option value="2">老师</option>
+                    </#select>
+
                 </div>
             </div>
 

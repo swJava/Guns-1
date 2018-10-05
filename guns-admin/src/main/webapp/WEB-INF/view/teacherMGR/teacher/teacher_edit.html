@@ -1,0 +1,47 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="id" value="${item.id}" underline="true"/>
+                            <#input id="code" name="教师编码" value="${item.code}" underline="true"/>
+                            <#input id="name" name="教师名称" value="${item.name}" underline="true"/>
+                            <#input id="avatar" name="头像" value="${item.avatar}" underline="true"/>
+                            <#select id="type" name="教师类型" value="${item.type}" underline="true">
+                                <option value="L">讲师</option>
+                                <option value="A">辅导员</option>
+                                <option value="E">外聘专家</option>
+                            </#select>
+                            <#select id="gender" name="性别" value="${item.gender}" underline="true">
+                                <option value="1">男</option>
+                                <option value="2">女</option>
+                            </#select>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="graduate" name="毕业院校" value="${item.graduate}" underline="true"/>
+                            <#input id="grade" name="授课年级" value="${item.grade}" underline="true"/>
+                            <#input id="havest" name="教学成果" value="${item.havest}" underline="true"/>
+                            <#input id="experience" name="教学经验" value="${item.experience}" underline="true"/>
+                            <#input id="feature" name="教学特点" value="${item.feature}" underline="true"/>
+                            <#select id="status" name="状态" value="${item.status}" underline="true">
+                                <option value="1">启用</option>
+                                <option value="2">冻结</option>
+                            </#select>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="TeacherInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="TeacherInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/teacherMGR/teacher/teacher_info.js"></script>
+@}

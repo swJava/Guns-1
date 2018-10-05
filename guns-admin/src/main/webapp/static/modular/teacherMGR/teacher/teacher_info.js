@@ -2,7 +2,44 @@
  * 初始化教师管理详情对话框
  */
 var TeacherInfoDlg = {
-    teacherInfoData : {}
+    teacherInfoData: {},
+    validateFields: {
+        code: {
+            validators: {
+                notEmpty: {
+                    message: '编码不能为空'
+                }
+            }
+        },
+        name: {
+            validators: {
+                notEmpty: {
+                    message: '姓名不能为空'
+                }
+            }
+        },
+        type: {
+            validators: {
+                notEmpty: {
+                    message: '类型不能为空'
+                }
+            }
+        },
+        gender: {
+            validators: {
+                notEmpty: {
+                    message: '性别不能为空'
+                }
+            }
+        },
+        identical: {
+            validators: {
+                notEmpty: {
+                    message: '状态不能为空'
+                }
+            }
+        }
+    }
 };
 
 /**
@@ -60,12 +97,25 @@ TeacherInfoDlg.collectData = function() {
 }
 
 /**
+ * 验证数据是否为空
+ */
+TeacherInfoDlg.validate = function () {
+    $('#teacherInfoForm').data("bootstrapValidator").resetForm();
+    $('#teacherInfoForm').bootstrapValidator('validate');
+    return $("#teacherInfoForm").data('bootstrapValidator').isValid();
+};
+
+/**
  * 提交添加
  */
 TeacherInfoDlg.addSubmit = function() {
 
     this.clearData();
     this.collectData();
+
+    if (!this.validate()) {
+        return;
+    }
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/teacher/add", function(data){
@@ -87,6 +137,10 @@ TeacherInfoDlg.editSubmit = function() {
     this.clearData();
     this.collectData();
 
+    if (!this.validate()) {
+        return;
+    }
+
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/teacher/update", function(data){
         Feng.success("修改成功!");
@@ -100,7 +154,10 @@ TeacherInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-    //初始化性别选项
+    //非空校验
+    Feng.initValidator("teacherInfoForm", TeacherInfoDlg.validateFields);
+
+    //初始select选项
     $("#gender").val($("#genderValue").val());
     $("#type").val($("#typeValue").val());
     $("#status").val($("#statusValue").val());

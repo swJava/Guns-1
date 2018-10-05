@@ -14,23 +14,17 @@ var Teacher = {
 Teacher.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-        {title: 'id', field: 'id', visible: true, align: 'center', valign: 'middle'},
         {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
         {title: '教师名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
         {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle'},
-        {title: '教师类型: L 讲师； A 辅导员； E 外聘专家', field: 'type', visible: false, align: 'center', valign: 'middle'},
-        {title: '教师类型: L 讲师； A 辅导员； E 外聘专家', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
-        {title: '性别', field: 'gender', visible: false, align: 'center', valign: 'middle'},
+        {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
         {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle'},
         {title: '授课年级', field: 'grade', visible: true, align: 'center', valign: 'middle'},
         {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle'},
         {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle'},
         {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle'},
-        {title: '状态', field: 'status', visible: false, align: 'center', valign: 'middle'},
         {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
-
-
     ];
 };
 

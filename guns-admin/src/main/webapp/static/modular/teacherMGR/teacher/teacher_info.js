@@ -100,5 +100,8 @@ TeacherInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-
+    //初始化性别选项
+    $("#gender").val($("#genderValue").val());
+    $("#type").val($("#typeValue").val());
+    $("#status").val($("#statusValue").val());
 });

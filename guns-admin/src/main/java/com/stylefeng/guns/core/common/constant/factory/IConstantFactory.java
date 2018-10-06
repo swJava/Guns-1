@@ -81,6 +81,16 @@ public interface IConstantFactory {
     /**
      * 获取性别名称
      */
+    String getTeacherTypeName(Integer teacherType);
+
+    /**
+     * 获取授课年级名称
+     */
+    String getGradeName(Integer grade);
+
+    /**
+     * 获取性别名称
+     */
     String getSexName(Integer sex);
 
     /**

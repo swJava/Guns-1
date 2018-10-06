@@ -39,7 +39,7 @@ public class Teacher extends Model<Teacher> {
     /**
      * 教师类型: L 讲师； A 辅导员； E 外聘专家
      */
-    private String type;
+    private Integer type;
     /**
      * 性别
      */
@@ -102,11 +102,11 @@ public class Teacher extends Model<Teacher> {
         this.avatar = avatar;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

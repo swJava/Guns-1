@@ -16,8 +16,9 @@ Teacher.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle', sortable: true,
             formatter:function (value,row,index) {
+                console.log("value="+value+",row="+row+index);
                 var imgUrl;
-                if(row.avatar != null){
+                if(row.avatar != null && row.avatar != ''){
                     imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';
                 }else {
                     imgUrl = '<img alt="image" class="img-circle" src="/static/img/girl.gif" width="64px" height="64px">';
@@ -30,7 +31,7 @@ Teacher.initColumn = function () {
         {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
         {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '授课年级', field: 'grade', visible: true, align: 'center', valign: 'middle'},
+        {title: '授课年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
         {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true},

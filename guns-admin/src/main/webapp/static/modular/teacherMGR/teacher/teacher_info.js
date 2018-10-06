@@ -160,6 +160,7 @@ $(function() {
     //初始select选项
     $("#gender").val($("#genderValue").val());
     $("#type").val($("#typeValue").val());
+    $("#grade").val($("#gradeValue").val());
     $("#status").val($("#statusValue").val());
 
 

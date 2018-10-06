@@ -2,7 +2,6 @@ package com.stylefeng.guns.modular.teacherMGR.warpper;
 
 import com.stylefeng.guns.core.base.warpper.BaseControllerWarpper;
 import com.stylefeng.guns.core.common.constant.factory.ConstantFactory;
-import com.stylefeng.guns.modular.teacherMGR.enums.TeacherEnum;
 
 import java.util.Map;
 
@@ -19,7 +18,8 @@ public class TeacherWrapper extends BaseControllerWarpper {
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("typeName", TeacherEnum.getByCode(String.valueOf(map.get("type"))));
+        map.put("gradeName", ConstantFactory.me().getGradeName((Integer) map.get("grade")));
+        map.put("typeName", ConstantFactory.me().getTeacherTypeName((Integer) map.get("type")));
         map.put("genderName", ConstantFactory.me().getSexName((Integer) map.get("gender")));
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
     }

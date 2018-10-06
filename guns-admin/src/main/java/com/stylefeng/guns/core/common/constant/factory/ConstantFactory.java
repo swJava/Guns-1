@@ -245,6 +245,26 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     /**
+     * 获取老师类型名称
+     * @param teacherType
+     * @return
+     */
+    @Override
+    public String getTeacherTypeName(Integer teacherType) {
+        return getDictsByName("教师类型", teacherType);
+    }
+
+    /**
+     * 获取授课年级名称
+     * @param grade
+     * @return
+     */
+    @Override
+    public String getGradeName(Integer grade) {
+        return getDictsByName("授课年级", grade);
+    }
+
+    /**
      * 获取性别名称
      */
     @Override

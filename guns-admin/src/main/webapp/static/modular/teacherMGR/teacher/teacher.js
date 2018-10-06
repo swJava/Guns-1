@@ -14,9 +14,19 @@ var Teacher = {
 Teacher.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
+        {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle',
+            formatter:function (value,row,index) {
+                var imgUrl;
+                if(row.avatar != null){
+                    imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+row.avatar +'" width="64px" height="64px">';
+                }else {
+                    imgUrl = '<img alt="image" class="img-circle" src="/static/img/girl.gif" width="64px" height="64px">';
+                }
+                return imgUrl;
+            }
+        },
         {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
         {title: '教师名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-        {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle'},
         {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
         {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle'},

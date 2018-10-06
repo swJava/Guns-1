@@ -14,27 +14,27 @@ var Teacher = {
 Teacher.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-        {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle',
+        {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle', sortable: true,
             formatter:function (value,row,index) {
                 var imgUrl;
                 if(row.avatar != null){
-                    imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+row.avatar +'" width="64px" height="64px">';
+                    imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';
                 }else {
                     imgUrl = '<img alt="image" class="img-circle" src="/static/img/girl.gif" width="64px" height="64px">';
                 }
                 return imgUrl;
             }
         },
-        {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
-        {title: '教师名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-        {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
-        {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
-        {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle'},
-        {title: '授课年级', field: 'grade', visible: true, align: 'center', valign: 'middle'},
-        {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle'},
-        {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle'},
-        {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle'},
-        {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
+        {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '教师名称', field: 'name', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '授课年级', field: 'grade', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle', sortable: true}
     ];
 };
 

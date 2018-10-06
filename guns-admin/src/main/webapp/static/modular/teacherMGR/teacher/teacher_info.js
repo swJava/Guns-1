@@ -161,4 +161,11 @@ $(function() {
     $("#gender").val($("#genderValue").val());
     $("#type").val($("#typeValue").val());
     $("#status").val($("#statusValue").val());
+
+
+    // 初始化头像上传
+    var avatarUp = new $WebUpload("avatar");
+    avatarUp.setUploadBarId("progressBar");
+    avatarUp.init();
+
 });

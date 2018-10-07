@@ -1,6 +1,15 @@
 package com.stylefeng.guns.modular.studentMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.common.constant.factory.PageFactory;
+import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import com.stylefeng.guns.modular.system.dao.StudentMapper;
+import com.stylefeng.guns.modular.system.model.OperationLog;
+import com.stylefeng.guns.modular.system.warpper.LogWarpper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +20,11 @@ import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import org.terracotta.offheapstore.HashingMap;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 学生管理控制器
@@ -49,7 +63,7 @@ public class StudentController extends BaseController {
     @RequestMapping("/student_update/{studentId}")
     public String studentUpdate(@PathVariable Integer studentId, Model model) {
         Student student = studentService.selectById(studentId);
-        model.addAttribute("item",student);
+        model.addAttribute("item", student);
         LogObjectHolder.me().set(student);
         return PREFIX + "student_edit.html";
     }
@@ -60,7 +74,21 @@ public class StudentController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return studentService.selectList(null);
+
+        //分页查詢
+        Page<Student> page = new PageFactory<Student>().defaultPage();
+        Page<Map<String, Object>> pageMap = studentService.selectMapsPage(page, new EntityWrapper<Student>(){
+            {
+                //name条件分页
+                if(StringUtils.isNotEmpty(condition)){
+                    like("name",condition);
+                }
+            }
+        });
+        //包装数据
+        new StudentWrapper(pageMap.getRecords()).warp();
+
+        return super.packForBT(pageMap);
     }
 
     /**
@@ -78,7 +106,7 @@ public class StudentController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer studentId) {
+    public Object delete(@RequestParam Long studentId) {
         studentService.deleteById(studentId);
         return SUCCESS_TIP;
     }

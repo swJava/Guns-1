@@ -70,7 +70,6 @@ public class TeacherController extends BaseController {
         List<Map<String, Object>> list = teacherService.selectTeachers(page, condition);
         page.setRecords((List<Teacher>) new TeacherWrapper(list).warp());
         return super.packForBT(page);
-//        return teacherService.selectList(null);
 
     }
 

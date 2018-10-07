@@ -2,7 +2,44 @@
  * 初始化学生管理详情对话框
  */
 var StudentInfoDlg = {
-    studentInfoData : {}
+    studentInfoData : {},
+    validateFields: {
+        code: {
+            validators: {
+                notEmpty: {
+                    message: '编码不能为空'
+                }
+            }
+        },
+        name: {
+            validators: {
+                notEmpty: {
+                    message: '姓名不能为空'
+                }
+            }
+        },
+        gender: {
+            validators: {
+                notEmpty: {
+                    message: '性别不能为空'
+                }
+            }
+        },
+        status: {
+            validators: {
+                notEmpty: {
+                    message: '状态不能为空'
+                }
+            }
+        },
+        grade: {
+            validators: {
+                notEmpty: {
+                    message: '在读年级不能为空'
+                }
+            }
+        }
+    }
 };
 
 /**
@@ -57,12 +94,25 @@ StudentInfoDlg.collectData = function() {
 }
 
 /**
+ * 验证数据是否为空
+ */
+StudentInfoDlg.validate = function () {
+    $('#studentInfoForm').data("bootstrapValidator").resetForm();
+    $('#studentInfoForm').bootstrapValidator('validate');
+    return $("#studentInfoForm").data('bootstrapValidator').isValid();
+};
+
+/**
  * 提交添加
  */
 StudentInfoDlg.addSubmit = function() {
 
     this.clearData();
     this.collectData();
+
+    if (!this.validate()) {
+        return;
+    }
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/student/add", function(data){
@@ -84,6 +134,10 @@ StudentInfoDlg.editSubmit = function() {
     this.clearData();
     this.collectData();
 
+    if (!this.validate()) {
+        return;
+    }
+    
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/student/update", function(data){
         Feng.success("修改成功!");
@@ -97,5 +151,19 @@ StudentInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    //非空校验
+    Feng.initValidator("studentInfoForm", StudentInfoDlg.validateFields);
+
+    //初始select选项
+    $("#gender").val($("#genderValue").val());
+    $("#type").val($("#typeValue").val());
+    $("#grade").val($("#gradeValue").val());
+    $("#status").val($("#statusValue").val());
+
+
+    // 初始化头像上传
+    var avatarUp = new $WebUpload("avatar");
+    avatarUp.setUploadBarId("progressBar");
+    avatarUp.init();
 
 });

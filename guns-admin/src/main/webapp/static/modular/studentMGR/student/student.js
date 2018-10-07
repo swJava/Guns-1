@@ -14,15 +14,24 @@ var Student = {
 Student.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '自增主键', field: 'id', visible: true, align: 'center', valign: 'middle'},
-            {title: '学员编码: XY+年月日（6位）+8位顺序码', field: 'code', visible: true, align: 'center', valign: 'middle'},
+            {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle',
+                formatter:function (value,row,index) {
+                    var imgUrl;
+                    if(row.avatar != null && row.avatar != ''){
+                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';
+                    }else {
+                        imgUrl = '<img alt="image" class="img-circle" src="/static/img/girl.gif" width="64px" height="64px">';
+                    }
+                    return imgUrl;
+                }
+            },
+            {title: '学员编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
             {title: '学员名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-            {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle'},
-            {title: '性别', field: 'gender', visible: true, align: 'center', valign: 'middle'},
-            {title: '在读年级', field: 'grade', visible: true, align: 'center', valign: 'middle'},
+            {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
+            {title: '在读年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '在读学校', field: 'school', visible: true, align: 'center', valign: 'middle'},
             {title: '目标学校', field: 'targetSchool', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -47,7 +56,7 @@ Student.openAddStudent = function () {
     var index = layer.open({
         type: 2,
         title: '添加学生管理',
-        area: ['800px', '420px'], //宽高
+        area: ['850px', '650px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/student/student_add'
@@ -63,7 +72,7 @@ Student.openStudentDetail = function () {
         var index = layer.open({
             type: 2,
             title: '学生管理详情',
-            area: ['800px', '420px'], //宽高
+            area: ['850px', '650px'], //宽高
             fix: false, //不固定
             maxmin: true,
             content: Feng.ctxPath + '/student/student_update/' + Student.seItem.id
@@ -100,6 +109,6 @@ Student.search = function () {
 $(function () {
     var defaultColunms = Student.initColumn();
     var table = new BSTable(Student.id, "/student/list", defaultColunms);
-    table.setPaginationType("client");
+    table.setPaginationType("server");
     Student.table = table.init();
 });

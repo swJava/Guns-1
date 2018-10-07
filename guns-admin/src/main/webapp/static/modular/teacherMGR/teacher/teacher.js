@@ -16,7 +16,6 @@ Teacher.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle', sortable: true,
             formatter:function (value,row,index) {
-                console.log("value="+value+",row="+row+index);
                 var imgUrl;
                 if(row.avatar != null && row.avatar != ''){
                     imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';

@@ -1,22 +1,26 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal">
+        <div class="form-horizontal" id="studentInfoForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="genderValue" value="${item.gender}">
+            <input type="hidden" id="gradeValue" value="${item.grade}">
+            <input type="hidden" id="statusValue" value="${item.status}">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="自增主键" value="${item.id}" underline="true"/>
-                            <#input id="code" name="学员编码: XY+年月日（6位）+8位顺序码" value="${item.code}" underline="true"/>
-                            <#input id="name" name="学员名称" value="${item.name}" underline="true"/>
-                            <#input id="avatar" name="头像" value="${item.avatar}" underline="true"/>
-                            <#input id="gender" name="性别" value="${item.gender}" />
+                    <#avatar id="avatar" name="头像" underline="true" avatarImg="${item.avatar}"/>
+                    <#input id="code" name="学员编码" value="${item.code}" underline="true"/>
+                    <#input id="name" name="学员名称" value="${item.name}" underline="true"/>
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="grade" name="在读年级" value="${item.grade}" underline="true"/>
-                            <#input id="school" name="在读学校" value="${item.school}" underline="true"/>
-                            <#input id="targetSchool" name="目标学校" value="${item.targetSchool}" underline="true"/>
-                            <#input id="status" name="状态" value="${item.status}" />
+                    <#dictSelector id="gender" name ="性别" code="sys_sex" label="性别"  underline="true"  width="75%"/>
+                    <#dictSelector id="grade" name ="在读年级" code="grade_type" label="在读年级"  underline="true"  width="75%"/>
+                    <#input id="school" name="在读学校" value="${item.school}" underline="true"/>
+                    <#input id="targetSchool" name="目标学校" value="${item.targetSchool}" underline="true"/>
+                    <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
 

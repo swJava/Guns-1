@@ -22,7 +22,7 @@ import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 @RequestMapping("/member")
 public class MemberController extends BaseController {
 
-    private String PREFIX = "/member/member/";
+    private String PREFIX = "/memberMGR/member/";
 
     @Autowired
     private IMemberService memberService;

@@ -15,7 +15,7 @@ import java.util.Map;
  * @author simple.song
  * @since 2018-10-04
  */
-public interface ITeacherService extends IService<Teacher> {
+public interface TeacherService extends IService<Teacher> {
 
     /**
      * 获取老师列表
@@ -24,6 +24,6 @@ public interface ITeacherService extends IService<Teacher> {
      * @param name
      * @return
      */
-    public List<Map<String, Object>> selectTeachers(Page page, String name);
+    public List<Teacher> selectTeachers(Page page, String name);
 
 }

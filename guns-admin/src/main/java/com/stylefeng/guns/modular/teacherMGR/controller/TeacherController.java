@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Teacher;
-import com.stylefeng.guns.modular.teacherMGR.service.ITeacherService;
+import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class TeacherController extends BaseController {
     private String PREFIX = "/teacherMGR/teacher/";
 
     @Autowired
-    private ITeacherService teacherService;
+    private TeacherService teacherService;
 
     /**
      * 跳转到教师管理首页
@@ -67,7 +67,7 @@ public class TeacherController extends BaseController {
     @ResponseBody
     public Object list(String condition) {
         Page<Teacher> page = new PageFactory<Teacher>().defaultPage();
-        List<Map<String, Object>> list = teacherService.selectTeachers(page, condition);
+        List<Teacher> list = teacherService.selectTeachers(page, condition);
         page.setRecords((List<Teacher>) new TeacherWrapper(list).warp());
         return super.packForBT(page);
 

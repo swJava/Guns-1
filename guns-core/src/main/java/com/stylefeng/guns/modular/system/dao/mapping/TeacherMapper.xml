@@ -23,7 +23,7 @@
         id, code, name, avatar, type, gender, graduate, grade, havest, experience, feature, status
     </sql>
 
-    <select id="selectTeachers" resultType="map">
+    <select id="selectTeachers" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM tb_teacher

@@ -18,6 +18,6 @@ import java.util.Map;
  */
 public interface TeacherMapper extends BaseMapper<Teacher> {
 
-    List<Map<String, Object>> selectTeachers(@Param("page")Page page, @Param("name") String name);
+    List<Teacher> selectTeachers(@Param("page")Page page, @Param("name") String name);
 
 }

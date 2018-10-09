@@ -1,9 +1,9 @@
 package com.stylefeng.guns.modular.studentMGR.service.impl;
 
-import com.stylefeng.guns.modular.system.model.Student;
-import com.stylefeng.guns.modular.system.dao.StudentMapper;
-import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.dao.StudentMapper;
+import com.stylefeng.guns.modular.system.model.Student;
 import org.springframework.stereotype.Service;
 
 /**

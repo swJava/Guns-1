@@ -1,7 +1,7 @@
 package com.stylefeng.guns.modular.studentMGR.service;
 
-import com.stylefeng.guns.modular.system.model.Student;
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.Student;
 
 /**
  * <p>

@@ -1,6 +1,6 @@
 package com.stylefeng.guns.multi.service.impl;
 
-import com.stylefeng.guns.core.common.constant.DatasourceEnum;
+import com.stylefeng.guns.common.constant.DatasourceEnum;
 import com.stylefeng.guns.core.mutidatasource.annotion.DataSource;
 import com.stylefeng.guns.multi.entity.Test;
 import com.stylefeng.guns.multi.mapper.TestMapper;

@@ -15,7 +15,7 @@
  */
 package com.stylefeng.guns.core.shiro.check;
 
-import com.stylefeng.guns.core.util.SpringContextHolder;
+import com.stylefeng.guns.util.SpringContextHolder;
 
 /**
  * 权限检查管理器(入口)

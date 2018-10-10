@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-import static com.stylefeng.guns.core.util.ToolUtil.getTempPath;
-import static com.stylefeng.guns.core.util.ToolUtil.isEmpty;
+import static com.stylefeng.guns.util.ToolUtil.getTempPath;
+import static com.stylefeng.guns.util.ToolUtil.isEmpty;
 
 /**
  * guns项目配置

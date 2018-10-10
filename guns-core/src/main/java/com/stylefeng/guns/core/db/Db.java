@@ -1,7 +1,7 @@
 package com.stylefeng.guns.core.db;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.stylefeng.guns.core.util.SpringContextHolder;
+import com.stylefeng.guns.util.SpringContextHolder;
 
 import java.util.HashMap;
 import java.util.List;

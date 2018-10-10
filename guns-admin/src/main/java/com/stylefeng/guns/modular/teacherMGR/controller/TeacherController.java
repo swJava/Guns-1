@@ -2,7 +2,7 @@ package com.stylefeng.guns.modular.teacherMGR.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.base.controller.BaseController;
-import com.stylefeng.guns.core.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.modular.teacherMGR.warpper.TeacherWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.stylefeng.guns.core.log.LogObjectHolder;
+import com.stylefeng.guns.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Teacher;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 教师管理控制器

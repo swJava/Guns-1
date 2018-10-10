@@ -4,7 +4,7 @@ import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.core.shiro.ShiroUser;
-import com.stylefeng.guns.core.util.JwtTokenUtil;
+import com.stylefeng.guns.util.JwtTokenUtil;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.model.User;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;

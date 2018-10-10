@@ -1,9 +1,11 @@
 package com.stylefeng.guns.modular.teacherMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.modular.teacherMGR.warpper.TeacherWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +18,7 @@ import com.stylefeng.guns.modular.system.model.Teacher;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 教师管理控制器
@@ -54,7 +57,7 @@ public class TeacherController extends BaseController {
     @RequestMapping("/teacher_update/{teacherId}")
     public String teacherUpdate(@PathVariable Integer teacherId, Model model) {
         Teacher teacher = teacherService.selectById(teacherId);
-        model.addAttribute("item",teacher);
+        model.addAttribute("item", teacher);
         LogObjectHolder.me().set(teacher);
         return PREFIX + "teacher_edit.html";
     }
@@ -66,8 +69,14 @@ public class TeacherController extends BaseController {
     @ResponseBody
     public Object list(String condition) {
         Page<Teacher> page = new PageFactory<Teacher>().defaultPage();
-        List<Teacher> list = teacherService.selectTeachers(page, condition);
-        page.setRecords((List<Teacher>) new TeacherWrapper(list).warp());
+        Page<Map<String, Object>> mapPage = teacherService.selectMapsPage(page, new EntityWrapper<Teacher>() {
+            {
+                if (StringUtils.isNotEmpty(condition)) {
+                    like("name", condition);
+                }
+            }
+        });
+        new TeacherWrapper(mapPage.getRecords()).warp();
         return super.packForBT(page);
 
     }

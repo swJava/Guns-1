@@ -22,13 +22,5 @@ import java.util.Map;
 @Service
 public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> implements TeacherService {
 
-    @Resource
-    private TeacherMapper teacherMapper;
-
-
-    @Override
-    public List<Teacher> selectTeachers(Page page, String name) {
-        return teacherMapper.selectTeachers(page, name);
-    }
 
 }

@@ -17,13 +17,4 @@ import java.util.Map;
  */
 public interface TeacherService extends IService<Teacher> {
 
-    /**
-     * 获取老师列表
-     * name 模糊查询
-     * @param page
-     * @param name
-     * @return
-     */
-    public List<Teacher> selectTeachers(Page page, String name);
-
 }

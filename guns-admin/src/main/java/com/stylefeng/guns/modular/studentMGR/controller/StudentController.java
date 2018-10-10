@@ -70,17 +70,16 @@ public class StudentController extends BaseController {
 
         //分页查詢
         Page<Student> page = new PageFactory<Student>().defaultPage();
-        Page<Map<String, Object>> pageMap = studentService.selectMapsPage(page, new EntityWrapper<Student>(){
+        Page<Map<String, Object>> pageMap = studentService.selectMapsPage(page, new EntityWrapper<Student>() {
             {
                 //name条件分页
-                if(StringUtils.isNotEmpty(condition)){
-                    like("name",condition);
+                if (StringUtils.isNotEmpty(condition)) {
+                    like("name", condition);
                 }
             }
         });
         //包装数据
         new StudentWrapper(pageMap.getRecords()).warp();
-
         return super.packForBT(pageMap);
     }
 

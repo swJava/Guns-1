@@ -123,4 +123,19 @@ public interface IConstantFactory {
      */
     List<Integer> getParentDeptIds(Integer deptid);
 
+    /**
+     * 获取支付状态
+     */
+    String getPayStatusName(Integer payStatus);
+
+    /**
+     * 支付方式
+     */
+    String getPayMethodName(Integer payMethod);
+
+    /**
+     * 支付结果
+     */
+    String getPayResultName(Integer payResult);
+
 }

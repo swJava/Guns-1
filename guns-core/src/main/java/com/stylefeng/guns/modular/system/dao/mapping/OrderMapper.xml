@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.OrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Order">
+        <id column="id" property="id" />
+        <result column="accept_no" property="acceptNo" />
+        <result column="accept_date" property="acceptDate" />
+        <result column="status" property="status" />
+        <result column="amount" property="amount" />
+        <result column="pay_status" property="payStatus" />
+        <result column="pay_result" property="payResult" />
+        <result column="pay_date" property="payDate" />
+        <result column="pay_method" property="payMethod" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, accept_no, accept_date, status, amount, pay_status, pay_result, pay_date, pay_method
+    </sql>
+
+</mapper>

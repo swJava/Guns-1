@@ -349,5 +349,18 @@ public class ConstantFactory implements IConstantFactory {
         return parentDeptIds;
     }
 
+    @Override
+    public String getPayStatusName(Integer payStatus) {
+        return getDictsByName("支付状态", payStatus);
+    }
 
+    @Override
+    public String getPayMethodName(Integer payMethod) {
+        return getDictsByName("支付方式", payMethod);
+    }
+
+    @Override
+    public String getPayResultName(Integer payResult) {
+        return getDictsByName("支付结果", payResult);
+    }
 }

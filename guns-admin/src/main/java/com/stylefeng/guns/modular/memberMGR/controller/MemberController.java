@@ -1,6 +1,13 @@
 package com.stylefeng.guns.modular.memberMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.modular.memberMGR.warpper.MemberWrapper;
+import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import com.stylefeng.guns.modular.system.model.Student;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +18,8 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+
+import java.util.Map;
 
 /**
  * 会员管理控制器
@@ -60,7 +69,20 @@ public class MemberController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return memberService.selectList(null);
+        //分页查詢
+        Page<Student> page = new PageFactory<Student>().defaultPage();
+        Page<Map<String, Object>> pageMap = memberService.selectMapsPage(page, new EntityWrapper<Member>() {
+            {
+                //name条件分页
+                if (StringUtils.isNotEmpty(condition)) {
+                    like("name", condition);
+                }
+            }
+        });
+        //包装数据
+        new MemberWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
+
     }
 
     /**

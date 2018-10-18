@@ -14,17 +14,16 @@ var Member = {
 Member.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '主键标示', field: 'id', visible: true, align: 'center', valign: 'middle'},
             {title: '用户名', field: 'username', visible: true, align: 'center', valign: 'middle'},
-            {title: '密码sha256加密', field: 'password', visible: true, align: 'center', valign: 'middle'},
+            {title: '密码', field: 'password', visible: true, align: 'center', valign: 'middle'},
             {title: '用户名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-            {title: '性别: 1 男  2 女', field: 'gender', visible: true, align: 'center', valign: 'middle'},
+            {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
             {title: '联系手机', field: 'mobileNumber', visible: true, align: 'center', valign: 'middle'},
             {title: '联系地址', field: 'address', visible: true, align: 'center', valign: 'middle'},
             {title: 'QQ号码', field: 'qq', visible: true, align: 'center', valign: 'middle'},
             {title: '微信号', field: 'weiixin', visible: true, align: 'center', valign: 'middle'},
             {title: '电子邮箱', field: 'email', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态：  0 无效 1 有效  2 锁定 ', field: 'status', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态 ', field: 'statusName', visible: true, align: 'center', valign: 'middle'},
             {title: '加入时间', field: 'joinDate', visible: true, align: 'center', valign: 'middle'}
     ];
 };
@@ -103,6 +102,6 @@ Member.search = function () {
 $(function () {
     var defaultColunms = Member.initColumn();
     var table = new BSTable(Member.id, "/member/list", defaultColunms);
-    table.setPaginationType("client");
+    table.setPaginationType("server");
     Member.table = table.init();
 });

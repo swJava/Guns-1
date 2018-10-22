@@ -6,16 +6,17 @@ import com.stylefeng.guns.common.constant.cache.Cache;
 import com.stylefeng.guns.common.constant.cache.CacheKey;
 import com.stylefeng.guns.common.constant.state.ManagerStatus;
 import com.stylefeng.guns.common.constant.state.MenuStatus;
+import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.system.dao.*;
 import com.stylefeng.guns.modular.system.model.*;
-import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.util.Convert;
 import com.stylefeng.guns.util.SpringContextHolder;
 import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -362,5 +363,19 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public String getPayResultName(Integer payResult) {
         return getDictsByName("支付结果", payResult);
+    }
+
+    @Override
+    public String getClassRoomName(Integer classCode) {
+        return getDictsByName("教室编码", classCode);
+    }
+
+    @Override
+    public String getSchoolAdressName(Integer classCode) {
+        // 当前只有一个校区
+        if(ObjectUtils.isEmpty(classCode)){
+            return getDictsByName("校区", 1);
+        }
+        return getDictsByName("校区", classCode);
     }
 }

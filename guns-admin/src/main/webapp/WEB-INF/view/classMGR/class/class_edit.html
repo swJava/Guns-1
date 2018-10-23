@@ -3,8 +3,9 @@
     <div class="ibox-content">
         <div class="form-horizontal"  id="classInfoForm">
 
-            <input type="hidden" id="statusValue" value="${item.status}">
             <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="studyTimeTypeValue" value="${item.studyTimeType}">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
@@ -12,7 +13,10 @@
                             <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
                             <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
                             <#input id="endDate" name="开课结束日期" value="${item.endDate}" underline="true"/>
-                            <#input id="studyTimeType" name="开课时间类型" value="${item.studyTimeType}" underline="true"/>
+                            <#select id="studyTimeType" name="开课时间类型" underline="true">
+                                <option value="5">每月</option>
+                                <option value="7">每周</option>
+                            </#select>
                             <#input id="studyTimeValue" name="开课时间" value="${item.studyTimeValue}" underline="true"/>
                             <#input id="beginTime" name="开始时间" value="${item.beginTime}" underline="true"/>
                             <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
@@ -22,7 +26,6 @@
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" value="${item.period}" underline="true"/>
                             <#dictSelector id="classRoomCode" name ="教室编码" code="classCode" label="教室编码"  underline="true"  width="75%"/>
-                            <#input id="classRoom" name="教室" value="${item.classRoom}" underline="true"/>
                             <#input id="courseCode" name="教授课程" value="${item.courseCode}" underline="true"/>
                             <#input id="courseName" name="课程名称" value="${item.courseName}" underline="true"/>
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>
@@ -43,4 +46,15 @@
     </div>
 </div>
 <script src="${ctxPath}/static/modular/classMGR/class/class_info.js"></script>
+<script>
+    laydate.render({
+        elem: '#beginDate'
+    });
+    laydate.render({
+        elem: '#endDate'
+    });
+    laydate.render({
+        elem: '#signEndDate'
+    });
+</script>
 @}

@@ -7,9 +7,13 @@
                 <div class="col-sm-6 b-r">
                             <#input id="code" name="班级编码" underline="true"/>
                             <#input id="name" name="班级名称" underline="true"/>
-                            <#input id="beginDate" name="开课起始日期" underline="true"/>
+                            <#input id="beginDate" name="开课起始日期" underline="true" type="text"/>
                             <#input id="endDate" name="开课结束日期" underline="true"/>
                             <#input id="studyTimeType" name="开课时间类型" underline="true"/>
+                            <#select id="studyTimeType" name="开课时间类型" underline="true">
+                                <option value="5">每月</option>
+                                <option value="7">每周</option>
+                            </#select>
                             <#input id="studyTimeValue" name="开课时间" underline="true"/>
                             <#input id="beginTime" name="开始时间" underline="true"/>
                             <#input id="endTime" name="结束时间" underline="true"/>
@@ -19,7 +23,7 @@
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" underline="true"/>
                             <#input id="classRoomCode" name="教室编码" underline="true"/>
-                            <#dictSelector id="classRoomCode" name ="教室" code="classCode" label="教室"  underline="true"  width="75%"/>
+                            <#dictSelector id="classRoomCode" name ="教室" code="classCode" label="教室"  underline="true"  width="100%"/>
                             <#input id="courseCode" name="教授课程" underline="true"/>
                             <#input id="courseName" name="课程名称" underline="true"/>
                             <#input id="star" name="关注度" underline="true"/>
@@ -40,4 +44,15 @@
     </div>
 </div>
 <script src="${ctxPath}/static/modular/classMGR/class/class_info.js"></script>
+<script>
+    laydate.render({
+        elem: '#beginDate'
+    });
+    laydate.render({
+        elem: '#endDate'
+    });
+    laydate.render({
+        elem: '#signEndDate'
+    });
+</script>
 @}

@@ -211,9 +211,10 @@ ClassInfoDlg.editSubmit = function() {
 
 $(function() {
     //非空校验
-    Feng.initValidator("classInfoForm", TeacherInfoDlg.validateFields);
-    
+    Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
+
     //初始select选项
     $("#classRoomCode").val($("#classRoomCodeValue").val());
     $("#status").val($("#statusValue").val());
+    $("#studyTimeType").val($("#studyTimeTypeValue").val());
 });

@@ -212,8 +212,8 @@ ClassInfoDlg.editSubmit = function() {
 $(function() {
     //非空校验
     Feng.initValidator("classInfoForm", TeacherInfoDlg.validateFields);
-
+    
     //初始select选项
-    $("#classRoomCode").val($("#classRoomCode").val());
+    $("#classRoomCode").val($("#classRoomCodeValue").val());
     $("#status").val($("#statusValue").val());
 });

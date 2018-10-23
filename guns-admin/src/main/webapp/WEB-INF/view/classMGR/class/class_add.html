@@ -19,13 +19,13 @@
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" underline="true"/>
                             <#input id="classRoomCode" name="教室编码" underline="true"/>
-                            <#input id="classRoom" name="教室" underline="true"/>
+                            <#dictSelector id="classRoomCode" name ="教室" code="classCode" label="教室"  underline="true"  width="75%"/>
                             <#input id="courseCode" name="教授课程" underline="true"/>
                             <#input id="courseName" name="课程名称" underline="true"/>
                             <#input id="star" name="关注度" underline="true"/>
                             <#input id="quato" name="剩余报名人数" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" underline="true"/>
-                            <#input id="status" name="状态" underline="true"/>
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
 

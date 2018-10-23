@@ -17,7 +17,6 @@ Class.initColumn = function () {
             {title: '班级编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
             {title: '班级名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '课时数', field: 'period', visible: true, align: 'center', valign: 'middle'},
-            {title: '教室编码', field: 'classRoomCode', visible: true, align: 'center', valign: 'middle'},
             {title: '授课教室', field: 'classRoom', visible: true, align: 'center', valign: 'middle'},
             {title: '教授课程', field: 'courseCode', visible: true, align: 'center', valign: 'middle'},
             {title: '课程名称', field: 'courseName', visible: true, align: 'center', valign: 'middle'},
@@ -31,7 +30,7 @@ Class.initColumn = function () {
             {title: '开始时间', field: 'beginTime', visible: true, align: 'center', valign: 'middle'},
             {title: '结束时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},
             {title: '分钟', field: 'duration', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

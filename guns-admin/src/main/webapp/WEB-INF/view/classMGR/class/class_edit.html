@@ -3,14 +3,16 @@
     <div class="ibox-content">
         <div class="form-horizontal"  id="classInfoForm">
 
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="id" value="${item.id}">
+
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="标示" value="${item.id}" underline="true"/>
-                            <#input id="code" name="班级编码： BJ+6位序列码" value="${item.code}" underline="true"/>
+                            <#input id="code" name="班级编码" value="${item.code}" underline="true"/>
                             <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
                             <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
                             <#input id="endDate" name="开课结束日期" value="${item.endDate}" underline="true"/>
-                            <#input id="studyTimeType" name="开课时间类型： 5 DAY_OF_MONTH ； 7 DAY_OF_WEEK" value="${item.studyTimeType}" underline="true"/>
+                            <#input id="studyTimeType" name="开课时间类型" value="${item.studyTimeType}" underline="true"/>
                             <#input id="studyTimeValue" name="开课时间" value="${item.studyTimeValue}" underline="true"/>
                             <#input id="beginTime" name="开始时间" value="${item.beginTime}" underline="true"/>
                             <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
@@ -18,9 +20,9 @@
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="period" name="" value="${item.period}" underline="true"/>
-                            <#input id="classRoomCode" name="教室编码" value="${item.classRoomCode}" underline="true"/>
-                            <#input id="classRoom" name="" value="${item.classRoom}" underline="true"/>
+                            <#input id="period" name="课时数" value="${item.period}" underline="true"/>
+                            <#dictSelector id="classRoomCode" name ="教室编码" code="classCode" label="教室编码"  underline="true"  width="75%"/>
+                            <#input id="classRoom" name="教室" value="${item.classRoom}" underline="true"/>
                             <#input id="courseCode" name="教授课程" value="${item.courseCode}" underline="true"/>
                             <#input id="courseName" name="课程名称" value="${item.courseName}" underline="true"/>
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>

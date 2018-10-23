@@ -10,16 +10,16 @@ import java.util.Map;
  * @author: simple.song
  * Date: 2018/10/7 Time: 10:55
  */
-public class classWrapper extends BaseControllerWarpper{
+public class ClassWrapper extends BaseControllerWarpper{
 
 
-    public classWrapper(Object obj) {
+    public ClassWrapper(Object obj) {
         super(obj);
     }
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("classRoom", ConstantFactory.me().getClassRoomName((Integer) map.get("classRoomCode")));
-        map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
+        map.put("classRoom", ConstantFactory.me().getClassRoomName(Integer.parseInt( map.get("classRoomCode").toString())));
+        map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt( map.get("status").toString())));
     }
 }

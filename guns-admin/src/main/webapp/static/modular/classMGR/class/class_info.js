@@ -32,10 +32,25 @@ var ClassInfoDlg = {
                 }
             }
         },
+        studyTimeValue: {
+            validators: {
+                notEmpty: {
+                    message: '开课时间不能为空'
+                },
+                stringLength:{
+                    max:3,
+                    message: '长度限制'
+                }
+            }
+        },
         beginTime: {
             validators: {
                 notEmpty: {
                     message: '开始时间不能为空'
+                },
+                stringLength:{
+                    max:4,
+                    message: '长度限制'
                 }
             }
         },

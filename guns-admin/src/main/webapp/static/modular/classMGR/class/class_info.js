@@ -14,7 +14,7 @@ var ClassInfoDlg = {
         name: {
             validators: {
                 notEmpty: {
-                    message: '姓名不能为空'
+                    message: '名称不能为空'
                 }
             }
         },

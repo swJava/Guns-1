@@ -6,7 +6,7 @@ import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
-import com.stylefeng.guns.modular.classMGR.warpper.classWrapper;
+import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.Student;
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +79,7 @@ public class ClassController extends BaseController {
             }
         });
         //包装数据
-        new classWrapper(pageMap.getRecords()).warp();
+        new ClassWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
 

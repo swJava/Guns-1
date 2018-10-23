@@ -4,20 +4,19 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.memberMGR.warpper.MemberWrapper;
-import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.stylefeng.guns.log.LogObjectHolder;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class MemberController extends BaseController {
     @RequestMapping("/member_update/{memberId}")
     public String memberUpdate(@PathVariable Integer memberId, Model model) {
         Member member = memberService.selectById(memberId);
-        model.addAttribute("item",member);
+        model.addAttribute("item", member);
         LogObjectHolder.me().set(member);
         return PREFIX + "member_edit.html";
     }

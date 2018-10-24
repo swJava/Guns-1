@@ -38,7 +38,7 @@ var ClassInfoDlg = {
                     message: '开课时间不能为空'
                 },
                 stringLength:{
-                    max:3,
+                    max:4,
                     message: '长度限制'
                 }
             }
@@ -232,4 +232,5 @@ $(function() {
     $("#classRoomCode").val($("#classRoomCodeValue").val());
     $("#status").val($("#statusValue").val());
     $("#studyTimeType").val($("#studyTimeTypeValue").val());
+    $("#classRoomCode").val($("#classRoomCodeValue").val());
 });

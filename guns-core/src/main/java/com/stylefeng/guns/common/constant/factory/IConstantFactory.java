@@ -148,4 +148,9 @@ public interface IConstantFactory {
      */
     String getSchoolAdressName(Integer classCode);
 
+    /**
+     * 开课类型
+     */
+    String getStudyTimeTypeName(Integer studyTimeType);
+
 }

@@ -6,6 +6,7 @@
             <input type="hidden" id="id" value="${item.id}">
             <input type="hidden" id="statusValue" value="${item.status}">
             <input type="hidden" id="studyTimeTypeValue" value="${item.studyTimeType}">
+            <input type="hidden" id="classRoomCodeValue" value="${item.classRoomCode}">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
@@ -25,13 +26,13 @@
 
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" value="${item.period}" underline="true"/>
-                            <#dictSelector id="classRoomCode" name ="教室编码" code="classCode" label="教室编码"  underline="true"  width="75%"/>
+                            <#dictSelector id="classRoomCode" name ="教室编码" code="classRoomCode" label="教室编码"  underline="true"  width="75%"/>
                             <#input id="courseCode" name="教授课程" value="${item.courseCode}" underline="true"/>
                             <#input id="courseName" name="课程名称" value="${item.courseName}" underline="true"/>
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>
                             <#input id="quato" name="剩余报名人数" value="${item.quato}" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" value="${item.signEndDate}" underline="true"/>
-                            <#input id="status" name="状态" value="${item.status}" />
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
 

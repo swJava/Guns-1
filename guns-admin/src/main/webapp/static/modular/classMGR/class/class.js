@@ -25,7 +25,7 @@ Class.initColumn = function () {
             {title: '报名截止时间', field: 'signEndDate', visible: true, align: 'center', valign: 'middle'},
             {title: '开课起始日期', field: 'beginDate', visible: true, align: 'center', valign: 'middle'},
             {title: '开课结束日期', field: 'endDate', visible: true, align: 'center', valign: 'middle'},
-            {title: '开课时间类型', field: 'studyTimeType', visible: true, align: 'center', valign: 'middle'},
+            {title: '开课时间类型', field: 'studyTimeTypeName', visible: true, align: 'center', valign: 'middle'},
             {title: '开课时间', field: 'studyTimeValue', visible: true, align: 'center', valign: 'middle'},
             {title: '开始时间', field: 'beginTime', visible: true, align: 'center', valign: 'middle'},
             {title: '结束时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},

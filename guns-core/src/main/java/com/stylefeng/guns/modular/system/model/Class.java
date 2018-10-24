@@ -37,10 +37,12 @@ public class Class extends Model<Class> {
     /**
      * 开课起始日期
      */
+    @TableField("begin_date")
     private Date beginDate;
     /**
      * 开课结束日期
      */
+    @TableField("end_date")
     private Date endDate;
     /**
      * 开课时间类型： 5 DAY_OF_MONTH ； 7 DAY_OF_WEEK

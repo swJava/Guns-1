@@ -14,18 +14,18 @@ var Content = {
 Content.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '', field: 'id', visible: true, align: 'center', valign: 'middle'},
+            {title: '自增主键', field: 'id', visible: true, align: 'center', valign: 'middle'},
             {title: '内容编码： CT + 年月日（6位）+ 8位序列码', field: 'code', visible: true, align: 'center', valign: 'middle'},
             {title: '类型： 1 普通文章   2 外链文章  3 外链视频', field: 'type', visible: true, align: 'center', valign: 'middle'},
             {title: '标题图片', field: 'timage', visible: true, align: 'center', valign: 'middle'},
             {title: '标题', field: 'title', visible: true, align: 'center', valign: 'middle'},
             {title: '一句话简介', field: 'introduce', visible: true, align: 'center', valign: 'middle'},
             {title: '作者', field: 'author', visible: true, align: 'center', valign: 'middle'},
-            {title: '发布类型： R 引用   O 原创', field: 'publishType', visible: true, align: 'center', valign: 'middle'},
+            {title: '发布类型： 1=引用   2=原创', field: 'publishType', visible: true, align: 'center', valign: 'middle'},
             {title: '内容，富文本内容', field: 'content', visible: true, align: 'center', valign: 'middle'},
             {title: '创建时间', field: 'createDate', visible: true, align: 'center', valign: 'middle'},
             {title: '下架时间', field: 'deadDate', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态: 1=启用，2=禁用', field: 'status', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

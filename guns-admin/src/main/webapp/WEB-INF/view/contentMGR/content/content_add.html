@@ -5,7 +5,7 @@
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="" underline="true"/>
+                            <#input id="id" name="自增主键" underline="true"/>
                             <#input id="code" name="内容编码： CT + 年月日（6位）+ 8位序列码" underline="true"/>
                             <#input id="type" name="类型： 1 普通文章   2 外链文章  3 外链视频" underline="true"/>
                             <#input id="timage" name="标题图片" underline="true"/>
@@ -15,11 +15,11 @@
 
                 <div class="col-sm-6">
                             <#input id="author" name="作者" underline="true"/>
-                            <#input id="publishType" name="发布类型： R 引用   O 原创" underline="true"/>
+                            <#input id="publishType" name="发布类型： 1=引用   2=原创" underline="true"/>
                             <#input id="content" name="内容，富文本内容" underline="true"/>
                             <#input id="createDate" name="创建时间" underline="true"/>
                             <#input id="deadDate" name="下架时间" underline="true"/>
-                            <#input id="status" name="状态" underline="true"/>
+                            <#input id="status" name="状态: 1=启用，2=禁用" underline="true"/>
                 </div>
             </div>
 

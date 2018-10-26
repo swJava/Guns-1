@@ -14,13 +14,16 @@ import java.io.Serializable;
  * </p>
  *
  * @author simple.song
- * @since 2018-10-25
+ * @since 2018-10-26
  */
 @TableName("tb_content")
 public class Content extends Model<Content> {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 自增主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
@@ -48,10 +51,10 @@ public class Content extends Model<Content> {
      */
     private String author;
     /**
-     * 发布类型： R 引用   O 原创
+     * 发布类型： 1=引用   2=原创
      */
     @TableField("publish_type")
-    private String publishType;
+    private Integer publishType;
     /**
      * 内容，富文本内容
      */
@@ -67,7 +70,7 @@ public class Content extends Model<Content> {
     @TableField("dead_date")
     private Date deadDate;
     /**
-     * 状态
+     * 状态: 1=启用，2=禁用
      */
     private Integer status;
 
@@ -128,11 +131,11 @@ public class Content extends Model<Content> {
         this.author = author;
     }
 
-    public String getPublishType() {
+    public Integer getPublishType() {
         return publishType;
     }
 
-    public void setPublishType(String publishType) {
+    public void setPublishType(Integer publishType) {
         this.publishType = publishType;
     }
 

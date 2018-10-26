@@ -19,7 +19,8 @@ public class ContentWrapper extends BaseControllerWarpper{
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("genderName", ConstantFactory.me().getSexName((Integer) map.get("gender")));
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
+        map.put("typeName", ConstantFactory.me().getContentTypeName((Integer) map.get("type")));
+        map.put("publishTypeName", ConstantFactory.me().getContentTypeName((Integer) map.get("publishType")));
     }
 }

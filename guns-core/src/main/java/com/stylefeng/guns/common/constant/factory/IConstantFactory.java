@@ -153,4 +153,10 @@ public interface IConstantFactory {
      */
     String getStudyTimeTypeName(Integer studyTimeType);
 
+    /**
+     * 资讯类型
+     * @param type
+     * @return
+     */
+    String getContentTypeName(Integer type);
 }

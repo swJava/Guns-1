@@ -15,8 +15,18 @@ Content.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
             {title: '内容编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
-            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '标题图片', field: 'timage', visible: true, align: 'center', valign: 'middle'},
+            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle', sortable: true},
+            {title: '标题图片', field: 'timage', visible: true, align: 'center', valign: 'middle',
+                formatter:function (value,row,index) {
+                    var imgUrl;
+                    if(row.avatar != null && row.avatar != ''){
+                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.timage +'" width="64px" height="64px">';
+                    }else {
+                        imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
+                    }
+                    return imgUrl;
+                }
+            },
             {title: '标题', field: 'title', visible: true, align: 'center', valign: 'middle'},
             {title: '一句话简介', field: 'introduce', visible: true, align: 'center', valign: 'middle'},
             {title: '作者', field: 'author', visible: true, align: 'center', valign: 'middle'},

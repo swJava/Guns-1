@@ -69,7 +69,7 @@ public class ClassController extends BaseController {
     @ResponseBody
     public Object list(String condition) {
         //分页查詢
-        Page<Student> page = new PageFactory<Student>().defaultPage();
+        Page<Class> page = new PageFactory<Class>().defaultPage();
         Page<Map<String, Object>> pageMap = classService.selectMapsPage(page, new EntityWrapper<Class>() {
             {
                 //name条件分页

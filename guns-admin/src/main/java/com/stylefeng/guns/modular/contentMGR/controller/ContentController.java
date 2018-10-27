@@ -1,7 +1,12 @@
 package com.stylefeng.guns.modular.contentMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.contentMGR.warpper.ContentWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
+
+import java.util.Map;
 
 /**
  * 资讯管理控制器
@@ -60,7 +67,19 @@ public class ContentController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return contentService.selectList(null);
+        //分页查詢
+        Page<Content> page = new PageFactory<Content>().defaultPage();
+        Page<Map<String, Object>> pageMap = contentService.selectMapsPage(page, new EntityWrapper<Content>() {
+            {
+                //name条件分页
+                if (StringUtils.isNotEmpty(condition)) {
+                    like("name", condition);
+                }
+            }
+        });
+        //包装数据
+        new ContentWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
     }
 
     /**

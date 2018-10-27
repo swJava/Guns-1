@@ -20,7 +20,7 @@ Teacher.initColumn = function () {
                 if(row.avatar != null && row.avatar != ''){
                     imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';
                 }else {
-                    imgUrl = '<img alt="image" class="img-circle" src="/static/img/girl.gif" width="64px" height="64px">';
+                    imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
                 }
                 return imgUrl;
             }

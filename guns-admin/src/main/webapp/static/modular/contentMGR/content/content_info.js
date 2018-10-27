@@ -2,7 +2,51 @@
  * 初始化资讯管理详情对话框
  */
 var ContentInfoDlg = {
-    contentInfoData : {}
+    contentInfoData : {},
+    validateFields: {
+        code: {
+            validators: {
+                notEmpty: {
+                    message: '编码不能为空'
+                }
+            }
+        },
+        type: {
+            validators: {
+                notEmpty: {
+                    message: '类型不能为空'
+                }
+            }
+        },
+        timage: {
+            validators: {
+                notEmpty: {
+                    message: '标题图片不能为空'
+                }
+            }
+        },
+        introduce: {
+            validators: {
+                notEmpty: {
+                    message: '简介不能为空'
+                }
+            }
+        },
+        publishType: {
+            validators: {
+                notEmpty: {
+                    message: '发布类型不能为空'
+                }
+            }
+        },
+        status: {
+            validators: {
+                notEmpty: {
+                    message: '状态不能为空'
+                }
+            }
+        }
+    }
 };
 
 /**
@@ -100,5 +144,11 @@ ContentInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    //非空校验
+    Feng.initValidator("contentInfoForm", ContentInfoDlg.validateFields);
 
+    //初始select选项
+    $("#status").val($("#statusValue").val());
+    $("#type").val($("#typeValue").val());
+    $("#publishType").val($("#publishTypeValue").val());
 });

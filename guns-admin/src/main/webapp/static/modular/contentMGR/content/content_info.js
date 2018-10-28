@@ -151,4 +151,15 @@ $(function() {
     $("#status").val($("#statusValue").val());
     $("#type").val($("#typeValue").val());
     $("#publishType").val($("#publishTypeValue").val());
+
+
+    // 初始化图片上传
+    var avatarUp = new $WebUpload("timage");
+    avatarUp.setUploadBarId("progressBar");
+    avatarUp.init();
+
+    laydate.render({
+        elem: '#deadDate'
+    });
+
 });

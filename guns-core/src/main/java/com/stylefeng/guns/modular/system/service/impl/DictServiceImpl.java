@@ -8,6 +8,7 @@ import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.modular.system.dao.DictMapper;
 import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.service.IDictService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -94,6 +95,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
         return this.baseMapper.selectByParentCode(code);
     }
 
+    @Override
+    public List<Dict> selectByParentCodeAndLimit(@Param("code") String code, @Param("startNum") String startNum, @Param("endNum")String endNum) {
+        return this.baseMapper.selectByParentCodeAndLimit(code, startNum, endNum);
+    }
 
     @Override
     public List<Map<String, Object>> list(String conditiion) {

@@ -41,6 +41,12 @@ public interface IDictService extends IService<Dict> {
     List<Dict> selectByParentCode(@Param("code") String code);
 
     /**
+     * 根据父类编码获取词典列表
+     * 范围选取：num
+     */
+    List<Dict> selectByParentCodeAndLimit(@Param("code") String code, @Param("startNum") String startNum, @Param("endNum") String endNum);
+
+    /**
      * 查询字典列表
      */
     List<Map<String, Object>> list(@Param("condition") String conditiion);

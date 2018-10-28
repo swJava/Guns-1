@@ -31,4 +31,14 @@ public interface DictMapper extends BaseMapper<Dict> {
      * 根据父类编码获取词典列表
      */
     List<Dict> selectByParentCode(@Param("code") String code);
+
+    /**
+     * 根据父类编码获取词典列表
+     * 范围选取
+     * @param code
+     * @param startNum  num
+     * @param endNum    num
+     * @return
+     */
+    List<Dict> selectByParentCodeAndLimit(@Param("code") String code, @Param("startNum") String startNum, @Param("endNum") String endNum);
 }

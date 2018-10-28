@@ -62,8 +62,12 @@ public class DictSelectorTag extends Tag {
         String disabled = ToolUtil.isNotEmpty(attrs.get("disabled"))?attrs.get("disabled").toString():"";
         //searchnum 下拉选项数量达到多少启用搜索,默认10
         int searchnum = ToolUtil.isNum(attrs.get("searchnum"))?Integer.parseInt(attrs.get("searchnum").toString()):10;
+        //startNum 下拉选项数量达到多少启用搜索,默认10
+        String startNum = ToolUtil.isNotEmpty(attrs.get("startNum"))?attrs.get("startNum").toString():"0";
+        //endNum 下拉选项数量达到多少启用搜索,默认10
+        String endNum = ToolUtil.isNotEmpty(attrs.get("endNum"))?attrs.get("endNum").toString():"50";
         //根据code查询字典数据
-        List<Dict>  list = iDictService.selectByParentCode(code);
+        List<Dict>  list = iDictService.selectByParentCodeAndLimit(code,startNum,endNum);
 
         StringBuffer html = new StringBuffer();
         html.append("<div class=\"form-group\">\r\n");

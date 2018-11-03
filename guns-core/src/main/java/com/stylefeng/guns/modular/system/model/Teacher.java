@@ -1,31 +1,25 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 教师表
  * </p>
  *
- * @author simple.song
- * @since 2018-10-04
+ * @author simple
+ * @since 2018-11-03
  */
 @TableName("tb_teacher")
 public class Teacher extends Model<Teacher> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 自增主键
-     */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 教师编码
+     * 教师编码： LS + 6位序列码
      */
     private String code;
     /**
@@ -37,7 +31,7 @@ public class Teacher extends Model<Teacher> {
      */
     private String avatar;
     /**
-     * 教师类型: L 讲师； A 辅导员； E 外聘专家
+     * 教师类型:1讲师； 2 辅导员； 3 外聘专家
      */
     private Integer type;
     /**
@@ -65,7 +59,7 @@ public class Teacher extends Model<Teacher> {
      */
     private String feature;
     /**
-     * 状态:0=正常，1=辞职
+     * 状态
      */
     private Integer status;
 

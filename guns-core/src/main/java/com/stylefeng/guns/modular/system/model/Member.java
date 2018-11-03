@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ * 会员表
  * </p>
  *
- * @author simple.song
- * @since 2018-10-09
+ * @author simple
+ * @since 2018-11-03
  */
 @TableName("tb_member")
 public class Member extends Model<Member> {
@@ -26,7 +26,8 @@ public class Member extends Model<Member> {
     /**
      * 用户名
      */
-    private String username;
+    @TableField("user_name")
+    private String userName;
     /**
      * 密码sha256加密
      */
@@ -61,7 +62,7 @@ public class Member extends Model<Member> {
      */
     private String email;
     /**
-     * 状态：  0 无效 1 有效  2 锁定 
+     * 状态： 1 0 无效 11 有效 1 2 锁定 
      */
     private Integer status;
     /**
@@ -79,12 +80,12 @@ public class Member extends Model<Member> {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -176,7 +177,7 @@ public class Member extends Model<Member> {
     public String toString() {
         return "Member{" +
         "id=" + id +
-        ", username=" + username +
+        ", userName=" + userName +
         ", password=" + password +
         ", name=" + name +
         ", gender=" + gender +

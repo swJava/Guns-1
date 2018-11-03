@@ -1,9 +1,6 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -14,8 +11,8 @@ import java.io.Serializable;
  * 订单
  * </p>
  *
- * @author simple.song
- * @since 2018-10-18
+ * @author simple
+ * @since 2018-11-03
  */
 @TableName("tb_order")
 public class Order extends Model<Order> {
@@ -25,7 +22,6 @@ public class Order extends Model<Order> {
     /**
      * 标示
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 订单号
@@ -44,14 +40,14 @@ public class Order extends Model<Order> {
     /**
      * 金额
      */
-    private BigDecimal amount;
+    private Long amount;
     /**
-     * 支付状态
+     * 支付状态:1=待支付 2=已支付 3=超时
      */
     @TableField("pay_status")
     private Integer payStatus;
     /**
-     * 支付结果
+     * 支付结果：11成功 12失败 
      */
     @TableField("pay_result")
     private Integer payResult;
@@ -61,10 +57,15 @@ public class Order extends Model<Order> {
     @TableField("pay_date")
     private Date payDate;
     /**
-     * 支付渠道
+     * 支付渠道：21 银联 22 微信
      */
     @TableField("pay_method")
     private Integer payMethod;
+    /**
+     * 用户账号
+     */
+    @TableField("user_name")
+    private String userName;
 
 
     public Long getId() {
@@ -99,11 +100,11 @@ public class Order extends Model<Order> {
         this.status = status;
     }
 
-    public BigDecimal getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
@@ -139,6 +140,14 @@ public class Order extends Model<Order> {
         this.payMethod = payMethod;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -156,6 +165,7 @@ public class Order extends Model<Order> {
         ", payResult=" + payResult +
         ", payDate=" + payDate +
         ", payMethod=" + payMethod +
+        ", userName=" + userName +
         "}";
     }
 }

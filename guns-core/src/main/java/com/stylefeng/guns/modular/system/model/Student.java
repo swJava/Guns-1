@@ -1,7 +1,5 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -9,11 +7,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 学生表
+ * 学员表
  * </p>
  *
- * @author simple.song
- * @since 2018-10-07
+ * @author simple
+ * @since 2018-11-03
  */
 @TableName("tb_student")
 public class Student extends Model<Student> {
@@ -21,9 +19,8 @@ public class Student extends Model<Student> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 自增主键
+     * 标示
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 学员编码: XY+年月日（6位）+8位顺序码
@@ -54,6 +51,11 @@ public class Student extends Model<Student> {
      */
     @TableField("target_school")
     private String targetSchool;
+    /**
+     * 用户名
+     */
+    @TableField("user_name")
+    private String userName;
     /**
      * 状态
      */
@@ -124,6 +126,14 @@ public class Student extends Model<Student> {
         this.targetSchool = targetSchool;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -148,6 +158,7 @@ public class Student extends Model<Student> {
         ", grade=" + grade +
         ", school=" + school +
         ", targetSchool=" + targetSchool +
+        ", userName=" + userName +
         ", status=" + status +
         "}";
     }

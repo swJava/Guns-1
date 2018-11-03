@@ -13,8 +13,8 @@ import java.io.Serializable;
  * 班级
  * </p>
  *
- * @author simple.song
- * @since 2018-10-20
+ * @author stylefeng
+ * @since 2018-11-03
  */
 @TableName("tb_class")
 public class Class extends Model<Class> {
@@ -53,7 +53,7 @@ public class Class extends Model<Class> {
      * 开课时间
      */
     @TableField("study_time_value")
-    private Integer studyTimeValue;
+    private String studyTimeValue;
     /**
      * 开始时间
      */
@@ -68,12 +68,18 @@ public class Class extends Model<Class> {
      * 单位：分钟
      */
     private Integer duration;
+    /**
+     * 总课时数
+     */
     private Integer period;
     /**
      * 教室编码
      */
     @TableField("class_room_code")
     private String classRoomCode;
+    /**
+     * 教室
+     */
     @TableField("class_room")
     private String classRoom;
     /**
@@ -103,6 +109,16 @@ public class Class extends Model<Class> {
      * 状态
      */
     private Integer status;
+    /**
+     * 主讲教师编码
+     */
+    @TableField("teacher_code")
+    private String teacherCode;
+    /**
+     * 辅导教师编码
+     */
+    @TableField("teacher_second_code")
+    private String teacherSecondCode;
 
 
     public Long getId() {
@@ -153,11 +169,11 @@ public class Class extends Model<Class> {
         this.studyTimeType = studyTimeType;
     }
 
-    public Integer getStudyTimeValue() {
+    public String getStudyTimeValue() {
         return studyTimeValue;
     }
 
-    public void setStudyTimeValue(Integer studyTimeValue) {
+    public void setStudyTimeValue(String studyTimeValue) {
         this.studyTimeValue = studyTimeValue;
     }
 
@@ -257,6 +273,22 @@ public class Class extends Model<Class> {
         this.status = status;
     }
 
+    public String getTeacherCode() {
+        return teacherCode;
+    }
+
+    public void setTeacherCode(String teacherCode) {
+        this.teacherCode = teacherCode;
+    }
+
+    public String getTeacherSecondCode() {
+        return teacherSecondCode;
+    }
+
+    public void setTeacherSecondCode(String teacherSecondCode) {
+        this.teacherSecondCode = teacherSecondCode;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -284,6 +316,8 @@ public class Class extends Model<Class> {
         ", quato=" + quato +
         ", signEndDate=" + signEndDate +
         ", status=" + status +
+        ", teacherCode=" + teacherCode +
+        ", teacherSecondCode=" + teacherSecondCode +
         "}";
     }
 }

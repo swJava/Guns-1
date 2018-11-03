@@ -14,14 +14,11 @@
                             <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
                             <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
                             <#input id="endDate" name="开课结束日期" value="${item.endDate}" underline="true"/>
-                            <#select id="studyTimeType" name="开课时间类型" underline="true">
-                                <option value="5">每月</option>
-                                <option value="7">每周</option>
-                            </#select>
+                            <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
                             <#input id="studyTimeValue" name="开课时间" value="${item.studyTimeValue}" underline="true"/>
                             <#input id="beginTime" name="开始时间" value="${item.beginTime}" underline="true"/>
                             <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
-                            <#input id="duration" name="单位：分钟" value="${item.duration}" />
+                            <#input id="duration" name="时长（分钟）" value="${item.duration}" />
                 </div>
 
                 <div class="col-sm-6">
@@ -32,7 +29,7 @@
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>
                             <#input id="quato" name="剩余报名人数" value="${item.quato}" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" value="${item.signEndDate}" underline="true"/>
-                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                            <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
 

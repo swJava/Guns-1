@@ -37,9 +37,9 @@ var ClassInfoDlg = {
                 notEmpty: {
                     message: '开课时间不能为空'
                 },
-                stringLength:{
-                    max:4,
-                    message: '长度限制'
+                regexp: {
+                    regexp: /^[0-9]{1,4}$/,
+                    message: '4位数字内'
                 }
             }
         },
@@ -48,9 +48,9 @@ var ClassInfoDlg = {
                 notEmpty: {
                     message: '开始时间不能为空'
                 },
-                stringLength:{
-                    max:4,
-                    message: '长度限制'
+                regexp: {
+                    regexp: /^[0-9]{1,4}$/,
+                    message: '4位数字内'
                 }
             }
         },
@@ -58,6 +58,10 @@ var ClassInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '结束时间'
+                },
+                regexp: {
+                    regexp: /^[0-9]{1,4}$/,
+                    message: '4位数字内'
                 }
             }
         },
@@ -65,6 +69,10 @@ var ClassInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '课时时长'
+                },
+                regexp: {
+                    regexp: /^[1-9][0-9]{0,3}$/,
+                    message: '4位数字内'
                 }
             }
         },
@@ -72,6 +80,10 @@ var ClassInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '课时数'
+                },
+                regexp: {
+                    regexp: /^[1-9][0-9]{0,3}$/,
+                    message: '4位数字内'
                 }
             }
         },
@@ -86,6 +98,10 @@ var ClassInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '报名人数'
+                },
+                regexp: {
+                    regexp: /^[1-9][0-9]{0,9}$/,
+                    message: '9位数字内'
                 }
             }
         },
@@ -93,6 +109,17 @@ var ClassInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '报名截止时间'
+                }
+            }
+        },
+        star: {
+            validators: {
+                notEmpty: {
+                    message: '关注度'
+                },
+                regexp: {
+                    regexp: /^[1-9][0-9]？$/,
+                    message: '2位数字内'
                 }
             }
         },

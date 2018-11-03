@@ -118,7 +118,7 @@ var ClassInfoDlg = {
                     message: '关注度'
                 },
                 regexp: {
-                    regexp: /^[1-9][0-9]？$/,
+                    regexp: /^[0-9]{0,2}$/,
                     message: '2位数字内'
                 }
             }

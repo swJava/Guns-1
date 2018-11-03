@@ -381,7 +381,7 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     public String getStudyTimeTypeName(Integer studyTimeType) {
-        return getDictsByName("开课类型", studyTimeType);
+        return getDictsByName("开课时间类型", studyTimeType);
     }
 
 

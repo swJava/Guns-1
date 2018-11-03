@@ -53,7 +53,8 @@ public class Schedule extends Model<Schedule> {
     /**
      * 班级
      */
-    private String class;
+    @TableField("class_Name")
+    private String className;
     /**
      * 教室编码
      */
@@ -131,12 +132,12 @@ public class Schedule extends Model<Schedule> {
         this.classCode = classCode;
     }
 
-    public String getClass() {
-        return class;
+    public String getClassName() {
+        return className;
     }
 
-    public void setClass(String class) {
-        this.class = class;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getClassroomCode() {
@@ -194,7 +195,7 @@ public class Schedule extends Model<Schedule> {
         ", courseCode=" + courseCode +
         ", course=" + course +
         ", classCode=" + classCode +
-        ", class=" + class +
+        ", class=" + className +
         ", classroomCode=" + classroomCode +
         ", classroom=" + classroom +
         ", studyDate=" + studyDate +

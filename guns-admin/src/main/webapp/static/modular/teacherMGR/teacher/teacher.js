@@ -27,7 +27,7 @@ Teacher.initColumn = function () {
         },
         {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '教师名称', field: 'name', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '教师类型:', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
+        {title: '教师类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
         {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '授课年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},

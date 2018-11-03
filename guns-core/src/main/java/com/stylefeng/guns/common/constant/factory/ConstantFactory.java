@@ -352,17 +352,17 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     public String getPayStatusName(Integer payStatus) {
-        return getDictsByName("支付状态", payStatus);
+        return getDictsByName("订单状态", payStatus);
     }
 
     @Override
     public String getPayMethodName(Integer payMethod) {
-        return getDictsByName("支付方式", payMethod);
+        return getDictsByName("订单状态", payMethod);
     }
 
     @Override
     public String getPayResultName(Integer payResult) {
-        return getDictsByName("支付结果", payResult);
+        return getDictsByName("订单状态", payResult);
     }
 
     @Override

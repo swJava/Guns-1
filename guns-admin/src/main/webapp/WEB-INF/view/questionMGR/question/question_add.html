@@ -1,0 +1,35 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="questionInfoForm">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#avatar id="question" name="试题题目" underline="true" />
+                    <#dictSelector id="type" name ="试题类型" code="question_type" label="试题类型"  underline="true"  width="75%"/>
+                    <#dictSelector id="subject" name ="试题学科" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
+                    <#dictSelector id="grade" name ="年级" code="school_grade" label="年级"  underline="true"  width="75%"/>
+                </div>
+
+                <div class="col-sm-6">
+                    <#input id="code" name="试题编码" underline="true"/>
+                    <#input id="answer" name="答案" underline="true"/>
+                    <#input id="expactAnswer" name="参考答案" underline="true"/>
+                    <#input id="score" name="分值" placeholder="分值 1-10"/>
+                    <#input id="sort" name="排序号" underline="true"/>
+                    <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="QuestionInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="QuestionInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/questionMGR/question/question_info.js"></script>
+@}

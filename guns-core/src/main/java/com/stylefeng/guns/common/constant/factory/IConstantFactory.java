@@ -159,4 +159,18 @@ public interface IConstantFactory {
      * @return
      */
     String getContentTypeName(Integer type);
+
+    /**
+     * 试题类型
+     * @param type
+     * @return
+     */
+    String getQuestionTypeName(Integer type);
+
+    /**
+     * 学科类型
+     * @param subject
+     * @return
+     */
+    String getsubjectName(Integer subject);
 }

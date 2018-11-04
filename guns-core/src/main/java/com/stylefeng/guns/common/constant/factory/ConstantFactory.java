@@ -389,4 +389,14 @@ public class ConstantFactory implements IConstantFactory {
     public String getContentTypeName(Integer type) {
         return getDictsByName("资讯类型", type);
     }
+
+    @Override
+    public String getQuestionTypeName(Integer type) {
+        return getDictsByName("试题类型", type);
+    }
+
+    @Override
+    public String getsubjectName(Integer subject) {
+        return getDictsByName("学科类型", subject);
+    }
 }

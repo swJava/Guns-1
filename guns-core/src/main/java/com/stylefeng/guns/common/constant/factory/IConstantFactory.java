@@ -173,4 +173,12 @@ public interface IConstantFactory {
      * @return
      */
     String getsubjectName(Integer subject);
+
+
+    /**
+     * 获取教室类型
+     * @param type
+     * @return
+     */
+    String getClassRoomTypeName(Integer type);
 }

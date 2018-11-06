@@ -36,7 +36,11 @@ var ClassroomInfoDlg = {
             validators: {
                 notEmpty: {
                     message: '最大人数不能为空'
-                }
+                },
+            regexp: {
+                regexp: /^[0-9]{1,4}$/,
+                message: '4位数字内'
+            }
             }
         }
     }

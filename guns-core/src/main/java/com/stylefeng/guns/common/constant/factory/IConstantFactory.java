@@ -141,7 +141,7 @@ public interface IConstantFactory {
     /**
      * 获取教室名称
      */
-    String getClassRoomName(Integer classCode);
+    String getClassRoomName(String classCode);
 
     /**
      * 获取校区地址

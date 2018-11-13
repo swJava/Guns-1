@@ -8,8 +8,10 @@ import com.stylefeng.guns.common.constant.state.ManagerStatus;
 import com.stylefeng.guns.common.constant.state.MenuStatus;
 import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.system.dao.*;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.util.Convert;
 import com.stylefeng.guns.util.SpringContextHolder;
 import com.stylefeng.guns.util.ToolUtil;
@@ -20,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 常量的生产工厂
@@ -37,6 +40,7 @@ public class ConstantFactory implements IConstantFactory {
     private UserMapper userMapper = SpringContextHolder.getBean(UserMapper.class);
     private MenuMapper menuMapper = SpringContextHolder.getBean(MenuMapper.class);
     private NoticeMapper noticeMapper = SpringContextHolder.getBean(NoticeMapper.class);
+    private ClassroomMapper classroomMapper = SpringContextHolder.getBean(ClassroomMapper.class);
 
     public static IConstantFactory me() {
         return SpringContextHolder.getBean("constantFactory");
@@ -366,8 +370,11 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getClassRoomName(Integer classCode) {
-        return getDictsByName("教室编码", classCode);
+    public String getClassRoomName(String classCode) {
+        Classroom classroom = classroomMapper.selectOne(new Classroom() {{
+            setCode(classCode);
+        }});
+        return  classroom == null?null:classroom.getName();
     }
 
     @Override

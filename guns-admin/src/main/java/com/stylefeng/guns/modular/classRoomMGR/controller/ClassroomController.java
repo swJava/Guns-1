@@ -82,6 +82,15 @@ public class ClassroomController extends BaseController {
         new ClassroomWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
+    /**
+     * 获取教室管理列表
+     */
+    @RequestMapping(value = "/listRoom")
+    @ResponseBody
+    public Object listRoom(String condition) {
+
+        return classroomService.selectList(null);
+    }
 
     /**
      * 新增教室管理

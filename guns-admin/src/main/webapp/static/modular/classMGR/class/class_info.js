@@ -255,6 +255,17 @@ $(function() {
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
 
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#classRoomCode").append(html);
+
     //初始select选项
     $("#classRoomCode").val($("#classRoomCodeValue").val());
     $("#status").val($("#statusValue").val());

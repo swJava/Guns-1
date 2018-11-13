@@ -18,7 +18,14 @@
 
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" underline="true"/>
-                            <#dictSelector id="classRoomCode" name ="教室" code="class_code" label="教室"  underline="true"  width="75%"/>
+                                <div class="form-group">
+                                <label class="col-sm-3 control-label">教室</label>
+                                <div class="col-sm-9">
+                                    <select id="classRoomCode" name="教室" class="form-control" style="width:75%px">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                             <#input id="courseCode" name="教授课程" underline="true"/>
                             <#input id="courseName" name="课程名称" underline="true"/>
                             <#input id="star" name="关注度" underline="true"/>

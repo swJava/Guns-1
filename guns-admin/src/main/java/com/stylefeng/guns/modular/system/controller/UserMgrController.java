@@ -33,10 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.naming.NoPermissionException;
 import javax.validation.Valid;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 系统管理员控制器
@@ -351,6 +348,24 @@ public class UserMgrController extends BaseController {
             throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
         }
         return pictureName;
+    }
+    /**
+     * 上传图片
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "/uploadJson")
+    @ResponseBody
+    public Map uploadJson(@RequestPart("file") MultipartFile picture) {
+
+        Map<String, String> map = new HashMap<>();
+        String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
+        try {
+            String fileSavePath = gunsProperties.getFileUploadPath();
+            picture.transferTo(new File(fileSavePath + pictureName));
+        } catch (Exception e) {
+            throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
+        }
+        map.put("data",pictureName);
+        return map;
     }
 
     /**

@@ -8,6 +8,7 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.questionMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.Question;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,7 +69,11 @@ public class QuestionController extends BaseController {
     public Object list(String condition) {
         //分页查詢
         Page<Question> page = new PageFactory<Question>().defaultPage();
-        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(page, new EntityWrapper<Question>());
+        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(page, new EntityWrapper<Question>(){{
+            if(StringUtils.isNotEmpty(condition)){
+                like("code",condition);
+            }
+        }});
         //包装数据
         new QuestionWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);

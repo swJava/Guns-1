@@ -1,7 +1,14 @@
 package com.stylefeng.guns.modular.answerMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.answerMGR.warpper.AnswerPaperWrapper;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.model.Student;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.AnswerPaper;
 import com.stylefeng.guns.modular.answerMGR.service.IAnswerPaperService;
+
+import java.util.Map;
 
 /**
  * 考试管理控制器
@@ -26,6 +35,8 @@ public class AnswerPaperController extends BaseController {
 
     @Autowired
     private IAnswerPaperService answerPaperService;
+    @Autowired
+    private IStudentService iStudentService;
 
     /**
      * 跳转到考试管理首页
@@ -60,7 +71,21 @@ public class AnswerPaperController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return answerPaperService.selectList(null);
+        Student student = iStudentService.getOne(new Student(){{setName(condition);}});
+        String code = student == null?null:student.getCode();
+
+        //分页查詢
+        Page<AnswerPaper> page = new PageFactory<AnswerPaper>().defaultPage();
+        Page<Map<String, Object>> pageMap = answerPaperService.selectMapsPage(page, new EntityWrapper<AnswerPaper>() {
+            {
+                if (StringUtils.isNotEmpty(code)) {
+                    eq("student_code", code);
+                }
+            }
+        });
+        //包装数据
+        new AnswerPaperWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
     }
 
     /**

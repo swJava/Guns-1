@@ -6,6 +6,8 @@ import com.stylefeng.guns.modular.system.dao.StudentMapper;
 import com.stylefeng.guns.modular.system.model.Student;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * <p>
  * 学生表 服务实现类
@@ -16,5 +18,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements IStudentService {
+    @Resource
+    private StudentMapper studentMapper;
 
+    public Student getOne(Student student){
+        return studentMapper.selectOne(student);
+    }
 }

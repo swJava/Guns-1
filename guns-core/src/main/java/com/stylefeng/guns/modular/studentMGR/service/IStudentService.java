@@ -13,4 +13,10 @@ import com.stylefeng.guns.modular.system.model.Student;
  */
 public interface IStudentService extends IService<Student> {
 
+    /**
+     *  获取Student类
+     * @return
+     */
+    Student getOne(Student student);
+
 }

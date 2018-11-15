@@ -181,4 +181,11 @@ public interface IConstantFactory {
      * @return
      */
     String getClassRoomTypeName(Integer type);
+
+    /**
+     * 获取学生名称
+     * @param studentCode
+     * @return
+     */
+    String getStudentName(String studentCode);
 }

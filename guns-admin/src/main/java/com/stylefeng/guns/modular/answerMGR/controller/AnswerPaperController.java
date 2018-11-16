@@ -71,13 +71,16 @@ public class AnswerPaperController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        Student student = iStudentService.getOne(new Student(){{setName(condition);}});
-        String code = student == null?null:student.getCode();
 
         //分页查詢
         Page<AnswerPaper> page = new PageFactory<AnswerPaper>().defaultPage();
         Page<Map<String, Object>> pageMap = answerPaperService.selectMapsPage(page, new EntityWrapper<AnswerPaper>() {
             {
+                String code = null;
+                if(StringUtils.isNotEmpty(condition)){
+                    Student student = iStudentService.getOne(new Student(){{setName(condition);}});
+                    code = student == null?null:student.getCode();
+                }
                 if (StringUtils.isNotEmpty(code)) {
                     eq("student_code", code);
                 }

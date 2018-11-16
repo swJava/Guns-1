@@ -15,12 +15,12 @@ AnswerPaper.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
             {title: '试卷名称', field: 'examName', visible: true, align: 'center', valign: 'middle'},
+            {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '答题学员', field: 'studentCode', visible: true, align: 'center', valign: 'middle'},
             {title: '开始时间', field: 'beginDate', visible: true, align: 'center', valign: 'middle'},
             {title: '结束时间', field: 'endDate', visible: true, align: 'center', valign: 'middle'},
             {title: '总分', field: 'score', visible: true, align: 'center', valign: 'middle'},
             {title: '备注', field: 'remark', visible: true, align: 'center', valign: 'middle'},
-            {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
@@ -99,6 +99,6 @@ AnswerPaper.search = function () {
 $(function () {
     var defaultColunms = AnswerPaper.initColumn();
     var table = new BSTable(AnswerPaper.id, "/answerPaper/list", defaultColunms);
-    table.setPaginationType("server");  
+    table.setPaginationType("server");
     AnswerPaper.table = table.init();
 });

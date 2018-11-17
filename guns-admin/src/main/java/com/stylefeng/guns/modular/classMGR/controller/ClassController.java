@@ -52,6 +52,14 @@ public class ClassController extends BaseController {
     }
 
     /**
+     * 跳转到添加课程大纲管理
+     */
+    @RequestMapping("/class_add_kcdg")
+    public String classAddKCDG() {
+        return PREFIX + "class_add_kcdg.html";
+    }
+
+    /**
      * 跳转到修改课程管理
      */
     @RequestMapping("/class_update/{classId}")

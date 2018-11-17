@@ -49,6 +49,20 @@ Class.check = function () {
 };
 
 /**
+ * 点击添加课程大纲管理
+ */
+Class.openAddClassKCDG = function () {
+    var index = layer.open({
+        type: 2,
+        title: '添加课程大纲管理',
+        area: ['1200px', '420px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/class/class_add_kcdg'
+    });
+    this.layerIndex = index;
+};
+/**
  * 点击添加课程管理
  */
 Class.openAddClass = function () {

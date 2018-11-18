@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GunsRestApplication {
 
     public static void main(String[] args) {
+        System.out.println("ok");
         SpringApplication.run(GunsRestApplication.class, args);
     }
 }

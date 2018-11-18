@@ -1,7 +1,6 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -39,7 +38,7 @@ public class CourseOutline extends Model<CourseOutline> {
      * 排课时间
      */
     @TableField("class_date")
-    private Date classDate;
+    private String classDate;
     /**
      * 上课时间：17:00-20:30
      */
@@ -83,11 +82,11 @@ public class CourseOutline extends Model<CourseOutline> {
         this.classCode = classCode;
     }
 
-    public Date getClassDate() {
+    public String getClassDate() {
         return classDate;
     }
 
-    public void setClassDate(Date classDate) {
+    public void setClassDate(String classDate) {
         this.classDate = classDate;
     }
 

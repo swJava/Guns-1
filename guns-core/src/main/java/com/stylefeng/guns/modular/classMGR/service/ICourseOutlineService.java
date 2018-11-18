@@ -13,4 +13,13 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ICourseOutlineService extends IService<CourseOutline> {
 
+
+    /**
+     * 新增课程大纲
+     * @param classCode         班级编码
+     * @param courseCode        课程编码
+     * @param courseValues      课程大纲列表str
+     */
+    void addCourseOutline(String classCode,String courseCode,String courseValues);
+
 }

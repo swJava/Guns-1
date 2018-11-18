@@ -3,9 +3,9 @@
     <div class="ibox-content">
         <div class="form-horizontal">
 
-            <input type="hidden" id="id" value="">
-            <input type="hidden" id="code" value="">
-            <input type="hidden" id="classCode" value="">
+            <input type="hidden" id="classCode" value="${item.classCode}">
+            <input type="hidden" id="courseCode" value="${item.courseCode}">
+            <input type="hidden" id="itemSize" value="${courseOutlines.~size!0}" />
 
             <div class="row">
                 <div class="col-sm-12" id="itemsArea">
@@ -15,6 +15,32 @@
                         </div>
                     </div>
                     <div class="hr-line-dashed"></div>
+                    @for(info in courseOutlines){
+                        <div class="form-group" name="courseOutline" id="courseOutline${infoLP.index}">
+                            <label class="col-sm-1 control-label">大纲条目</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="outline" value="${info.outline}">
+                            </div>
+                            <label class="col-sm-1 control-label">排课日期</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="classDate" id="classDateId${infoLP.index}" placeholder="选择日期" value="${info.classDate}"   onclick="laydate.render({elem:this})">
+                            </div>
+                            <script>
+                                laydate.render({elem:'#classDateId${infoLP.index}' });
+                            </script>
+                            <label class="col-sm-1 control-label" >上课时间</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="classTime" placeholder="例 15:00-18:00" value="${info.classTime}">
+                            </div>
+                            <label class="col-sm-1 control-label" >序号</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="sort" value="${info.sort}">
+                            </div>
+                            <div class="col-sm-2">
+                                <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="CourseOutlineDlg.deleteItem(event)"/>
+                            </div>
+                        </div>
+                    @}
                 </div>
             </div>
             <div class="row btn-group-m-t">
@@ -34,11 +60,11 @@
             </div>
             <label class="col-sm-1 control-label">排课日期</label>
             <div class="col-sm-2">
-                <input class="form-control" type="text" name="classDate">
+                <input class="form-control" type="text" name="classDate" id="classDateId" placeholder="选择日期">
             </div>
             <label class="col-sm-1 control-label" >上课时间</label>
             <div class="col-sm-2">
-                <input class="form-control" type="text" name="classTime">
+                <input class="form-control" type="text" name="classTime" placeholder="例 15:00-18:00">
             </div>
             <label class="col-sm-1 control-label" >序号</label>
             <div class="col-sm-2">
@@ -49,6 +75,5 @@
             </div>
         </div>
     </script>
-
     <script src="${ctxPath}/static/modular/classMGR/class/class_ckdg_info.js"></script>
-    @}
+@}

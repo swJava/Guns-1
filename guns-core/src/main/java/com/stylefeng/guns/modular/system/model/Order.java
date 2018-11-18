@@ -1,6 +1,8 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -22,6 +24,7 @@ public class Order extends Model<Order> {
     /**
      * 标示
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 订单号

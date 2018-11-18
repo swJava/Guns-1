@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +20,7 @@ import java.io.Serializable;
  * @since 2018-11-03
  */
 @TableName("tb_class")
+@ApiModel(value = "Class", description = "班级")
 public class Class extends Model<Class> {
 
     private static final long serialVersionUID = 1L;
@@ -25,19 +29,36 @@ public class Class extends Model<Class> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 班级编码： BJ+6位序列码
      */
+    @ApiModelProperty(name = "code", value = "编码", position = 0, example="BJ000001")
     private String code;
     /**
      * 班级名称
      */
+    @ApiModelProperty(name = "name", value = "班级名称", position = 1, example="小学一年级数据入门班")
     private String name;
+
+    /**
+     * 学期
+     */
+    @ApiModelProperty(name = "classCycle", value = "学期", position = 2, example="2")
+    private Integer classCycle;
+
+    /**
+     * 班次
+     */
+    @ApiModelProperty(name = "classLevel", value = "班次", position = 3, example="4")
+    private Integer classLevel;
+
     /**
      * 开课起始日期
      */
     @TableField("begin_date")
+    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 0, example="4")
     private Date beginDate;
     /**
      * 开课结束日期
@@ -143,6 +164,22 @@ public class Class extends Model<Class> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getClassCycle() {
+        return classCycle;
+    }
+
+    public void setClassCycle(Integer classCycle) {
+        this.classCycle = classCycle;
+    }
+
+    public Integer getClassLevel() {
+        return classLevel;
+    }
+
+    public void setClassLevel(Integer classLevel) {
+        this.classLevel = classLevel;
     }
 
     public Date getBeginDate() {

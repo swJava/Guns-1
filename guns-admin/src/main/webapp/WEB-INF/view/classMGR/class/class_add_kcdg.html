@@ -3,9 +3,8 @@
     <div class="ibox-content">
         <div class="form-horizontal">
 
-            <input type="hidden" id="id" value="">
-            <input type="hidden" id="code" value="">
-            <input type="hidden" id="classCode" value="">
+            <input type="hidden" id="classCode" value="${item.classCode}">
+            <input type="hidden" id="courseCode" value="${item.courseCode}">
 
             <div class="row">
                 <div class="col-sm-12" id="itemsArea">
@@ -34,11 +33,11 @@
             </div>
             <label class="col-sm-1 control-label">排课日期</label>
             <div class="col-sm-2">
-                <input class="form-control" type="text" name="classDate">
+                <input class="form-control" type="text" name="classDate" id="classDateId" placeholder="选择日期">
             </div>
             <label class="col-sm-1 control-label" >上课时间</label>
             <div class="col-sm-2">
-                <input class="form-control" type="text" name="classTime">
+                <input class="form-control" type="text" name="classTime" placeholder="例 15:00-18:00">
             </div>
             <label class="col-sm-1 control-label" >序号</label>
             <div class="col-sm-2">

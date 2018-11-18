@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,10 +67,18 @@ public class ClassController extends BaseController {
      */
     @RequestMapping("/class_add_kcdg/{classCode}/{courseCode}")
     public String classAddKCDG(@PathVariable String classCode,@PathVariable String courseCode, Model model) {
+
+        List<CourseOutline> courseOutlines = courseOutlineService.selectList(new EntityWrapper<CourseOutline>(){{
+            eq("class_code", classCode);
+            eq("code", courseCode);
+            orderAsc(new ArrayList<String>(1){{add("sort");}});
+        }});
         model.addAttribute("item",new HashMap<String,String>(){{
             put("classCode",classCode);
             put("courseCode",courseCode);
         }});
+        model.addAttribute("courseOutlines",courseOutlines);
+        LogObjectHolder.me().set(classCode);
         return PREFIX + "class_add_kcdg.html";
     }
 

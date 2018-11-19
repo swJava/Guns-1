@@ -1,5 +1,7 @@
 package com.stylefeng.guns.rest.modular.auth.controller;
 
+import java.io.UnsupportedEncodingException;
+
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.system.model.User;
@@ -7,6 +9,8 @@ import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthRequest;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthResponse;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
+
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,18 +41,19 @@ public class AuthController {
         }
 
         String password = currUser.getPassword();
-        String salt = currUser.getSalt();
+        String pwdEncrypt = null;
+        try {
+            pwdEncrypt = new String(Sha256Hash.toBytes(authRequest.getPassword()), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
-        //TODO 添加密码验证
+        if (!password.equalsIgnoreCase(pwdEncrypt)){
+            throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
+        }
 
-        boolean validate = true;
-
-        if (validate) {
             final String randomKey = jwtTokenUtil.getRandomKey();
             final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
             return ResponseEntity.ok(new AuthResponse(token, randomKey));
-        } else {
-            throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
-        }
     }
 }

@@ -55,7 +55,7 @@ public class MemberController {
 
         if (!captchaService.checkCaptcha(userName, captcha))
             throw new ServiceException(MessageConstant.MessageCode.SYS_CAPTCHA_NOT_MATCH);
-
+            
         Member member = memberService.createMember(requester.getUserName(), requester.getPassword(), requester.toMap());
         return RegistResponse.me(member);
     }

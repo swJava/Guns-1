@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * Created by 罗华.
  */
-@TableName("sys_attachment")
+@TableName("tb_attachment")
 @ApiModel(value = "Attachment", description = "附件")
 public class Attachment extends Model<Attachment> {
     private static final long serialVersionUID = 8064117685034666974L;

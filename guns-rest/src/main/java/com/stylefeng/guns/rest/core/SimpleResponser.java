@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 public abstract class SimpleResponser implements Responser {
     private static final long serialVersionUID = 732617853520141701L;
 
-    protected String SUCCEED = "000000";
+    protected static String SUCCEED = "000000";
 
     @ApiModelProperty(value = "返回码", example = "000000")
     private String code;

@@ -3,6 +3,9 @@ application:
   sign-open: true #签名机制是否开启(true或false)
   message:
     captch.template: SMS_150742325
+  attachment:
+    visit-url: http://127.0.0.1:8081/api/attachment/download
+    store-path: H:/Datas/gs/upload
   auth:
     enable: true #jwt鉴权机制是否开启(true或者false)
     header: Authorization #http请求头所需要的字段

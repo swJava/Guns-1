@@ -1,0 +1,36 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="标示" underline="true"/>
+                            <#input id="classCode" name="当前班级编码" underline="true"/>
+                            <#input id="studentCode" name="学生编码（学号）" underline="true"/>
+                            <#input id="type" name="类型： 1 调课   2  调班" underline="true"/>
+                            <#input id="userName" name="申请用户名" underline="true"/>
+                            <#input id="target" name="调入目标编码"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="status" name="状态： 1启用 2冻结" underline="true"/>
+                            <#input id="workStatus" name="流程状态： 10 新建 11 通过 12 打回" underline="true"/>
+                            <#input id="remark" name="备注" underline="true"/>
+                            <#input id="createTime" name="申请时间" underline="true"/>
+                            <#input id="updateTime" name="审核时间" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="AdjustStudentInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="AdjustStudentInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/adjustMGR/adjustStudent/adjustStudent_info.js"></script>
+@}

@@ -85,7 +85,7 @@ public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> impl
             return false;
 
         Wrapper<Captcha> queryWrapper = new EntityWrapper<Captcha>();
-        queryWrapper.eq("number", number);
+        queryWrapper.eq("destaddr", number);
         queryWrapper.eq("captcha", captcha);
         queryWrapper.eq("status", 1);  // 有效状态
         queryWrapper.ge("expire_date", new Date());

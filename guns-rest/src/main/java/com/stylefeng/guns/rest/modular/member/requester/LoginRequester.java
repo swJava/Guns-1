@@ -13,7 +13,7 @@ public class LoginRequester extends SimpleRequester {
     /**
      * 登录类型
      */
-    @ApiModelProperty(name = "type", value = "登录类型", required = true, position = 0, example = "1")
+    @ApiModelProperty(name = "type", value = "登录类型: 1 用户名 密码登陆 2 手机动态验证码登陆", required = true, position = 0, example = "1")
     private Integer type;
 
     /**

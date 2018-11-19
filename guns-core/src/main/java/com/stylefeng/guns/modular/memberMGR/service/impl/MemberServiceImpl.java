@@ -38,7 +38,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         if (null == userName)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
-        Member existMember = (Member) selectObj(new EntityWrapper<Member>().eq("username", userName));
+        Member existMember = (Member) selectObj(new EntityWrapper<Member>().eq("user_name", userName));
 
         if (null != existMember){
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE);
@@ -47,7 +47,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         Member member = new Member();
 
         member.setUserName(userName);
-        member.setPassword(Sha256Hash.toString(password.getBytes()));
+        member.setPassword(new Sha256Hash(password).toHex().toUpperCase());
 
         buildMemberInfo(member, extraParams);
         // 保存会员信息
@@ -75,6 +75,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     private void buildMemberInfo(Member member, Map<String, Object> extraParams) {
         Iterator<String> keyIter = extraParams.keySet().iterator();
         member.setMobileNumber(member.getUserName());
+        member.setName(member.getUserName());
+        member.setNickname(member.getUserName());
         while(keyIter.hasNext()){
             String key = keyIter.next();
             if ("address".equals(key)){

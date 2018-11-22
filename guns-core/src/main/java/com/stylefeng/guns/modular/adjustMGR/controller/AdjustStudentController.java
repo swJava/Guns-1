@@ -46,16 +46,18 @@ public class AdjustStudentController extends BaseController {
     /**
      * 审核通过
      */
+    @ResponseBody
     @RequestMapping("/pass/{adjustStudentId}")
-    public Object adjustStudentUpdate(@PathVariable Long adjustStudentId, Model model) {
+    public Object adjustStudentUpdate(@PathVariable Long adjustStudentId) {
         adjustStudentService.updateById(new AdjustStudent(){{setId(adjustStudentId);setWorkStatus(workStatusEnum.pass.getCode());}});
         return SUCCESS_TIP;
     }
     /**
      * 审核不通过
      */
+    @ResponseBody
     @RequestMapping("/pass_not/{adjustStudentId}")
-    public Object adjustStudentUpdateNot(@PathVariable Long adjustStudentId, Model model) {
+    public Object adjustStudentUpdateNot(@PathVariable Long adjustStudentId) {
         adjustStudentService.updateById(new AdjustStudent(){{setId(adjustStudentId);setWorkStatus(workStatusEnum.back.getCode());}});
         return SUCCESS_TIP;
     }

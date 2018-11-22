@@ -44,14 +44,20 @@ public class AdjustStudentController extends BaseController {
     }
 
     /**
-     * 跳转到修改调课管理
+     * 审核通过
      */
-    @RequestMapping("/adjustStudent_update/{adjustStudentId}")
-    public String adjustStudentUpdate(@PathVariable Integer adjustStudentId, Model model) {
-        AdjustStudent adjustStudent = adjustStudentService.selectById(adjustStudentId);
-        model.addAttribute("item",adjustStudent);
-        LogObjectHolder.me().set(adjustStudent);
-        return PREFIX + "adjustStudent_edit.html";
+    @RequestMapping("/pass/{adjustStudentId}")
+    public Object adjustStudentUpdate(@PathVariable Long adjustStudentId, Model model) {
+        adjustStudentService.updateById(new AdjustStudent(){{setId(adjustStudentId);setWorkStatus(workStatusEnum.pass.getCode());}});
+        return SUCCESS_TIP;
+    }
+    /**
+     * 审核不通过
+     */
+    @RequestMapping("/pass_not/{adjustStudentId}")
+    public Object adjustStudentUpdateNot(@PathVariable Long adjustStudentId, Model model) {
+        adjustStudentService.updateById(new AdjustStudent(){{setId(adjustStudentId);setWorkStatus(workStatusEnum.back.getCode());}});
+        return SUCCESS_TIP;
     }
 
     /**
@@ -100,5 +106,28 @@ public class AdjustStudentController extends BaseController {
     @ResponseBody
     public Object detail(@PathVariable("adjustStudentId") Integer adjustStudentId) {
         return adjustStudentService.selectById(adjustStudentId);
+    }
+
+    public enum workStatusEnum{
+
+        create(10,"新建"),
+        pass(11,"通过"),
+        back(12,"打回")
+        ;
+        private int code;
+        private String msg;
+
+        workStatusEnum(int code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getMsg() {
+            return msg;
+        }
     }
 }

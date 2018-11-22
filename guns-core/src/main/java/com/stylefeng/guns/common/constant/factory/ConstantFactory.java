@@ -42,6 +42,8 @@ public class ConstantFactory implements IConstantFactory {
     private NoticeMapper noticeMapper = SpringContextHolder.getBean(NoticeMapper.class);
     private ClassroomMapper classroomMapper = SpringContextHolder.getBean(ClassroomMapper.class);
     private StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
+    private ClassMapper classMapper = SpringContextHolder.getBean(ClassMapper.class);
+    private AdjustStudentMapper adjustStudentMapper = SpringContextHolder.getBean(AdjustStudentMapper.class);
 
     public static IConstantFactory me() {
         return SpringContextHolder.getBean("constantFactory");
@@ -419,5 +421,18 @@ public class ConstantFactory implements IConstantFactory {
             setCode(studentCode);
         }});
         return student == null?null:student.getName();
+    }
+
+    @Override
+    public String getClassName(String classCode) {
+        Class aClass = classMapper.selectOne(new Class() {{
+            setCode(classCode);
+        }});
+        return aClass == null ?null:aClass.getName();
+    }
+
+    @Override
+    public String getAdjustTypeName(Integer type) {
+        return getDictsByName("调课类型", type);
     }
 }

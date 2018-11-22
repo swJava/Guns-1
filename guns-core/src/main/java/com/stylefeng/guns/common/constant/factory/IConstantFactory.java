@@ -188,4 +188,18 @@ public interface IConstantFactory {
      * @return
      */
     String getStudentName(String studentCode);
+
+    /**
+     * 获取班级名称
+     * @param classCode
+     * @return
+     */
+    String getClassName(String classCode);
+
+    /**
+     *  查询调课中枚举
+     * @param type
+     * @return
+     */
+    String getAdjustTypeName(Integer type);
 }

@@ -19,11 +19,11 @@ public class AdjustStudentWrapper extends BaseControllerWarpper{
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("className", ConstantFactory.me().getGradeName((Integer) map.get("classCode")));
-        map.put("studentName", ConstantFactory.me().getGradeName((Integer) map.get("studentCode")));
-        map.put("typeName", ConstantFactory.me().getGradeName((Integer) map.get("type")));
-        map.put("targetName", ConstantFactory.me().getGradeName((Integer) map.get("target")));
+        map.put("className", ConstantFactory.me().getClassName((String) map.get("classCode")));
+        map.put("targetName", ConstantFactory.me().getClassName((String) map.get("target")));
+        map.put("studentName", ConstantFactory.me().getStudentName((String) map.get("studentCode")));
+        map.put("typeName", ConstantFactory.me().getAdjustTypeName((Integer) map.get("type")));
         map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt( map.get("status").toString())));
-        map.put("workName", ConstantFactory.me().getStudentName(map.get("workStatus").toString()));
+        map.put("workStatusName", ConstantFactory.me().getAdjustTypeName((Integer) map.get("workStatus")));
     }
 }

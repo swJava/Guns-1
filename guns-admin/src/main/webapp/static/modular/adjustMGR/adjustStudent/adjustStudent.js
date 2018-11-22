@@ -14,11 +14,11 @@ var AdjustStudent = {
 AdjustStudent.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '当前班级', field: 'className', visible: true, align: 'center', valign: 'middle'},
-            {title: '学生编码（学号）', field: 'studentName', visible: true, align: 'center', valign: 'middle'},
-            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '申请用户名', field: 'userName', visible: true, align: 'center', valign: 'middle'},
+            {title: '学生编码（学号）', field: 'studentName', visible: true, align: 'center', valign: 'middle'},
+            {title: '当前班级', field: 'className', visible: true, align: 'center', valign: 'middle'},
             {title: '调入目标编码', field: 'targetName', visible: true, align: 'center', valign: 'middle'},
+            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '流程状态', field: 'workStatusName', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle' },
             {title: '备注', field: 'remark', visible: true, align: 'center', valign: 'middle'},
@@ -57,19 +57,33 @@ AdjustStudent.openAddAdjustStudent = function () {
 };
 
 /**
- * 打开查看调课管理详情
+ * 審核通過
  */
 AdjustStudent.openAdjustStudentDetail = function () {
     if (this.check()) {
-        var index = layer.open({
-            type: 2,
-            title: '调课管理详情',
-            area: ['800px', '420px'], //宽高
-            fix: false, //不固定
-            maxmin: true,
-            content: Feng.ctxPath + '/adjustStudent/adjustStudent_update/' + AdjustStudent.seItem.id
+        var ajax = new $ax(Feng.ctxPath  + '/adjustStudent/pass/' + AdjustStudent.seItem.id , function (data) {
+            Feng.success("编辑成功!");
+            AdjustStudent.table.refresh();
+        }, function (data) {
+            Feng.error("编辑失败!" + data.responseJSON.message + "!");
         });
-        this.layerIndex = index;
+        ajax.set("adjustStudentId",this.seItem.id);
+        ajax.start();
+    }
+};
+/**
+ * 審核打回
+ */
+AdjustStudent.openAdjustStudentDetail_not = function () {
+    if (this.check()) {
+        var ajax = new $ax(Feng.ctxPath  + '/adjustStudent/pass_not/' + AdjustStudent.seItem.id , function (data) {
+            Feng.success("编辑成功!");
+            AdjustStudent.table.refresh();
+        }, function (data) {
+            Feng.error("编辑失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("adjustStudentId",this.seItem.id);
+        ajax.start();
     }
 };
 

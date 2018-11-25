@@ -36,7 +36,7 @@ public class Member extends Model<Member> {
      * 用户名
      */
     @TableField("user_name")
-    @ApiModelProperty(name = "username", value = "用户名", position = 0, example="18580255110")
+    @ApiModelProperty(name = "username", value = "用户名", position = 0, example="sJ12181101U234g")
     private String userName;
     /**
      * 密码sha256加密
@@ -65,36 +65,42 @@ public class Member extends Model<Member> {
     @TableField("mobile_number")
     @ApiModelProperty(name = "mobileNumber", value = "联系手机号", position = 4, example="13399883333")
     private String mobileNumber;
+
+    /**
+     * 星级
+     */
+    @ApiModelProperty(name = "star", value = "用户星级", position = 5, example="1")
+    private Integer star;
     /**
      * 联系地址
      */
-    @ApiModelProperty(name = "address", value = "联系地址", position = 5, example="13399883333")
+    @ApiModelProperty(name = "address", value = "联系地址", position = 6, example="13399883333")
     private String address;
     /**
      * QQ号码
      */
-    @ApiModelProperty(name = "qq", value = "QQ号码", position = 6, example="18181111")
+    @ApiModelProperty(name = "qq", value = "QQ号码", position = 7, example="18181111")
     private String qq;
     /**
      * 微信号
      */
-    @ApiModelProperty(name = "weixin", value = "微信号码", position = 7, example="weixin_123")
+    @ApiModelProperty(name = "weixin", value = "微信号码", position = 8, example="weixin_123")
     private String weixin;
     /**
      * 电子邮箱
      */
-    @ApiModelProperty(name = "email", value = "微信号码", position = 8, example="16334@qq.com")
+    @ApiModelProperty(name = "email", value = "微信号码", position = 9, example="16334@qq.com")
     private String email;
     /**
      * 状态： 1 0 无效 11 有效 1 2 锁定 
      */
-    @ApiModelProperty(name = "status", value = "状态：  0 无效 1 有效  2 锁定 ", position = 9, example="1")
+    @ApiModelProperty(name = "status", value = "状态：  10 无效 11 有效  12 锁定 ", position = 10, example="1")
     private Integer status;
     /**
      * 加入时间
      */
     @TableField("join_date")
-    @ApiModelProperty(name = "joinDate", value = "状态：  0 无效 1 有效  2 锁定 ", position = 10, example="2018-11-01", hidden = true)
+    @ApiModelProperty(name = "joinDate", value = "状态：  0 无效 1 有效  2 锁定 ", position = 11, example="2018-11-01", hidden = true)
     private Date joinDate;
 
 
@@ -152,6 +158,14 @@ public class Member extends Model<Member> {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public Integer getStar() {
+        return star;
+    }
+
+    public void setStar(Integer star) {
+        this.star = star;
     }
 
     public String getAddress() {

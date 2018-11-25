@@ -1,5 +1,12 @@
 package com.stylefeng.guns.rest.modular.education.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
+import com.stylefeng.guns.modular.classRoomMGR.service.impl.ClassroomServiceImpl;
+import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.modular.education.responser.ClassDetailResponse;
 import com.stylefeng.guns.rest.modular.education.responser.ClassListResponse;
@@ -9,10 +16,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by 罗华.
@@ -21,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/education")
 @Api(value = "EducationController", tags = "教务接口")
 public class EducationController {
+
+    @Autowired
+    private IClassroomService classroomService;
 
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
     @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
@@ -48,15 +56,30 @@ public class EducationController {
     @ApiOperation(value="教室详情", httpMethod = "POST", response = ClassroomDetailResponse.class)
     @ApiImplicitParam(name = "code", value = "教室编码", required = true, dataType = "String", example = "JS000001")
     @RequestMapping("/classroom/detail/{code}")
-    public Responser 教室详情(){
-        return null;
+    @ResponseBody
+    public Responser detailForClassroom(@PathVariable("code") String code){
+        Wrapper<Classroom> queryWrapper = new EntityWrapper<Classroom>();
+
+        Classroom classroom = classroomService.selectOne(queryWrapper);
+
+        if (null == classroom)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        return ClassroomDetailResponse.me(classroom);
     }
 
     @RequestMapping(value = "/course/detail/{code}", method = {RequestMethod.POST, RequestMethod.GET})
     @ApiOperation(value="课程详情", httpMethod = "POST", response = CourseDetailResponse.class)
     @ApiImplicitParam(name = "code", value = "课程编码", required = true, dataType = "String", example = "KC000001")
-    public Responser 课程详情() {
-        return null;
+    public Responser detailForCourse(@PathVariable("code") String code) {
+        Wrapper<Classroom> queryWrapper = new EntityWrapper<Classroom>();
+
+        Classroom classroom = classroomService.selectOne(queryWrapper);
+
+        if (null == classroom)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        return ClassroomDetailResponse.me(classroom);
     }
 
 

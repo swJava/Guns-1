@@ -22,6 +22,8 @@ public class RegistResponse extends SimpleResponser {
 
         data.setUserName(member.getUserName());
 
+        response.setCode(SUCCEED);
+        response.setMessage("注册成功");
         response.setData(data);
 
         return response;

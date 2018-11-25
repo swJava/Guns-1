@@ -47,6 +47,7 @@ public class Student extends Model<Student> {
     private String avatar;
     /**
      * 性别
+     * 这个字段单词写错了，最后要纠正
      */
     @ApiModelProperty(name = "gender", value = "性别", position = 3, example="1")
     private Integer gender;
@@ -118,12 +119,24 @@ public class Student extends Model<Student> {
         this.gender = gender;
     }
 
+    public void setGender(String gender) {
+        try{
+            setGender(Integer.parseInt(gender));
+        }catch(Exception e){}
+    }
+
     public Integer getGrade() {
         return grade;
     }
 
     public void setGrade(Integer grade) {
         this.grade = grade;
+    }
+
+    public void setGrade(String grade){
+        try{
+            setGrade(Integer.parseInt(grade));
+        }catch(Exception e){}
     }
 
     public String getSchool() {

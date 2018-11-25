@@ -4,10 +4,7 @@ import com.stylefeng.guns.rest.core.SimpleRequester;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 /**
  * Created by 罗华.
@@ -16,10 +13,16 @@ import javax.validation.constraints.Pattern;
 public class RegistRequester extends SimpleRequester {
 
     private static final long serialVersionUID = -3364653634237690757L;
-    @ApiModelProperty(name = "userName", value = "用户名", required = true, position = 0, example = "18580255110")
+    @ApiModelProperty(name = "userName", value = "用户名", required = true, position = 0, example = "luohua")
     @NotBlank(message = "用户名不能为空")
-    @Pattern(regexp = "^((13[0-9])|(14[5,7])|(15[^4,\\D])|(17[0,6,7,8])|(18[0-9]))\\d{8}$", message = "用户名不合法")
+    @Size(min = 6, max = 32, message = "用户名长度只能是6 - 32 位字符")
+    @Pattern(regexp = "^[A-Za-z0-9_]+$", message = "用户名不合法，只能是数字、英文字符")
     private String userName;
+
+    @ApiModelProperty(name = "number", value = "手机号码", required = true, position = 0, example = "18580255110")
+    @NotBlank(message = "手机号码不能为空")
+    @Pattern(regexp = "^((13[0-9])|(14[5,7])|(15[^4,\\D])|(17[0,6,7,8])|(18[0-9]))\\d{8}$", message = "手机号码不合法")
+    private String number;
 
     @ApiModelProperty(name = "password", value = "密码", required = true, position = 1, example = "abcd1234")
     @NotBlank(message = "密码不能为空")
@@ -41,6 +44,14 @@ public class RegistRequester extends SimpleRequester {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getPassword() {

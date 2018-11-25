@@ -25,7 +25,6 @@ import java.util.*;
  * @Date 2018/11/12 17:10
  * @Version 1.0
  */
-@Component
 public class SmsSender {
     private static final Logger log = LoggerFactory.getLogger(SmsSender.class);
 
@@ -35,7 +34,7 @@ public class SmsSender {
     @Autowired
     private ISmsSequenceService smsSequenceService;
 
-//    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 5000)
     public void sendCaptchaMessage(){
         List<String> orderBy = new ArrayList<String>();
         orderBy.add("create_date");

@@ -4,6 +4,9 @@ import com.stylefeng.guns.rest.core.SimpleRequester;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 /**
  * Created by 罗华.
  */
@@ -12,19 +15,28 @@ public class MemberCahngeRequester extends SimpleRequester {
 
     private static final long serialVersionUID = -8524227812098549736L;
     @ApiModelProperty(name = "userName", value = "用户名", required = true, position = 0, example = "18580255110")
+    @NotBlank(message = "用户名不能为空")
+    @Pattern(regexp = "^((13[0-9])|(14[5,7])|(15[^4,\\D])|(17[0,6,7,8])|(18[0-9]))\\d{8}$", message = "用户名不合法")
     private String userName;
+
     @ApiModelProperty(name = "name", value = "用户姓名", position = 1, example = "李明")
     private String name;
+
     @ApiModelProperty(name = "gendar", value = "性别", position = 2, example = "1")
     private Integer gendar;
+
     @ApiModelProperty(name = "mobileNumber", value = "联系手机号", position = 3, example = "13399883934")
     private String mobileNumber;
+
     @ApiModelProperty(name = "address", value = "联系地址", position = 4, example = "重庆渝北区黄山大道中路55号")
     private String address;
+
     @ApiModelProperty(name = "qq", value = "QQ", position = 5, example = "181233")
     private String qq;
+
     @ApiModelProperty(name = "weixin", value = "微信号", position = 6, example = "dieej")
     private String weixin;
+
     @ApiModelProperty(name = "email", value = "邮箱", position = 7, example = "oeoe@163.com")
     private String email;
 

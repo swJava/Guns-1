@@ -23,4 +23,25 @@ public interface IMemberService extends IService<Member> {
      * @return
      */
     Member createMember(String userName, String password, Map<String, Object> extendParams);
+
+    /**
+     * 生成用户名
+     *
+     * @return
+     */
+    String generateUserName();
+
+    /**
+     * 创建用户
+     *  @param userName
+     * @param extraParams
+     */
+    Member createMember(String userName, Map<String, Object> extraParams);
+
+    /**
+     * 修改密码
+     * @param userName
+     * @param password
+     */
+    void changePassword(String userName, String password);
 }

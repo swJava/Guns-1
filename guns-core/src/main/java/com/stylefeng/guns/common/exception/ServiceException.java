@@ -12,13 +12,8 @@ public class ServiceException extends RuntimeException implements MessageExcepti
     private static final long serialVersionUID = -8731795258389020676L;
 
     protected String messageCode;
-    /**
-     * 异常网元
-     *
-     * 一般是IP地址
-     *
-     */
-    private String exceptionDomain;
+
+    protected String[] arguments = new String[0];
 
     public ServiceException(){}
 
@@ -26,12 +21,12 @@ public class ServiceException extends RuntimeException implements MessageExcepti
         this.messageCode = code;
     }
 
-    public String getExceptionDomain() {
-        return exceptionDomain;
-    }
+    public ServiceException(String code, String[] arguments){
+        this.messageCode = code;
+        String[] newArguments = new String[arguments.length];
+        System.arraycopy(arguments, 0, newArguments, 0, arguments.length);
 
-    public void setExceptionDomain(String exceptionDomain) {
-        this.exceptionDomain = exceptionDomain;
+        this.arguments = newArguments;
     }
 
     @Override
@@ -39,13 +34,18 @@ public class ServiceException extends RuntimeException implements MessageExcepti
         return this.messageCode;
     }
 
+    public void addArguments(String argument) {
+        String[] newArguments = new String[arguments.length + 1];
+
+        System.arraycopy(arguments, 0, newArguments, 0, arguments.length);
+
+        newArguments[arguments.length] = argument;
+
+        this.arguments = newArguments;
+    }
+
     @Override
     public String[] getMessageArgs() {
-        String msg = getMessage();
-
-        if (null != msg)
-            return new String[]{this.exceptionDomain, msg};
-        else
-            return new String[]{this.exceptionDomain};
+        return this.arguments;
     }
 }

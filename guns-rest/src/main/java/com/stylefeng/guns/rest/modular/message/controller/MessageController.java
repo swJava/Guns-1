@@ -27,7 +27,7 @@ public class MessageController {
     @Autowired
     private ISmsSequenceService smsSequenceService;
 
-    @Autowired
+    @Autowired(required = false)
     private SmsSender smsSender;
 
     @RequestMapping(value = "/captcha/send", method = {RequestMethod.POST})
@@ -47,6 +47,10 @@ public class MessageController {
 
     @RequestMapping(value = "/start-sms-sender")
     public String manualSendCaptcha(){
+
+        if (null == smsSender)
+            return "Sms sender is disabled!";
+
         smsSender.sendCaptchaMessage();
 
         return "ok";

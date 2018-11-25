@@ -39,4 +39,13 @@ public abstract class SimpleResponser implements Responser {
     public boolean isSuccess() {
         return SUCCEED.equals(this.code);
     }
+
+    public static SimpleResponser success() {
+        SimpleResponser response = new SimpleResponser(){
+        };
+
+        response.setCode(SUCCEED);
+        response.setMessage("成功");
+        return response;
+    }
 }

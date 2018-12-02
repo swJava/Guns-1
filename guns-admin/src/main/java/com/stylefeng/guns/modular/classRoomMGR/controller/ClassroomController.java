@@ -7,7 +7,9 @@ import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
 import com.stylefeng.guns.modular.classRoomMGR.warpper.ClassroomWrapper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,6 +100,7 @@ public class ClassroomController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Classroom classroom) {
+        classroom.setCode(RandomStringUtils.randomNumeric(8));
         classroomService.insert(classroom);
         return SUCCESS_TIP;
     }

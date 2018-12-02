@@ -4,6 +4,7 @@ import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,6 +63,7 @@ public class CourseOutlineController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(CourseOutline courseOutline) {
+        courseOutline.setCode(RandomStringUtils.randomNumeric(8));
         courseOutlineService.insert(courseOutline);
         return SUCCESS_TIP;
     }

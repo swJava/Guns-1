@@ -12,14 +12,13 @@
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#avatar id="avatar" name="头像" underline="true" avatarImg="${item.avatar}"/>
-                            <#input id="code" name="教师编码" value="${item.code}" underline="true"/>
                             <#input id="name" name="教师名称" value="${item.name}" underline="true"/>
                             <#dictSelector id="type" name ="教师类型" code="teacher_type" label="教师类型"  underline="true"  width="75%"/>
                             <#dictSelector id="gender" name ="性别" code="sys_sex" label="性别"  underline="true"  width="75%"/>
+                            <#input id="graduate" name="毕业院校" value="${item.graduate}" underline="true"/>
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="graduate" name="毕业院校" value="${item.graduate}" underline="true"/>
                             <#dictSelector id="grade" name ="授课年级" code="school_grade" label="授课年级"  underline="true"  width="75%"/>
                             <#input id="havest" name="教学成果" value="${item.havest}" underline="true"/>
                             <#input id="experience" name="教学经验" value="${item.experience}" underline="true"/>

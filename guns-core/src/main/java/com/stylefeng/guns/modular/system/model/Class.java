@@ -1,6 +1,8 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -45,14 +47,14 @@ public class Class extends Model<Class> {
     /**
      * 学期
      */
-    @ApiModelProperty(name = "classCycle", value = "学期", position = 2, example="2")
-    private Integer classCycle;
+    @ApiModelProperty(name = "cycle", value = "学期", position = 2, example="2")
+    private Integer cycle;
 
     /**
      * 班次
      */
-    @ApiModelProperty(name = "classLevel", value = "班次", position = 3, example="4")
-    private Integer classLevel;
+    @ApiModelProperty(name = "ability", value = "班次", position = 3, example="4")
+    private Integer ability;
 
     /**
      * 开课起始日期
@@ -118,6 +120,10 @@ public class Class extends Model<Class> {
      */
     private Integer star;
     /**
+     * 价格
+     */
+    private Long price;
+    /**
      * 剩余报名人数
      */
     private Integer quato;
@@ -136,10 +142,20 @@ public class Class extends Model<Class> {
     @TableField("teacher_code")
     private String teacherCode;
     /**
+     * 主讲教师名称
+     */
+    private String teacher;
+    /**
      * 辅导教师编码
      */
     @TableField("teacher_second_code")
     private String teacherSecondCode;
+
+    /**
+     * 辅导教师名称
+     */
+    @TableField("teacher_second")
+    private String teacherSecond;
 
 
     public Long getId() {
@@ -166,20 +182,20 @@ public class Class extends Model<Class> {
         this.name = name;
     }
 
-    public Integer getClassCycle() {
-        return classCycle;
+    public Integer getCycle() {
+        return cycle;
     }
 
-    public void setClassCycle(Integer classCycle) {
-        this.classCycle = classCycle;
+    public void setCycle(Integer cycle) {
+        this.cycle = cycle;
     }
 
-    public Integer getClassLevel() {
-        return classLevel;
+    public Integer getAbility() {
+        return ability;
     }
 
-    public void setClassLevel(Integer classLevel) {
-        this.classLevel = classLevel;
+    public void setAbility(Integer ability) {
+        this.ability = ability;
     }
 
     public Date getBeginDate() {
@@ -286,6 +302,14 @@ public class Class extends Model<Class> {
         this.star = star;
     }
 
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
     public Integer getQuato() {
         return quato;
     }
@@ -318,12 +342,28 @@ public class Class extends Model<Class> {
         this.teacherCode = teacherCode;
     }
 
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
     public String getTeacherSecondCode() {
         return teacherSecondCode;
     }
 
     public void setTeacherSecondCode(String teacherSecondCode) {
         this.teacherSecondCode = teacherSecondCode;
+    }
+
+    public String getTeacherSecond() {
+        return teacherSecond;
+    }
+
+    public void setTeacherSecond(String teacherSecond) {
+        this.teacherSecond = teacherSecond;
     }
 
     @Override
@@ -350,11 +390,14 @@ public class Class extends Model<Class> {
         ", courseCode=" + courseCode +
         ", courseName=" + courseName +
         ", star=" + star +
+        ", price=" + price +
         ", quato=" + quato +
         ", signEndDate=" + signEndDate +
         ", status=" + status +
         ", teacherCode=" + teacherCode +
+        ", teacher=" + teacher +
         ", teacherSecondCode=" + teacherSecondCode +
+        ", teacherSecond=" + teacherSecond +
         "}";
     }
 }

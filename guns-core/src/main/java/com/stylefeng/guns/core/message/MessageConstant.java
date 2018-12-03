@@ -89,5 +89,20 @@ public final class MessageConstant {
          * 登录失败
          */
         public static final String LOGIN_FAILED = "010099";
+
+        /**
+         * 不能重复报名
+         */
+        public static final String COURSE_SELECTED = "020001";
+
+        /**
+         * 报名已截止
+         */
+        public static final String COURSE_SELECT_OUTTIME = "020002";
+
+        /**
+         * 支付方式不支持
+         */
+        public static final String PAY_METHOD_NOT_FOUND = "030001";
     }
 }

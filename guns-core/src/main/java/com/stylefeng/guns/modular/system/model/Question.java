@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -7,17 +9,18 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 入学诊断试题库
+ * 试题库
  * </p>
  *
- * @author simple
- * @since 2018-11-03
+ * @author stylefeng
+ * @since 2018-11-30
  */
 @TableName("tb_question")
 public class Question extends Model<Question> {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 试题编码：ST + 8位序列码
@@ -28,7 +31,7 @@ public class Question extends Model<Question> {
      */
     private String question;
     /**
-     * 试题类型： 1 主观题； 2 客观题
+     * 试题类型： 1 单选题； 2 多选题； 3 填空题； 4 主观题
      */
     private Integer type;
     /**
@@ -36,30 +39,14 @@ public class Question extends Model<Question> {
      */
     private Integer subject;
     /**
-     * 分值：出题人评判该题目难易分值 1-10
-     */
-    private Integer score;
-    /**
      * 状态
      */
     private Integer status;
     /**
-     * 排序号
-     */
-    private Integer sort;
-    /**
-     * 年级
-     */
-    private Integer grade;
-    /**
-     * 答案
-     */
-    private String answer;
-    /**
      * 参考答案
      */
     @TableField("expact_answer")
-    private String expactAnswer;
+    private byte[] expactAnswer;
 
 
     public Long getId() {
@@ -102,14 +89,6 @@ public class Question extends Model<Question> {
         this.subject = subject;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -118,35 +97,11 @@ public class Question extends Model<Question> {
         this.status = status;
     }
 
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public Integer getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Integer grade) {
-        this.grade = grade;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public String getExpactAnswer() {
+    public byte[] getExpactAnswer() {
         return expactAnswer;
     }
 
-    public void setExpactAnswer(String expactAnswer) {
+    public void setExpactAnswer(byte[] expactAnswer) {
         this.expactAnswer = expactAnswer;
     }
 
@@ -163,11 +118,7 @@ public class Question extends Model<Question> {
         ", question=" + question +
         ", type=" + type +
         ", subject=" + subject +
-        ", score=" + score +
         ", status=" + status +
-        ", sort=" + sort +
-        ", grade=" + grade +
-        ", answer=" + answer +
         ", expactAnswer=" + expactAnswer +
         "}";
     }

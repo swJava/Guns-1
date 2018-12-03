@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -37,6 +38,7 @@ public class Member extends Model<Member> {
      */
     @TableField("user_name")
     @ApiModelProperty(name = "username", value = "用户名", position = 0, example="sJ12181101U234g")
+    @NotBlank(message = "用户名不能为空")
     private String userName;
     /**
      * 密码sha256加密

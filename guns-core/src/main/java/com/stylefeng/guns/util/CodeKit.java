@@ -6,7 +6,9 @@ import com.stylefeng.guns.modular.system.model.Sequence;
 import com.stylefeng.guns.modular.system.service.ISequenceService;
 import org.springframework.util.Assert;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * @Description //TODO
@@ -15,9 +17,17 @@ import java.util.Date;
  * @Version 1.0
  */
 public final class CodeKit {
+    private static final String FILE_NAME_DICT = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String NUMBER_RAND_DICT = "0123456789";
 
     private static enum CODE_DEFINE {
-        STUDENT ("XY", 8)  // 学员
+        STUDENT ("XY", 8),  // 学员
+        COURSE ("KC", 6),  // 课程
+        ROOM ("JS", 6),  // 教室
+        TEACHER ("LS", 6),  // 教师
+        CLASS ("BJ", 6),  // 课程
+        OUTLINE ("KS", 6),  // 课时
+        ORDER_ITEM ("DI", 6)  // 订单项
         ;
 
         String name;
@@ -92,10 +102,41 @@ public final class CodeKit {
         return str + value;
     }
 
+    /**
+     * 生成学员编码
+     * @return
+     */
     public static String generateStudent() {
         Date now = new Date();
         String datePrefix = DateUtil.formatDate(now, "yyMMdd");
 
         return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{datePrefix});
+    }
+
+    public static String generateOrder(){
+            Random random = new Random();
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < 4; i++) {
+                int number = random.nextInt(FILE_NAME_DICT.length());
+                sb.append(FILE_NAME_DICT.charAt(number));
+            }
+            sb.append(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
+
+            for (int i = 0; i < 4; i++) {
+                int number = random.nextInt(NUMBER_RAND_DICT.length());
+                sb.append(NUMBER_RAND_DICT.charAt(number));
+            }
+
+            return sb.toString();
+    }
+
+    /**
+     * 生成订单项
+     * @return
+     */
+    public static String generateOrderItem() {
+        Date now = new Date();
+        String datePrefix = DateUtil.formatDate(now, "yyMMdd");
+        return generate(CODE_DEFINE.ORDER_ITEM.name, CODE_DEFINE.ORDER_ITEM.length, new String[]{datePrefix});
     }
 }

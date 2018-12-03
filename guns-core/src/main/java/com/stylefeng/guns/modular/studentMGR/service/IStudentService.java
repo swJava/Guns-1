@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.studentMGR.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Student;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**
@@ -45,4 +46,6 @@ public interface IStudentService extends IService<Student> {
      * @param newStudent
      */
     void updateStudent(String code, Student newStudent);
+
+    Student get(@NotBlank(message = "学员不能为空") String student);
 }

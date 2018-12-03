@@ -7,6 +7,8 @@
         <id column="id" property="id" />
         <result column="code" property="code" />
         <result column="name" property="name" />
+        <result column="cycle" property="cycle" />
+        <result column="ability" property="ability" />
         <result column="begin_date" property="beginDate" />
         <result column="end_date" property="endDate" />
         <result column="study_time_type" property="studyTimeType" />
@@ -27,7 +29,27 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, name, begin_date, end_date, study_time_type, study_time_value, begin_time, end_time, duration, period, class_room_code, class_room, course_code, course_name, star, quato, sign_end_date, status
+        tc.id, tc.code, tc.name, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.study_time_type, tc.study_time_value, tc.begin_time, tc.end_time, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.quato, tc.sign_end_date, tc.status
     </sql>
+
+    <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_class tc
+        <choose>
+            <when test="null != subject">
+                , tb_course tcr
+            </when>
+        </choose>
+        <where>
+            <if test="null != subject">
+                tcr.code = tc.course_code
+            </if>
+
+            <if test="null != subject">
+                and tcr.subject = #{subject}
+            </if>
+        </where>
+    </select>
 
 </mapper>

@@ -7,6 +7,16 @@ application:
   attachment:
     visit-url: http://127.0.0.1:8081/api/attachment/download
     store-path: H:/Datas/gs/upload
+  examine:
+    strategy:
+      default:
+        count: 10
+        duration: 30
+        fullCredit: 100
+        selectRatio: 100
+        fillRatio: 0
+        subjectRatio: 0
+        autoMarking: 1
   auth:
     enable: true #jwt鉴权机制是否开启(true或者false)
     header: Authorization #http请求头所需要的字段
@@ -23,6 +33,7 @@ application:
       - /message/captcha/send
       - /member/regist
       - /member/login*
+      - /content/**
 
 server:
   port: 8081 #项目端口

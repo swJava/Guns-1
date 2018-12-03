@@ -1,6 +1,7 @@
 package com.stylefeng.guns.rest.modular.content.responser;
 
 import com.stylefeng.guns.modular.system.model.Content;
+import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,5 +22,15 @@ public class ArticleDetailResponse extends SimpleResponser {
 
     public void setData(Content data) {
         this.data = data;
+    }
+
+    public static Responser me(Content content) {
+        ArticleDetailResponse response = new ArticleDetailResponse();
+
+        response.setCode(SUCCEED);
+        response.setMessage("查询成功");
+
+        response.setData(content);
+        return response;
     }
 }

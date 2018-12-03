@@ -69,11 +69,15 @@ public class AuthFilter extends OncePerRequestFilter {
                 renderJson(response, new ServiceExceptionResponser(MessageConstant.MessageCode.SYS_TOKEN_ERROR, "签名验证错误"));
                 return;
             }
+
+            String userName = jwtTokenUtil.getUsernameFromToken(authToken);
+            request.setAttribute("USER_NAME", userName);
         } else {
             //header没有带KCEdu字段
             renderJson(response, new ServiceExceptionResponser(MessageConstant.MessageCode.SYS_TOKEN_ERROR, "签名验证错误"));
             return;
         }
+
         chain.doFilter(request, response);
     }
 

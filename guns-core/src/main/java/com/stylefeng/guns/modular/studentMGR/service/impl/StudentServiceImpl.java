@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import sun.plugin2.message.Message;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**
@@ -77,6 +78,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         BeanUtils.copyProperties(newStudent, existStudent, ignoreProperties);
 
         updateById(existStudent);
+    }
+
+    @Override
+    public Student get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<Student>().eq("code", code));
     }
 
     private Student buildStudent(Map<String, Object> studentInfo) {

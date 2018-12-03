@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotBlank;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -168,6 +169,13 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         existMember.setPassword(new Sha256Hash(password).toHex().toUpperCase());
 
         updateById(existMember);
+    }
+
+    @Override
+    public Member get(String userName) {
+        if (null == userName)
+            return null;
+        return selectOne(new EntityWrapper<Member>().eq("user_name", userName));
     }
 
     private MemberAuth buildMemberAuthInfo(Member member) {

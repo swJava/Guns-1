@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,7 @@ public class StudentController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Student student) {
+        student.setCode(RandomStringUtils.randomNumeric(8));
         studentService.insert(student);
         return SUCCESS_TIP;
     }

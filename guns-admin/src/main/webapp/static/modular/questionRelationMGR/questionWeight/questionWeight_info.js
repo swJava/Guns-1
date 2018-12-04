@@ -2,7 +2,37 @@
  * 初始化题库归档详情对话框
  */
 var QuestionWeightInfoDlg = {
-    questionWeightInfoData : {}
+    questionWeightInfoData : {},
+    validateFields: {
+        qcode: {
+            validators: {
+                notEmpty: {
+                    message: '编码不能为空'
+                }
+            }
+        },
+        grade: {
+            validators: {
+                notEmpty: {
+                    message: '年级不能为空'
+                }
+            }
+        },
+        ability: {
+            validators: {
+                notEmpty: {
+                    message: '对应班次不能为空'
+                }
+            }
+        },
+        score: {
+            validators: {
+                notEmpty: {
+                    message: '所含分值不能为空'
+                }
+            }
+        }
+    }
 };
 
 /**
@@ -54,12 +84,25 @@ QuestionWeightInfoDlg.collectData = function() {
 }
 
 /**
+ * 验证数据是否为空
+ */
+QuestionWeightInfoDlg.validate = function () {
+    $('#itemInfoForm').data("bootstrapValidator").resetForm();
+    $('#itemInfoForm').bootstrapValidator('validate');
+    return $("#itemInfoForm").data('bootstrapValidator').isValid();
+};
+
+/**
  * 提交添加
  */
 QuestionWeightInfoDlg.addSubmit = function() {
 
     this.clearData();
     this.collectData();
+
+    if (!this.validate()) {
+        return;
+    }
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/questionWeight/add", function(data){
@@ -80,6 +123,9 @@ QuestionWeightInfoDlg.editSubmit = function() {
 
     this.clearData();
     this.collectData();
+    if (!this.validate()) {
+        return;
+    }
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/questionWeight/update", function(data){
@@ -94,5 +140,22 @@ QuestionWeightInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    //非空校验
+    Feng.initValidator("itemInfoForm", QuestionWeightInfoDlg.validateFields);
 
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/question/listObject", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.code+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#qcode").append(html);
+
+    //初始select选项
+    $("#grade").val($("#gradeValue").val());
+    $("#status").val($("#statusValue").val());
+    $("#qcode").val($("#qcodeValue").val());
 });

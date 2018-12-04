@@ -14,12 +14,11 @@ var QuestionWeight = {
 QuestionWeight.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '标示', field: 'id', visible: true, align: 'center', valign: 'middle'},
             {title: '试题编码', field: 'qcode', visible: true, align: 'center', valign: 'middle'},
-            {title: '年级', field: 'grade', visible: true, align: 'center', valign: 'middle'},
+            {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '对应班次', field: 'ability', visible: true, align: 'center', valign: 'middle'},
             {title: '所含分值', field: 'score', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -97,6 +96,6 @@ QuestionWeight.search = function () {
 $(function () {
     var defaultColunms = QuestionWeight.initColumn();
     var table = new BSTable(QuestionWeight.id, "/questionWeight/list", defaultColunms);
-    table.setPaginationType("client");
+    table.setPaginationType("server");
     QuestionWeight.table = table.init();
 });

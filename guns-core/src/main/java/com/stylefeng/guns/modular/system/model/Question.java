@@ -36,25 +36,9 @@ public class Question extends Model<Question> {
      */
     private Integer subject;
     /**
-     * 分值：出题人评判该题目难易分值 1-10
-     */
-    private Integer score;
-    /**
      * 状态
      */
     private Integer status;
-    /**
-     * 排序号
-     */
-    private Integer sort;
-    /**
-     * 年级
-     */
-    private Integer grade;
-    /**
-     * 答案
-     */
-    private String answer;
     /**
      * 参考答案
      */
@@ -102,44 +86,12 @@ public class Question extends Model<Question> {
         this.subject = subject;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
     public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public Integer getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Integer grade) {
-        this.grade = grade;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 
     public String getExpactAnswer() {
@@ -163,11 +115,7 @@ public class Question extends Model<Question> {
         ", question=" + question +
         ", type=" + type +
         ", subject=" + subject +
-        ", score=" + score +
         ", status=" + status +
-        ", sort=" + sort +
-        ", grade=" + grade +
-        ", answer=" + answer +
         ", expactAnswer=" + expactAnswer +
         "}";
     }

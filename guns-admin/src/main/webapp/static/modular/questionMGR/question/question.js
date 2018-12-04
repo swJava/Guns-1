@@ -28,11 +28,7 @@ Question.initColumn = function () {
             {title: '试题编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
             {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '试题学科', field: 'subjectName', visible: true, align: 'center', valign: 'middle'},
-            {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '分值', field: 'score', visible: true, align: 'center', valign: 'middle'},
-            {title: '答案', field: 'answer', visible: true, align: 'center', valign: 'middle'},
-            {title: '参考答案', field: 'expactAnswer', visible: true, align: 'center', valign: 'middle'},
-            {title: '排序号', field: 'sort', visible: true, align: 'center', valign: 'middle'},
+            {title: '答案', field: 'expactAnswer', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };

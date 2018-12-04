@@ -1,13 +1,21 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
-    <div class="ibox-content">
+    <div class="ibox-content" id="itemInfoForm">
         <div class="form-horizontal">
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="gradeValue" value="${item.grade}">
+            <input type="hidden" id="qcodeValue" value="${item.qcode}">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="标示" value="${item.id}" underline="true"/>
-                            <#input id="qcode" name="试题编码" value="${item.qcode}" underline="true"/>
-                            <#input id="grade" name="年级" value="${item.grade}" />
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">试题编码</label>
+                                <div class="col-sm-9">
+                                    <select id="qcode" name="试题编码" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <#dictSelector id="grade" name ="年级" code="school_grade" label="年级"  underline="true"  width="75%"/>
                 </div>
 
                 <div class="col-sm-6">

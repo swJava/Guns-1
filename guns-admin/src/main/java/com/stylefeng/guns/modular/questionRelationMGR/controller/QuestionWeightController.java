@@ -1,7 +1,14 @@
 package com.stylefeng.guns.modular.questionRelationMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
+import com.stylefeng.guns.modular.questionRelationMGR.warpper.QuestionWeightWrapper;
+import com.stylefeng.guns.modular.system.model.Question;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.QuestionWeight;
 import com.stylefeng.guns.modular.questionRelationMGR.service.IQuestionWeightService;
+
+import java.util.Map;
 
 /**
  * 题库归档控制器
@@ -60,7 +69,16 @@ public class QuestionWeightController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return questionWeightService.selectList(null);
+        //分页查詢
+        Page<QuestionWeight> page = new PageFactory<QuestionWeight>().defaultPage();
+        Page<Map<String, Object>> pageMap = questionWeightService.selectMapsPage(page, new EntityWrapper<QuestionWeight>(){{
+            if(StringUtils.isNotEmpty(condition)){
+                like("code",condition);
+            }
+        }});
+        //包装数据
+        new QuestionWeightWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
     }
 
     /**

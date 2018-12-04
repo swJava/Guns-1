@@ -8,6 +8,7 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.questionMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.Question;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -79,12 +81,19 @@ public class QuestionController extends BaseController {
         return super.packForBT(pageMap);
     }
 
+    @RequestMapping(value = "/listObject")
+    @ResponseBody
+    public Object listObject(){
+        return  questionService.selectList(null);
+    }
+
     /**
      * 新增入学诊断
      */
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Question question) {
+        question.setCode(RandomStringUtils.randomNumeric(8));
         questionService.insert(question);
         return SUCCESS_TIP;
     }

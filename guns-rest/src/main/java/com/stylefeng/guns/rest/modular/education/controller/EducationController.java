@@ -7,8 +7,10 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
-import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Classroom;
+import com.stylefeng.guns.modular.system.model.Course;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.modular.education.requester.ClassQueryRequester;
 import com.stylefeng.guns.rest.modular.education.responser.ClassDetailResponse;
 import com.stylefeng.guns.rest.modular.education.responser.ClassListResponse;
 import com.stylefeng.guns.rest.modular.education.responser.ClassroomDetailResponse;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 罗华.
@@ -43,21 +44,11 @@ public class EducationController {
 
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
     @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "subject", value = "学科", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "classCycle", value = "学期", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "classLevel", value = "班次", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "method", value = "授课方式", required = false, dataType = "Integer"),
-        @ApiImplicitParam(name = "weekday", value = "上课时间，周几", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "teacherCode", value = "授课教师", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "assisterCode", value = "辅导员", required = false, dataType = "String"),
-        @ApiImplicitParam(name = "classroomCode", value = "教室", required = false, dataType = "String")
-    })
-    public Responser listClass(@RequestParam Map<String, Object> queryParams, HttpServletRequest request){
+    public Responser listClass(ClassQueryRequester requester, HttpServletRequest request){
 
         String userName = (String) request.getAttribute("USER_NAME");
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, queryParams);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
 
         return ClassListResponse.me(classList);
     }

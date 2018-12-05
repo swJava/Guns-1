@@ -37,17 +37,49 @@
         <include refid="Base_Column_List" />
         from tb_class tc
         <choose>
-            <when test="null != subject">
+            <when test=" subjectList.size() > 0 || methodList.size() > 0">
                 , tb_course tcr
             </when>
         </choose>
         <where>
-            <if test="null != subject">
+            <if test="subjectList.size() > 0 || methodList.size() > 0">
                 tcr.code = tc.course_code
             </if>
-
-            <if test="null != subject">
-                and tcr.subject = #{subject}
+            <!-- 学科 -->
+            <if test="subjectList.size() > 0">
+                and tcr.subject in
+                <foreach collection="subjectList" item="subject" open="(" separator="," close=")">
+                  #{subject}
+                </foreach>
+            </if>
+            <!-- 学期 -->
+            <if test="cycleList.size() > 0">
+                and tc.cycle in
+                <foreach collection="cycleList" item="cycle" open="(" separator="," close=")">
+                    #{cycle}
+                </foreach>
+            </if>
+            <!-- 班次 -->
+            <if test="abilityList.size() > 0">
+                and tc.ability in
+                <foreach collection="abilityList" item="ability" open="(" separator="," close=")">
+                    #{ability}
+                </foreach>
+            </if>
+            <!-- 授课方式 -->
+            <if test="methodList.size() > 0">
+                and tcr.method in
+                <foreach collection="methodList" item="method" open="(" separator="," close=")">
+                    #{method}
+                </foreach>
+            </if>
+            <!-- 周几 -->
+            <if test="weekList.size() > 0">
+                and exists (select 1 from tb_course_outline where class_code = tc.code and week in
+                <foreach collection="weekList" item="week" open="(" separator="," close=")">
+                    #{week}
+                </foreach>
+                )
             </if>
         </where>
     </select>

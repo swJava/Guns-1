@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Student;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,4 +49,12 @@ public interface IStudentService extends IService<Student> {
     void updateStudent(String code, Student newStudent);
 
     Student get(@NotBlank(message = "学员不能为空") String student);
+
+    /**
+     * 根据用户查找学员
+     *
+     * @param userName
+     * @return
+     */
+    List<Student> listStudents( String userName );
 }

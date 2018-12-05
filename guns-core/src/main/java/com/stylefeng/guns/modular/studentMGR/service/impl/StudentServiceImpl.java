@@ -18,6 +18,8 @@ import sun.plugin2.message.Message;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,6 +88,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             return null;
 
         return selectOne(new EntityWrapper<Student>().eq("code", code));
+    }
+
+    @Override
+    public List<Student> listStudents(String userName) {
+        if (null == userName)
+            return new ArrayList<Student>();
+
+        return selectList(new EntityWrapper<Student>().eq("user_name", userName).eq("status", GenericState.Valid.code));
     }
 
     private Student buildStudent(Map<String, Object> studentInfo) {

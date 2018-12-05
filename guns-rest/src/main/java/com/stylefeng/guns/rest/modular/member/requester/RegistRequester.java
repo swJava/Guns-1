@@ -33,9 +33,9 @@ public class RegistRequester extends SimpleRequester {
     @Pattern(regexp = "^[0-9]+$")
     private String captcha;
 
-    @ApiModelProperty(name = "grade", value = "学员所入年级", required = true, position = 3, example = "4")
+    @ApiModelProperty(name = "grade", value = "学员所入年级, 从1到13，表示小学一年级到高中三年级", required = true, position = 3, example = "4")
     @Min(value = 0, message = "grade 最小不能小于0")
-    @Max(value = 20, message = "grade 最大不能超过20")
+    @Max(value = 15, message = "grade 最大不能超过15")
     private Integer grade;
 
     public String getUserName() {

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Locale;
+
 /**
  * 全局的的异常拦截器（拦截所有的控制器）（带有@RequestMapping注解的方法上都会拦截）
  *
@@ -46,7 +48,7 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
         ServiceExceptionResponser responser = new ServiceExceptionResponser();
 
         responser.setCode(MessageConstant.MessageCode.SYS_TOKEN_ERROR);
-        String message = messageSource.getMessage("exception." + MessageConstant.MessageCode.SYS_TOKEN_ERROR, new Object[0], LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("exception." + MessageConstant.MessageCode.SYS_TOKEN_ERROR, new Object[0], Locale.CHINA);
         responser.setMessage(message);
 
         return responser;
@@ -63,7 +65,7 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
         ServiceExceptionResponser responser = new ServiceExceptionResponser();
 
         responser.setCode(e.getMessageCode());
-        String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), LocaleContextHolder.getLocale());
+        String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), Locale.CHINA);
         responser.setMessage(message);
 
         return responser;

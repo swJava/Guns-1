@@ -7,9 +7,10 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.rest.config.properties.AuthProperties;
 import com.stylefeng.guns.rest.core.exception.ServiceExceptionResponser;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
+import com.stylefeng.guns.rest.task.sms.SmsSender;
 import io.jsonwebtoken.JwtException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,6 +29,7 @@ import java.io.PrintWriter;
  * @Date 2017/8/24 14:04
  */
 public class AuthFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -53,6 +55,9 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         final String requestHeader = request.getHeader(authProperties.getHeader());
+
+        log.debug("Request token = <"+requestHeader+">");
+
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("KCEdu ")) {
             authToken = requestHeader.substring(6);
@@ -66,6 +71,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 }
             } catch (JwtException e) {
                 //有异常就是token解析失败
+                e.printStackTrace();
                 renderJson(response, new ServiceExceptionResponser(MessageConstant.MessageCode.SYS_TOKEN_ERROR, "签名验证错误"));
                 return;
             }

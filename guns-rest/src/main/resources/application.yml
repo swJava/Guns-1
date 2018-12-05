@@ -56,12 +56,13 @@ mybatis-plus:
     id-type: 0  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
     db-column-underline: false
     refresh-mapper: true
+#  configLocation: classpath*:mybatis-config.xml
   configuration:
     map-underscore-to-camel-case: false
     cache-enabled: true #配置的缓存的全局开关
     lazyLoadingEnabled: true #延时加载的开关
     multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl #打印sql语句,调试用
 
 spring:
   messages:
@@ -88,8 +89,4 @@ spring:
     filters: wall,mergeStat
 
 logging:
-  level.root: info
-  level.com.stylefeng: debug
-  level.com.stylefeng.guns.rest.task.sms: warn
-  path: logs/
-  file: guns-rest.log
+  config: file:///H:/Datas/logback.xml

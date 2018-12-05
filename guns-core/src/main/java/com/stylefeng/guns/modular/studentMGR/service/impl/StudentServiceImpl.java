@@ -14,7 +14,6 @@ import com.stylefeng.guns.util.PathUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sun.plugin2.message.Message;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;

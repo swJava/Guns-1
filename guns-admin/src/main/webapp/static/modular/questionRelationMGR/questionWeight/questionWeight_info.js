@@ -158,4 +158,5 @@ $(function() {
     $("#grade").val($("#gradeValue").val());
     $("#status").val($("#statusValue").val());
     $("#qcode").val($("#qcodeValue").val());
+    $("#ability").val($("#abilityValue").val());
 });

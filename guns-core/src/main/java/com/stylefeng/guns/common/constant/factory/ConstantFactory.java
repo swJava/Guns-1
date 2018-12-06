@@ -435,4 +435,13 @@ public class ConstantFactory implements IConstantFactory {
     public String getAdjustTypeName(Integer type) {
         return getDictsByName("调课类型", type);
     }
+
+    @Override
+    public String getAbilityName(Integer ability) {
+        return getDictsByName("班次", ability);
+    }
+    @Override
+    public String getCycleName(Integer cycle) {
+        return getDictsByName("学期", cycle);
+    }
 }

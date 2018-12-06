@@ -16,7 +16,7 @@ QuestionWeight.initColumn = function () {
         {field: 'selectItem', radio: true},
             {title: '试题编码', field: 'qcode', visible: true, align: 'center', valign: 'middle'},
             {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '对应班次', field: 'ability', visible: true, align: 'center', valign: 'middle'},
+            {title: '对应班次', field: 'abilityName', visible: true, align: 'center', valign: 'middle'},
             {title: '所含分值', field: 'score', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];

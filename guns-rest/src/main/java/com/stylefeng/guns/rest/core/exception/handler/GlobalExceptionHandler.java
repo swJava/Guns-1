@@ -58,7 +58,7 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
      * 拦截ServiceException相关异常
      */
     @ExceptionHandler(ServiceException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Responser serviceException(ServiceException e) {
 

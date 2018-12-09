@@ -79,7 +79,14 @@ public class TeacherController extends BaseController {
         });
         new TeacherWrapper(mapPage.getRecords()).warp();
         return super.packForBT(page);
-
+    }
+    /**
+     * 获取教师管理列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listAll(String condition) {
+        return teacherService.selectList(null);
     }
 
     /**

@@ -3,9 +3,16 @@
     <div class="ibox-content">
         <div class="form-horizontal" id="classInfoForm">
 
+            <input type="hidden" id="classRoom" >
+            <input type="hidden" id="courseName" >
+            <input type="hidden" id="teacher" >
+            <input type="hidden" id="teacherSecond" >
+
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="name" name="班级名称" underline="true"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true"/>
+                            <#dictSelector id="cycle" name="班次" code="cycle" label="班次"  underline="true"/>
                             <#input id="beginDate" name="开课起始日期" underline="true" type="text"/>
                             <#input id="endDate" name="开课结束日期" underline="true"/>
                             <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
@@ -23,12 +30,29 @@
                                     <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">课程名称</label>
+                                <div class="col-sm-9">
+                                    <select id="courseCode" name="课程名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
                             <div class="hr-line-dashed" ></div >
-                            <#input id="courseCode" name="教授课程" underline="true"/>
-                            <#input id="courseName" name="课程名称" underline="true"/>
                             <#input id="star" name="关注度" underline="true"/>
+                            <#input id="price" name="价格(元)" underline="true"/>
                             <#input id="quato" name="剩余报名人数" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">主讲教师名称</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherCode" name="主讲教师名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">辅导教师名称</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherSecondCode" name="辅导教师名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
                             <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>

@@ -13,8 +13,8 @@ import java.io.Serializable;
  * 班级
  * </p>
  *
- * @author stylefeng
- * @since 2018-11-03
+ * @author simple
+ * @since 2018-12-09
  */
 @TableName("tb_class")
 public class Class extends Model<Class> {
@@ -34,6 +34,14 @@ public class Class extends Model<Class> {
      * 班级名称
      */
     private String name;
+    /**
+     * 学期: 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
+     */
+    private Integer cycle;
+    /**
+     * 班次： 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
+     */
+    private Integer ability;
     /**
      * 开课起始日期
      */
@@ -97,6 +105,10 @@ public class Class extends Model<Class> {
      */
     private Integer star;
     /**
+     * 价格： 单位： 分
+     */
+    private Long price;
+    /**
      * 剩余报名人数
      */
     private Integer quato;
@@ -115,10 +127,19 @@ public class Class extends Model<Class> {
     @TableField("teacher_code")
     private String teacherCode;
     /**
+     * 主讲教师名称
+     */
+    private String teacher;
+    /**
      * 辅导教师编码
      */
     @TableField("teacher_second_code")
     private String teacherSecondCode;
+    /**
+     * 辅导教室名称
+     */
+    @TableField("teacher_second")
+    private String teacherSecond;
 
 
     public Long getId() {
@@ -143,6 +164,22 @@ public class Class extends Model<Class> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(Integer cycle) {
+        this.cycle = cycle;
+    }
+
+    public Integer getAbility() {
+        return ability;
+    }
+
+    public void setAbility(Integer ability) {
+        this.ability = ability;
     }
 
     public Date getBeginDate() {
@@ -249,6 +286,14 @@ public class Class extends Model<Class> {
         this.star = star;
     }
 
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
     public Integer getQuato() {
         return quato;
     }
@@ -281,12 +326,28 @@ public class Class extends Model<Class> {
         this.teacherCode = teacherCode;
     }
 
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
     public String getTeacherSecondCode() {
         return teacherSecondCode;
     }
 
     public void setTeacherSecondCode(String teacherSecondCode) {
         this.teacherSecondCode = teacherSecondCode;
+    }
+
+    public String getTeacherSecond() {
+        return teacherSecond;
+    }
+
+    public void setTeacherSecond(String teacherSecond) {
+        this.teacherSecond = teacherSecond;
     }
 
     @Override
@@ -300,6 +361,8 @@ public class Class extends Model<Class> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
+        ", cycle=" + cycle +
+        ", ability=" + ability +
         ", beginDate=" + beginDate +
         ", endDate=" + endDate +
         ", studyTimeType=" + studyTimeType +
@@ -313,11 +376,14 @@ public class Class extends Model<Class> {
         ", courseCode=" + courseCode +
         ", courseName=" + courseName +
         ", star=" + star +
+        ", price=" + price +
         ", quato=" + quato +
         ", signEndDate=" + signEndDate +
         ", status=" + status +
         ", teacherCode=" + teacherCode +
+        ", teacher=" + teacher +
         ", teacherSecondCode=" + teacherSecondCode +
+        ", teacherSecond=" + teacherSecond +
         "}";
     }
 }

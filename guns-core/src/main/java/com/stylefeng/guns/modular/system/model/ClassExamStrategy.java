@@ -48,17 +48,17 @@ public class ClassExamStrategy extends Model<ClassExamStrategy> {
      * 选择题占比， 1 - 100
      */
     @TableField("select_ratio")
-    private BigDecimal selectRatio;
+    private Integer selectRatio;
     /**
      * 填空题占比， 1 - 100
      */
     @TableField("fill_ratio")
-    private BigDecimal fillRatio;
+    private Integer fillRatio;
     /**
      * 主观题占比， 1 - 100
      */
     @TableField("subject_ratio")
-    private BigDecimal subjectRatio;
+    private Integer subjectRatio;
     /**
      * 是否自动阅卷： 0 不阅卷   1  自动阅卷
      */
@@ -106,27 +106,27 @@ public class ClassExamStrategy extends Model<ClassExamStrategy> {
         this.fullCredit = fullCredit;
     }
 
-    public BigDecimal getSelectRatio() {
+    public Integer getSelectRatio() {
         return selectRatio;
     }
 
-    public void setSelectRatio(BigDecimal selectRatio) {
+    public void setSelectRatio(Integer selectRatio) {
         this.selectRatio = selectRatio;
     }
 
-    public BigDecimal getFillRatio() {
+    public Integer getFillRatio() {
         return fillRatio;
     }
 
-    public void setFillRatio(BigDecimal fillRatio) {
+    public void setFillRatio(Integer fillRatio) {
         this.fillRatio = fillRatio;
     }
 
-    public BigDecimal getSubjectRatio() {
+    public Integer getSubjectRatio() {
         return subjectRatio;
     }
 
-    public void setSubjectRatio(BigDecimal subjectRatio) {
+    public void setSubjectRatio(Integer subjectRatio) {
         this.subjectRatio = subjectRatio;
     }
 

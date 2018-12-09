@@ -115,6 +115,16 @@ public class ClassController extends BaseController {
     }
 
     /**
+     * 获取教室管理列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listRoom(String condition) {
+
+        return classService.selectList(null);
+    }
+
+    /**
      * 新增课程管理
      */
     @RequestMapping(value = "/add")

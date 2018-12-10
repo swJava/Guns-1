@@ -12,6 +12,5 @@ import org.springframework.stereotype.Service;
  * @Date 2018/12/2 10:55
  * @Version 1.0
  */
-@Service
 public class QuestionWeightServiceImpl extends ServiceImpl<QuestionWeightMapper, QuestionWeight> implements IQuestionWeightService {
 }

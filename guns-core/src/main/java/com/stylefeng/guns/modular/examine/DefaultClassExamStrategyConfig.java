@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.examine;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 @EnableConfigurationProperties(DefaultClassExamStrategyProperties.class)
+@ConditionalOnProperty(prefix = "application.examine.strategy.default", name = "enable", havingValue = "true")
 public class DefaultClassExamStrategyConfig {
 
     @Bean(name = "defaultClassExamStrategy")

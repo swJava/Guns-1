@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  */
 public class DefaultClassExamStrategy implements FactoryBean<ClassExamStrategy> {
 
-    private BigDecimal zero = new BigDecimal("0");
+    private Integer zero = 0;
 
     private DefaultClassExamStrategyProperties config;
 

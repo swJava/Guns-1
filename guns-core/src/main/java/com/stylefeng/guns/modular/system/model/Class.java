@@ -45,24 +45,15 @@ public class Class extends Model<Class> {
     private String name;
 
     /**
-     * 学期
+     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
      */
     @ApiModelProperty(name = "cycle", value = "学期", position = 2, example="2")
     private Integer cycle;
 
     /**
-     * 班次
+     * 班次 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
      */
     @ApiModelProperty(name = "ability", value = "班次", position = 3, example="4")
-    private Integer ability;
-
-    /**
-     * 学期: 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
-     */
-    private Integer cycle;
-    /**
-     * 班次： 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
-     */
     private Integer ability;
     /**
      * 开课起始日期
@@ -162,11 +153,6 @@ public class Class extends Model<Class> {
      */
     @TableField("teacher_second_code")
     private String teacherSecondCode;
-    /**
-     * 辅导教室名称
-     */
-    @TableField("teacher_second")
-    private String teacherSecond;
 
     /**
      * 辅导教师名称

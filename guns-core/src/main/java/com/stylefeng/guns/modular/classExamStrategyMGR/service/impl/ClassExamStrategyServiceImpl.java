@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
  * @author simple.song
  * @since 2018-12-06
  */
-@Service
+//@Service
 public class ClassExamStrategyServiceImpl extends ServiceImpl<ClassExamStrategyMapper, ClassExamStrategy> implements IClassExamStrategyService {
 
     @Autowired

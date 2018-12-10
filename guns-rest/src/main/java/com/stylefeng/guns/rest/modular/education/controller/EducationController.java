@@ -58,6 +58,7 @@ public class EducationController {
     @RequestMapping("/class/detail/{code}")
     public Responser detailForClass(@PathVariable("code") String code) {
         Wrapper<com.stylefeng.guns.modular.system.model.Class> queryWrapper = new EntityWrapper<com.stylefeng.guns.modular.system.model.Class>();
+        queryWrapper.eq("code", code);
 
         com.stylefeng.guns.modular.system.model.Class classInfo = classService.selectOne(queryWrapper);
 

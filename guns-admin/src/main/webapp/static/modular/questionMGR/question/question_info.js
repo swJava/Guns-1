@@ -32,24 +32,10 @@ var QuestionInfoDlg = {
                 }
             }
         },
-        grade: {
-            validators: {
-                notEmpty: {
-                    message: '年级不能为空'
-                }
-            }
-        },
-        answer: {
+        expactAnswer: {
             validators: {
                 notEmpty: {
                     message: '答案不能为空'
-                }
-            }
-        },
-        score: {
-            validators: {
-                notEmpty: {
-                    message: '分值不能为空'
                 }
             }
         }
@@ -101,11 +87,7 @@ QuestionInfoDlg.collectData = function() {
     .set('question')
     .set('type')
     .set('subject')
-    .set('score')
     .set('status')
-    .set('sort')
-    .set('grade')
-    .set('answer')
     .set('expactAnswer');
 }
 
@@ -174,7 +156,6 @@ $(function() {
     Feng.initValidator("questionInfoForm", QuestionInfoDlg.validateFields);
 
     //初始select选项
-    $("#grade").val($("#gradeValue").val());
     $("#type").val($("#typeValue").val());
     $("#subject").val($("#subjectValue").val());
     $("#status").val($("#statusValue").val());

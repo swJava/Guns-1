@@ -202,4 +202,18 @@ public interface IConstantFactory {
      * @return
      */
     String getAdjustTypeName(Integer type);
+
+    /**
+     * 班次
+     * @param ability
+     * @return
+     */
+    String getAbilityName(Integer ability);
+
+    /**
+     * 学期
+     * @param cycle
+     * @return
+     */
+    String getCycleName(Integer cycle);
 }

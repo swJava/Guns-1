@@ -18,8 +18,8 @@ import java.io.Serializable;
  * 班级
  * </p>
  *
- * @author stylefeng
- * @since 2018-11-03
+ * @author simple
+ * @since 2018-12-09
  */
 @TableName("tb_class")
 @ApiModel(value = "Class", description = "班级")
@@ -56,6 +56,14 @@ public class Class extends Model<Class> {
     @ApiModelProperty(name = "ability", value = "班次", position = 3, example="4")
     private Integer ability;
 
+    /**
+     * 学期: 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
+     */
+    private Integer cycle;
+    /**
+     * 班次： 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
+     */
+    private Integer ability;
     /**
      * 开课起始日期
      */
@@ -120,7 +128,11 @@ public class Class extends Model<Class> {
      */
     private Integer star;
     /**
+<<<<<<< HEAD
      * 价格
+=======
+     * 价格： 单位： 分
+>>>>>>> 44eb44aecc64acebd68cd4d278dfa42de93bf9c6
      */
     private Long price;
     /**
@@ -150,6 +162,11 @@ public class Class extends Model<Class> {
      */
     @TableField("teacher_second_code")
     private String teacherSecondCode;
+    /**
+     * 辅导教室名称
+     */
+    @TableField("teacher_second")
+    private String teacherSecond;
 
     /**
      * 辅导教师名称
@@ -377,6 +394,8 @@ public class Class extends Model<Class> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
+        ", cycle=" + cycle +
+        ", ability=" + ability +
         ", beginDate=" + beginDate +
         ", endDate=" + endDate +
         ", studyTimeType=" + studyTimeType +

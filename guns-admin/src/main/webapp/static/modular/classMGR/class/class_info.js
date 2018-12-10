@@ -255,6 +255,7 @@ $(function() {
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
 
+    /* 教室 */
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
         data.forEach(function (item) {
@@ -266,9 +267,40 @@ $(function() {
     ajax.start();
     $("#classRoomCode").append(html);
 
+    /* 课程*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#courseCode").append(html);
+
+    /* 老师*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/teacher/listAll", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#teacherCode").append(html);
+    $("#teacherSecondCode").append(html);
+
     //初始select选项
     $("#classRoomCode").val($("#classRoomCodeValue").val());
+    $("#classRoom").val($("#classRoomCodeValue option:selected").text());
     $("#status").val($("#statusValue").val());
     $("#studyTimeType").val($("#studyTimeTypeValue").val());
-    $("#classRoomCode").val($("#classRoomCodeValue").val());
+    $("#courseCode").val($("#courseCodeValue").val());
+    $("#courseName").val($("#courseCodeValue option:selected").text());
+    $("#teacherCode").val($("#teacherCodeValue").val());
+    $("#teacher").val($("#teacherCodeValue option:selected").text());
+    $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
+    $("#teacherSecond").val($("#teacherSecondCodeValue option:selected").text());
 });

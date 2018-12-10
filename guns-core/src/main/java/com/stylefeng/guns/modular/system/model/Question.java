@@ -46,7 +46,7 @@ public class Question extends Model<Question> {
      * 参考答案
      */
     @TableField("expact_answer")
-    private byte[] expactAnswer;
+    private String expactAnswer;
 
 
     public Long getId() {
@@ -97,11 +97,11 @@ public class Question extends Model<Question> {
         this.status = status;
     }
 
-    public byte[] getExpactAnswer() {
+    public String getExpactAnswer() {
         return expactAnswer;
     }
 
-    public void setExpactAnswer(byte[] expactAnswer) {
+    public void setExpactAnswer(String expactAnswer) {
         this.expactAnswer = expactAnswer;
     }
 

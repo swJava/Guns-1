@@ -15,6 +15,7 @@ import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
 import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.ToolUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -115,11 +116,23 @@ public class ClassController extends BaseController {
     }
 
     /**
+     * 获取教室管理列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listRoom(String condition) {
+
+        return classService.selectList(null);
+    }
+
+    /**
      * 新增课程管理
      */
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Class classInstance) {
+        classInstance.setCode(RandomStringUtils.randomNumeric(8));
+        classInstance.setPrice(classInstance.getPrice() * 100);
         classService.insert(classInstance);
         return SUCCESS_TIP;
     }
@@ -154,6 +167,7 @@ public class ClassController extends BaseController {
     @RequestMapping(value = "/update")
     @ResponseBody
     public Object update(Class classInstance) {
+        classInstance.setPrice(classInstance.getPrice() * 100);
         classService.updateById(classInstance);
         return SUCCESS_TIP;
     }

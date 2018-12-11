@@ -118,14 +118,13 @@ public class OrderController {
             @NotBlank(message = "班级不能为空")
             @RequestParam(name = "classCode", required = true)
             String classCode,
-            @NotBlank(message = "学员不能为空")
             @RequestParam(name = "student", required = false)
             String student){
 
         Member member = memberService.get(userName);
 
         if (null == member)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"会员"});
 
         Student existStudent = null;
         if (null != student) {
@@ -137,12 +136,12 @@ public class OrderController {
         }
 
         if (null == existStudent)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
 
         com.stylefeng.guns.modular.system.model.Class classInfo = classService.get(classCode);
 
         if (null == classInfo)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"选课信息"});
 
         courseCartService.remove(member, existStudent, classInfo);
 

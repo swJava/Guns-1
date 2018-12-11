@@ -85,7 +85,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         );
 
         if (null == existSelected)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"选课信息"});
 
         existSelected.setStatus(CourseCartStateEnum.Invalid.code);
         updateById(existSelected);

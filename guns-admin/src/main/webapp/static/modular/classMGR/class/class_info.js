@@ -215,6 +215,11 @@ ClassInfoDlg.addSubmit = function() {
         return;
     }
 
+    $("#classRoom").val($("#classRoomCode option:selected").text());
+    $("#courseName").val($("#courseCode option:selected").text());
+    $("#teacher").val($("#teacherCode option:selected").text());
+    $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
+
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/add", function(data){
         Feng.success("添加成功!");
@@ -238,6 +243,10 @@ ClassInfoDlg.editSubmit = function() {
     if (!this.validate()) {
         return;
     }
+    $("#classRoom").val($("#classRoomCode option:selected").text());
+    $("#courseName").val($("#courseCode option:selected").text());
+    $("#teacher").val($("#teacherCode option:selected").text());
+    $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/update", function(data){
@@ -294,13 +303,9 @@ $(function() {
 
     //初始select选项
     $("#classRoomCode").val($("#classRoomCodeValue").val());
-    $("#classRoom").val($("#classRoomCodeValue option:selected").text());
     $("#status").val($("#statusValue").val());
     $("#studyTimeType").val($("#studyTimeTypeValue").val());
     $("#courseCode").val($("#courseCodeValue").val());
-    $("#courseName").val($("#courseCodeValue option:selected").text());
     $("#teacherCode").val($("#teacherCodeValue").val());
-    $("#teacher").val($("#teacherCodeValue option:selected").text());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
-    $("#teacherSecond").val($("#teacherSecondCodeValue option:selected").text());
 });

@@ -25,5 +25,6 @@ public class ClassWrapper extends BaseControllerWarpper{
         map.put("classRoom", ConstantFactory.me().getClassRoomName( map.get("classRoomCode").toString()));
         map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt( map.get("status").toString())));
         map.put("studyTimeTypeName", ConstantFactory.me().getStudyTimeTypeName(Integer.parseInt( map.get("studyTimeType").toString())));
+        map.put("prive", (Long)map.get("prive")/100);
     }
 }

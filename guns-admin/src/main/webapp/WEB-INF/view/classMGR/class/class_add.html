@@ -11,8 +11,8 @@
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="name" name="班级名称" underline="true"/>
-                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true"/>
-                            <#dictSelector id="cycle" name="班次" code="cycle" label="班次"  underline="true"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
                             <#input id="beginDate" name="开课起始日期" underline="true" type="text"/>
                             <#input id="endDate" name="开课结束日期" underline="true"/>
                             <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
@@ -30,6 +30,7 @@
                                     <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
                                 </div>
                             </div>
+                            <div class="hr-line-dashed" ></div >
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">课程名称</label>
                                 <div class="col-sm-9">

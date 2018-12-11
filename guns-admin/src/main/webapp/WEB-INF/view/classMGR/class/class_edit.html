@@ -8,10 +8,17 @@
             <input type="hidden" id="studyTimeTypeValue" value="${item.studyTimeType}">
             <input type="hidden" id="classRoomCodeValue" value="${item.classRoomCode}">
 
+            <input type="hidden" id="classRoom" >
+            <input type="hidden" id="courseName" >
+            <input type="hidden" id="teacher" >
+            <input type="hidden" id="teacherSecond" >
+
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="code" name="班级编码" value="${item.code}" underline="true"/>
                             <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
                             <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
                             <#input id="endDate" name="开课结束日期" value="${item.endDate}" underline="true"/>
                             <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
@@ -23,9 +30,20 @@
 
                 <div class="col-sm-6">
                             <#input id="period" name="课时数" value="${item.period}" underline="true"/>
-                            <#dictSelector id="classRoomCode" name ="教室编码" code="class_code" label="教室编码"  underline="true"  width="75%"/>
-                            <#input id="courseCode" name="教授课程" value="${item.courseCode}" underline="true"/>
-                            <#input id="courseName" name="课程名称" value="${item.courseName}" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">教室</label>
+                                <div class="col-sm-9">
+                                    <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">课程名称</label>
+                                <div class="col-sm-9">
+                                    <select id="courseCode" name="课程名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>
                             <#input id="quato" name="剩余报名人数" value="${item.quato}" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" value="${item.signEndDate}" underline="true"/>

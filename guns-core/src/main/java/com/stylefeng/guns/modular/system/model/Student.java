@@ -1,8 +1,13 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -14,6 +19,7 @@ import java.io.Serializable;
  * @since 2018-11-03
  */
 @TableName("tb_student")
+@ApiModel(value = "Student", description = "学员")
 public class Student extends Model<Student> {
 
     private static final long serialVersionUID = 1L;
@@ -21,35 +27,45 @@ public class Student extends Model<Student> {
     /**
      * 标示
      */
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 学员编码: XY+年月日（6位）+8位顺序码
      */
+    @ApiModelProperty(name = "code", value = "学员编码", position = 0, example="XY000001")
     private String code;
     /**
      * 学员名称
      */
+    @ApiModelProperty(name = "name", value = "学员姓名", position = 1, example="小明")
     private String name;
     /**
      * 头像
      */
+    @ApiModelProperty(name = "avatar", value = "学员头像", position = 2, example="http://192.168.10.1/deed.jpg")
     private String avatar;
     /**
      * 性别
+     * 这个字段单词写错了，最后要纠正
      */
+    @ApiModelProperty(name = "gender", value = "性别", position = 3, example="1")
     private Integer gender;
     /**
      * 在读年级
      */
+    @ApiModelProperty(name = "grade", value = "在读年级", position = 4, example="4")
     private Integer grade;
     /**
      * 在读学校
      */
+    @ApiModelProperty(name = "school", value = "在读学校", position = 5, example="谢家湾小学")
     private String school;
     /**
      * 目标学校
      */
     @TableField("target_school")
+    @ApiModelProperty(name = "targetSchool", value = "目标学校", position = 6, example="重庆三中")
     private String targetSchool;
     /**
      * 用户名
@@ -59,6 +75,7 @@ public class Student extends Model<Student> {
     /**
      * 状态
      */
+    @ApiModelProperty(name = "status", value = "状态", position = 7, example="1")
     private Integer status;
 
 
@@ -102,12 +119,24 @@ public class Student extends Model<Student> {
         this.gender = gender;
     }
 
+    public void setGender(String gender) {
+        try{
+            setGender(Integer.parseInt(gender));
+        }catch(Exception e){}
+    }
+
     public Integer getGrade() {
         return grade;
     }
 
     public void setGrade(Integer grade) {
         this.grade = grade;
+    }
+
+    public void setGrade(String grade){
+        try{
+            setGrade(Integer.parseInt(grade));
+        }catch(Exception e){}
     }
 
     public String getSchool() {

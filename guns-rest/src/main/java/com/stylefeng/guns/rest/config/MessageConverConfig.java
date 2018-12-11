@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author fengshuonan
  * @date 2017-08-25 16:04
  */
-@Configuration
+//@Configuration
 public class MessageConverConfig {
 
     @Bean

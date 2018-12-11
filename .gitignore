@@ -31,3 +31,17 @@ hs_err_pid*
 .classpath
 .project
 .settings/
+<<<<<<< HEAD
+guns-rest/.factorypath
+.vscode/settings.json
+guns-admin/.factorypath
+guns-core/.factorypath
+guns-generator/.factorypath
+=======
+guns-core/.factorypath
+guns-admin/.factorypath
+.DS_Store
+.vscode/launch.json
+guns-generator/.factorypath
+guns-rest/.factorypath
+>>>>>>> d739520c77bf5b6816bf83830a457189b2120af3

@@ -1,5 +1,6 @@
 package com.stylefeng.guns.rest.config;
 
+import com.stylefeng.guns.rest.config.properties.AuthProperties;
 import com.stylefeng.guns.rest.config.properties.RestProperties;
 import com.stylefeng.guns.rest.modular.auth.filter.AuthFilter;
 import com.stylefeng.guns.rest.modular.auth.security.DataSecurityAction;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 public class WebConfig {
 
     @Bean
-    @ConditionalOnProperty(prefix = RestProperties.REST_PREFIX, name = "auth-open", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = AuthProperties.AUTH_PREFIX, name = "enable", havingValue = "true", matchIfMissing = true)
     public AuthFilter jwtAuthenticationTokenFilter() {
         return new AuthFilter();
     }

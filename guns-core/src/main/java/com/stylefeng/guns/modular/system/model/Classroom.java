@@ -1,6 +1,9 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import io.swagger.annotations.ApiModel;
+
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -16,6 +19,7 @@ import java.io.Serializable;
  * @since 2018-11-05
  */
 @TableName("tb_classroom")
+@ApiModel(value = "Classroom", description = "教室")
 public class Classroom extends Model<Classroom> {
 
     private static final long serialVersionUID = 1L;

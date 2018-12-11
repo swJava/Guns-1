@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.CourseCartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.CourseCart">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="join_date" property="joinDate" />
+        <result column="course_name" property="courseName" />
+        <result column="class_code" property="classCode" />
+        <result column="class_name" property="className" />
+        <result column="class_method" property="classMethod" />
+        <result column="class_time" property="classTime" />
+        <result column="classroom" property="classroom" />
+        <result column="teacher" property="teacher" />
+        <result column="assister" property="assister" />
+        <result column="status" property="status" />
+        <result column="amount" property="amount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_name, join_date, course_name, class_code, class_name, class_method, class_time, classroom, teacher, assister, status, amount
+    </sql>
+
+</mapper>

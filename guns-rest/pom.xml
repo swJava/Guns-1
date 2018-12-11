@@ -6,10 +6,10 @@
     <groupId>com.stylefeng.guns</groupId>
     <artifactId>guns-rest</artifactId>
     <version>0.0.1</version>
-    <packaging>jar</packaging>
 
     <name>guns-rest</name>
-    <description>guns REST服务器</description>
+    <description>API</description>
+    <packaging>jar</packaging>
 
     <parent>
         <groupId>com.stylefeng</groupId>
@@ -19,6 +19,11 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.stylefeng</groupId>
+            <artifactId>guns-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -33,13 +38,37 @@
             <artifactId>jjwt</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.stylefeng</groupId>
-            <artifactId>guns-core</artifactId>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 
@@ -48,8 +77,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork><!-- 如果没有该项配置，肯呢个devtools不会起作用，即应用不会restart -->
+                </configuration>
             </plugin>
         </plugins>
+
+        <finalName>api</finalName>
     </build>
 
 

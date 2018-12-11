@@ -3,6 +3,9 @@ package com.stylefeng.guns.modular.system.dao;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 班级 Mapper 接口
@@ -12,5 +15,11 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-10-20
  */
 public interface ClassMapper extends BaseMapper<Class> {
-
+    /**
+     * 根据查询条件查询
+     *
+     * @param queryParams
+     * @return
+     */
+    List<Class> queryForList(Map<String, Object> queryParams);
 }

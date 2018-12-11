@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.OrderItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.OrderItem">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="item_code" property="itemCode" />
+        <result column="item_object" property="itemObject" />
+        <result column="item_object_code" property="itemObjectCode" />
+        <result column="item_amount" property="itemAmount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no, item_code, item_object, item_object_code, item_amount
+    </sql>
+
+</mapper>

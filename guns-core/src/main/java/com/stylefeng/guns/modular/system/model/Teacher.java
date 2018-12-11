@@ -1,7 +1,12 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -13,50 +18,66 @@ import java.io.Serializable;
  * @since 2018-11-03
  */
 @TableName("tb_teacher")
+@ApiModel(value = "Teacher", description = "教师")
 public class Teacher extends Model<Teacher> {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 自增主键
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 教师编码： LS + 6位序列码
      */
+    @ApiModelProperty(name = "code", value = "教师编码", position = 0, example="LS000001")
     private String code;
     /**
      * 教师名称
      */
+    @ApiModelProperty(name = "name", value = "教师名称", position = 1, example="老明")
     private String name;
     /**
      * 头像
      */
+    @ApiModelProperty(name = "avatar", value = "头像", position = 2, example="http://192.168.10.11/tx020313213.jpg")
     private String avatar;
     /**
      * 教师类型:1讲师； 2 辅导员； 3 外聘专家
      */
+    @ApiModelProperty(name = "type", value = "教师类型 L 讲师； A 辅导员； E 外聘专家", position = 3, example="L")
     private Integer type;
     /**
      * 性别
      */
+    @ApiModelProperty(name = "gender", value = "性别", position = 4, example="1")
     private Integer gender;
     /**
      * 毕业院校
      */
+    @ApiModelProperty(name = "graduate", value = "毕业院校", position = 5, example="重庆大学")
     private String graduate;
     /**
      * 授课年级
      */
+    @ApiModelProperty(name = "grade", value = "授课年级", position = 6, example="小学一年级")
     private Integer grade;
     /**
      * 教学成果
      */
+    @ApiModelProperty(name = "havest", value = "教学成果", position = 7, example="纯文本")
     private String havest;
     /**
      * 教学经验
      */
+    @ApiModelProperty(name = "experience", value = "教学经验", position = 8, example="纯文本")
     private String experience;
     /**
      * 教学特点
      */
+    @ApiModelProperty(name = "feature", value = "教学特点", position = 9, example="纯文本")
     private String feature;
     /**
      * 状态

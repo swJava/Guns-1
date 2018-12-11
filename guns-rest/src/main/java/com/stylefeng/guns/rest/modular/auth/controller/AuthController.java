@@ -1,17 +1,20 @@
 package com.stylefeng.guns.rest.modular.auth.controller;
 
-import com.stylefeng.guns.core.exception.GunsException;
-import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
+import java.io.UnsupportedEncodingException;
+
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.system.model.User;
+import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthRequest;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthResponse;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
-import com.stylefeng.guns.rest.modular.auth.validator.IReqValidator;
+
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
 
 /**
  * 请求验证的
@@ -25,20 +28,32 @@ public class AuthController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Resource(name = "simpleValidator")
-    private IReqValidator reqValidator;
+    @Autowired
+    private IUserService userService;
 
-    @RequestMapping(value = "${jwt.auth-path}")
+    @RequestMapping(value = "${application.auth.path}")
     public ResponseEntity<?> createAuthenticationToken(AuthRequest authRequest) {
 
-        boolean validate = reqValidator.validate(authRequest);
+        User currUser = userService.getByAccount(authRequest.getUserName());
 
-        if (validate) {
+        if (null == currUser){
+            throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_NOT_FOUND);
+        }
+
+        String password = currUser.getPassword();
+        String pwdEncrypt = null;
+        try {
+            pwdEncrypt = new String(Sha256Hash.toBytes(authRequest.getPassword()), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+        if (!password.equalsIgnoreCase(pwdEncrypt)){
+            throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
+        }
+
             final String randomKey = jwtTokenUtil.getRandomKey();
             final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
             return ResponseEntity.ok(new AuthResponse(token, randomKey));
-        } else {
-            throw new GunsException(BizExceptionEnum.AUTH_REQUEST_ERROR);
-        }
     }
 }

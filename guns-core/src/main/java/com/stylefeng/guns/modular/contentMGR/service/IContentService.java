@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IContentService extends IService<Content> {
 
+    /**
+     * 根据编码获取内容
+     *
+     * @param contentCode
+     * @return
+     */
+    Content get(String contentCode);
 }

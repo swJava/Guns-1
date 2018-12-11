@@ -9,17 +9,13 @@
         <result column="question" property="question" />
         <result column="type" property="type" />
         <result column="subject" property="subject" />
-        <result column="score" property="score" />
         <result column="status" property="status" />
-        <result column="sort" property="sort" />
-        <result column="grade" property="grade" />
-        <result column="answer" property="answer" />
         <result column="expact_answer" property="expactAnswer" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, question, type, subject, score, status, sort, grade, answer, expact_answer
+        id, code, question, type, subject, status, expact_answer
     </sql>
 
 </mapper>

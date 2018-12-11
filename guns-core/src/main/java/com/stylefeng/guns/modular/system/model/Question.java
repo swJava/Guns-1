@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -7,17 +9,18 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 入学诊断试题库
+ * 试题库
  * </p>
  *
- * @author simple
- * @since 2018-11-03
+ * @author stylefeng
+ * @since 2018-11-30
  */
 @TableName("tb_question")
 public class Question extends Model<Question> {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 试题编码：ST + 8位序列码
@@ -28,7 +31,7 @@ public class Question extends Model<Question> {
      */
     private String question;
     /**
-     * 试题类型： 1 主观题； 2 客观题
+     * 试题类型： 1 单选题； 2 多选题； 3 填空题； 4 主观题
      */
     private Integer type;
     /**

@@ -1,11 +1,16 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +22,7 @@ import java.io.Serializable;
  * @since 2018-12-09
  */
 @TableName("tb_class")
+@ApiModel(value = "Class", description = "班级")
 public class Class extends Model<Class> {
 
     private static final long serialVersionUID = 1L;
@@ -25,27 +31,35 @@ public class Class extends Model<Class> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 班级编码： BJ+6位序列码
      */
+    @ApiModelProperty(name = "code", value = "编码", position = 0, example="BJ000001")
     private String code;
     /**
      * 班级名称
      */
+    @ApiModelProperty(name = "name", value = "班级名称", position = 1, example="小学一年级数据入门班")
     private String name;
+
     /**
-     * 学期: 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
+     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
      */
+    @ApiModelProperty(name = "cycle", value = "学期", position = 2, example="2")
     private Integer cycle;
+
     /**
-     * 班次： 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
+     * 班次 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
      */
+    @ApiModelProperty(name = "ability", value = "班次", position = 3, example="4")
     private Integer ability;
     /**
      * 开课起始日期
      */
     @TableField("begin_date")
+    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 0, example="4")
     private Date beginDate;
     /**
      * 开课结束日期
@@ -105,7 +119,11 @@ public class Class extends Model<Class> {
      */
     private Integer star;
     /**
+<<<<<<< HEAD
+     * 价格
+=======
      * 价格： 单位： 分
+>>>>>>> 44eb44aecc64acebd68cd4d278dfa42de93bf9c6
      */
     private Long price;
     /**
@@ -135,8 +153,9 @@ public class Class extends Model<Class> {
      */
     @TableField("teacher_second_code")
     private String teacherSecondCode;
+
     /**
-     * 辅导教室名称
+     * 辅导教师名称
      */
     @TableField("teacher_second")
     private String teacherSecond;

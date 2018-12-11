@@ -43,28 +43,34 @@ public class Class extends Model<Class> {
      */
     @ApiModelProperty(name = "name", value = "班级名称", position = 1, example="小学一年级数据入门班")
     private String name;
+    /**
+     * 年级 0 学年前 1 ~ 12 小学一年级 ~ 高三
+     */
+    @ApiModelProperty(name = "grade", value = "年级", position = 2, example="1")
+    private Integer grade;
 
     /**
      * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
      */
-    @ApiModelProperty(name = "cycle", value = "学期", position = 2, example="2")
+    @ApiModelProperty(name = "cycle", value = "学期", position = 3, example="2")
     private Integer cycle;
 
     /**
      * 班次 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
      */
-    @ApiModelProperty(name = "ability", value = "班次", position = 3, example="4")
+    @ApiModelProperty(name = "ability", value = "班次", position = 4, example="4")
     private Integer ability;
     /**
      * 开课起始日期
      */
     @TableField("begin_date")
-    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 0, example="4")
+    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 5, example="2018-11-30")
     private Date beginDate;
     /**
      * 开课结束日期
      */
     @TableField("end_date")
+    @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 6, example="2018-12-30")
     private Date endDate;
     /**
      * 开课时间类型： 5 DAY_OF_MONTH ； 7 DAY_OF_WEEK
@@ -119,11 +125,7 @@ public class Class extends Model<Class> {
      */
     private Integer star;
     /**
-<<<<<<< HEAD
-     * 价格
-=======
      * 价格： 单位： 分
->>>>>>> 44eb44aecc64acebd68cd4d278dfa42de93bf9c6
      */
     private Long price;
     /**
@@ -183,6 +185,14 @@ public class Class extends Model<Class> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
     public Integer getCycle() {

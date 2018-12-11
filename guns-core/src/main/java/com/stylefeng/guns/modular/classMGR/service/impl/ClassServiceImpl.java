@@ -43,6 +43,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         arguments.put("methodList", methodList);
         List<Integer> weekList = new ArrayList<Integer>();
         arguments.put("weekList", weekList);
+        List<Integer> gradeList = new ArrayList<Integer>();
+        arguments.put("gradeList", gradeList);
 
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
@@ -105,6 +107,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                     }catch(Exception e){}
                 }
                 arguments.put("weekList", weekList);
+            }
+
+            if ("grades".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        gradeList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("gradeList", gradeList);
             }
         }
         List<Class> resultList = classMapper.queryForList(arguments);

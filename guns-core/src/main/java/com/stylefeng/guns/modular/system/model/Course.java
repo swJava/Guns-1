@@ -38,6 +38,10 @@ public class Course extends Model<Course> {
      */
     private String subject;
     /**
+     * 年级
+     */
+    private Integer grade;
+    /**
      * 课程介绍
      */
     private String description;
@@ -89,6 +93,14 @@ public class Course extends Model<Course> {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
     public String getDescription() {

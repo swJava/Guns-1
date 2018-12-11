@@ -81,6 +81,13 @@
                 </foreach>
                 )
             </if>
+            <!-- 年级 -->
+            <if test="gradeList.size() > 0">
+                and tc.grade in
+                <foreach collection="gradeList" item="grade" open="(" separator="," close=")">
+                    #{grade}
+                </foreach>
+            </if>
         </where>
     </select>
 

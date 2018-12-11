@@ -25,12 +25,15 @@ public class ClassQueryRequester extends SimpleRequester {
     private String methods = "";
     @ApiModelProperty(name = "methods", value = "上课时间(星期) 1 周一  7 周日", required = false, position = 4, example = "6,7")
     private String weekdays = "";
-    @ApiModelProperty(name = "teacherCode", value = "主讲老师", required = false, position = 5, example = "LS000001")
+    @ApiModelProperty(name = "grades", value = "年级", required = false, position = 5, example = "1,2,3")
+    private String grades = "";
+    @ApiModelProperty(name = "teacherCode", value = "主讲老师", required = false, position = 6, example = "LS000001")
     private String teacherCode;
-    @ApiModelProperty(name = "assisterCode", value = "辅导老师", required = false, position = 6, example = "LS000101")
+    @ApiModelProperty(name = "assisterCode", value = "辅导老师", required = false, position = 7, example = "LS000101")
     private String assisterCode;
-    @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 7, example = "JS000001")
+    @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 8, example = "JS000001")
     private String classroomCode;
+
 
     public String getSubjects() {
         return subjects;
@@ -70,6 +73,14 @@ public class ClassQueryRequester extends SimpleRequester {
 
     public void setWeekdays(String weekdays) {
         this.weekdays = weekdays;
+    }
+
+    public String getGrades() {
+        return grades;
+    }
+
+    public void setGrades(String grades) {
+        this.grades = grades;
     }
 
     public String getTeacherCode() {

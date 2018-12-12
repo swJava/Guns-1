@@ -6,7 +6,7 @@ application:
     captch.template: SMS_150742325
   attachment:
     visit-url: http://127.0.0.1:8081/api/attachment/download
-    store-path: H:/Datas/gs/upload
+    store-path: C:/Datas/gs/upload
   examine:
     strategy:
       default:
@@ -89,4 +89,4 @@ spring:
     filters: wall,mergeStat
 
 logging:
-  config: file:///H:/Datas/logback.xml
+  config: classpath:logback.xml

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 学生信息包装类
@@ -25,6 +26,6 @@ public class ClassWrapper extends BaseControllerWarpper{
         map.put("classRoom", ConstantFactory.me().getClassRoomName( map.get("classRoomCode").toString()));
         map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt( map.get("status").toString())));
         map.put("studyTimeTypeName", ConstantFactory.me().getStudyTimeTypeName(Integer.parseInt( map.get("studyTimeType").toString())));
-        map.put("prive", (Long)map.get("prive")/100);
+        Optional.ofNullable(map.get("prive")).ifPresent(Price->map.put("prive", (Long)Price/100));
     }
 }

@@ -20,7 +20,7 @@ public final class CodeKit {
     private static final String FILE_NAME_DICT = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUMBER_RAND_DICT = "0123456789";
 
-    private static enum CODE_DEFINE {
+    public static enum CODE_DEFINE {
         STUDENT ("XY", 8),  // 学员
         COURSE ("KC", 6),  // 课程
         ROOM ("JS", 6),  // 教室
@@ -38,9 +38,7 @@ public final class CodeKit {
             this.length = len;
         }
     }
-    private CodeKit(){
-
-    }
+    private CodeKit(){}
 
     private static ISequenceService sequenceService;
 

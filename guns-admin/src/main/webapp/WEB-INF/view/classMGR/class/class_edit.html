@@ -1,12 +1,13 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal"  id="classInfoForm">
+        <div class="form-horizontal" id="classInfoForm">
 
             <input type="hidden" id="id" value="${item.id}">
             <input type="hidden" id="statusValue" value="${item.status}">
             <input type="hidden" id="studyTimeTypeValue" value="${item.studyTimeType}">
             <input type="hidden" id="classRoomCodeValue" value="${item.classRoomCode}">
+            <input type="hidden" id="gradeValue" value="${item.gradeCode}">
 
             <input type="hidden" id="classRoom" >
             <input type="hidden" id="courseName" >
@@ -17,6 +18,7 @@
                 <div class="col-sm-6 b-r">
                             <#input id="code" name="班级编码" value="${item.code}" underline="true"/>
                             <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
+                            <#dictSelector id="cycle" name="年级" code="school_grade" label="年级"  underline="true" width="75%"/>
                             <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
                             <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
                             <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
@@ -25,10 +27,11 @@
                             <#input id="studyTimeValue" name="开课时间" value="${item.studyTimeValue}" underline="true"/>
                             <#input id="beginTime" name="开始时间" value="${item.beginTime}" underline="true"/>
                             <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
-                            <#input id="duration" name="时长（分钟）" value="${item.duration}" />
                 </div>
 
                 <div class="col-sm-6">
+                            <#input id="duration" name="时长（分钟）" value="${item.duration}" />
+                            <div class="hr-line-dashed" ></div >
                             <#input id="period" name="课时数" value="${item.period}" underline="true"/>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">教室</label>
@@ -47,8 +50,21 @@
                             <#input id="star" name="关注度" value="${item.star}" underline="true"/>
                             <#input id="quato" name="剩余报名人数" value="${item.quato}" underline="true"/>
                             <#input id="signEndDate" name="报名截止时间" value="${item.signEndDate}" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">主讲教师名称</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherCode" name="主讲教师名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">辅导教师名称</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherSecondCode" name="辅导教师名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                             <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
-                </div>
             </div>
 
             <div class="row btn-group-m-t">

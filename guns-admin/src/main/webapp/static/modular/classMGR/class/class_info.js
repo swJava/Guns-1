@@ -173,25 +173,33 @@ ClassInfoDlg.close = function() {
  */
 ClassInfoDlg.collectData = function() {
     this
-    .set('id')
-    .set('code')
-    .set('name')
-    .set('beginDate')
-    .set('endDate')
-    .set('studyTimeType')
-    .set('studyTimeValue')
-    .set('beginTime')
-    .set('endTime')
-    .set('duration')
-    .set('period')
-    .set('classRoomCode')
-    .set('classRoom')
-    .set('courseCode')
-    .set('courseName')
-    .set('star')
-    .set('quato')
-    .set('signEndDate')
-    .set('status');
+        .set('id')
+        .set('code')
+        .set('name')
+        .set('grade')
+        .set('cycle')
+        .set('ability')
+        .set('beginDate')
+        .set('endDate')
+        .set('studyTimeType')
+        .set('studyTimeValue')
+        .set('beginTime')
+        .set('endTime')
+        .set('duration')
+        .set('period')
+        .set('classRoomCode')
+        .set('classRoom')
+        .set('courseCode')
+        .set('courseName')
+        .set('star')
+        .set('price')
+        .set('quato')
+        .set('signEndDate')
+        .set('status')
+        .set('teacherCode')
+        .set('teacher')
+        .set('teacherSecondCode')
+        .set('teacherSecond');
 }
 
 /**
@@ -209,17 +217,15 @@ ClassInfoDlg.validate = function () {
 ClassInfoDlg.addSubmit = function() {
 
     this.clearData();
-    this.collectData();
-
     if (!this.validate()) {
         return;
     }
-
     $("#classRoom").val($("#classRoomCode option:selected").text());
     $("#courseName").val($("#courseCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-
+    this.collectData();
+    
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/add", function(data){
         Feng.success("添加成功!");
@@ -238,8 +244,6 @@ ClassInfoDlg.addSubmit = function() {
 ClassInfoDlg.editSubmit = function() {
 
     this.clearData();
-    this.collectData();
-
     if (!this.validate()) {
         return;
     }
@@ -247,7 +251,7 @@ ClassInfoDlg.editSubmit = function() {
     $("#courseName").val($("#courseCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-
+    this.collectData();
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/update", function(data){
         Feng.success("修改成功!");
@@ -308,4 +312,5 @@ $(function() {
     $("#courseCode").val($("#courseCodeValue").val());
     $("#teacherCode").val($("#teacherCodeValue").val());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
+    $("#grade").val($("#gradeValue").val());
 });

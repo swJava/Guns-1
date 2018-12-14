@@ -8,7 +8,7 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.examine.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.Question;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -92,7 +92,7 @@ public class QuestionController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Question question) {
-        question.setCode(RandomStringUtils.randomNumeric(8));
+        question.setCode(CodeKit.generateQuestion());
         questionService.insert(question);
         return SUCCESS_TIP;
     }

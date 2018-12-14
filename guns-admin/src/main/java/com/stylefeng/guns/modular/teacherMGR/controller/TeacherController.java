@@ -2,23 +2,22 @@ package com.stylefeng.guns.modular.teacherMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
-import com.stylefeng.guns.modular.teacherMGR.warpper.TeacherWrapper;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
-import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Teacher;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
+import com.stylefeng.guns.modular.teacherMGR.warpper.TeacherWrapper;
+import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,7 +94,7 @@ public class TeacherController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Teacher teacher) {
-        teacher.setCode(RandomStringUtils.randomNumeric(8));
+        teacher.setCode(CodeKit.generateTeacher());
         teacherService.insert(teacher);
         return SUCCESS_TIP;
     }

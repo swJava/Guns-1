@@ -1,7 +1,6 @@
 package com.stylefeng.guns.modular.classMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
@@ -13,9 +12,8 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.util.CodeKit;
 import com.stylefeng.guns.util.ToolUtil;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -131,7 +129,7 @@ public class ClassController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Class classInstance) {
-        classInstance.setCode(RandomStringUtils.randomNumeric(8));
+        classInstance.setCode(CodeKit.generateClass());
         classInstance.setPrice(classInstance.getPrice() * 100);
         classService.insert(classInstance);
         return SUCCESS_TIP;

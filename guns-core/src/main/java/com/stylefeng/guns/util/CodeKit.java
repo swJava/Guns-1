@@ -20,14 +20,15 @@ public final class CodeKit {
     private static final String FILE_NAME_DICT = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NUMBER_RAND_DICT = "0123456789";
 
-    public static enum CODE_DEFINE {
+    private static enum CODE_DEFINE {
         STUDENT ("XY", 8),  // 学员
         COURSE ("KC", 6),  // 课程
         ROOM ("JS", 6),  // 教室
         TEACHER ("LS", 6),  // 教师
         CLASS ("BJ", 6),  // 课程
         OUTLINE ("KS", 6),  // 课时
-        ORDER_ITEM ("DI", 6)  // 订单项
+        ORDER_ITEM ("DI", 6),  // 订单项
+        QUESTION ("ST", 8),  // 试题
         ;
 
         String name;
@@ -38,6 +39,63 @@ public final class CodeKit {
             this.length = len;
         }
     }
+    /**
+     * 生成学员编码
+     * @return
+     */
+    public static String generateStudent() {
+        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成教师编码
+     * @return
+     */
+    public static String generateTeacher() {
+        return generate(CODE_DEFINE.TEACHER.name, CODE_DEFINE.TEACHER.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成教室编码
+     * @return
+     */
+    public static String generateRoom() {
+        return generate(CODE_DEFINE.ROOM.name, CODE_DEFINE.ROOM.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成教室编码
+     * @return
+     */
+    public static String generateClass() {
+        return generate(CODE_DEFINE.CLASS.name, CODE_DEFINE.CLASS.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成课时编码
+     * @return
+     */
+    public static String generateOutline() {
+        return generate(CODE_DEFINE.OUTLINE.name, CODE_DEFINE.OUTLINE.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成订单项
+     * @return
+     */
+    public static String generateOrderItem() {
+        return generate(CODE_DEFINE.ORDER_ITEM.name, CODE_DEFINE.ORDER_ITEM.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成试题项
+     * @return
+     */
+    public static String generateQuestion() {
+        return generate(CODE_DEFINE.QUESTION.name, CODE_DEFINE.QUESTION.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成试题项
+     * @return
+     */
+    public static String generateCourse() {
+        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
     private CodeKit(){}
 
     private static ISequenceService sequenceService;
@@ -54,8 +112,7 @@ public final class CodeKit {
         queryWrapper.eq("name", codeName);
 
         Sequence sequence = sequenceService.selectOne(queryWrapper);
-        if (null == sequence)
-            sequence = createSequence(codeName, length);
+        if (null == sequence){sequence = createSequence(codeName, length);}
 
         long currentVal = sequence.getCurrentVal();
         long nextVal = currentVal + 1L;
@@ -100,41 +157,20 @@ public final class CodeKit {
         return str + value;
     }
 
-    /**
-     * 生成学员编码
-     * @return
-     */
-    public static String generateStudent() {
-        Date now = new Date();
-        String datePrefix = DateUtil.formatDate(now, "yyMMdd");
-
-        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{datePrefix});
-    }
-
     public static String generateOrder(){
-            Random random = new Random();
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < 4; i++) {
-                int number = random.nextInt(FILE_NAME_DICT.length());
-                sb.append(FILE_NAME_DICT.charAt(number));
-            }
-            sb.append(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 4; i++) {
+            int number = random.nextInt(FILE_NAME_DICT.length());
+            sb.append(FILE_NAME_DICT.charAt(number));
+        }
+        sb.append(DateUtil.getyyMMddHHmmss());
 
-            for (int i = 0; i < 4; i++) {
-                int number = random.nextInt(NUMBER_RAND_DICT.length());
-                sb.append(NUMBER_RAND_DICT.charAt(number));
-            }
+        for (int i = 0; i < 4; i++) {
+            int number = random.nextInt(NUMBER_RAND_DICT.length());
+            sb.append(NUMBER_RAND_DICT.charAt(number));
+        }
 
-            return sb.toString();
-    }
-
-    /**
-     * 生成订单项
-     * @return
-     */
-    public static String generateOrderItem() {
-        Date now = new Date();
-        String datePrefix = DateUtil.formatDate(now, "yyMMdd");
-        return generate(CODE_DEFINE.ORDER_ITEM.name, CODE_DEFINE.ORDER_ITEM.length, new String[]{datePrefix});
+        return sb.toString();
     }
 }

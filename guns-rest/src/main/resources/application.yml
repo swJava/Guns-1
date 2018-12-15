@@ -49,6 +49,18 @@ spring:
   profiles:
     active: local
 
+#启用shutdown
+management:
+  server:
+    port: 8000
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    enabled-by-default: true
+    shutdown.enabled: true
+    web.exposure.include: "*"
+
 mybatis-plus:
   typeAliasesPackage: com.stylefeng.guns.modular.system.model
   mapperLocations: classpath*:mapper/*.xml
@@ -89,4 +101,4 @@ spring:
     filters: wall,mergeStat
 
 logging:
-  config: file:///H:/Datas/logback.xml
+  config: classpath:logback.xml

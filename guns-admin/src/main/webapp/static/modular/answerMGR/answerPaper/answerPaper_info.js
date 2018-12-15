@@ -65,7 +65,7 @@ AnswerPaperInfoDlg.addSubmit = function() {
     this.collectData();
 
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/answerPaper/add", function(data){
+    var ajax = new $ax(Feng.ctxPath + "/answer/add", function(data){
         Feng.success("添加成功!");
         window.parent.AnswerPaper.table.refresh();
         AnswerPaperInfoDlg.close();
@@ -85,7 +85,7 @@ AnswerPaperInfoDlg.editSubmit = function() {
     this.collectData();
 
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/answerPaper/update", function(data){
+    var ajax = new $ax(Feng.ctxPath + "/answer/update", function(data){
         Feng.success("修改成功!");
         window.parent.AnswerPaper.table.refresh();
         AnswerPaperInfoDlg.close();

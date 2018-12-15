@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.modular.system.model.Sequence;
 import com.stylefeng.guns.modular.system.service.ISequenceService;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -44,35 +46,35 @@ public final class CodeKit {
      * @return
      */
     public static String generateStudent() {
-        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, null);
     }
     /**
      * 生成教师编码
      * @return
      */
     public static String generateTeacher() {
-        return generate(CODE_DEFINE.TEACHER.name, CODE_DEFINE.TEACHER.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.TEACHER.name, CODE_DEFINE.TEACHER.length, null);
     }
     /**
      * 生成教室编码
      * @return
      */
     public static String generateRoom() {
-        return generate(CODE_DEFINE.ROOM.name, CODE_DEFINE.ROOM.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.ROOM.name, CODE_DEFINE.ROOM.length, null);
     }
     /**
-     * 生成教室编码
+     * 生成班级编码
      * @return
      */
     public static String generateClass() {
-        return generate(CODE_DEFINE.CLASS.name, CODE_DEFINE.CLASS.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.CLASS.name, CODE_DEFINE.CLASS.length, null);
     }
     /**
      * 生成课时编码
      * @return
      */
     public static String generateOutline() {
-        return generate(CODE_DEFINE.OUTLINE.name, CODE_DEFINE.OUTLINE.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.OUTLINE.name, CODE_DEFINE.OUTLINE.length, null);
     }
     /**
      * 生成订单项
@@ -86,7 +88,7 @@ public final class CodeKit {
      * @return
      */
     public static String generateQuestion() {
-        return generate(CODE_DEFINE.QUESTION.name, CODE_DEFINE.QUESTION.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.QUESTION.name, CODE_DEFINE.QUESTION.length, null);
     }
     /**
      * 生成试题项
@@ -126,9 +128,10 @@ public final class CodeKit {
 
         StringBuffer buff = new StringBuffer();
         buff.append(codeName);
-
-        for(String prefix : prefixies){
-            buff.append(prefix);
+        if(prefixies!=null){
+            for(String prefix : prefixies){
+                buff.append(prefix);
+            }
         }
         buff.append(padLeft(String.valueOf(nextVal), length, '0'));
 

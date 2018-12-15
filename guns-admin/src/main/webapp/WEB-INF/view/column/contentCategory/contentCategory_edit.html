@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" value="${item.id}" underline="true"/>
+                            <#input id="columnCode" name="栏目编码" value="${item.columnCode}" underline="true"/>
+                            <#input id="columnName" name="栏目名称" value="${item.columnName}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="contentCode" name="内容编码" value="${item.contentCode}" underline="true"/>
+                            <#input id="contentName" name="文章标题" value="${item.contentName}" underline="true"/>
+                            <#input id="status" name="状态" value="${item.status}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ContentCategoryInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ContentCategoryInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/column/contentCategory/contentCategory_info.js"></script>
+@}

@@ -1,9 +1,14 @@
 package com.stylefeng.guns.modular.contentMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
+import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
 import com.stylefeng.guns.modular.system.model.Column;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 /**
- * columnMGR控制器
+ * 栏目控制器
  *
  * @author fengshuonan
  * @Date 2018-12-15 15:17:50
  */
-@Controller
+     @Controller
 @RequestMapping("/column")
 public class ColumnController extends BaseController {
 
@@ -28,7 +35,7 @@ public class ColumnController extends BaseController {
     private IColumnService columnService;
 
     /**
-     * 跳转到columnMGR首页
+     * 跳转到栏目首页
      */
     @RequestMapping("")
     public String index() {
@@ -36,7 +43,7 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 跳转到添加columnMGR
+     * 跳转到添加栏目
      */
     @RequestMapping("/column_add")
     public String columnAdd() {
@@ -44,7 +51,7 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 跳转到修改columnMGR
+     * 跳转到修改栏目
      */
     @RequestMapping("/column_update/{columnId}")
     public String columnUpdate(@PathVariable Integer columnId, Model model) {
@@ -55,16 +62,28 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 获取columnMGR列表
+     * 获取栏目列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return columnService.selectList(null);
+        //分页查詢
+        Page<Column> page = new PageFactory<Column>().defaultPage();
+        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
+            {
+                //name条件分页
+                if (StringUtils.isNotEmpty(condition)) {
+                    like("name", condition);
+                }
+            }
+        });
+        //包装数据
+        new ColumnWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
     }
 
     /**
-     * 新增columnMGR
+     * 新增栏目
      */
     @RequestMapping(value = "/add")
     @ResponseBody
@@ -74,7 +93,7 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 删除columnMGR
+     * 删除栏目
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
@@ -84,7 +103,7 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 修改columnMGR
+     * 修改栏目
      */
     @RequestMapping(value = "/update")
     @ResponseBody
@@ -94,7 +113,7 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * columnMGR详情
+     * 栏目详情
      */
     @RequestMapping(value = "/detail/{columnId}")
     @ResponseBody

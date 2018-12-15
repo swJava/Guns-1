@@ -14,9 +14,7 @@ import com.stylefeng.guns.rest.modular.examine.requester.BeginExamineRequester;
 import com.stylefeng.guns.rest.modular.examine.requester.ExamPaperSubmitRequester;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -68,16 +66,15 @@ public class ExamController {
         return null;
     }
 
-    @ApiOperation(value="试卷详情", httpMethod = "POST")
-    @ApiImplicitParam(name = "code", value = "试卷编码", required = true, dataType = "String")
-    @RequestMapping("/paper/get")
-    public Responser 试卷(String code){
+    @ApiOperation(value="试卷详情")
+    @RequestMapping(value = "/paper/detail/{code}", method = {RequestMethod.POST, RequestMethod.GET})
+    public Responser paperDetail(@PathVariable("code") String code){
         return null;
     }
 
     @ApiOperation(value="提交试卷", httpMethod = "POST")
     @RequestMapping("/paper/submit")
-    public Responser 提交试卷(@RequestBody ExamPaperSubmitRequester requester){
+    public Responser submitPaper(@RequestBody ExamPaperSubmitRequester requester){
         return null;
     }
 }

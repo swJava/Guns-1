@@ -44,32 +44,40 @@ public class ControllerAspectConfig {
         return new MethodInterceptor() {
             @Override
             public Object invoke(MethodInvocation invocation) throws Throwable {
-                Object controller = invocation.getThis();
-                AccessibleObject accessObject = invocation.getStaticPart();
-                Object[] arguments = invocation.getArguments();
 
-                RequestMapping requestMappingAnnotation = accessObject.getAnnotation(RequestMapping.class);
+                try {
+                    Object controller = invocation.getThis();
+                    AccessibleObject accessObject = invocation.getStaticPart();
+                    Object[] arguments = invocation.getArguments();
 
-                if (null == requestMappingAnnotation){
-                    // 不是Controller接口
-                    return invocation.proceed();
+                    RequestMapping requestMappingAnnotation = accessObject.getAnnotation(RequestMapping.class);
+
+                    if (null == requestMappingAnnotation) {
+                        // 不是Controller接口
+                        return invocation.proceed();
+                    }
+
+                    StringBuilder logBuilder = new StringBuilder();
+                    logBuilder.append("接口").append(JSON.toJSONString(requestMappingAnnotation.value()))
+                            .append("请求参数: \n");
+                    for (Object argument : arguments) {
+                        if (null == argument)
+                            continue;
+
+                        if (argument instanceof HttpServletRequest
+                                || argument instanceof HttpServletResponse
+                                || argument instanceof Model)
+                            continue;
+
+                        logBuilder.append(argument.getClass().getSimpleName()).append(" = ");
+                        logBuilder.append(JSON.toJSONString(argument)).append("\n");
+                    }
+
+                    log.debug(logBuilder.toString());
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
 
-
-                StringBuilder logBuilder = new StringBuilder();
-                logBuilder.append("接口").append(JSON.toJSONString(requestMappingAnnotation.value()))
-                        .append("请求参数: \n");
-                for(Object argument : arguments){
-                    if (argument instanceof HttpServletRequest
-                            || argument instanceof HttpServletResponse
-                            || argument instanceof Model)
-                        continue;
-
-                    logBuilder.append(argument.getClass().getSimpleName()).append(" = ");
-                    logBuilder.append(JSON.toJSONString(argument)).append("\n");
-                }
-
-                log.debug(logBuilder.toString());
                 return invocation.proceed();
             }
         };

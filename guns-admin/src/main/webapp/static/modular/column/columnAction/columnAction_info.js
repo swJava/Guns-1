@@ -2,7 +2,37 @@
  * 初始化栏目行为详情对话框
  */
 var ColumnActionInfoDlg = {
-    columnActionInfoData : {}
+    columnActionInfoData : {},
+    validateFields: {
+        code: {
+            validators: {
+                columnCode: {
+                    message: '栏目编码不能为空'
+                }
+            }
+        },
+        name: {
+            validators: {
+                notEmpty: {
+                    message: '动作名称不能为空'
+                }
+            }
+        },
+        type: {
+            validators: {
+                notEmpty: {
+                    message: '类型：不能为空'
+                }
+            }
+        },
+        action: {
+            validators: {
+                notEmpty: {
+                    message: '动作：不能为空'
+                }
+            }
+        },
+    }
 };
 
 /**
@@ -103,7 +133,7 @@ $(function() {
         })
     }, function (data) {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
-    }); 
+    });
     ajax.start();
     $("#columnCode").append(html);
 

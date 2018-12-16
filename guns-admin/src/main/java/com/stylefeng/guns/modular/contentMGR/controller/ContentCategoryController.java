@@ -75,7 +75,7 @@ public class ContentCategoryController extends BaseController {
             {
                 //name条件分页
                 if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                    like("contentName", condition);
                 }
             }
         });

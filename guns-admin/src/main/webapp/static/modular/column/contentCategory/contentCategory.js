@@ -18,7 +18,7 @@ ContentCategory.initColumn = function () {
             {title: '栏目名称', field: 'columnName', visible: true, align: 'center', valign: 'middle'},
             {title: '内容编码', field: 'contentCode', visible: true, align: 'center', valign: 'middle'},
             {title: '文章标题', field: 'contentName', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

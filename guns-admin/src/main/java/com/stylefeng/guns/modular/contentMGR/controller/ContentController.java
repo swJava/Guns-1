@@ -81,6 +81,14 @@ public class ContentController extends BaseController {
         new ContentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
+    /**
+     * 获取资讯管理列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listAll(String condition) {
+        return contentService.selectList(null);
+    }
 
     /**
      * 新增资讯管理

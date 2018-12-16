@@ -3,21 +3,22 @@
     <div class="ibox-content">
         <div class="form-horizontal" id="contentCategoryInfoForm">
             <input type="hidden" id="id" value="${item.id}">
-            <input type="hidden" id="type" value="${item.type}">
-            <input type="hidden" id="action" value="${item.action}">
+            <input type="hidden" id="columnName" value="${item.columnName}">
+            <input type="hidden" id="contentName" value="${item.contentName}">
             <input type="hidden" id="statusValue" value="${item.status}">
-
             <div class="row">
-                <div class="col-sm-6 b-r">
-                            <#input id="id" name="" value="${item.id}" underline="true"/>
-                            <#input id="columnCode" name="栏目编码" value="${item.columnCode}" underline="true"/>
-                            <#input id="columnName" name="栏目名称" value="${item.columnName}" />
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">栏目名称</label>
+                    <div class="col-sm-9">
+                        <select id="columnCode" name="栏目名称" class="form-control" style="width:75%px"></select>
+                    </div>
                 </div>
-
-                <div class="col-sm-6">
-                            <#input id="contentCode" name="内容编码" value="${item.contentCode}" underline="true"/>
-                            <#input id="contentName" name="文章标题" value="${item.contentName}" underline="true"/>
-                            <#input id="status" name="状态" value="${item.status}" />
+                <div class="hr-line-dashed" ></div >
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">内容</label>
+                    <div class="col-sm-9">
+                        <select id="contentCode" name="内容" class="form-control" style="width:75%px"></select>
+                    </div>
                 </div>
             </div>
 

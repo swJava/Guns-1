@@ -2,7 +2,23 @@
  * 初始化关系栏目内容详情对话框
  */
 var ContentCategoryInfoDlg = {
-    contentCategoryInfoData : {}
+    contentCategoryInfoData : {},
+    validateFields: {
+        columnCode: {
+            validators: {
+                columnCode: {
+                    message: '栏目编码不能为空'
+                }
+            }
+        },
+        contentCode: {
+            validators: {
+                notEmpty: {
+                    message: '内容不能为空'
+                }
+            }
+        },
+    }
 };
 
 /**
@@ -59,6 +75,8 @@ ContentCategoryInfoDlg.collectData = function() {
 ContentCategoryInfoDlg.addSubmit = function() {
 
     this.clearData();
+    $("#columnName").val($("#columnCode option:selected").text());
+    $("#contentName").val($("#contentCode option:selected").text());
     this.collectData();
 
     //提交信息
@@ -79,7 +97,10 @@ ContentCategoryInfoDlg.addSubmit = function() {
 ContentCategoryInfoDlg.editSubmit = function() {
 
     this.clearData();
+    $("#columnName").val($("#columnCode option:selected").text());
+    $("#contentName").val($("#contentCode option:selected").text());
     this.collectData();
+
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/contentCategory/update", function(data){
@@ -94,5 +115,30 @@ ContentCategoryInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-
+    /* 栏目*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/column/listAll", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#columnCode").append(html);
+    console.log(html);
+    /* 内容*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/content/listAll", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.introduce+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#contentCode").append(html);
+    console.log(html);
+    //初始select选项
+    $("#status").val($("#statusValue").val());
 });

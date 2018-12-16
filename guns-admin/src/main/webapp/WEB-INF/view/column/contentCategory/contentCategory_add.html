@@ -2,18 +2,22 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal" id="contentCategoryInfoForm">
+            <input type="hidden" id="columnName">
+            <input type="hidden" id="contentName">
 
             <div class="row">
-                <div class="col-sm-6 b-r">
-                            <#input id="id" name="" underline="true"/>
-                            <#input id="columnCode" name="栏目编码" underline="true"/>
-                            <#input id="columnName" name="栏目名称"/>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">栏目名称</label>
+                    <div class="col-sm-9">
+                        <select id="columnCode" name="栏目名称" class="form-control" style="width:75%px"></select>
+                    </div>
                 </div>
-
-                <div class="col-sm-6">
-                            <#input id="contentCode" name="内容编码" underline="true"/>
-                            <#input id="contentName" name="文章标题" underline="true"/>
-                            <#input id="status" name="状态" underline="true"/>
+                <div class="hr-line-dashed" ></div >
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">内容</label>
+                    <div class="col-sm-9">
+                        <select id="contentCode" name="内容" class="form-control" style="width:75%px"></select>
+                    </div>
                 </div>
             </div>
 

@@ -6,6 +6,7 @@ import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.warpper.ContentWrapper;
+import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,6 +97,7 @@ public class ContentController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Content content) {
+        content.setCode(CodeKit.generateContent());
         contentService.insert(content);
         return SUCCESS_TIP;
     }
@@ -105,7 +107,7 @@ public class ContentController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer contentId) {
+    public Object delete(@RequestParam Long contentId) {
         contentService.deleteById(contentId);
         return SUCCESS_TIP;
     }

@@ -99,7 +99,7 @@ public class ColumnActionController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer columnActionId) {
+    public Object delete(@RequestParam Long columnActionId) {
         columnActionService.deleteById(columnActionId);
         return SUCCESS_TIP;
     }

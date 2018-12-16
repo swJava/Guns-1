@@ -116,7 +116,7 @@ public class ColumnController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer columnId) {
+    public Object delete(@RequestParam Long columnId) {
         columnService.deleteById(columnId);
         return SUCCESS_TIP;
     }

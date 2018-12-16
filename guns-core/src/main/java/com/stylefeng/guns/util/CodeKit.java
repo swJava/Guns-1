@@ -32,6 +32,7 @@ public final class CodeKit {
         ORDER_ITEM ("DI", 6),  // 订单项
         QUESTION ("ST", 8),  // 试题
         COLUMN ("LM", 6),  // 栏目
+        CONTENT ("CT", 8),  // 栏目类容
         ;
 
         String name;
@@ -104,6 +105,13 @@ public final class CodeKit {
      */
     public static String generateCourse() {
         return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成订单项
+     * @return
+     */
+    public static String generateContent() {
+        return generate(CODE_DEFINE.CONTENT.name, CODE_DEFINE.CONTENT.length, new String[]{DateUtil.getyyMMdd()});
     }
 
     private CodeKit(){}

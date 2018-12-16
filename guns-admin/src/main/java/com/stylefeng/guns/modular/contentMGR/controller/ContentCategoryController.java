@@ -99,7 +99,7 @@ public class ContentCategoryController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer contentCategoryId) {
+    public Object delete(@RequestParam Long contentCategoryId) {
         contentCategoryService.deleteById(contentCategoryId);
         return SUCCESS_TIP;
     }

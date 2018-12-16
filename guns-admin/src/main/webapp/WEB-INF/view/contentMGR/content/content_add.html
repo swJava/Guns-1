@@ -8,15 +8,22 @@
                     <#avatar id="timage" name="标题图片" underline="true"/>
                     <#dictSelector id="type" name ="类型" code="content_type" label="类型"  underline="true"  width="75%" endNum="10"/>
                     <#input id="title" name="标题" underline="true"/>
-                    <#input id="introduce" name="一句话简介" />
                 </div>
 
                 <div class="col-sm-6">
+                    <#input id="introduce" name="一句话简介" underline="true" />
                     <#input id="author" name="作者" underline="true"/>
                     <#dictSelector id="publishType" name ="发布类型" code="content_type" label="发布类型" startNum="10" endNum="20"  underline="true"  width="75%"/>
-                    <#input id="content" name="内容，富文本内容" underline="true"/>
                     <#input id="deadDate" name="下架时间" underline="true" type="text"/>
-                    <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">发布内容</label>
+                        <div class="col-sm-11">
+                            <div id="content" class="editorHeight">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -31,4 +38,5 @@
     </div>
 </div>
 <script src="${ctxPath}/static/modular/contentMGR/content/content_info.js"></script>
+<script type="text/javascript" src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
 @}

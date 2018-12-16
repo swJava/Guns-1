@@ -41,8 +41,7 @@ public class Column extends Model<Column> {
      * 图标
      */
     @ApiModelProperty(name = "iconImg", value = "图标", position = 2, example="http://192.168.10.2/icon.jpg")
-    @TableField("icon_img")
-    private String iconImg;
+    private String icon;
     /**
      * 父级栏目
      */
@@ -84,12 +83,12 @@ public class Column extends Model<Column> {
         this.name = name;
     }
 
-    public String getIconImg() {
-        return iconImg;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setIconImg(String iconImg) {
-        this.iconImg = iconImg;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public String getPcode() {
@@ -127,7 +126,7 @@ public class Column extends Model<Column> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
-        ", icon=" + iconImg +
+        ", icon=" + icon +
         ", pcode=" + pcode +
         ", pcodes=" + pcodes +
         ", status=" + status +

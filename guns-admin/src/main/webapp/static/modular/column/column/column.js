@@ -14,11 +14,12 @@ var Column = {
 Column.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '图标', field: 'iconImg', visible: true, align: 'center', valign: 'middle',
+            {title: '图标', field: 'icon', visible: true, align: 'center', valign: 'middle',
                 formatter:function (value,row,index) {
+                    console.log(row.icon)
                     var imgUrl;
-                    if(row.iconImg != null && row.iconImg != ''){
-                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.iconImg +'" width="64px" height="64px">';
+                    if(row.icon != null && row.icon != ''){
+                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.icon +'" width="64px" height="64px">';
                     }else {
                         imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
                     }

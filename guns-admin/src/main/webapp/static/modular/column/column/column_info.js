@@ -135,7 +135,7 @@ $(function() {
     //非空校验
     Feng.initValidator("columnInfoForm", ColumnInfoDlg.validateFields);
 
-    /* 老师*/
+    /* 栏目*/
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/column/listAll", function (data) {
         data.forEach(function (item) {
@@ -149,7 +149,6 @@ $(function() {
 
     //初始select选项
     $("#status").val($("#statusValue").val());
-    $("#type").val($("#typeValue").val());
     $("#pcode").val($("#pcodeValue").val());
 
 

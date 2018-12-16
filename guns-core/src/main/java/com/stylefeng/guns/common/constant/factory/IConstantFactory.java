@@ -67,6 +67,10 @@ public interface IConstantFactory {
      * 获取字典名称
      */
     String getDictName(Integer dictId);
+    /**
+     * 获取字典名称
+     */
+    String getDictNameByCode(String dictCode);
 
     /**
      * 获取通知标题
@@ -231,10 +235,4 @@ public interface IConstantFactory {
      */
     String getColumnTypeName(Integer type);
 
-    /**
-     *
-     * @param action
-     * @return
-     */
-    String getColumnActionName(Integer action);
 }

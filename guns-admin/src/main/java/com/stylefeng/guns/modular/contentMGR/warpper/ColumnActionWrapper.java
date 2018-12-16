@@ -21,6 +21,6 @@ public class ColumnActionWrapper extends BaseControllerWarpper{
     protected void warpTheMap(Map<String, Object> map) {
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
         map.put("typeName", ConstantFactory.me().getColumnTypeName((Integer) map.get("type")));
-        map.put("actionName", ConstantFactory.me().getColumnActionName((Integer) map.get("action")));
+        map.put("actionName", ConstantFactory.me().getDictNameByCode((String) map.get("action")));
     }
 }

@@ -18,6 +18,7 @@ import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -211,6 +212,17 @@ public class ConstantFactory implements IConstantFactory {
                 return dict.getName();
             }
         }
+    }
+
+    /**
+     * 获取字典名称
+     * @param dictCode
+     * @return
+     */
+    @Override
+    public String getDictNameByCode(String dictCode) {
+        List<Dict> dicts = dictMapper.selectByCode(dictCode);
+        return CollectionUtils.isEmpty(dicts)?"":dicts.get(0).getName();
     }
 
     /**
@@ -458,10 +470,5 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public String getColumnTypeName(Integer type) {
         return getDictsByName("栏目行为类型", type);
-    }
-
-    @Override
-    public String getColumnActionName(Integer action) {
-        return getDictsByName("栏目行为动作", action);
     }
 }

@@ -5,16 +5,24 @@
 
             <div class="row">
                 <div class="col-sm-6 b-r">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">栏目名称</label>
+                                <div class="col-sm-9">
+                                    <select id="columnCode" name="栏目名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                             <#input id="name" name="动作名称" underline="true"/>
                             <#dictSelector id="type" name ="类型" code="columnAction_type" label="类型"  underline="true"  width="75%"/>
-                            <#dictSelector id="action" name ="动作" code="columnAction_action" label="动作"  underline="true"  width="75%"/>
 
                 </div>
 
                 <div class="col-sm-6">
+                            <#dictSelector id="action" name ="动作" code="columnAction_action" label="动作"  underline="true"  width="75%"/>
                             <#input id="data" name="格式数据" underline="true"/>
-                            <#input id="status" name="状态" underline="true"/>
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
                 </div>
+
             </div>
 
             <div class="row btn-group-m-t">

@@ -95,5 +95,21 @@ ColumnActionInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    /* 栏目*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/column/listAll", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    }); 
+    ajax.start();
+    $("#columnCode").append(html);
 
+    //初始select选项
+    $("#status").val($("#statusValue").val());
+    $("#type").val($("#typeValue").val());
+    $("#action").val($("#actionValue").val());
+    $("#columnCode").val($("#columnCodeValue").val());
 });

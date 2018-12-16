@@ -126,7 +126,6 @@ $(function() {
     });
     ajax.start();
     $("#columnCode").append(html);
-    console.log(html);
     /* 内容*/
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/content/listAll", function (data) {
@@ -138,7 +137,6 @@ $(function() {
     });
     ajax.start();
     $("#contentCode").append(html);
-    console.log(html);
     //初始select选项
     $("#status").val($("#statusValue").val());
 });

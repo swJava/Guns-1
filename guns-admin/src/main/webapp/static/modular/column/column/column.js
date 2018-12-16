@@ -16,7 +16,6 @@ Column.initColumn = function () {
         {field: 'selectItem', radio: true},
             {title: '图标', field: 'icon', visible: true, align: 'center', valign: 'middle',
                 formatter:function (value,row,index) {
-                    console.log(row.icon)
                     var imgUrl;
                     if(row.icon != null && row.icon != ''){
                         imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.icon +'" width="64px" height="64px">';

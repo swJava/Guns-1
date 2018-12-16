@@ -86,18 +86,4 @@ public class ClassDetailResponse extends SimpleResponser {
         response.setData(classInfo);
         return response;
     }
-
-    @ApiModel
-    class ClassDto extends Class {
-        @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
-        String classTimeDesp;
-
-        public String getClassTimeDesp() {
-            return classTimeDesp;
-        }
-
-        public void setClassTimeDesp(String classTimeDesp) {
-            this.classTimeDesp = classTimeDesp;
-        }
-    }
 }

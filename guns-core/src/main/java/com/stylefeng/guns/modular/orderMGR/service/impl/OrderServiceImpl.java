@@ -59,6 +59,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return orderNo;
     }
 
+    @Override
+    public List<OrderItem> listItems(String acceptNo) {
+        return null;
+    }
+
     /**
      * 算费
      *

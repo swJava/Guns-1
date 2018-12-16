@@ -47,7 +47,7 @@ public class AuthFilter extends OncePerRequestFilter {
         Map<String, String[]> parameters = request.getParameterMap();
         if (null != parameters)
             log.debug("Request parameters = " + JSON.toJSONString(parameters));
-        
+
         InputStream is = request.getInputStream();
         byte[] buff = new byte[1024];
         int count = is.read(buff);

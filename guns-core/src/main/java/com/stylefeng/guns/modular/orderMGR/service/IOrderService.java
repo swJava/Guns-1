@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Order;
+import com.stylefeng.guns.modular.system.model.OrderItem;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,4 +29,12 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     String order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData);
+
+    /**
+     * 订单项目列表
+     *
+     * @param acceptNo
+     * @return
+     */
+    List<OrderItem> listItems(String acceptNo);
 }

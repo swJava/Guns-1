@@ -2,7 +2,6 @@ package com.stylefeng.guns.rest.modular.education.responser;
 
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
-import com.stylefeng.guns.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
@@ -112,42 +111,5 @@ public class ClassListResponse extends SimpleResponser {
 
         response.setData(classList);
         return response;
-    }
-
-    @ApiModel
-    class ClassDto extends com.stylefeng.guns.modular.system.model.Class {
-
-        @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
-        String classTimeDesp;
-
-        @ApiModelProperty(name = "canAdjust", value = "能否调课", example = "false")
-        boolean canAdjust;
-
-        @ApiModelProperty(name = "canChange", value = "能否转班", example = "true")
-        boolean canChange;
-
-        public String getClassTimeDesp() {
-            return classTimeDesp;
-        }
-
-        public void setClassTimeDesp(String classTimeDesp) {
-            this.classTimeDesp = classTimeDesp;
-        }
-
-        public boolean isCanAdjust() {
-            return canAdjust;
-        }
-
-        public void setCanAdjust(boolean canAdjust) {
-            this.canAdjust = canAdjust;
-        }
-
-        public boolean isCanChange() {
-            return canChange;
-        }
-
-        public void setCanChange(boolean canChange) {
-            this.canChange = canChange;
-        }
     }
 }

@@ -199,9 +199,7 @@ public class OrderController {
     })
     public Responser listCart(
             @NotBlank(message = "用户名不能为空")
-            @RequestParam(name = "userName", required = true)
             String userName,
-            @RequestParam(name = "status", required = false)
             Integer status
     ){
         Wrapper<CourseCart> queryWrapper = new EntityWrapper<CourseCart>();
@@ -235,8 +233,9 @@ public class OrderController {
             queryWrapper.eq("status", status);
 
         List<Order> orderList = orderService.selectList(queryWrapper);
-
-
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderService.listItems(order.getAcceptNo());
+        }
         return OrderListResponser.me(orderList);
 
     }

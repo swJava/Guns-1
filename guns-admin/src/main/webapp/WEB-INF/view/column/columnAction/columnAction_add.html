@@ -1,13 +1,14 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal">
+        <div class="form-horizontal" id="columnActionInfoForm">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="name" name="动作名称" underline="true"/>
-                            <#input id="type" name="类型"/>
-                            <#input id="action" name="动作" underline="true"/>
+                            <#dictSelector id="type" name ="类型" code="columnAction_type" label="类型"  underline="true"  width="75%"/>
+                            <#dictSelector id="action" name ="动作" code="columnAction_action" label="动作"  underline="true"  width="75%"/>
+
                 </div>
 
                 <div class="col-sm-6">

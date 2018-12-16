@@ -17,10 +17,8 @@ public class ColumnWrapper extends BaseControllerWarpper{
         super(obj);
     }
 
-    @Override
+@Override
     protected void warpTheMap(Map<String, Object> map) {
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
-        map.put("typeName", ConstantFactory.me().getContentTypeName((Integer) map.get("type")));
-        map.put("publishTypeName", ConstantFactory.me().getContentTypeName((Integer) map.get("publishType")));
     }
 }

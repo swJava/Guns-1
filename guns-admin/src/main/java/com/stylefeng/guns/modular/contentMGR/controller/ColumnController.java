@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.contentMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
@@ -8,6 +9,7 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
 import com.stylefeng.guns.modular.system.model.Column;
+import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,6 +83,14 @@ public class ColumnController extends BaseController {
         new ColumnWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
+    /**
+     * 获取栏目列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listAll(String condition) {
+        return columnService.selectList(null);
+    }
 
     /**
      * 新增栏目
@@ -88,6 +98,15 @@ public class ColumnController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Column column) {
+        if(StringUtils.isNotEmpty(column.getPcode())){
+            Column code = columnService.selectOne(new EntityWrapper<Column>() {
+                {
+                    eq("code", column.getPcode());
+                }
+            });
+            column.setPcodes(code.getPcodes()+","+code.getCode());
+        }
+        column.setCode(CodeKit.generateColumn());
         columnService.insert(column);
         return SUCCESS_TIP;
     }

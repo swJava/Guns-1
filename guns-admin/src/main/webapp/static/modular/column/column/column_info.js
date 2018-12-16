@@ -2,7 +2,44 @@
  * 初始化栏目详情对话框
  */
 var ColumnInfoDlg = {
-    columnInfoData : {}
+    columnInfoData : {},
+    validateFields: {
+        code: {
+            validators: {
+                notEmpty: {
+                    message: '编码不能为空'
+                }
+            }
+        },
+        name: {
+            validators: {
+                notEmpty: {
+                    message: '栏目不能为空名称'
+                }
+            }
+        },
+        icon: {
+            validators: {
+                notEmpty: {
+                    message: '图标不能为空'
+                }
+            }
+        },
+        pcode: {
+            validators: {
+                notEmpty: {
+                    message: '父级栏目不能为空'
+                }
+            }
+        },
+        pcodes: {
+            validators: {
+                notEmpty: {
+                    message: '祖先栏目不能为空'
+                }
+            }
+        },
+    }
 };
 
 /**
@@ -95,5 +132,29 @@ ColumnInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    //非空校验
+    Feng.initValidator("columnInfoForm", ColumnInfoDlg.validateFields);
 
+    /* 老师*/
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/column/listAll", function (data) {
+        data.forEach(function (item) {
+            html +="<option value="+item.code+">"+item.name+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+    $("#pcode").append(html);
+
+    //初始select选项
+    $("#status").val($("#statusValue").val());
+    $("#type").val($("#typeValue").val());
+    $("#pcode").val($("#pcodeValue").val());
+
+
+    // 初始化图片上传
+    var avatarUp = new $WebUpload("icon");
+    avatarUp.setUploadBarId("progressBar");
+    avatarUp.init();
 });

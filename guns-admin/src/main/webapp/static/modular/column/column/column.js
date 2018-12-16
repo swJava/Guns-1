@@ -14,12 +14,22 @@ var Column = {
 Column.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '图标', field: 'icon', visible: true, align: 'center', valign: 'middle'},
+            {title: '图标', field: 'iconImg', visible: true, align: 'center', valign: 'middle',
+                formatter:function (value,row,index) {
+                    var imgUrl;
+                    if(row.iconImg != null && row.iconImg != ''){
+                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.iconImg +'" width="64px" height="64px">';
+                    }else {
+                        imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
+                    }
+                    return imgUrl;
+                }
+            },
             {title: '栏目编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
             {title: '栏目名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '父级栏目', field: 'pcode', visible: true, align: 'center', valign: 'middle'},
             {title: '祖先栏目', field: 'pcodes', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

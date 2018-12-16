@@ -216,4 +216,25 @@ public interface IConstantFactory {
      * @return
      */
     String getCycleName(Integer cycle);
+
+    /**
+     * 获取栏目名称
+     * @param pcodes
+     * @return
+     */
+    String getColumnName(String pcodes);
+
+    /**
+     * 栏目行为类型
+     * @param type
+     * @return
+     */
+    String getColumnTypeName(Integer type);
+
+    /**
+     *
+     * @param action
+     * @return
+     */
+    String getColumnActionName(Integer action);
 }

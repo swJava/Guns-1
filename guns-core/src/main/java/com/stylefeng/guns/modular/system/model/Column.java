@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -39,8 +40,9 @@ public class Column extends Model<Column> {
     /**
      * 图标
      */
-    @ApiModelProperty(name = "icon", value = "图标", position = 2, example="http://192.168.10.2/icon.jpg")
-    private String icon;
+    @ApiModelProperty(name = "iconImg", value = "图标", position = 2, example="http://192.168.10.2/icon.jpg")
+    @TableField("icon_img")
+    private String iconImg;
     /**
      * 父级栏目
      */
@@ -82,12 +84,12 @@ public class Column extends Model<Column> {
         this.name = name;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getIconImg() {
+        return iconImg;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setIconImg(String iconImg) {
+        this.iconImg = iconImg;
     }
 
     public String getPcode() {
@@ -125,7 +127,7 @@ public class Column extends Model<Column> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
-        ", icon=" + icon +
+        ", icon=" + iconImg +
         ", pcode=" + pcode +
         ", pcodes=" + pcodes +
         ", status=" + status +

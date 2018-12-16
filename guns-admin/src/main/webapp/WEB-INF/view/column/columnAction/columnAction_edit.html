@@ -1,19 +1,23 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal">
+        <div class="form-horizontal" id="columnActionInfoForm">
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="type" value="${item.type}">
+            <input type="hidden" id="action" value="${item.action}">
+            <input type="hidden" id="statusValue" value="${item.status}">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="columnCode" name="栏目编码" value="${item.columnCode}" underline="true"/>
                             <#input id="name" name="动作名称" value="${item.name}" underline="true"/>
-                            <#input id="type" name="类型" value="${item.type}" />
+                            <#dictSelector id="type" name ="类型" code="columnAction_type" label="类型"  underline="true"  width="75%"/>
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="action" name="动作" value="${item.action}" underline="true"/>
+                            <#dictSelector id="action" name ="动作" code="columnAction_action" label="动作"  underline="true"  width="75%"/>
                             <#input id="data" name="格式数据" value="${item.data}" underline="true"/>
-                            <#input id="status" name="状态" value="${item.status}" />
+                            <#dictSelector id="status" name ="状态" code="status" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
 

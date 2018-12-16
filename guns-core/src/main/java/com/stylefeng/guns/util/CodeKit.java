@@ -31,6 +31,7 @@ public final class CodeKit {
         OUTLINE ("KS", 6),  // 课时
         ORDER_ITEM ("DI", 6),  // 订单项
         QUESTION ("ST", 8),  // 试题
+        COLUMN ("LM", 6),  // 栏目
         ;
 
         String name;
@@ -40,6 +41,13 @@ public final class CodeKit {
             this.name = name;
             this.length = len;
         }
+    }
+    /**
+     * 生成学员编码
+     * @return
+     */
+    public static String generateColumn() {
+        return generate(CODE_DEFINE.COLUMN.name, CODE_DEFINE.COLUMN.length, null);
     }
     /**
      * 生成学员编码

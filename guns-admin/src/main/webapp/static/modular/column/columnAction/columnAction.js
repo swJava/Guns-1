@@ -16,10 +16,10 @@ ColumnAction.initColumn = function () {
         {field: 'selectItem', radio: true},
             {title: '栏目编码', field: 'columnCode', visible: true, align: 'center', valign: 'middle'},
             {title: '动作名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-            {title: '类型', field: 'type', visible: true, align: 'center', valign: 'middle'},
+            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '功能', field: 'action', visible: true, align: 'center', valign: 'middle'},
-            {title: '格式数据', field: 'data', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'}
+            {title: '格式数据', field: 'dataName', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 

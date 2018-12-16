@@ -1,17 +1,21 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal">
+        <div class="form-horizontal" id="columnInfoForm">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                    <#input id="icon" name="图标"/>
-                    <#input id="name" name="栏目名称" underline="true"/>
+                    <#avatar id="icon" name="图标" underline="true"/>
                 </div>
 
                 <div class="col-sm-6">
-                    <#input id="pcode" name="父级栏目" underline="true"/>
-                    <#input id="pcodes" name="祖先栏目" underline="true"/>
+                    <#input id="name" name="栏目名称" underline="true"/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">父级栏目</label>
+                        <div class="col-sm-9">
+                            <select id="pcode" name="父级栏目" class="form-control" style="width:75%px"></select>
+                        </div>
+                    </div>
                 </div>
             </div>
 

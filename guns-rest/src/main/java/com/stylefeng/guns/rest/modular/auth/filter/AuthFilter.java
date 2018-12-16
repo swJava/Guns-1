@@ -7,7 +7,6 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.rest.config.properties.AuthProperties;
 import com.stylefeng.guns.rest.core.exception.ServiceExceptionResponser;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
-import com.stylefeng.guns.rest.task.sms.SmsSender;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Map;
 
 /**
  * 对客户端请求的jwt token验证过滤器
@@ -43,6 +44,20 @@ public class AuthFilter extends OncePerRequestFilter {
         String requestPath = request.getServletPath();
         String contextPath = request.getContextPath();
 
+        Map<String, String[]> parameters = request.getParameterMap();
+        if (null != parameters)
+            log.debug("Request parameters = " + JSON.toJSONString(parameters));
+        
+        InputStream is = request.getInputStream();
+        byte[] buff = new byte[1024];
+        int count = is.read(buff);
+        log.debug("Request Body = ( ");
+        while(count > 0){
+            log.debug(new String(buff));
+            count = is.read(buff);
+        }
+        log.debug(" ) ");
+
         for(String pattern : authProperties.getExcludePattern()){
             if (pathMatcher.match(pattern, requestPath)){
                 chain.doFilter(request, response);
@@ -56,7 +71,7 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         final String requestHeader = request.getHeader(authProperties.getHeader());
 
-        log.debug("Request token = <"+requestHeader+">");
+        log.debug("path = "+ requestPath +" token = <"+requestHeader+">");
 
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("KCEdu ")) {

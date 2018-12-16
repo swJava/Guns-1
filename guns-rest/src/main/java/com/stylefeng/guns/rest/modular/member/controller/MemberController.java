@@ -267,23 +267,4 @@ public class MemberController {
         return MemberDetailResponse.me(member).addAvatar(PathUtil.generate(attachmentVisitURL, String.valueOf(memberAvatar.getId())));
     }
 
-    @RequestMapping("/adjust/course")
-    @ApiOperation(value = "调课申请", httpMethod = "POST")
-    @ResponseBody
-    public Responser 调课申请(
-            @ApiParam(required = true, value = "调课申请")
-            @RequestBody
-            AdjustApplyRequester requester) {
-        return null;
-    }
-
-    @RequestMapping("/adjust/class")
-    @ApiOperation(value = "转班申请", httpMethod = "POST")
-    @ResponseBody
-    public Responser 转班申请(
-            @ApiParam(required = true, value = "转班申请")
-            @RequestBody
-            AdjustApplyRequester requester) {
-        return null;
-    }
 }

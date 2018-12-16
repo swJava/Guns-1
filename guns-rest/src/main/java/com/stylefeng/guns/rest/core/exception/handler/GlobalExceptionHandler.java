@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
      * 拦截jwt相关异常
      */
     @ExceptionHandler(JwtException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Responser jwtException(JwtException e) {
 //        return new ErrorTip(BussExceptionEnum.TOKEN_ERROR.getCode(), BussExceptionEnum.TOKEN_ERROR.getMessage());
@@ -51,6 +51,7 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
         String message = messageSource.getMessage("exception." + MessageConstant.MessageCode.SYS_TOKEN_ERROR, new Object[0], Locale.CHINA);
         responser.setMessage(message);
 
+        log.error(message);
         return responser;
     }
 
@@ -67,6 +68,8 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
         responser.setCode(e.getMessageCode());
         String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), Locale.CHINA);
         responser.setMessage(message);
+
+        log.error(message);
 
         return responser;
     }
@@ -89,6 +92,8 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
         for(ObjectError error : result.getAllErrors()){
             message.append(error.getDefaultMessage());
         }
+
+        log.error(message.toString());
         responser.setMessage(message.toString());
 
         return responser;

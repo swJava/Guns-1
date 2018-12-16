@@ -10,6 +10,7 @@ import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.Course;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.modular.education.requester.AdjustApplyRequester;
 import com.stylefeng.guns.rest.modular.education.requester.ClassQueryRequester;
 import com.stylefeng.guns.rest.modular.education.responser.ClassDetailResponse;
 import com.stylefeng.guns.rest.modular.education.responser.ClassListResponse;
@@ -17,8 +18,8 @@ import com.stylefeng.guns.rest.modular.education.responser.ClassroomDetailRespon
 import com.stylefeng.guns.rest.modular.education.responser.CourseDetailResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,5 +99,48 @@ public class EducationController {
         return CourseDetailResponse.me(course);
     }
 
+
+    @RequestMapping(value = "/class/list4adjust", method = RequestMethod.POST)
+    @ApiOperation(value="可调课班级列表", httpMethod = "POST", response = ClassListResponse.class)
+    public Responser listClass4Adjust(ClassQueryRequester requester, HttpServletRequest request){
+
+        String userName = (String) request.getAttribute("USER_NAME");
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
+
+        return ClassListResponse.me(classList);
+    }
+
+    @RequestMapping(value = "/class/list4change", method = RequestMethod.POST)
+    @ApiOperation(value="可转班班级列表", httpMethod = "POST", response = ClassListResponse.class)
+    public Responser listClass4Change(ClassQueryRequester requester, HttpServletRequest request){
+
+        String userName = (String) request.getAttribute("USER_NAME");
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
+
+        return ClassListResponse.me(classList);
+    }
+
+
+    @RequestMapping("/adjust/course")
+    @ApiOperation(value = "调课申请", httpMethod = "POST")
+    @ResponseBody
+    public Responser 调课申请(
+            @ApiParam(required = true, value = "调课申请")
+            @RequestBody
+            AdjustApplyRequester requester) {
+        return null;
+    }
+
+    @RequestMapping("/adjust/class")
+    @ApiOperation(value = "转班申请", httpMethod = "POST")
+    @ResponseBody
+    public Responser 转班申请(
+            @ApiParam(required = true, value = "转班申请")
+            @RequestBody
+            AdjustApplyRequester requester) {
+        return null;
+    }
 
 }

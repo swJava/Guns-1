@@ -11,8 +11,6 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 

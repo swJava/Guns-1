@@ -80,14 +80,7 @@ public class OrderController {
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        Student existStudent = null;
-        if (null != student) {
-            existStudent = studentService.get(student);
-        }else{
-            List<Student> studentList = studentService.listStudents(userName);
-            if (null != studentList && studentList.size() > 0)
-                existStudent = studentList.get(0);
-        }
+        Student existStudent = findStudent(userName, student);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
@@ -125,14 +118,7 @@ public class OrderController {
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"会员"});
 
-        Student existStudent = null;
-        if (null != student) {
-            existStudent = studentService.get(student);
-        }else{
-            List<Student> studentList = studentService.listStudents(userName);
-            if (null != studentList && studentList.size() > 0)
-                existStudent = studentList.get(0);
-        }
+        Student existStudent = findStudent(userName, student);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
@@ -249,5 +235,24 @@ public class OrderController {
         return OrderListResponser.me(classOrderList);
     }
 
+    /**
+     * 找到一个合适学员信息
+     *
+     * @param userName
+     * @param student
+     * @return
+     */
+    private Student findStudent(String userName, String student) {
+        Student existStudent = null;
+
+        if (null != student) {
+            existStudent = studentService.get(student);
+        }else{
+            List<Student> studentList = studentService.listStudents(userName);
+            if (null != studentList && studentList.size() > 0)
+                existStudent = studentList.get(0);
+        }
+        return existStudent;
+    }
 
 }

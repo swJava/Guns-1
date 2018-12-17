@@ -183,11 +183,10 @@ public class EducationController extends ApiController {
 
     @RequestMapping(value = "/class/list4adjust", method = RequestMethod.POST)
     @ApiOperation(value="可调课班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    public Responser listClass4Adjust(ClassQueryRequester requester, HttpServletRequest request){
+    public Responser listClass4Adjust(AdjustQueryRequester requester){
 
-        String userName = (String) request.getAttribute("USER_NAME");
+        Member currMember = currMember();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
 
         return ClassListResponse.me(classList);
     }

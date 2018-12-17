@@ -99,7 +99,6 @@ ContentInfoDlg.collectData = function() {
     .set('introduce')
     .set('author')
     .set('publishType')
-    .set('content')
     .set('createDate')
     .set('deadDate')
     .set('status');
@@ -166,7 +165,7 @@ $(function() {
 
     //初始化编辑器
     var E = window.wangEditor;
-    var editor = new E('#content');
+    var editor = new E('#editor');
     // 配置服务器端地址
     editor.customConfig.uploadImgServer = Feng.ctxPath + '/mgr/uploadJson';
     editor.customConfig.uploadFileName = 'file';

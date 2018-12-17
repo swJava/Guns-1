@@ -10,14 +10,15 @@ import com.stylefeng.guns.modular.orderMGR.OrderServiceTypeEnum;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
+import com.stylefeng.guns.rest.modular.education.responser.ClassResponser;
 import com.stylefeng.guns.rest.modular.order.requester.OrderPostRequester;
 import com.stylefeng.guns.rest.modular.order.responser.CartListResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderListResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderPostResponser;
-import com.stylefeng.guns.rest.task.sms.SmsSender;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 订单
@@ -214,9 +213,9 @@ public class OrderController {
     }
 
     @ApiOperation(value="订单列表", httpMethod = "POST", response = OrderListResponser.class)
-    @RequestMapping(value = "/order/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "status", value = "状态 1 已选课 ", required = false, dataType = "Integer", example = "1"),
+            @ApiImplicitParam(name = "status", value = "状态 1 待付款 2 已付款 ", required = false, dataType = "Integer", example = "1"),
             @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String", example = "18580255110")
     })
     public Responser listOrder(
@@ -228,16 +227,26 @@ public class OrderController {
     ){
         Wrapper<Order> queryWrapper = new EntityWrapper<Order>();
         queryWrapper.eq("user_name", userName);
+        queryWrapper.eq("status", OrderStateEnum.Valid.code);
 
-        if (null != status)
-            queryWrapper.eq("status", status);
+        if (null != status) {
+            queryWrapper.eq("pay_status", status);
+        }
 
         List<Order> orderList = orderService.selectList(queryWrapper);
-        for(Order order : orderList){
-            List<OrderItem> orderItemList = orderService.listItems(order.getAcceptNo());
-        }
-        return OrderListResponser.me(orderList);
 
+        List<ClassResponser> classOrderList = new ArrayList<ClassResponser>();
+        for(Order order : orderList){
+            List<OrderItem> orderItemList = orderService.listItems(order.getAcceptNo(), OrderItemTypeEnum.Course);
+
+            for(OrderItem classItem : orderItemList){
+                Class classInfo = classService.get(classItem.getItemObjectCode());
+
+                classOrderList.add(ClassResponser.me(classInfo));
+            }
+        }
+
+        return OrderListResponser.me(classOrderList);
     }
 
 

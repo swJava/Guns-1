@@ -1,12 +1,14 @@
 package com.stylefeng.guns.modular.classMGR.service.impl;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.enums.StatusEnum;
 import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.system.dao.CourseOutlineMapper;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
+import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,14 @@ public class CourseOutlineServiceImpl extends ServiceImpl<CourseOutlineMapper, C
             courseOutline.setStatus(StatusEnum.STATUS_VALID.getCode());
             courseOutlineMapper.insert(courseOutline);
         }
+    }
+
+    @Override
+    public CourseOutline get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<CourseOutline>().eq("code", code));
     }
 
 }

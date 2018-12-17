@@ -2,7 +2,7 @@
 <configuration>
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 	    <encoder>
-			<pattern>%d %highlight(%-5level) [%thread] %boldMagenta(%logger{40}) - %boldWhite(%msg%n)</pattern>
+			<pattern>%yellow(%date{yyyy-MM-dd HH:mm:ss:SSS}) %highlight(%-5level) [%thread] %boldMagenta(%logger{40}) - %boldWhite(%msg%n)</pattern>
 	    </encoder>
   	</appender>
   	
@@ -27,7 +27,7 @@
 
 	<logger name="org.hibernate" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
-    <logger name="com.opensymphony" level="WARN"/>
+    <logger name="com.opensymphony" level="DEBUG"/>
     <logger name="org.apache" level="INFO"/>
     <logger name="test" level="DEBUG"/>
 
@@ -36,7 +36,7 @@
         <appender-ref ref="console" />
     </logger>
 
-    <logger name="com.stylefeng.guns.modular" additivity="false" level="INFO">
+    <logger name="com.stylefeng.guns.modular" additivity="false" level="DEBUG">
         <appender-ref ref="api-core" />
         <appender-ref ref="console" />
     </logger>

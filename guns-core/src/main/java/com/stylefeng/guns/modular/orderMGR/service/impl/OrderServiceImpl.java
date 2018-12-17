@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.orderMGR.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
@@ -60,8 +62,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public List<OrderItem> listItems(String acceptNo) {
+    public List<OrderItem> listItems(String acceptNo, OrderItemTypeEnum course) {
         return null;
+    }
+
+    @Override
+    public Order get(String orderNo) {
+        if (null == orderNo)
+            return null;
+
+        Wrapper<Order> queryWrapper = new EntityWrapper<Order>();
+        queryWrapper.eq("accept_no", orderNo);
+        return selectOne(queryWrapper);
     }
 
     /**

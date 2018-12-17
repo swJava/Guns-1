@@ -2,10 +2,7 @@ package com.stylefeng.guns.modular.orderMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Order;
-import com.stylefeng.guns.modular.system.model.OrderItem;
-import com.stylefeng.guns.modular.system.model.PayMethodEnum;
+import com.stylefeng.guns.modular.system.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +31,16 @@ public interface IOrderService extends IService<Order> {
      * 订单项目列表
      *
      * @param acceptNo
+     * @param course
      * @return
      */
-    List<OrderItem> listItems(String acceptNo);
+    List<OrderItem> listItems(String acceptNo, OrderItemTypeEnum type);
+
+    /**
+     * 获取订单
+     *
+     * @param orderNo
+     * @return
+     */
+    Order get(String orderNo);
 }

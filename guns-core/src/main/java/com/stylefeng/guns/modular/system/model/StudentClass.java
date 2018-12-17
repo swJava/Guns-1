@@ -1,6 +1,8 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -11,8 +13,8 @@ import java.io.Serializable;
  * 学员报班信息表
  * </p>
  *
- * @author simple
- * @since 2018-11-03
+ * @author 罗华
+ * @since 2018-12-16
  */
 @TableName("tb_student_class")
 public class StudentClass extends Model<StudentClass> {
@@ -22,6 +24,7 @@ public class StudentClass extends Model<StudentClass> {
     /**
      * 标示
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      * 学员编码
@@ -34,6 +37,11 @@ public class StudentClass extends Model<StudentClass> {
     @TableField("class_code")
     private String classCode;
     /**
+     * 班级编码
+     */
+    @TableField("class_name")
+    private String className;
+    /**
      * 已完成课时数
      */
     private Integer period;
@@ -41,10 +49,6 @@ public class StudentClass extends Model<StudentClass> {
      * 状态
      */
     private Integer status;
-    /**
-     * 上课时间
-     */
-    private Date datetime;
 
 
     public Long getId() {
@@ -71,6 +75,14 @@ public class StudentClass extends Model<StudentClass> {
         this.classCode = classCode;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
     public Integer getPeriod() {
         return period;
     }
@@ -87,14 +99,6 @@ public class StudentClass extends Model<StudentClass> {
         this.status = status;
     }
 
-    public Date getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
-    }
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -106,9 +110,9 @@ public class StudentClass extends Model<StudentClass> {
         "id=" + id +
         ", studentCode=" + studentCode +
         ", classCode=" + classCode +
+        ", className=" + className +
         ", period=" + period +
         ", status=" + status +
-        ", datetime=" + datetime +
         "}";
     }
 }

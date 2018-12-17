@@ -22,4 +22,11 @@ public interface ICourseOutlineService extends IService<CourseOutline> {
      */
     void addCourseOutline(String classCode,String courseCode,String courseValues);
 
+    /**
+     * 获取课时信息
+     *
+     * @param outlineCode
+     * @return
+     */
+    CourseOutline get(String outlineCode);
 }

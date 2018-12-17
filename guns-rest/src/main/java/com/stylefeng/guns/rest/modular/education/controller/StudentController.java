@@ -105,14 +105,4 @@ public class StudentController {
         studentService.updateStudent(requester.getCode(), newStudent);
         return SimpleResponser.success();
     }
-
-    @ApiOperation(value="课程表", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "studentCode", value = "学员编码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "classCode", value = "班级编码", required = true, dataType = "String")
-    })
-    @RequestMapping("/course/list")
-    public Responser 课程表(String studentCode, String classCode){
-        return null;
-    }
 }

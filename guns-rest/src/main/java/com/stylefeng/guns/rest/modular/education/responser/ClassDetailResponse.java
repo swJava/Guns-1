@@ -38,14 +38,14 @@ public class ClassDetailResponse extends SimpleResponser {
     }
 
     @ApiModelProperty(name = "data", value = "班级")
-    private ClassDto data;
+    private ClassResponser data;
 
     public Class getData() {
         return data;
     }
 
     public void setData(Class classInfo) {
-        ClassDto dto = new ClassDto();
+        ClassResponser dto = new ClassResponser();
         BeanUtils.copyProperties(classInfo, dto);
 
         // 格式化开课时间描述

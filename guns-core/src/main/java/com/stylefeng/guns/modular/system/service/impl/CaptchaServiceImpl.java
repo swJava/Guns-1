@@ -7,9 +7,12 @@ import com.stylefeng.guns.modular.system.dao.CaptchaMapper;
 import com.stylefeng.guns.modular.system.model.Captcha;
 import com.stylefeng.guns.modular.system.service.ICaptchaService;
 import com.stylefeng.guns.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sun.net.httpserver.AuthFilter;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +27,7 @@ import java.util.Random;
  */
 @Service
 public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> implements ICaptchaService {
+    private static final Logger log = LoggerFactory.getLogger(CaptchaServiceImpl.class);
 
     private static final String NUMBER_RAND_DICT = "0123456789";
 
@@ -66,12 +70,14 @@ public class CaptchaServiceImpl extends ServiceImpl<CaptchaMapper, Captcha> impl
         queryWrapper.eq("status", 0);
 
         List<Captcha> captchaList = captchaMapper.selectList(queryWrapper);
-        Date now = new Date();
+        Date now = DateUtil.add(new Date(), Calendar.HOUR, 8);
 
         for (Captcha captcha : captchaList){
             captcha.setStatus(1);
+
             captcha.setExpireDate(DateUtil.add(now, Calendar.SECOND, captchaExpireTime));
 
+            log.debug("Sms send over event: {} expire at {}", captcha.getId(), captcha.getExpireDate());
             captchaMapper.updateById(captcha);
         }
     }

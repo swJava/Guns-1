@@ -43,7 +43,9 @@ public class AuthFilter extends OncePerRequestFilter {
         AntPathMatcher pathMatcher = new AntPathMatcher("/");
         String requestPath = request.getServletPath();
         String contextPath = request.getContextPath();
-
+        Object headers = request.getHeaderNames();
+        log.debug("!@@@ ==" + JSON.toJSONString(request.getHeader("content-type")));
+/*
         Map<String, String[]> parameters = request.getParameterMap();
         if (null != parameters)
             log.debug("Request parameters = " + JSON.toJSONString(parameters));
@@ -56,7 +58,7 @@ public class AuthFilter extends OncePerRequestFilter {
             log.debug(new String(buff));
             count = is.read(buff);
         }
-        log.debug(" ) ");
+        log.debug(" ) ");*/
 
         for(String pattern : authProperties.getExcludePattern()){
             if (pathMatcher.match(pattern, requestPath)){

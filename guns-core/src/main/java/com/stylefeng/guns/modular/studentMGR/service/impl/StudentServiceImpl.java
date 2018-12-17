@@ -7,19 +7,22 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.dao.StudentMapper;
+import com.stylefeng.guns.modular.system.model.ScheduleStudent;
 import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.CodeKit;
+import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.PathUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  * <p>
@@ -36,6 +39,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Value("${application.attachment.visit-url}")
     private String attachmentVisitURL;
+
+    @Autowired
+    private ScheduleStudentMapper scheduleStudentMapper;
 
     public Student getOne(Student student){
         return studentMapper.selectOne(student);
@@ -95,6 +101,33 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             return new ArrayList<Student>();
 
         return selectList(new EntityWrapper<Student>().eq("user_name", userName).eq("status", GenericState.Valid.code));
+    }
+
+    @Override
+    public List<ScheduleStudent> listCoursePlan(String student, Date day, Integer... states) {
+
+        Wrapper<ScheduleStudent> queryWrapper = new EntityWrapper<ScheduleStudent>();
+        queryWrapper.eq("student_code", student);
+        queryWrapper.eq("study_date", DateUtil.format(day, "yyyy-MM-dd"));
+        queryWrapper.in("status", states);
+
+        return scheduleStudentMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<ScheduleStudent> listCoursePlan(String classCode, String studentCode, Integer... states) {
+        if (null == classCode)
+            return new ArrayList<>();
+
+        if (null == studentCode)
+            return new ArrayList<>();
+
+        Wrapper<ScheduleStudent> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("class_code", classCode);
+        queryWrapper.eq("student_code", studentCode);
+        queryWrapper.in("status", states);
+
+        return scheduleStudentMapper.selectList(queryWrapper);
     }
 
     private Student buildStudent(Map<String, Object> studentInfo) {

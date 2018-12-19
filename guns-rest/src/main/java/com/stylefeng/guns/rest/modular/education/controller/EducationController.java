@@ -14,6 +14,7 @@ import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.requester.*;
 import com.stylefeng.guns.rest.modular.education.responser.*;
 import io.swagger.annotations.Api;
@@ -180,7 +181,10 @@ public class EducationController extends ApiController {
 
     @RequestMapping(value = "/class/list4adjust", method = RequestMethod.POST)
     @ApiOperation(value="可调课班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    public Responser listClass4Adjust(AdjustQueryRequester requester){
+    public Responser listClass4Adjust(
+            @RequestBody
+            @Valid
+            AdjustQueryRequester requester){
 
         Member currMember = currMember();
 
@@ -190,17 +194,20 @@ public class EducationController extends ApiController {
 
     @RequestMapping(value = "/class/list4change", method = RequestMethod.POST)
     @ApiOperation(value="可转班班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    public Responser listClass4Change(ClassQueryRequester requester, HttpServletRequest request){
+    public Responser listClass4Change(
+            @RequestBody
+            @Valid
+            AdjustQueryRequester requester){
 
-        String userName = (String) request.getAttribute("USER_NAME");
+        Member member = currMember();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), requester.toMap());
 
         return ClassListResponse.me(classList);
     }
 
-    @RequestMapping("/adjust/course")
-    @ApiOperation(value = "调课申请", httpMethod = "POST")
+    @RequestMapping(value = "/adjust/course", method = RequestMethod.POST)
+    @ApiOperation(value = "调课申请", httpMethod = "POST", response = SimpleResponser.class)
     @ResponseBody
     public Responser 调课申请(
             @ApiParam(required = true, value = "调课申请")
@@ -209,13 +216,13 @@ public class EducationController extends ApiController {
         return null;
     }
 
-    @RequestMapping("/adjust/class")
-    @ApiOperation(value = "转班申请", httpMethod = "POST")
+    @RequestMapping(value = "/adjust/class", method = RequestMethod.POST)
+    @ApiOperation(value = "转班申请", httpMethod = "POST", response = SimpleResponser.class)
     @ResponseBody
     public Responser 转班申请(
             @ApiParam(required = true, value = "转班申请")
             @RequestBody
-            AdjustApplyRequester requester) {
+            ChangeApplyRequester requester) {
         return null;
     }
 

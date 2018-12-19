@@ -180,7 +180,7 @@ public class MemberController {
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
 
         int memState = member.getStatus();
-        if (memState != 1)
+        if (memState != 11)
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_LOCKED);
         // 3 生成TOKEN
         final String randomKey = jwtTokenUtil.getRandomKey();

@@ -6,7 +6,14 @@ import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.warpper.ContentWrapper;
+import com.stylefeng.guns.modular.system.model.Attachment;
+import com.stylefeng.guns.modular.system.model.Column;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
+import com.stylefeng.guns.util.CodeKit;
+import com.stylefeng.guns.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,11 +36,15 @@ import java.util.Map;
 @Controller
 @RequestMapping("/content")
 public class ContentController extends BaseController {
+    private static final Logger log = LoggerFactory.getLogger(ContentController.class);
 
     private String PREFIX = "/contentMGR/content/";
 
     @Autowired
     private IContentService contentService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 跳转到资讯管理首页
@@ -81,14 +93,40 @@ public class ContentController extends BaseController {
         new ContentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
+    /**
+     * 获取资讯管理列表
+     */
+    @RequestMapping(value = "/listAll")
+    @ResponseBody
+    public Object listAll(String condition) {
+        return contentService.selectList(null);
+    }
 
     /**
      * 新增资讯管理
      */
     @RequestMapping(value = "/add")
     @ResponseBody
-    public Object add(Content content) {
-        contentService.insert(content);
+    public Object add(Content content, String masterCode, String masterName) {
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList || attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            content.setTimage(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
+        contentService.create(content);
+
+        // 更新ICON资源
+        if (null != icon && null != icon.getId())
+            try {
+                icon.setMasterName(Content.class.getSimpleName());
+                icon.setMasterCode(String.valueOf(content.getId()));
+
+                attachmentService.updateById(icon);
+            }catch(Exception e){
+                log.warn("更新图标失败");
+            }
         return SUCCESS_TIP;
     }
 
@@ -97,7 +135,7 @@ public class ContentController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer contentId) {
+    public Object delete(@RequestParam Long contentId) {
         contentService.deleteById(contentId);
         return SUCCESS_TIP;
     }

@@ -7,6 +7,7 @@
             <input type="hidden" id="statusValue" value="${item.status}">
             <input type="hidden" id="typeValue" value="${item.type}">
             <input type="hidden" id="publishTypeValue" value="${item.publishType}">
+            <input type="hidden" id="contentVal" value='${item.content}'>
 
             <div class="row">
                 <div class="col-sm-6 b-r">
@@ -14,15 +15,23 @@
                             <#input id="code" name="内容编码" value="${item.code}" underline="true"/>
                             <#dictSelector id="type" name ="类型" code="content_type" label="类型"  underline="true"  width="75%"/>
                             <#input id="title" name="标题" value="${item.title}" underline="true"/>
-                            <#input id="introduce" name="一句话简介" value="${item.introduce}" />
                 </div>
 
                 <div class="col-sm-6">
+                            <#input id="introduce" name="一句话简介" value="${item.introduce}" underline="true" />
                             <#input id="author" name="作者" value="${item.author}" underline="true"/>
                             <#dictSelector id="publishType" name ="发布类型" code="content_type" label="发布类型"  underline="true"  width="75%"/>
-                            <#input id="content" name="内容，富文本内容" value="${item.content}" underline="true"/>
                             <#input id="deadDate" name="下架时间" value="${item.deadDate}" underline="true"/>
                             <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">发布内容</label>
+                        <div class="col-sm-11">
+                            <div id="editor" class="editorHeight">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -36,5 +45,6 @@
 
     </div>
 </div>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
 <script src="${ctxPath}/static/modular/contentMGR/content/content_info.js"></script>
 @}

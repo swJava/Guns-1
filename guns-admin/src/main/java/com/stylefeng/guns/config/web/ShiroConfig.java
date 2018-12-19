@@ -1,6 +1,6 @@
 package com.stylefeng.guns.config.web;
 
-import com.stylefeng.guns.config.properties.GunsProperties;
+import com.stylefeng.guns.config.properties.ApplicationProperties;
 import com.stylefeng.guns.core.intercept.GunsUserFilter;
 import com.stylefeng.guns.core.shiro.ShiroDbRealm;
 import org.apache.shiro.cache.CacheManager;
@@ -54,7 +54,7 @@ public class ShiroConfig {
      * spring session管理器（多机环境）
      */
     @Bean
-    @ConditionalOnProperty(prefix = "guns", name = "spring-session-open", havingValue = "true")
+    @ConditionalOnProperty(prefix = "application.admin", name = "spring-session-open", havingValue = "true")
     public ServletContainerSessionManager servletContainerSessionManager() {
         return new ServletContainerSessionManager();
     }
@@ -63,8 +63,8 @@ public class ShiroConfig {
      * session管理器(单机环境)
      */
     @Bean
-    @ConditionalOnProperty(prefix = "guns", name = "spring-session-open", havingValue = "false")
-    public DefaultWebSessionManager defaultWebSessionManager(CacheManager cacheShiroManager, GunsProperties gunsProperties) {
+    @ConditionalOnProperty(prefix = "application.admin", name = "spring-session-open", havingValue = "false")
+    public DefaultWebSessionManager defaultWebSessionManager(CacheManager cacheShiroManager, ApplicationProperties gunsProperties) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setCacheManager(cacheShiroManager);
         sessionManager.setSessionValidationInterval(gunsProperties.getSessionValidationInterval() * 1000);

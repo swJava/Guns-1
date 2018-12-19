@@ -11,18 +11,20 @@
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="name" name="班级名称" underline="true"/>
-                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true"/>
-                            <#dictSelector id="cycle" name="班次" code="cycle" label="班次"  underline="true"/>
+                            <#dictSelector id="grade" name="年级" code="school_grade" label="年级"  underline="true" width="75%"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
                             <#input id="beginDate" name="开课起始日期" underline="true" type="text"/>
                             <#input id="endDate" name="开课结束日期" underline="true"/>
                             <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
                             <#input id="studyTimeValue" name="开课时间" underline="true"/>
                             <#input id="beginTime" name="开始时间" underline="true"/>
                             <#input id="endTime" name="结束时间" underline="true"/>
-                            <#input id="duration" name="时长：分钟"/>
                 </div>
 
                 <div class="col-sm-6">
+                            <#input id="duration" name="时长：分钟"/>
+                            <div class="hr-line-dashed" ></div >
                             <#input id="period" name="课时数" underline="true"/>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">教室</label>
@@ -30,6 +32,7 @@
                                     <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
                                 </div>
                             </div>
+                            <div class="hr-line-dashed" ></div >
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">课程名称</label>
                                 <div class="col-sm-9">
@@ -47,13 +50,14 @@
                                     <select id="teacherCode" name="主讲教师名称" class="form-control" style="width:75%px"></select>
                                 </div>
                             </div>
+                            <div class="hr-line-dashed" ></div >
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">辅导教师名称</label>
                                 <div class="col-sm-9">
                                     <select id="teacherSecondCode" name="辅导教师名称" class="form-control" style="width:75%px"></select>
                                 </div>
                             </div>
-                            <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
+                            <div class="hr-line-dashed" ></div >
                 </div>
             </div>
 

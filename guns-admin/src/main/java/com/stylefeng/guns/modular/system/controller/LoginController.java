@@ -8,7 +8,6 @@ import com.stylefeng.guns.log.factory.LogTaskFactory;
 import com.stylefeng.guns.core.node.MenuNode;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.core.shiro.ShiroUser;
-import com.stylefeng.guns.util.ApiMenuFilter;
 import com.stylefeng.guns.util.KaptchaUtil;
 import com.stylefeng.guns.util.ToolUtil;
 import com.stylefeng.guns.modular.system.model.User;
@@ -55,15 +54,13 @@ public class LoginController extends BaseController {
         }
         List<MenuNode> menus = menuService.getMenusByRoleIds(roleList);
         List<MenuNode> titles = MenuNode.buildTitle(menus);
-        titles = ApiMenuFilter.build(titles);
 
         model.addAttribute("titles", titles);
 
         //获取用户头像
         Integer id = ShiroKit.getUser().getId();
         User user = userService.selectById(id);
-        String avatar = user.getAvatar();
-        model.addAttribute("avatar", avatar);
+        model.addAttribute("user", user);
 
         return "/index.html";
     }

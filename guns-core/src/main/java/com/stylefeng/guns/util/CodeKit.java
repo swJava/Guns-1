@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.modular.system.model.Sequence;
 import com.stylefeng.guns.modular.system.service.ISequenceService;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -27,7 +29,10 @@ public final class CodeKit {
         TEACHER ("LS", 6),  // 教师
         CLASS ("BJ", 6),  // 课程
         OUTLINE ("KS", 6),  // 课时
-        ORDER_ITEM ("DI", 6)  // 订单项
+        ORDER_ITEM ("DI", 6),  // 订单项
+        QUESTION ("ST", 8),  // 试题
+        COLUMN ("LM", 6),  // 栏目
+        CONTENT ("CT", 8),  // 栏目类容
         ;
 
         String name;
@@ -38,9 +43,78 @@ public final class CodeKit {
             this.length = len;
         }
     }
-    private CodeKit(){
-
+    /**
+     * 生成学员编码
+     * @return
+     */
+    public static String generateColumn() {
+        return generate(CODE_DEFINE.COLUMN.name, CODE_DEFINE.COLUMN.length, null);
     }
+    /**
+     * 生成学员编码
+     * @return
+     */
+    public static String generateStudent() {
+        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, null);
+    }
+    /**
+     * 生成教师编码
+     * @return
+     */
+    public static String generateTeacher() {
+        return generate(CODE_DEFINE.TEACHER.name, CODE_DEFINE.TEACHER.length, null);
+    }
+    /**
+     * 生成教室编码
+     * @return
+     */
+    public static String generateRoom() {
+        return generate(CODE_DEFINE.ROOM.name, CODE_DEFINE.ROOM.length, null);
+    }
+    /**
+     * 生成班级编码
+     * @return
+     */
+    public static String generateClass() {
+        return generate(CODE_DEFINE.CLASS.name, CODE_DEFINE.CLASS.length, null);
+    }
+    /**
+     * 生成课时编码
+     * @return
+     */
+    public static String generateOutline() {
+        return generate(CODE_DEFINE.OUTLINE.name, CODE_DEFINE.OUTLINE.length, null);
+    }
+    /**
+     * 生成订单项
+     * @return
+     */
+    public static String generateOrderItem() {
+        return generate(CODE_DEFINE.ORDER_ITEM.name, CODE_DEFINE.ORDER_ITEM.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成试题项
+     * @return
+     */
+    public static String generateQuestion() {
+        return generate(CODE_DEFINE.QUESTION.name, CODE_DEFINE.QUESTION.length, null);
+    }
+    /**
+     * 生成试题项
+     * @return
+     */
+    public static String generateCourse() {
+        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[]{DateUtil.getyyMMdd()});
+    }
+    /**
+     * 生成订单项
+     * @return
+     */
+    public static String generateContent() {
+        return generate(CODE_DEFINE.CONTENT.name, CODE_DEFINE.CONTENT.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
+    private CodeKit(){}
 
     private static ISequenceService sequenceService;
 
@@ -56,8 +130,7 @@ public final class CodeKit {
         queryWrapper.eq("name", codeName);
 
         Sequence sequence = sequenceService.selectOne(queryWrapper);
-        if (null == sequence)
-            sequence = createSequence(codeName, length);
+        if (null == sequence){sequence = createSequence(codeName, length);}
 
         long currentVal = sequence.getCurrentVal();
         long nextVal = currentVal + 1L;
@@ -71,9 +144,10 @@ public final class CodeKit {
 
         StringBuffer buff = new StringBuffer();
         buff.append(codeName);
-
-        for(String prefix : prefixies){
-            buff.append(prefix);
+        if(prefixies!=null){
+            for(String prefix : prefixies){
+                buff.append(prefix);
+            }
         }
         buff.append(padLeft(String.valueOf(nextVal), length, '0'));
 
@@ -102,41 +176,20 @@ public final class CodeKit {
         return str + value;
     }
 
-    /**
-     * 生成学员编码
-     * @return
-     */
-    public static String generateStudent() {
-        Date now = new Date();
-        String datePrefix = DateUtil.formatDate(now, "yyMMdd");
-
-        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{datePrefix});
-    }
-
     public static String generateOrder(){
-            Random random = new Random();
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < 4; i++) {
-                int number = random.nextInt(FILE_NAME_DICT.length());
-                sb.append(FILE_NAME_DICT.charAt(number));
-            }
-            sb.append(new SimpleDateFormat("yyMMddHHmmss").format(new Date()));
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 4; i++) {
+            int number = random.nextInt(FILE_NAME_DICT.length());
+            sb.append(FILE_NAME_DICT.charAt(number));
+        }
+        sb.append(DateUtil.getyyMMddHHmmss());
 
-            for (int i = 0; i < 4; i++) {
-                int number = random.nextInt(NUMBER_RAND_DICT.length());
-                sb.append(NUMBER_RAND_DICT.charAt(number));
-            }
+        for (int i = 0; i < 4; i++) {
+            int number = random.nextInt(NUMBER_RAND_DICT.length());
+            sb.append(NUMBER_RAND_DICT.charAt(number));
+        }
 
-            return sb.toString();
-    }
-
-    /**
-     * 生成订单项
-     * @return
-     */
-    public static String generateOrderItem() {
-        Date now = new Date();
-        String datePrefix = DateUtil.formatDate(now, "yyMMdd");
-        return generate(CODE_DEFINE.ORDER_ITEM.name, CODE_DEFINE.ORDER_ITEM.length, new String[]{datePrefix});
+        return sb.toString();
     }
 }

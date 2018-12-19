@@ -6,6 +6,7 @@ import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.system.dao.ContentMapper;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.util.CodeKit;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,5 +29,14 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
         queryContent.eq("code", code);
 
         return selectOne(queryContent);
+    }
+
+    @Override
+    public void create(Content content) {
+
+        content.setCode(CodeKit.generateContent());
+
+        insert(content);
+
     }
 }

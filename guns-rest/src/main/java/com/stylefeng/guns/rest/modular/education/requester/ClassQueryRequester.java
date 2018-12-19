@@ -23,7 +23,7 @@ public class ClassQueryRequester extends SimpleRequester {
     private String abilities = "";
     @ApiModelProperty(name = "methods", value = "授课方式 1 面授 2 在线 3 双师", required = false, position = 5, example = "1,2")
     private String methods = "";
-    @ApiModelProperty(name = "methods", value = "上课时间(星期) 1 周一  7 周日", required = false, position = 6, example = "6,7")
+    @ApiModelProperty(name = "weekdays", value = "上课时间(星期) 1 周一  7 周日", required = false, position = 6, example = "6,7")
     private String weekdays = "";
     @ApiModelProperty(name = "grades", value = "年级", required = false, position = 7, example = "1,2,3")
     private String grades = "";

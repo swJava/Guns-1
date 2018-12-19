@@ -64,6 +64,13 @@ public class DateUtil {
     }
 
     /**
+     * 获取YYMMDD格式
+     */
+    public static String getyyMMdd() {
+        return formatDate(new Date(), "yyMMdd");
+    }
+
+    /**
      * 获取YYYYMMDD格式
      */
     public static String getDays(Date date) {
@@ -89,6 +96,12 @@ public class DateUtil {
      */
     public static String getAllTime() {
         return formatDate(new Date(), "yyyyMMddHHmmss");
+    }
+    /**
+     * 获取YYMMDDHHmmss格式
+     */
+    public static String getyyMMddHHmmss() {
+        return formatDate(new Date(), "yyMMddHHmmss");
     }
 
     /**

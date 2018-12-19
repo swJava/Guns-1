@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.system.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
@@ -16,10 +17,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -36,7 +34,7 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
     private String storePath = System.getProperty("user.dir");
 
     @Override
-    public void saveAttachment(AttachmentInfo uploadInfo, String masterName, String masterCode) {
+    public String saveAttachment(AttachmentInfo uploadInfo, String masterName, String masterCode) {
         uploadInfo.validate();
 
         if (null == masterName)
@@ -54,6 +52,7 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
         }
         Iterator<Map<String, Object>> uploadIterator = uploadInfo.iterator();
 
+        StringBuilder savedIds = new StringBuilder();
         while(uploadIterator.hasNext()){
             Map<String, Object> uploadAttachment = uploadIterator.next();
             String filename = getFilename();
@@ -75,7 +74,31 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
             attachment.setPath(destFile.getAbsolutePath());
             attachment.setType((String) uploadAttachment.get("type"));
             insert(attachment);
+
+            savedIds.append(attachment.getId()).append(",");
         }
+
+        return savedIds.substring(0, savedIds.length() - 1);
+    }
+
+    @Override
+    public List<Attachment> listAttachment(String masterName, String masterCode) {
+        if (null == masterCode || null == masterName)
+            return new ArrayList<>();
+
+        return selectList(new EntityWrapper<Attachment>()
+                .eq("master_code", masterCode)
+                        .eq("master_name", masterName)
+                .eq("status", 1)
+        );
+    }
+
+    @Override
+    public Attachment get(Long id) {
+        if (null == id)
+            return null;
+
+        return selectById(id);
     }
 
     private String getFilename() {

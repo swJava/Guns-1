@@ -67,6 +67,10 @@ public interface IConstantFactory {
      * 获取字典名称
      */
     String getDictName(Integer dictId);
+    /**
+     * 获取字典名称
+     */
+    String getDictNameByCode(String dictCode);
 
     /**
      * 获取通知标题
@@ -216,4 +220,19 @@ public interface IConstantFactory {
      * @return
      */
     String getCycleName(Integer cycle);
+
+    /**
+     * 获取栏目名称
+     * @param pcodes
+     * @return
+     */
+    String getColumnName(String pcodes);
+
+    /**
+     * 栏目行为类型
+     * @param type
+     * @return
+     */
+    String getColumnTypeName(Integer type);
+
 }

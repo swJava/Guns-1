@@ -49,7 +49,7 @@ AnswerPaper.openAddAnswerPaper = function () {
         area: ['800px', '420px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/answerPaper/answerPaper_add'
+        content: Feng.ctxPath + '/answer/answerPaper_add'
     });
     this.layerIndex = index;
 };
@@ -65,7 +65,7 @@ AnswerPaper.openAnswerPaperDetail = function () {
             area: ['800px', '420px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/answerPaper/answerPaper_update/' + AnswerPaper.seItem.id
+            content: Feng.ctxPath + '/answer/answerPaper_update/' + AnswerPaper.seItem.id
         });
         this.layerIndex = index;
     }
@@ -76,7 +76,7 @@ AnswerPaper.openAnswerPaperDetail = function () {
  */
 AnswerPaper.delete = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/answerPaper/delete", function (data) {
+        var ajax = new $ax(Feng.ctxPath + "/answer/delete", function (data) {
             Feng.success("删除成功!");
             AnswerPaper.table.refresh();
         }, function (data) {
@@ -98,7 +98,7 @@ AnswerPaper.search = function () {
 
 $(function () {
     var defaultColunms = AnswerPaper.initColumn();
-    var table = new BSTable(AnswerPaper.id, "/answerPaper/list", defaultColunms);
+    var table = new BSTable(AnswerPaper.id, "/answer/list", defaultColunms);
     table.setPaginationType("server");
     AnswerPaper.table = table.init();
 });

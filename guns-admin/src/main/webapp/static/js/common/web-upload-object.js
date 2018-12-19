@@ -9,15 +9,17 @@
  */
 (function() {
 	
-	var $WebUpload = function(pictureId) {
+	var $WebUpload = function(pictureId, formData) {
 		this.pictureId = pictureId;
 		this.uploadBtnId = pictureId + "BtnId";
 		this.uploadPreId = pictureId + "PreId";
-		this.uploadUrl = Feng.ctxPath + '/mgr/upload';
-		this.fileSizeLimit = 100 * 1024 * 1024;
+		//this.uploadUrl = Feng.ctxPath + '/mgr/upload';
+		this.uploadUrl = Feng.ctxPath + '/attachment/upload/async';
+		this.fileSizeLimit = 5 * 1024 * 1024;
 		this.picWidth = 800;
 		this.picHeight = 800;
         this.uploadBarId = null;
+        this.formData = $.extend({}, formData);
 	};
 
 	$WebUpload.prototype = {
@@ -35,6 +37,7 @@
 		 */
 		create : function() {
 			var webUploader = WebUploader.create({
+                fileVal: 'files',
 				auto : true,
 				pick : {
 					id : '#' + this.uploadBtnId,
@@ -50,7 +53,8 @@
 				disableGlobalDnd : true,
 				duplicate : true,
 				server : this.uploadUrl,
-				fileSingleSizeLimit : this.fileSizeLimit
+				fileSingleSizeLimit : this.fileSizeLimit,
+                formData : this.formData
 			});
 			
 			return webUploader;
@@ -85,7 +89,11 @@
 			// 文件上传成功，给item添加成功class, 用样式标记上传成功。
 			bindedObj.on('uploadSuccess', function(file,response) {
 				Feng.success("上传成功");
-				$("#" + me.pictureId).val(response);
+				//$("#" + me.pictureId).val(response);
+                console.log(response);
+				$('#masterName').val(response.data.name);
+				$('#masterCode').val(response.data.code);
+
 			});
 
 			// 文件上传失败，显示上传出错。

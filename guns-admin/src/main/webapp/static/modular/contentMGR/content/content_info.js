@@ -3,6 +3,7 @@
  */
 var ContentInfoDlg = {
     contentInfoData : {},
+    editor: null,
     validateFields: {
         code: {
             validators: {
@@ -88,6 +89,8 @@ ContentInfoDlg.close = function() {
  * 收集数据
  */
 ContentInfoDlg.collectData = function() {
+    this.contentInfoData['content'] = ContentInfoDlg.editor.txt.html();
+    console.log(ContentInfoDlg.editor.txt.html());
     this
     .set('id')
     .set('code')
@@ -97,10 +100,11 @@ ContentInfoDlg.collectData = function() {
     .set('introduce')
     .set('author')
     .set('publishType')
-    .set('content')
     .set('createDate')
     .set('deadDate')
-    .set('status');
+    .set('status')
+        .set('masterName')
+        .set('masterCode');
 }
 
 /**
@@ -110,7 +114,6 @@ ContentInfoDlg.addSubmit = function() {
 
     this.clearData();
     this.collectData();
-
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/content/add", function(data){
         Feng.success("添加成功!");
@@ -158,8 +161,31 @@ $(function() {
     avatarUp.setUploadBarId("progressBar");
     avatarUp.init();
 
+    //日期
     laydate.render({
         elem: '#deadDate'
     });
+
+    //初始化编辑器
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    // 配置服务器端地址
+    editor.customConfig.uploadImgServer = Feng.ctxPath + '/mgr/uploadJson';
+    editor.customConfig.uploadFileName = 'file';
+    editor.customConfig.uploadImgHooks = {
+        customInsert: function (insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+            // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+            var url = '/kaptcha/' + result.data;
+            insertImg(url);
+
+            // result 必须是一个 JSON 格式字符串！！！否则报错
+        }
+    }
+    editor.create();
+    editor.txt.html($("#contentVal").val());
+    ContentInfoDlg.editor = editor;
 
 });

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @Date 2017/5/20 21:58
  */
 @Configuration
-@ConditionalOnProperty(prefix = "guns", name = "muti-datasource-open", havingValue = "true")
+@ConditionalOnProperty(prefix = "application", name = "muti-datasource-open", havingValue = "true")
 public class DefaultMultiConfig {
 
     @Bean

@@ -4,18 +4,14 @@ import com.aliyuncs.exceptions.ClientException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.core.support.SmsKit;
-import com.stylefeng.guns.modular.system.dao.SmsSequenceMapper;
-import com.stylefeng.guns.modular.system.model.Captcha;
 import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.model.SmsSequence;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import com.stylefeng.guns.modular.system.service.ISmsSequenceService;
-import com.stylefeng.guns.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -52,7 +48,6 @@ public class SmsSender {
     }
 
     private void sendSms(SmsSequence sequence) {
-        Map<String, Object> paramMap = new HashMap<String, Object>();
         List<Dict> dictList = dictService.selectByParentCode("sms_send_parameter");
 
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -68,7 +63,6 @@ public class SmsSender {
 
         try {
             sender.sendSms(sequence.getNumber(), sequence.getContent());
-
             if (sender.sendOK()){
                 sequence.setOutRequestId(sender.getOutRequestId());
                 sequence.setOutResponseId(sender.getOutResponseId());
@@ -81,10 +75,9 @@ public class SmsSender {
                 sequence.setSentResult(sender.getResponseCode());
                 sequence.setSentResultMessage(sender.getResponseMessage());
             }
-
             smsSequenceService.updateSentResult(sequence);
         } catch (ClientException e) {
-            e.printStackTrace();
+            log.info("<{}> message send error!", e);
         }
 
         log.info("<{}> message send complete!", sequence.getNumber());

@@ -2,21 +2,21 @@ package com.stylefeng.guns.modular.studentMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
-import org.apache.commons.lang3.RandomStringUtils;
+import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.stylefeng.guns.log.LogObjectHolder;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.stylefeng.guns.modular.system.model.Student;
-import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
@@ -90,7 +90,7 @@ public class StudentController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Student student) {
-        student.setCode(RandomStringUtils.randomNumeric(8));
+        student.setCode(CodeKit.generateStudent());
         studentService.insert(student);
         return SUCCESS_TIP;
     }

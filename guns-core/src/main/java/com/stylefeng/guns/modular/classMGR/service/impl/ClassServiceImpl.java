@@ -25,7 +25,7 @@ import java.util.*;
  */
 @Service
 public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements IClassService {
-
+    private static final int[] WeekMapping = new int[]{0, 2, 3, 4, 5, 6, 7, 1};
     @Autowired
     private ClassMapper classMapper;
 
@@ -103,7 +103,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
                     try {
-                        weekList.add(Integer.parseInt(tokenizer.nextToken()));
+                        weekList.add(WeekMapping[Integer.parseInt(tokenizer.nextToken())]);
                     }catch(Exception e){}
                 }
                 arguments.put("weekList", weekList);

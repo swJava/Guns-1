@@ -1,9 +1,16 @@
 package com.stylefeng.guns.modular.contentMGR.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.system.dao.ColumnMapper;
+import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
+import com.stylefeng.guns.util.CodeKit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,4 +21,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> implements IColumnService {
+    private static final Logger log = LoggerFactory.getLogger(ColumnServiceImpl.class);
+
+    @Autowired
+    private IAttachmentService attachmentService;
+
+    @Override
+    public void create(Column column) {
+
+        if (null == column)
+            throw new ServiceException("");
+
+        column.setCode(CodeKit.generateColumn());
+        insert(column);
+    }
 }

@@ -1,0 +1,39 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="columnInfoForm">
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="iconValue" value="${item.icon}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="pcodeValue" value="${item.pcode}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#avatar id="${icon.id}" name="icon" label="图标" underline="true"/>
+                            <#input id="code" name="栏目编码" value="${item.code}" underline="true"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="name" name="栏目名称" value="${item.name}" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">父级栏目</label>
+                                <div class="col-sm-9">
+                                    <select id="pcode" name="父级栏目" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ColumnInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ColumnInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/column/column/column_info.js"></script>
+@}

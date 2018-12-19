@@ -14,10 +14,7 @@ import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
-import com.stylefeng.guns.rest.modular.education.requester.AdjustApplyRequester;
-import com.stylefeng.guns.rest.modular.education.requester.ClassQueryRequester;
-import com.stylefeng.guns.rest.modular.education.requester.OutlineListQueryRequester;
-import com.stylefeng.guns.rest.modular.education.requester.QueryPlanOfDayRequester;
+import com.stylefeng.guns.rest.modular.education.requester.*;
 import com.stylefeng.guns.rest.modular.education.responser.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -188,7 +185,7 @@ public class EducationController extends ApiController {
         Member currMember = currMember();
 
 
-        return ClassListResponse.me(classList);
+        return null;
     }
 
     @RequestMapping(value = "/class/list4change", method = RequestMethod.POST)

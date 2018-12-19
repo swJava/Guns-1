@@ -31,7 +31,7 @@ Content.initColumn = function () {
             {title: '一句话简介', field: 'introduce', visible: true, align: 'center', valign: 'middle'},
             {title: '作者', field: 'author', visible: true, align: 'center', valign: 'middle', sortable: true},
             {title: '发布类型', field: 'publishTypeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '内容，富文本内容', field: 'content', visible: true, align: 'center', valign: 'middle'},
+            {title: '内容，富文本内容', field: 'content', visible: false, align: 'center', valign: 'middle'},
             {title: '创建时间', field: 'createDate', visible: true, align: 'center', valign: 'middle'},
             {title: '下架时间', field: 'deadDate', visible: true, align: 'center', valign: 'middle', sortable: true},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @Date 2017/5/20 21:58
  */
 @Configuration
-@ConditionalOnProperty(prefix = "guns.muti-datasource", name = "open", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "application.admin.muti-datasource", name = "open", havingValue = "false", matchIfMissing = true)
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.stylefeng.guns.modular.*.dao"})
 public class SingleDataSourceConfig {

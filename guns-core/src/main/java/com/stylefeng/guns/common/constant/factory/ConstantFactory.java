@@ -18,6 +18,7 @@ import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class ConstantFactory implements IConstantFactory {
     private StudentMapper studentMapper = SpringContextHolder.getBean(StudentMapper.class);
     private ClassMapper classMapper = SpringContextHolder.getBean(ClassMapper.class);
     private AdjustStudentMapper adjustStudentMapper = SpringContextHolder.getBean(AdjustStudentMapper.class);
+    private ColumnMapper columnMapper = SpringContextHolder.getBean(ColumnMapper.class);
 
     public static IConstantFactory me() {
         return SpringContextHolder.getBean("constantFactory");
@@ -210,6 +212,17 @@ public class ConstantFactory implements IConstantFactory {
                 return dict.getName();
             }
         }
+    }
+
+    /**
+     * 获取字典名称
+     * @param dictCode
+     * @return
+     */
+    @Override
+    public String getDictNameByCode(String dictCode) {
+        List<Dict> dicts = dictMapper.selectByCode(dictCode);
+        return CollectionUtils.isEmpty(dicts)?"":dicts.get(0).getName();
     }
 
     /**
@@ -440,8 +453,22 @@ public class ConstantFactory implements IConstantFactory {
     public String getAbilityName(Integer ability) {
         return getDictsByName("班次", ability);
     }
+
     @Override
     public String getCycleName(Integer cycle) {
         return getDictsByName("学期", cycle);
+    }
+
+    @Override
+    public String getColumnName(String pcodes) {
+        Column column = columnMapper.selectOne(new Column() {{
+            setCode(pcodes);
+        }});
+        return column==null?column.getName():null;
+    }
+
+    @Override
+    public String getColumnTypeName(Integer type) {
+        return getDictsByName("栏目行为类型", type);
     }
 }

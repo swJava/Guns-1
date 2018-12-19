@@ -10,13 +10,12 @@
         <result column="method" property="method" />
         <result column="subject" property="subject" />
         <result column="description" property="description" />
-        <result column="period" property="period" />
         <result column="status" property="status" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, name, method, subject, description, period, status
+        id, code, name, method, subject, description, status
     </sql>
 
 </mapper>

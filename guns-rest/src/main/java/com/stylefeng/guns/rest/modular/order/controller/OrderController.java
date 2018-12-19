@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.responser.ClassResponser;
@@ -38,7 +39,7 @@ import java.util.*;
 @RequestMapping("/order")
 @Api(tags = "订单接口")
 @Validated
-public class OrderController {
+public class OrderController extends ApiController {
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
@@ -61,13 +62,9 @@ public class OrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "student", value = "学员编码", required = false, dataType = "String", example = "XY000001"),
             @ApiImplicitParam(name = "classCode", value = "班级编码", required = true, dataType = "String", example = "BJ000001"),
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String",  example = "18580255110")
     }
     )
     public Responser joinCart(
-            @NotBlank(message = "用户名不能为空")
-            @RequestParam(required = true, name = "userName")
-            String userName,
             @NotBlank(message = "班级不能为空")
             @RequestParam(required = true, name = "classCode")
             String classCode,
@@ -75,12 +72,12 @@ public class OrderController {
             String student
     ){
 
-        Member member = memberService.get(userName);
+        Member member = currMember();
 
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        Student existStudent = findStudent(userName, student);
+        Student existStudent = findStudent(member.getUserName(), student);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
@@ -99,26 +96,22 @@ public class OrderController {
     @ApiOperation(value="从选课单移除", httpMethod = "POST", response = SimpleResponser.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "student", value = "学员编码", required = false, dataType = "String", example = "XY000001"),
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String", example = "18580255110"),
             @ApiImplicitParam(name = "classCode", value = "班级编码", required = true, dataType = "String", example = "BJ000001")
     }
     )
     public Responser removeCart(
-            @NotBlank(message = "用户名不能为空")
-            @RequestParam(name = "userName", required = true)
-            String userName,
             @NotBlank(message = "班级不能为空")
             @RequestParam(name = "classCode", required = true)
             String classCode,
             @RequestParam(name = "student", required = false)
             String student){
 
-        Member member = memberService.get(userName);
+        Member member = currMember();
 
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"会员"});
 
-        Student existStudent = findStudent(userName, student);
+        Student existStudent = findStudent(member.getUserName(), student);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
@@ -142,10 +135,7 @@ public class OrderController {
             @ApiParam(required = true, value = "订单提交信息")
             OrderPostRequester requester){
 
-        Member member = memberService.get(requester.getMember());
-
-        if (null == member)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+        Member member = currMember();
 
         PayMethodEnum payMethod = PayMethodEnum.instanceOf(requester.getPayMethod());
         if (null == payMethod || PayMethodEnum.NULL.equals(payMethod))
@@ -180,15 +170,14 @@ public class OrderController {
     @RequestMapping(value = "/cart/list", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "status", value = "状态 1 已选课 ", required = false, dataType = "Integer", example = "1"),
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String", example = "18580255110")
     })
     public Responser listCart(
-            @NotBlank(message = "用户名不能为空")
-            String userName,
             Integer status
     ){
+        Member currMember = currMember();
+
         Wrapper<CourseCart> queryWrapper = new EntityWrapper<CourseCart>();
-        queryWrapper.eq("user_name", userName);
+        queryWrapper.eq("user_name", currMember.getUserName());
 
         if (null != status)
             queryWrapper.eq("status", status);
@@ -202,17 +191,15 @@ public class OrderController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "status", value = "状态 1 待付款 2 已付款 ", required = false, dataType = "Integer", example = "1"),
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String", example = "18580255110")
     })
     public Responser listOrder(
-            @NotBlank(message = "用户名不能为空")
-            @RequestParam(name = "userName", required = true)
-            String userName,
             @RequestParam(name = "status", required = false)
             Integer status
     ){
+        Member member = currMember();
+
         Wrapper<Order> queryWrapper = new EntityWrapper<Order>();
-        queryWrapper.eq("user_name", userName);
+        queryWrapper.eq("user_name", member.getUserName());
         queryWrapper.eq("status", OrderStateEnum.Valid.code);
 
         if (null != status) {

@@ -3601,6 +3601,7 @@
 
                 // 定义 xhr
                 var xhr = new XMLHttpRequest();
+                console.log(uploadImgServer);
                 xhr.open('POST', uploadImgServer);
 
                 // 设置超时

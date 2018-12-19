@@ -20,4 +20,11 @@ public interface IContentService extends IService<Content> {
      * @return
      */
     Content get(String contentCode);
+
+    /**
+     * 新增内容
+     *
+     * @param content
+     */
+    void create(Content content);
 }

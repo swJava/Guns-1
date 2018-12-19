@@ -46,10 +46,6 @@ public class Course extends Model<Course> {
      */
     private String description;
     /**
-     * 课时数
-     */
-    private Integer period;
-    /**
      * 状态
      */
     private Integer status;
@@ -111,14 +107,6 @@ public class Course extends Model<Course> {
         this.description = description;
     }
 
-    public Integer getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(Integer period) {
-        this.period = period;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -141,7 +129,6 @@ public class Course extends Model<Course> {
         ", method=" + method +
         ", subject=" + subject +
         ", description=" + description +
-        ", period=" + period +
         ", status=" + status +
         "}";
     }

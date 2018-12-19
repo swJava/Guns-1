@@ -1,6 +1,6 @@
 package com.stylefeng.guns.modular.system.controller;
 
-import com.stylefeng.guns.config.properties.GunsProperties;
+import com.stylefeng.guns.config.properties.ApplicationProperties;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.base.tips.Tip;
 import com.stylefeng.guns.common.annotion.BussinessLog;
@@ -48,7 +48,7 @@ public class UserMgrController extends BaseController {
     private static String PREFIX = "/system/user/";
 
     @Autowired
-    private GunsProperties gunsProperties;
+    private ApplicationProperties gunsProperties;
 
     @Autowired
     private IUserService userService;
@@ -331,41 +331,6 @@ public class UserMgrController extends BaseController {
         assertAuth(userId);
         this.userService.setRoles(userId, roleIds);
         return SUCCESS_TIP;
-    }
-
-    /**
-     * 上传图片
-     */
-    @RequestMapping(method = RequestMethod.POST, path = "/upload")
-    @ResponseBody
-    public String upload(@RequestPart("file") MultipartFile picture) {
-
-        String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
-        try {
-            String fileSavePath = gunsProperties.getFileUploadPath();
-            picture.transferTo(new File(fileSavePath + pictureName));
-        } catch (Exception e) {
-            throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
-        }
-        return pictureName;
-    }
-    /**
-     * 上传图片
-     */
-    @RequestMapping(method = RequestMethod.POST, path = "/uploadJson")
-    @ResponseBody
-    public Map uploadJson(@RequestPart("file") MultipartFile picture) {
-
-        Map<String, String> map = new HashMap<>();
-        String pictureName = UUID.randomUUID().toString() + "." + ToolUtil.getFileSuffix(picture.getOriginalFilename());
-        try {
-            String fileSavePath = gunsProperties.getFileUploadPath();
-            picture.transferTo(new File(fileSavePath + pictureName));
-        } catch (Exception e) {
-            throw new GunsException(BizExceptionEnum.UPLOAD_ERROR);
-        }
-        map.put("data",pictureName);
-        return map;
     }
 
     /**

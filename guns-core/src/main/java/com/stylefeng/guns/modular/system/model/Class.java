@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -414,5 +415,12 @@ public class Class extends Model<Class> {
         ", teacherSecondCode=" + teacherSecondCode +
         ", teacherSecond=" + teacherSecond +
         "}";
+    }
+
+    public boolean isValid() {
+        if (null == this.status)
+            return false;
+
+        return GenericState.Valid.code == this.status;
     }
 }

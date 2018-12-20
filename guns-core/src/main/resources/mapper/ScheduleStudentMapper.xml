@@ -5,7 +5,6 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ScheduleStudent">
         <id column="id" property="id" />
-        <result column="code" property="code" />
         <result column="student_code" property="studentCode" />
         <result column="student_name" property="studentName" />
         <result column="class_code" property="classCode" />

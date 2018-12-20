@@ -96,20 +96,20 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date beginDate = dto.getBeginDate();
         Date now = new Date();
 
+        dto.setCanAdjust(false);
         if (now.before(beginDate))
             dto.setCanAdjust(true);
 
-        dto.setCanAdjust(false);
     }
 
     private static void judgementAdjust(ClassResponser dto) {
         Date beginDate = dto.getBeginDate();
         Date now = new Date();
 
+        dto.setCanAdjust(false);
         if (now.before(beginDate))
             dto.setCanAdjust(true);
 
-        dto.setCanAdjust(false);
     }
 
     private static void formatClassTime(ClassResponser dto) {

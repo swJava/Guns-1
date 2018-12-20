@@ -104,5 +104,13 @@ public final class MessageConstant {
          * 支付方式不支持
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";
+        /**
+         * 您已有相同的调课申请
+         */
+        public static final String ADJUST_COURSE_DUPLICATE = "050001";
+        /**
+         * 您已有相同的转班申请
+         */
+        public static final String CHANGE_CLASS_DUPLICATE = "050002";
     }
 }

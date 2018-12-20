@@ -17,7 +17,10 @@ public class ChangeApplyRequester extends SimpleRequester {
     @ApiModelProperty(name = "studentCode", value = "学员编码", required = true, position = 0, example = "XY181220000001")
     private String studentCode;
 
-    @ApiModelProperty(name = "targetClass", value = "调入班级编码", required = true, position = 1, example = "BJ000001")
+    @ApiModelProperty(name = "sourceClass", value = "调出班级编码", required = true, position = 1, example = "BJ000001")
+    private String sourceClass;
+
+    @ApiModelProperty(name = "targetClass", value = "调入班级编码", required = true, position = 2, example = "BJ000002")
     private String targetClass;
 
     public String getStudentCode() {
@@ -26,6 +29,14 @@ public class ChangeApplyRequester extends SimpleRequester {
 
     public void setStudentCode(String studentCode) {
         this.studentCode = studentCode;
+    }
+
+    public String getSourceClass() {
+        return sourceClass;
+    }
+
+    public void setSourceClass(String sourceClass) {
+        this.sourceClass = sourceClass;
     }
 
     public String getTargetClass() {

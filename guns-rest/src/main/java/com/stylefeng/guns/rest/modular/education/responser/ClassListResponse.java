@@ -15,20 +15,20 @@ public class ClassListResponse extends SimpleResponser {
     private static final long serialVersionUID = 4265927729370374968L;
 
     @ApiModelProperty(name = "data", value = "班级集合")
-    private List<ClassResponser> data = new ArrayList<ClassResponser>();
+    private Collection<ClassResponser> data = new ArrayList<ClassResponser>();
 
-    public List<ClassResponser> getData() {
+    public Collection<ClassResponser> getData() {
         return data;
     }
 
-    public void setData(List<com.stylefeng.guns.modular.system.model.Class> data) {
+    public void setData(Collection<com.stylefeng.guns.modular.system.model.Class> data) {
         for(com.stylefeng.guns.modular.system.model.Class classInfo : data){
             //
             this.data.add(ClassResponser.me(classInfo));
         }
     }
 
-    public static Responser me(List<com.stylefeng.guns.modular.system.model.Class> classList) {
+    public static Responser me(Collection<com.stylefeng.guns.modular.system.model.Class> classList) {
         ClassListResponse response = new ClassListResponse();
         response.setCode(SUCCEED);
         response.setMessage("查询成功");

@@ -209,9 +209,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         }
 
         Map<String, Set<Class>> resultMap = new HashMap<>();
-        Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
 
         for(Student currStudent : studentList){
+            Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
             Set<Class> classSet = new HashSet<>();
 
             String studentCode = currStudent.getCode();

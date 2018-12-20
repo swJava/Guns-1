@@ -2,15 +2,19 @@ package com.stylefeng.guns.rest.modular.education.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
@@ -28,8 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by 罗华.
@@ -61,6 +64,12 @@ public class EducationController extends ApiController {
     @Autowired
     private IScheduleStudentService scheduleStudentService;
 
+    @Autowired
+    private IScheduleClassService scheduleClassService;
+
+    @Autowired
+    private IAdjustStudentService adjustStudentService;
+
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
     @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
     public Responser listClass(ClassQueryRequester requester, HttpServletRequest request){
@@ -89,7 +98,7 @@ public class EducationController extends ApiController {
 
     @ApiOperation(value="课时列表", httpMethod = "POST", response = OutlineListResponser.class)
     @ApiImplicitParam(name = "code", value = "班级编码", required = true, dataType = "String")
-    @RequestMapping("/outline/list")
+    @RequestMapping(value = "/outline/list", method = RequestMethod.POST)
     public Responser outlineList(
             @ApiParam(required = true, value = "课时查询")
             @RequestBody
@@ -100,7 +109,10 @@ public class EducationController extends ApiController {
 
         List<Student> studentList = new ArrayList<Student>();
         if (requester.notDirectStudent()){
+            // 没有指定学员, 找到用户下所有学员列表
             studentList = studentService.listStudents(member.getUserName());
+        }else{
+            studentList.add(studentService.get(requester.getStudent()));
         }
 
         List<ScheduleStudent> planList = new ArrayList<ScheduleStudent>();
@@ -187,9 +199,29 @@ public class EducationController extends ApiController {
             AdjustQueryRequester requester){
 
         Member currMember = currMember();
+        // 当前报班信息
+        Class currClassInfo = classService.get(requester.getClassCode());
 
+        Wrapper<ScheduleClass> planQueryWrapper = new EntityWrapper<>();
+        planQueryWrapper.eq("outline_code", requester.getOutlineCode());
+        planQueryWrapper.eq("status", GenericState.Valid.code);
 
-        return null;
+        List<ScheduleClass> classPlanList = scheduleClassService.selectList(planQueryWrapper);
+        Set<Class> classResponserSet = new HashSet<>();
+        for(ScheduleClass classPlan : classPlanList){
+            Class classInfo = classService.get(classPlan.getClassCode());
+            if (null == classInfo){
+                continue;
+            }
+            if (!(classInfo.isValid())){
+                continue;
+            }
+            // TODO 是否根据当前报班情况限制？
+
+            classResponserSet.add(classInfo);
+        }
+
+        return ClassListResponse.me(classResponserSet);
     }
 
     @RequestMapping(value = "/class/list4change", method = RequestMethod.POST)
@@ -201,31 +233,79 @@ public class EducationController extends ApiController {
 
         Member member = currMember();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), requester.toMap());
+        Class currClass = classService.get(requester.getClassCode());
+        Course course = courseService.get(currClass.getCourseCode());
 
-        return ClassListResponse.me(classList);
+        Map<String, Object> changeClassQuery = new HashMap<String, Object>();
+        changeClassQuery.put("grades", currClass.getGrade());
+        changeClassQuery.put("abilities", currClass.getAbility());
+        changeClassQuery.put("subjects", course.getSubject());
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), changeClassQuery);
+
+        Set<Class> classSet = new HashSet<>();
+        for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
+            if (currClass.getPrice().equals(classInfo.getPrice())){
+                classSet.add(classInfo);
+            }
+        }
+
+        return ClassListResponse.me(classSet);
     }
 
     @RequestMapping(value = "/adjust/course", method = RequestMethod.POST)
     @ApiOperation(value = "调课申请", httpMethod = "POST", response = SimpleResponser.class)
     @ResponseBody
-    public Responser 调课申请(
+    public Responser adjustCourse(
             @ApiParam(required = true, value = "调课申请")
             @RequestBody
+            @Valid
             AdjustApplyRequester requester) {
-        return null;
+        Member member = currMember();
+
+        Student student = studentService.get(requester.getStudentCode());
+
+        Class sourceClass = classService.get(requester.getSourceClass());
+        Class targetClass = classService.get(requester.getTargetClass());
+
+        Map<String, Object> fromData = new HashMap<>();
+        fromData.put("sourceClass", sourceClass);
+        fromData.put("outlineCode", requester.getOutlineCode());
+
+        Map<String, Object> destData = new HashMap<>();
+        destData.put("targetClass", targetClass);
+
+        adjustStudentService.adjustCourse(member, student, fromData, destData);
+
+        return SimpleResponser.success();
     }
 
     @RequestMapping(value = "/adjust/class", method = RequestMethod.POST)
     @ApiOperation(value = "转班申请", httpMethod = "POST", response = SimpleResponser.class)
     @ResponseBody
-    public Responser 转班申请(
+    public Responser changeClass(
             @ApiParam(required = true, value = "转班申请")
             @RequestBody
+            @Valid
             ChangeApplyRequester requester) {
-        return null;
-    }
 
+        Member member = currMember();
+
+        Student student = studentService.get(requester.getStudentCode());
+
+        Class sourceClass = classService.get(requester.getSourceClass());
+        Class targetClass = classService.get(requester.getTargetClass());
+
+        Map<String, Object> fromData = new HashMap<>();
+        fromData.put("sourceClass", sourceClass);
+
+        Map<String, Object> destData = new HashMap<>();
+        destData.put("targetClass", targetClass);
+
+        adjustStudentService.adjustClass(member, student, fromData, destData);
+
+        return SimpleResponser.success();
+    }
 
     @ApiOperation(value="课程表", httpMethod = "POST")
     @RequestMapping("/course/plan/list")

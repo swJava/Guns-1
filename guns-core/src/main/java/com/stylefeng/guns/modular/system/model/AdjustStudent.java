@@ -27,10 +27,10 @@ public class AdjustStudent extends Model<AdjustStudent> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 当前班级编码
+     * 申请用户名
      */
-    @TableField("class_code")
-    private String classCode;
+    @TableField("user_name")
+    private String userName;
     /**
      * 学生编码（学号）
      */
@@ -41,14 +41,20 @@ public class AdjustStudent extends Model<AdjustStudent> {
      */
     private Integer type;
     /**
-     * 申请用户名
+     * 调整课时编码（只在调课申请时使用）
      */
-    @TableField("user_name")
-    private String userName;
+    @TableField("outline_code")
+    private String outlineCode;
     /**
-     * 调入目标编码
+     * 跳出班级编码
      */
-    private String target;
+    @TableField("source_class")
+    private String sourceClass;
+    /**
+     * 调入班级编码
+     */
+    @TableField("target_class")
+    private String targetClass;
     /**
      * 状态： 1启用 2冻结
      */
@@ -82,14 +88,6 @@ public class AdjustStudent extends Model<AdjustStudent> {
         this.id = id;
     }
 
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
-    }
-
     public String getStudentCode() {
         return studentCode;
     }
@@ -114,12 +112,28 @@ public class AdjustStudent extends Model<AdjustStudent> {
         this.userName = userName;
     }
 
-    public String getTarget() {
-        return target;
+    public String getOutlineCode() {
+        return outlineCode;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setOutlineCode(String outlineCode) {
+        this.outlineCode = outlineCode;
+    }
+
+    public String getSourceClass() {
+        return sourceClass;
+    }
+
+    public void setSourceClass(String sourceClass) {
+        this.sourceClass = sourceClass;
+    }
+
+    public String getTargetClass() {
+        return targetClass;
+    }
+
+    public void setTargetClass(String targetClass) {
+        this.targetClass = targetClass;
     }
 
     public Integer getStatus() {
@@ -171,11 +185,12 @@ public class AdjustStudent extends Model<AdjustStudent> {
     public String toString() {
         return "AdjustStudent{" +
         "id=" + id +
-        ", classCode=" + classCode +
         ", studentCode=" + studentCode +
         ", type=" + type +
         ", userName=" + userName +
-        ", target=" + target +
+        ", outlineCode=" + outlineCode +
+        ", sourceClass=" + sourceClass +
+        ", targetClass=" + targetClass +
         ", status=" + status +
         ", workStatus=" + workStatus +
         ", remark=" + remark +

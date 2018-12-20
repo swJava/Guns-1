@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements ICourseService {
     @Override
     public Course get(String code) {
+        if (null == code)
+            return null;
+
         return selectOne(new EntityWrapper<Course>().eq("code", code));
     }
 }

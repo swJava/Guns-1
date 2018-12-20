@@ -59,7 +59,7 @@ Teacher.openAddTeacher = function () {
     var index = layer.open({
         type: 2,
         title: '添加教师管理',
-        area: ['850px', '700px'], //宽高
+        area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/teacher/teacher_add'

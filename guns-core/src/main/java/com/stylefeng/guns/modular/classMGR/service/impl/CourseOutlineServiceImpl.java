@@ -50,9 +50,9 @@ public class CourseOutlineServiceImpl extends ServiceImpl<CourseOutlineMapper, C
             CourseOutline courseOutline = new CourseOutline();
             String[] attrs = item.split(ATTR_SPLIT);
             courseOutline.setCode(courseCode);
-            courseOutline.setClassCode(classCode);
+/*            courseOutline.setClassCode(classCode);
             courseOutline.setClassDate(attrs[0]);
-            courseOutline.setClassTime(attrs[1]);
+            courseOutline.setClassTime(attrs[1]);*/
             courseOutline.setOutline(attrs[2]);
             courseOutline.setSort(Integer.valueOf(attrs[3]));
             courseOutline.setStatus(StatusEnum.STATUS_VALID.getCode());

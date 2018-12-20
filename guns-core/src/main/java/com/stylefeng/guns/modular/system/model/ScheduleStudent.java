@@ -27,7 +27,7 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 课程计划编码
+     * 编码
      */
     private String code;
     /**

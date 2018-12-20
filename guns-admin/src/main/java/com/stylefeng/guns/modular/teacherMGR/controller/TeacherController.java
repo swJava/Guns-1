@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Teacher;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
 import com.stylefeng.guns.modular.teacherMGR.warpper.TeacherWrapper;
 import com.stylefeng.guns.util.CodeKit;
+import com.stylefeng.guns.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +38,9 @@ public class TeacherController extends BaseController {
 
     @Autowired
     private TeacherService teacherService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 跳转到教师管理首页
@@ -93,9 +100,17 @@ public class TeacherController extends BaseController {
      */
     @RequestMapping(value = "/add")
     @ResponseBody
-    public Object add(Teacher teacher) {
-        teacher.setCode(CodeKit.generateTeacher());
-        teacherService.insert(teacher);
+    public Object add(Teacher teacher, String masterName, String masterCode) {
+
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList || attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            teacher.setAvatar(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
+        teacherService.create(teacher);
+
         return SUCCESS_TIP;
     }
 

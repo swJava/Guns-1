@@ -5,11 +5,12 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.AdjustStudent">
         <id column="id" property="id" />
-        <result column="class_code" property="classCode" />
+        <result column="user_name" property="userName" />
         <result column="student_code" property="studentCode" />
         <result column="type" property="type" />
-        <result column="user_name" property="userName" />
-        <result column="target" property="target" />
+        <result column="outline_code" property="outlineCode" />
+        <result column="source_class" property="sourceClass" />
+        <result column="target_class" property="targetClass" />
         <result column="status" property="status" />
         <result column="work_status" property="workStatus" />
         <result column="remark" property="remark" />
@@ -19,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, class_code, student_code, type, user_name, target, status, work_status, remark, create_time, update_time
+        id, user_name, student_code, type, outline_code, source_class, target_class, status, work_status, remark, create_time, update_time
     </sql>
 
 </mapper>

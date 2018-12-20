@@ -42,6 +42,10 @@ public class Course extends Model<Course> {
      */
     private Integer grade;
     /**
+     * 课时长
+     */
+    private Integer period;
+    /**
      * 课程介绍
      */
     private String description;
@@ -99,6 +103,14 @@ public class Course extends Model<Course> {
         this.grade = grade;
     }
 
+    public Integer getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(Integer period) {
+        this.period = period;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -128,6 +140,7 @@ public class Course extends Model<Course> {
         ", name=" + name +
         ", method=" + method +
         ", subject=" + subject +
+        ", period=" + period +
         ", description=" + description +
         ", status=" + status +
         "}";

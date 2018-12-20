@@ -1,7 +1,13 @@
 package com.stylefeng.guns.modular.adjustMGR.service;
 
-import com.stylefeng.guns.modular.system.model.AdjustStudent;
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.common.validator.Validator;
+import com.stylefeng.guns.modular.system.model.AdjustStudent;
+import com.stylefeng.guns.modular.system.model.Member;
+import com.stylefeng.guns.modular.system.model.Student;
+
+import javax.validation.executable.ValidateOnExecution;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +19,25 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IAdjustStudentService extends IService<AdjustStudent> {
 
+    /**
+     * 调课申请
+     *
+     * @param member
+     * @param student
+     * @param fromData
+     * @param destData
+     */
+    @Validator(chain = {AdjustCourseValidator.class})
+    void adjustCourse(Member member, Student student, Map<String, Object> fromData, Map<String, Object> destData);
+
+    /**
+     * 调班申请
+     *
+     * @param member
+     * @param student
+     * @param fromData
+     * @param destData
+     */
+    @Validator(chain = {AdjustClassValidator.class})
+    void adjustClass(Member member, Student student, Map<String, Object> fromData, Map<String, Object> destData);
 }

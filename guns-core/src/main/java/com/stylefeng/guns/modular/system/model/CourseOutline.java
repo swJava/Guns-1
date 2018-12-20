@@ -38,21 +38,9 @@ public class CourseOutline extends Model<CourseOutline> {
     /**
      * 班级编码
      */
-    @TableField("class_code")
-    @ApiModelProperty(name = "classCode", value = "班级编码", example = "BJ000001")
-    private String classCode;
-    /**
-     * 上课日期
-     */
-    @TableField("class_date")
-    @ApiModelProperty(name = "classDate", value = "上课日期", example = "2018-11-27 周三")
-    private String classDate;
-    /**
-     * 上课时间：17:00-20:30
-     */
-    @TableField("class_time")
-    @ApiModelProperty(name = "classTime", value = "上课时间", example = "17:00-20:30")
-    private String classTime;
+    @TableField("course_code")
+    @ApiModelProperty(name = "courseCode", value = "课程编码", example = "KC000001")
+    private String courseCode;
     /**
      * 大纲条目
      */
@@ -69,6 +57,8 @@ public class CourseOutline extends Model<CourseOutline> {
     @ApiModelProperty(name = "status", value = "状态", example = "1")
     private Integer status;
 
+    @ApiModelProperty(name = "description", value = "简介", example = "第一课： 自我介绍")
+    private String description;
 
     public Long getId() {
         return id;
@@ -86,28 +76,12 @@ public class CourseOutline extends Model<CourseOutline> {
         this.code = code;
     }
 
-    public String getClassCode() {
-        return classCode;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
-    }
-
-    public String getClassDate() {
-        return classDate;
-    }
-
-    public void setClassDate(String classDate) {
-        this.classDate = classDate;
-    }
-
-    public String getClassTime() {
-        return classTime;
-    }
-
-    public void setClassTime(String classTime) {
-        this.classTime = classTime;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getOutline() {
@@ -134,6 +108,14 @@ public class CourseOutline extends Model<CourseOutline> {
         this.status = status;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -144,12 +126,11 @@ public class CourseOutline extends Model<CourseOutline> {
         return "CourseOutline{" +
         "id=" + id +
         ", code=" + code +
-        ", classCode=" + classCode +
-        ", classDate=" + classDate +
-        ", classTime=" + classTime +
+        ", courseCode=" + courseCode +
         ", outline=" + outline +
         ", sort=" + sort +
         ", status=" + status +
+        ", description=" + description +
         "}";
     }
 }

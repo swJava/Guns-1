@@ -2,6 +2,8 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.examineMGR.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class ExamineServiceImpl implements IExamineService {
 
     @Autowired
     private IExamineAnswerService examineAnswerService;
+
+    @Autowired
+    private IExamineAnswerDetailService examineAnswerDetailService;
 
     @Autowired
     private IExaminePaperItemService examinePaperItemService;
@@ -72,5 +77,22 @@ public class ExamineServiceImpl implements IExamineService {
         Map<String, Collection<Question>> beginResult = new HashMap<>();
         beginResult.put(answerPaper.getCode(), questionSet);
         return beginResult;
+    }
+
+    @Override
+    public void doFinishExamine(String code, List<ExamineAnswerDetail> submitItems) {
+
+        ExamineAnswer answerPaper = examineAnswerService.get(code);
+
+        if (null == answerPaper)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        examineAnswerDetailService.insertBatch(submitItems);
+
+        Date now = new Date();
+        answerPaper.setStatus(ExamineAnswerStateEnum.Sumit.code);
+        answerPaper.setEndDate(now);
+
+        examineAnswerService.updateById(answerPaper);
     }
 }

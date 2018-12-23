@@ -20,4 +20,11 @@ public interface IExamineAnswerService extends IService<ExamineAnswer> {
      * @return
      */
     ExamineAnswer generatePaper(Student student, ExaminePaper examinePaper);
+
+    /**
+     * 获取答卷
+     *
+     * @param code
+     */
+    ExamineAnswer get(String code);
 }

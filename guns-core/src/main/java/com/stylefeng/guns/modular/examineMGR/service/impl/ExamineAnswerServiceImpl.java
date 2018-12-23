@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.examineMGR.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.system.dao.ExamineAnswerMapper;
@@ -36,5 +37,13 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
         insert(answerPaper);
 
         return answerPaper;
+    }
+
+    @Override
+    public ExamineAnswer get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<ExamineAnswer>().eq("code", code));
     }
 }

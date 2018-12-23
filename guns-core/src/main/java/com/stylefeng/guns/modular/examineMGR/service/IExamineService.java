@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.examineMGR.service;
 
+import com.stylefeng.guns.modular.system.model.ExamineAnswerDetail;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
 import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.Student;
@@ -49,4 +50,10 @@ public interface IExamineService {
      * @return
      */
     Map<String, Collection<Question>> doBeginExamine(Student student, ExaminePaper paper);
+
+    /**
+     *  @param code
+     * @param submitItems
+     */
+    void doFinishExamine(String code, List<ExamineAnswerDetail> submitItems);
 }

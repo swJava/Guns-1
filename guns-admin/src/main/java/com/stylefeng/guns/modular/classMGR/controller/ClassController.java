@@ -136,20 +136,6 @@ public class ClassController extends BaseController {
     }
 
     /**
-     * 新增课程大纲管理
-     */
-    @RequestMapping(value = "/add_kcdg")
-    @ResponseBody
-    public Object addKCDG(String classCode,String courseCode,String courseValues) {
-        if (ToolUtil.isOneEmpty(classCode,courseCode, courseValues)) {
-            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
-        }
-        courseOutlineService.delete(new EntityWrapper<CourseOutline>().eq("class_code",classCode).eq("code",courseCode));
-        courseOutlineService.addCourseOutline(classCode,courseCode,courseValues);
-        return SUCCESS_TIP;
-    }
-
-    /**
      * 删除课程管理
      */
     @RequestMapping(value = "/delete")

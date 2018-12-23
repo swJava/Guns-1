@@ -33,6 +33,7 @@ public final class CodeKit {
         QUESTION ("ST", 8),  // 试题
         COLUMN ("LM", 6),  // 栏目
         CONTENT ("CT", 8),  // 栏目类容
+        ANSWER("DJ", 8)  // 答卷
         ;
 
         String name;
@@ -112,6 +113,14 @@ public final class CodeKit {
      */
     public static String generateContent() {
         return generate(CODE_DEFINE.CONTENT.name, CODE_DEFINE.CONTENT.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
+    /**
+     * 生成答卷项
+     * @return
+     */
+    public static String generateAnswerPaper() {
+        return generate(CODE_DEFINE.ANSWER.name, CODE_DEFINE.ANSWER.length, null);
     }
 
     private CodeKit(){}

@@ -3,10 +3,7 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.modular.examineMGR.service.*;
-import com.stylefeng.guns.modular.system.model.ExaminePaper;
-import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
-import com.stylefeng.guns.modular.system.model.Question;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,12 +51,13 @@ public class ExamineServiceImpl implements IExamineService {
     }
 
     @Override
-    public Collection<Question> doBeginExamine(Student student, ExaminePaper paper) {
+    public Map<String, Collection<Question>> doBeginExamine(Student student, ExaminePaper examinePaper) {
 
-        // TODO 生成考生答卷
+        // 生成答卷
+        ExamineAnswer answerPaper = examineAnswerService.generatePaper(student, examinePaper);
 
         Wrapper<ExaminePaperItem> questionListQuery = new EntityWrapper<>();
-        questionListQuery.eq("paper_code", paper.getCode());
+        questionListQuery.eq("paper_code", examinePaper.getCode());
         List<ExaminePaperItem> examinePaperItemList = examinePaperItemService.selectList(questionListQuery);
 
         if (null == examinePaperItemList || examinePaperItemList.isEmpty()){
@@ -71,6 +69,8 @@ public class ExamineServiceImpl implements IExamineService {
             questionSet.add(questionService.get(examinePaperItem.getQuestionCode()));
         }
 
-        return questionSet;
+        Map<String, Collection<Question>> beginResult = new HashMap<>();
+        beginResult.put(answerPaper.getCode(), questionSet);
+        return beginResult;
     }
 }

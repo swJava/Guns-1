@@ -6,6 +6,7 @@ import com.stylefeng.guns.modular.system.model.Student;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -47,5 +48,5 @@ public interface IExamineService {
      * @param paper
      * @return
      */
-    Collection<Question> doBeginExamine(Student student, ExaminePaper paper);
+    Map<String, Collection<Question>> doBeginExamine(Student student, ExaminePaper paper);
 }

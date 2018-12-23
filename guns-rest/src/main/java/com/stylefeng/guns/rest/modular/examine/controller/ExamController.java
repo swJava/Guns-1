@@ -62,9 +62,9 @@ public class ExamController extends ApiController {
 
         ExaminePaper paper = examineService.getExaminePaper(requester.getPaperCode());
 
-        Collection<Question> questionList = examineService.doBeginExamine(student, paper);
+        Map<String, Collection<Question>> beginResult = examineService.doBeginExamine(student, paper);
 
-        return ExamineOutlineResponse.me(questionList);
+        return ExamineOutlineResponse.me(beginResult);
     }
 
     @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)

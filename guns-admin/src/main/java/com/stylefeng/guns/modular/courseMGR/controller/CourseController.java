@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
@@ -141,8 +142,17 @@ public class CourseController extends BaseController {
 
     @RequestMapping(value = "/outline/save", method = RequestMethod.POST)
     @ResponseBody
-    public Object setCourseOutline(@RequestBody List<CourseOutline> outlines){
-        log.debug("Request body = {}", JSON.toJSONString(outlines) );
+    public Object setCourseOutline(@RequestParam String course, @RequestBody List<CourseOutline> outlines){
+
+        if (null == course)
+            return new ErrorTip(500, "请指定课程");
+
+        Course existCourse = courseService.get(course);
+
+        if (null == course)
+            return new ErrorTip(500, "课程不存在");
+
+        courseOutlineService.addCourseOutline(existCourse, outlines);
 
         return SUCCESS_TIP;
     }

@@ -27,7 +27,7 @@
                             <#button name="失效" icon="fa-remove" clickFun="Course.delete()" space="true"/>
                             @}
                             @if(shiro.hasPermission("/course/outline")){
-                            <#button name="设置大纲" icon="fa-remove" clickFun="Course.openCourseOutline()" space="true"/>
+                            <#button name="设置大纲" icon="fa-cog" clickFun="Course.openCourseOutline()" space="true"/>
                             @}
                         </div>
                         <#table id="CourseTable"/>

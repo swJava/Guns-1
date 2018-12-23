@@ -20,10 +20,10 @@ import javax.validation.constraints.Pattern;
 @ApiModel(value = "BeginExamineRequester", description = "开始测试信息")
 public class BeginExamineRequester extends SimpleRequester {
 
-    @ApiModelProperty(name = "student", value = "学员编码", example = "XY181201000001")
+    @ApiModelProperty(name = "student", value = "学员编码", required = true, example = "XY181201000001")
     @NotBlank(message = "学员编码不能为空")
     private String student;
-    @ApiModelProperty(name = "paperCode", value = "试卷编码", example = "SJ000001")
+    @ApiModelProperty(name = "paperCode", value = "试卷编码", required = true, example = "SJ000001")
     @NotBlank(message = "试卷编码不能为空")
     private String paperCode;
 

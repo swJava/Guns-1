@@ -3,6 +3,7 @@
  */
 var CourseOutlineInfoDlg = {
     count: $("#itemSize").val(),
+    course: '',
     outlines: new Array(),
     itemTemplate: $("#itemTemplate").html()
 };
@@ -75,6 +76,7 @@ CourseOutlineInfoDlg.collectData = function () {
     });
     this.mutiString = mutiString;
     this.outlines = outlines;
+    this.course = $('#courseCode').val();
 };
 
 
@@ -84,14 +86,13 @@ CourseOutlineInfoDlg.collectData = function () {
 CourseOutlineInfoDlg.saveSubmit = function () {
     this.collectData();
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/course/outline/save", function (data) {
+    var ajax = new $ax(Feng.ctxPath + "/course/outline/save?course=" + this.course, function (data) {
         Feng.success("添加成功!");
         //window.parent.Dict.table.refresh();
         //DictInfoDlg.close();
     }, function (data) {
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
-    //ajax.set('dictValues',this.mutiString);
     ajax.setData(JSON.stringify(this.outlines));
     ajax.setContentType('application/json');
     ajax.start();

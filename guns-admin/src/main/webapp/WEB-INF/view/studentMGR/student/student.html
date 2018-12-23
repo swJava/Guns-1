@@ -17,9 +17,9 @@
                             </div>
                         </div>
                         <div class="hidden-xs" id="StudentTableToolbar" role="group">
-                            @if(shiro.hasPermission("/student/add")){
+                        <!--    @if(shiro.hasPermission("/student/add")){
                                 <#button name="添加" icon="fa-plus" clickFun="Student.openAddStudent()"/>
-                            @}
+                            @}-->
                             @if(shiro.hasPermission("/student/update")){
                                 <#button name="修改" icon="fa-edit" clickFun="Student.openStudentDetail()" space="true"/>
                             @}
@@ -34,5 +34,5 @@
         </div>
     </div>
 </div>
-<script src="${ctxPath}/static/modular/studentMGR/student/student.js"></script>
+<#script src="/static/modular/studentMGR/student/student.js" />
 @}

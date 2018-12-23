@@ -162,8 +162,14 @@ public class MemberController {
         // 1 先找用户
         Member member = memberService.selectOne(queryWrapper);
 
-        if (null == member)
-            throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_NOT_FOUND);
+        if (null == member) {
+            queryWrapper = new EntityWrapper<Member>();
+            queryWrapper.eq("mobile_number", userName);
+            member = memberService.selectOne(queryWrapper);
+
+            if (null == member)
+                throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_NOT_FOUND);
+        }
 
         // 2 验证密码
         String encryptPassword = member.getPassword();
@@ -180,7 +186,7 @@ public class MemberController {
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
 
         int memState = member.getStatus();
-        if (memState != 11)
+        if (memState != MemberStateEnum.Valid.code)
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_LOCKED);
         // 3 生成TOKEN
         final String randomKey = jwtTokenUtil.getRandomKey();

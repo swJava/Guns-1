@@ -102,6 +102,9 @@ public class ContentController {
         List<Content> contentList = new ArrayList<Content>();
         for (ContentCategory contentCategory : categoryList){
             Content content = contentService.get(contentCategory.getContentCode());
+            if (null == content)
+                continue;
+
             content.setContent(null);
             contentList.add(content);
         }

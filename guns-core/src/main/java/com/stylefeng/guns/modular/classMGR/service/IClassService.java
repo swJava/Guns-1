@@ -6,6 +6,7 @@ import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,4 +40,12 @@ public interface IClassService extends IService<Class> {
      * @Exception ServiceException
      */
     void checkJoinState(Class classInfo, Member member, Student student);
+
+    /**
+     * 查找哪些班级需要进行测试的
+     *
+     * @param code
+     * @return
+     */
+    List<Class> findClassUsingExaming(Collection<String> paperCodes);
 }

@@ -216,6 +216,10 @@ public class EducationController extends ApiController {
             if (!(classInfo.isValid())){
                 continue;
             }
+            if (currClassInfo.getCode().equals(classInfo.getCode())){
+                // 过滤掉自己
+                continue;
+            }
             // TODO 是否根据当前报班情况限制？
 
             classResponserSet.add(classInfo);
@@ -237,14 +241,24 @@ public class EducationController extends ApiController {
         Course course = courseService.get(currClass.getCourseCode());
 
         Map<String, Object> changeClassQuery = new HashMap<String, Object>();
-        changeClassQuery.put("grades", currClass.getGrade());
-        changeClassQuery.put("abilities", currClass.getAbility());
+        changeClassQuery.put("grades", String.valueOf(currClass.getGrade()));
+        changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
         changeClassQuery.put("subjects", course.getSubject());
 
         List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), changeClassQuery);
 
         Set<Class> classSet = new HashSet<>();
         for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
+            if (null == classInfo){
+                continue;
+            }
+            if (!(classInfo.isValid())){
+                continue;
+            }
+            if (classInfo.getCode().equals(currClass.getCode())){
+                // 过滤掉自己
+                continue;
+            }
             if (currClass.getPrice().equals(classInfo.getPrice())){
                 classSet.add(classInfo);
             }

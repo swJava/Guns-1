@@ -14,9 +14,8 @@ var Member = {
 Member.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '用户名', field: 'username', visible: true, align: 'center', valign: 'middle'},
-            {title: '密码', field: 'password', visible: true, align: 'center', valign: 'middle'},
-            {title: '用户名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
+            {title: '用户名', field: 'userName', visible: true, align: 'center', valign: 'middle'},
+            {title: '姓名', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
             {title: '联系手机', field: 'mobileNumber', visible: true, align: 'center', valign: 'middle'},
             {title: '联系地址', field: 'address', visible: true, align: 'center', valign: 'middle'},

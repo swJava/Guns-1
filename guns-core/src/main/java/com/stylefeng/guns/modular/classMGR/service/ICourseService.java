@@ -17,4 +17,25 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     Course get(String courseCode);
+
+    /**
+     * 删除课程
+     *
+     * @param code
+     */
+    void delete(String code);
+
+    /**
+     * 创建课程
+     *
+     * @param course
+     */
+    void create(Course course);
+
+    /**
+     * 更新课程
+     *
+     * @param course
+     */
+    void update(Course course);
 }

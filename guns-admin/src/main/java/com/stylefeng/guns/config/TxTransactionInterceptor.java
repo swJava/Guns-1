@@ -23,7 +23,7 @@ import java.util.Map;
 @Aspect
 @Configuration
 public class TxTransactionInterceptor {
-    private static final int TX_METHOD_TIMEOUT = 5;
+    private static final int TX_METHOD_TIMEOUT = 20;
     private static final String AOP_POINTCUT_EXPRESSION = "execution (* com.stylefeng.guns..service..*Service.*(..))";
 
     @Autowired

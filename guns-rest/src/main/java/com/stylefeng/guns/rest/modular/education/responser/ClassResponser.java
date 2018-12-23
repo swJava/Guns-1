@@ -96,9 +96,9 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date beginDate = dto.getBeginDate();
         Date now = new Date();
 
-        dto.setCanAdjust(false);
+        dto.setCanChange(false);
         if (now.before(beginDate))
-            dto.setCanAdjust(true);
+            dto.setCanChange(true);
 
     }
 

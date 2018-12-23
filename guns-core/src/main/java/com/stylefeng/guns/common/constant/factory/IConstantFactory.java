@@ -83,6 +83,16 @@ public interface IConstantFactory {
     String getDictsByName(String name, Integer val);
 
     /**
+     * 根据字典码和字典中的值获取对应的名称
+     */
+    String getDictsByCode(String code, String val);
+
+    /**
+     * 根据字典码和字典中的值获取对应的名称
+     */
+    String getDictsByCode(String code, String val, String defaultValue);
+
+    /**
      * 获取性别名称
      */
     String getTeacherTypeName(Integer teacherType);
@@ -235,4 +245,26 @@ public interface IConstantFactory {
      */
     String getColumnTypeName(Integer type);
 
+    /**
+     * 获取用户状态
+     * @param status
+     * @return
+     */
+    String getMemberStatusName(Integer status);
+
+    /**
+     * 获取通用状态名称
+     *
+     * @param status
+     * @return
+     */
+    Object getGenericStateName(Integer status);
+
+    /**
+     * 获取授课方式
+     *
+     * @param method
+     * @return
+     */
+    Object getCourseMethodname(Integer method);
 }

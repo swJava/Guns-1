@@ -1,5 +1,8 @@
 package com.stylefeng.guns.modular.system.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.tips.SuccessTip;
 import com.stylefeng.guns.core.base.tips.Tip;
@@ -221,6 +224,56 @@ public class AttachmentController {
             in.close();
         } catch (Exception e) {
             // e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/download")
+    public void download(String masterName, String masterCode, HttpServletResponse response) {
+        File zipFile = null;
+
+        Wrapper<Attachment> attachmentWrapper = new EntityWrapper<>();
+        attachmentWrapper.eq("master_name", masterName);
+        attachmentWrapper.eq("master_code", masterCode);
+        attachmentWrapper.eq("status", GenericState.Valid.code);
+
+        Attachment attachment = attachmentService.selectOne(attachmentWrapper);
+        InputStream resStream = null;
+        String fileName = "";
+
+        try {
+            if (null == attachment) {
+                DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
+                resStream = resourceLoader.getResource("classpath:/avator/boy.gif").getInputStream();
+                fileName = "默认头像";
+            } else {
+                resStream = new FileInputStream(new File(attachment.getPath()));
+                fileName = attachment.getFileName();
+            }
+        }catch(Exception e){}
+
+        if (null == resStream)
+            return ;
+
+        try {
+            // 输出文件
+            response.reset();
+            response.setContentType("bin");
+            response.addHeader("Content-Disposition",
+                    "attachment; filename=\"" + new String(URLEncoder.encode(fileName, "UTF-8")) + "\"");
+            byte[] buffer = new byte[1024];
+            int byteread = 0;
+            while ((byteread = resStream.read(buffer)) != -1) {
+                response.getOutputStream().write(buffer, 0, byteread);
+            }
+
+        } catch (Exception e) {
+            // e.printStackTrace();
+        } finally {
+            try {
+                resStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

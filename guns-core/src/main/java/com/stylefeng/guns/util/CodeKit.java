@@ -104,7 +104,7 @@ public final class CodeKit {
      * @return
      */
     public static String generateCourse() {
-        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[0]);
     }
     /**
      * 生成订单项

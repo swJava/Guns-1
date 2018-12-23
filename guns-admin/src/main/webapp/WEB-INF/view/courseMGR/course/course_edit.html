@@ -1,0 +1,36 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="courseInfoForm">
+            <input type="hidden" id="gradeValue" value="${item.grade}" />
+            <input type="hidden" id="methodValue" value="${item.method}" />
+            <input type="hidden" id="subjectValue" value="${item.subject}" />
+            <input type="hidden" id="id" value="${item.id}" />
+            <input type="hidden" id="code" value="${item.code}" />
+            <input type="hidden" id="status" value="${item.status}" />
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#input id="name" name="课程名称" maxLength="30" value="${item.name}" underline="true"/>
+                    <#dictSelector id="grade" name="年级" code="school_grade" label="年级"  underline="true" width="75%"/>
+                    <#input id="period" name="课时数" maxLength="2" value="${item.period}"/>
+                </div>
+
+                <div class="col-sm-6">
+                    <#dictSelector id="method" name="授课方式" code="course_method" label="授课方式"  underline="true" width="75%"/>
+                    <#dictSelector id="subject" name="学科" code="subject_type" label="学科" width="75%"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="CourseInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="CourseInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<#script src="/static/modular/courseMGR/course/course_info.js" />
+@}

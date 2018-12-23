@@ -7,6 +7,7 @@
 		this.async = false;
 		this.success = success;
 		this.error = error;
+        this.contentType = "application/x-www-form-urlencoded";
 	};
 	
 	$ax.prototype = {
@@ -22,6 +23,7 @@
 			$.ajax({
 		        type: this.type,
 		        url: this.url,
+                contentType: this.contentType,
 		        dataType: this.dataType,
 		        async: this.async,
 		        data: this.data,
@@ -54,7 +56,12 @@
 			this.data = data;
 			return this;
 		},
-		
+
+        setContentType : function(contentType) {
+            this.contentType = contentType;
+            return this;
+        },
+
 		clear : function () {
 			this.data = {};
 			return this;

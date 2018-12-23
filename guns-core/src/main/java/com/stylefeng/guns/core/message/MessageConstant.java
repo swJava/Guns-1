@@ -50,6 +50,10 @@ public final class MessageConstant {
          */
         public static final String SYS_ARGUMENTS_ILLEGAL_FORMAT = "000008";
         /**
+         * 对象正在使用
+         */
+        public static final String SYS_SUBJECT_ONAIR = "000009";
+        /**
          * 没有获取到有效的用户登录信息
          */
         public static final String SYS_CREDENTIAL_UNKNOW = "000101";

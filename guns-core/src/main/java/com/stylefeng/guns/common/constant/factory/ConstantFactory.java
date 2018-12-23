@@ -265,6 +265,31 @@ public class ConstantFactory implements IConstantFactory {
         }
     }
 
+    @Override
+    public String getDictsByCode(String code, String val) {
+        return getDictsByCode(code, val, "");
+    }
+
+    @Override
+    public String getDictsByCode(String code, String val, String defaultValue) {
+        Dict temp = new Dict();
+        temp.setCode(code);
+        Dict dict = dictMapper.selectOne(temp);
+        if (dict == null) {
+            return null == defaultValue ? "" : defaultValue;
+        } else {
+            Wrapper<Dict> wrapper = new EntityWrapper<>();
+            wrapper = wrapper.eq("pid", dict.getId());
+            List<Dict> dicts = dictMapper.selectList(wrapper);
+            for (Dict item : dicts) {
+                if (item.getCode() != null && item.getCode().equals(val)) {
+                    return item.getName();
+                }
+            }
+            return null == defaultValue ? "" : defaultValue;
+        }
+    }
+
     /**
      * 获取老师类型名称
      * @param teacherType
@@ -425,7 +450,7 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     public String getClassRoomTypeName(Integer type) {
-        return getDictsByName("教室类型", type);
+        return getDictsByCode("classroom_type", String.valueOf(type));
     }
 
     @Override
@@ -470,5 +495,20 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public String getColumnTypeName(Integer type) {
         return getDictsByName("栏目行为类型", type);
+    }
+
+    @Override
+    public String getMemberStatusName(Integer status) {
+        return getDictsByCode("account_state", String.valueOf(status));
+    }
+
+    @Override
+    public Object getGenericStateName(Integer status) {
+        return getDictsByCode("generic_state", String.valueOf(status));
+    }
+
+    @Override
+    public Object getCourseMethodname(Integer method) {
+        return getDictsByCode("course_method", String.valueOf(method));
     }
 }

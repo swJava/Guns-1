@@ -163,6 +163,12 @@ public class Class extends Model<Class> {
     @TableField("teacher_second")
     private String teacherSecond;
 
+    /**
+     * 测试试卷编码
+     */
+    @TableField("examine_paper")
+    private String examinePaper;
+
 
     public Long getId() {
         return id;
@@ -380,6 +386,14 @@ public class Class extends Model<Class> {
         this.teacherSecond = teacherSecond;
     }
 
+    public String getExaminePaper() {
+        return examinePaper;
+    }
+
+    public void setExaminePaper(String examinePaper) {
+        this.examinePaper = examinePaper;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -414,6 +428,7 @@ public class Class extends Model<Class> {
         ", teacher=" + teacher +
         ", teacherSecondCode=" + teacherSecondCode +
         ", teacherSecond=" + teacherSecond +
+        ", examinePaper=" + examinePaper +
         "}";
     }
 
@@ -422,5 +437,12 @@ public class Class extends Model<Class> {
             return false;
 
         return GenericState.Valid.code == this.status;
+    }
+
+    public boolean needTest(){
+        if (null == this.status)
+            return false;
+
+        return true;
     }
 }

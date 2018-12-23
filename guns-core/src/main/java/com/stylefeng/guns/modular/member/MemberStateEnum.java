@@ -8,9 +8,9 @@ package com.stylefeng.guns.modular.member;
  * @Version 1.0
  */
 public enum MemberStateEnum {
-    Valid( 11 , "有效"),
-    Invalid( 10, "失效"),
-    Lock( 12, "锁定")
+    Valid( 1 , "有效"),
+    Invalid( -1, "失效"),
+    Lock( 0, "锁定")
     ;
 
     public int code;

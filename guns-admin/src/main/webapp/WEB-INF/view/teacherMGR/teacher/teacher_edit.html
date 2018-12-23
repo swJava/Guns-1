@@ -11,7 +11,7 @@
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#avatar id="avatar" name="头像" underline="true" avatarImg="${item.avatar}"/>
+                            <#avatar id="${item.avatar}" name="avatar" label="头像" underline="true"/>
                             <#input id="name" name="教师名称" value="${item.name}" underline="true"/>
                             <#dictSelector id="type" name ="教师类型" code="teacher_type" label="教师类型"  underline="true"  width="75%"/>
                             <#dictSelector id="gender" name ="性别" code="sys_sex" label="性别"  underline="true"  width="75%"/>
@@ -37,5 +37,5 @@
 
     </div>
 </div>
-<script src="${ctxPath}/static/modular/teacherMGR/teacher/teacher_info.js"></script>
+<#script src="/static/modular/teacherMGR/teacher/teacher_info.js" />
 @}

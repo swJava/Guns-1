@@ -59,7 +59,7 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
     public void adjustClass(Member member, Student student, Map<String, Object> fromData, Map<String, Object> destData) {
 
         com.stylefeng.guns.modular.system.model.Class sourceClassInfo = (com.stylefeng.guns.modular.system.model.Class) fromData.get("sourceClass");
-        com.stylefeng.guns.modular.system.model.Class targetClassInfo = (com.stylefeng.guns.modular.system.model.Class) fromData.get("targetClass");
+        com.stylefeng.guns.modular.system.model.Class targetClassInfo = (com.stylefeng.guns.modular.system.model.Class) destData.get("targetClass");
 
 
         if (hasApproving(student.getCode(), sourceClassInfo.getCode(), targetClassInfo.getCode(), null, AdjustStudentTypeEnum.Change)){

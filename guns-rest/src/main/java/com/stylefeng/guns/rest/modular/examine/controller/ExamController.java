@@ -1,22 +1,27 @@
 package com.stylefeng.guns.rest.modular.examine.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
-import com.stylefeng.guns.modular.examineMGR.service.IClassExamStrategyService;
-import com.stylefeng.guns.modular.system.model.Class;
-import com.stylefeng.guns.modular.system.model.Teacher;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
+import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
+import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
-import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.examine.requester.BeginExamineRequester;
 import com.stylefeng.guns.rest.modular.examine.requester.ExamPaperSubmitRequester;
-import io.swagger.annotations.*;
+import com.stylefeng.guns.rest.modular.examine.requester.PaperQueryRequester;
+import com.stylefeng.guns.rest.modular.examine.responser.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.*;
 
 /**
  * 测试
@@ -26,18 +31,24 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/examine")
 @Api(tags = "考试接口")
-public class ExamController {
+public class ExamController extends ApiController {
 
     @Autowired
     private IClassService classService;
 
     @Autowired
-    private IClassExamStrategyService classExamStrategyService;
+    private IStudentService studentService;
 
-    @ApiOperation(value="出题", httpMethod = "POST", response = Teacher.class)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "subject", value = "学科", required = false, dataType = "String"),
-    })
+    @Autowired
+    private IExamineService examineService;
+
+    @Autowired
+    private IQuestionService questionService;
+
+    @Autowired
+    private IQuestionItemService questionItemService;
+
+    @ApiOperation(value="开始测试", httpMethod = "POST", response = ExamineOutlineResponse.class)
     @RequestMapping("/begin")
     public Responser beginExamine(
             @ApiParam(required = true, value = "开始测试请求")
@@ -45,31 +56,56 @@ public class ExamController {
             @Valid
             BeginExamineRequester requester
     ){
+        Member member = currMember();
 
-        String classCode = requester.getClassCode();
-        Class classInfo = classService.selectOne(new EntityWrapper<Class>().eq("code", classCode).eq("status", GenericState.Valid.code));
+        Student student = studentService.get(requester.getStudent());
 
-        if (null == classInfo)
+        ExaminePaper paper = examineService.getExaminePaper(requester.getPaperCode());
+
+        Collection<Question> questionList = examineService.doBeginExamine(student, paper);
+
+        return ExamineOutlineResponse.me(questionList);
+    }
+
+    @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)
+    @RequestMapping(value = "/paper/list", method = RequestMethod.POST)
+    public Responser listPaper(
+            @RequestBody @Valid
+            PaperQueryRequester requester
+    ){
+        Member member = currMember();
+        Set<PaperResponse> paperResponseList = new HashSet<>();
+
+        Student student = studentService.get(requester.getStudent().getCode());
+
+        if (null == student || !(student.isValid()))
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        classExamStrategyService.generateExamine(requester.getStudent(), classInfo, requester.getGrade(), requester.getAbility());
+        // 查找之前没有做完的试卷
+        List<ExaminePaper> unCompletePaperList = examineService.findUnCompletePaper(student);
+        // 查找所有适合当前学员的试卷
+        List<ExaminePaper> examinePaperList = examineService.findExaminePaper(student);
 
-        return SimpleResponser.success();
+        for(ExaminePaper examinePaper : examinePaperList){
+            List<com.stylefeng.guns.modular.system.model.Class> classInfoList = classService.findClassUsingExaming(Arrays.asList(new String[]{examinePaper.getCode()}));
+            paperResponseList.add(PaperResponse.me(examinePaper, classInfoList));
+        }
+
+        return PaperListResponse.me(paperResponseList);
     }
 
-    @ApiOperation(value="试卷列表", httpMethod = "POST", response = Teacher.class)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "subject", value = "学科", required = false, dataType = "String"),
-    })
-    @RequestMapping("/list")
-    public Responser listPaper(String subject, Integer method){
-        return null;
-    }
-
-    @ApiOperation(value="试卷详情")
-    @RequestMapping(value = "/paper/detail/{code}", method = {RequestMethod.POST, RequestMethod.GET})
+    @ApiOperation(value="试题详情", response = QuestionDetailResponse.class)
+    @RequestMapping(value = "/question/detail/{code}", method = {RequestMethod.POST})
     public Responser paperDetail(@PathVariable("code") String code){
-        return null;
+
+        Question question = questionService.get(code);
+
+        List<QuestionItem> questionItemList = questionItemService.findAll(question.getCode());
+
+        QuestionResponse questionResponse = QuestionResponse.me(question);
+        questionResponse.setItems(questionItemList);
+
+        return QuestionDetailResponse.me(questionResponse);
     }
 
     @ApiOperation(value="提交试卷", httpMethod = "POST")

@@ -11,11 +11,12 @@
         <result column="subject" property="subject" />
         <result column="status" property="status" />
         <result column="expact_answer" property="expactAnswer" />
+        <result column="auto_marking" property="autoMarking" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, question, type, subject, status, expact_answer
+        id, code, question, type, subject, status, expact_answer, auto_marking
     </sql>
 
 </mapper>

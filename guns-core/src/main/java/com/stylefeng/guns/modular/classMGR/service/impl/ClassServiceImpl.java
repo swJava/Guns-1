@@ -1,7 +1,9 @@
 package com.stylefeng.guns.modular.classMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
@@ -142,5 +144,17 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
         if (signEndDate.before(now))
             throw new ServiceException(MessageConstant.MessageCode.COURSE_SELECT_OUTTIME);
+    }
+
+    @Override
+    public List<Class> findClassUsingExaming(Collection<String> paperCodes) {
+        if (null == paperCodes || paperCodes.isEmpty())
+            return new ArrayList<Class>();
+
+        Wrapper<Class> queryWrapper = new EntityWrapper<Class>();
+        queryWrapper.in("examine_paper", paperCodes.toArray());
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        return selectList(queryWrapper);
     }
 }

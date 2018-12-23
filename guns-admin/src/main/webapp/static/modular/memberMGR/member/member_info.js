@@ -46,14 +46,14 @@ MemberInfoDlg.close = function() {
 MemberInfoDlg.collectData = function() {
     this
     .set('id')
-    .set('username')
+    .set('userName')
     .set('password')
     .set('name')
     .set('gender')
     .set('mobileNumber')
     .set('address')
     .set('qq')
-    .set('weiixin')
+    .set('weixin')
     .set('email')
     .set('status')
     .set('joinDate');
@@ -100,5 +100,6 @@ MemberInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-
+    $("#gender").val($("#genderValue").val());
+    $("#status").val($("#statusValue").val());
 });

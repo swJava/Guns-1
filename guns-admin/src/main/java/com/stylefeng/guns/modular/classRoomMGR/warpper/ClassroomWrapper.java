@@ -20,6 +20,6 @@ public class ClassroomWrapper extends BaseControllerWarpper{
     @Override
     protected void warpTheMap(Map<String, Object> map) {
         map.put("typeName", ConstantFactory.me().getClassRoomTypeName((Integer) map.get("type")));
-        map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
+        map.put("statusName", ConstantFactory.me().getGenericStateName((Integer) map.get("status")));
     }
 }

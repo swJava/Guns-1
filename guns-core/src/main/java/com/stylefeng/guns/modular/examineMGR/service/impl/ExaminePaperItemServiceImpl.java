@@ -1,0 +1,17 @@
+package com.stylefeng.guns.modular.examineMGR.service.impl;
+
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
+import com.stylefeng.guns.modular.system.dao.ExaminePaperItemMapper;
+import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Description //TODO
+ * @Author 罗华
+ * @Date 2018/12/22 18:24
+ * @Version 1.0
+ */
+@Service
+public class ExaminePaperItemServiceImpl extends ServiceImpl<ExaminePaperItemMapper, ExaminePaperItem> implements IExaminePaperItemService {
+}

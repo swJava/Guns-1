@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
@@ -9,7 +10,6 @@ import com.stylefeng.guns.modular.system.dao.AttachmentMapper;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.system.transfer.AttachmentInfo;
-import com.sun.org.apache.xerces.internal.impl.validation.EntityState;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * @Description //TODO
- * @Author 缃楀崕
+ * @Author 罗华
  * @Date 2018/11/19 17:42
  * @Version 1.0
  */
@@ -63,7 +63,7 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
                 continue;
             }
 
-            // 淇濆瓨闄勪欢淇℃伅
+            // 保存附件信息
             Attachment attachment = new Attachment();
             attachment.setFileName((String) uploadAttachment.get("orgName"));
             attachment.setAttachmentName(filename);
@@ -87,9 +87,9 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
             return new ArrayList<>();
 
         return selectList(new EntityWrapper<Attachment>()
-                .eq("master_code", masterCode)
+                        .eq("master_code", masterCode)
                         .eq("master_name", masterName)
-                .eq("status", 1)
+                        .eq("status", 1)
         );
     }
 
@@ -99,6 +99,23 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
             return null;
 
         return selectById(id);
+    }
+
+    @Override
+    public void updateAndRemoveOther(Attachment newAttachment) {
+        Wrapper<Attachment> attachmentWrapper = new EntityWrapper<Attachment>();
+
+        attachmentWrapper.eq("master_name", newAttachment.getMasterName());
+        attachmentWrapper.eq("master_code", newAttachment.getMasterCode());
+        attachmentWrapper.eq("status", GenericState.Valid.code);
+
+        List<Attachment> existList = selectList(attachmentWrapper);
+        for(Attachment attachment : existList){
+            attachment.setStatus(GenericState.Invalid.code);
+            updateById(attachment);
+        }
+
+        updateById(newAttachment);
     }
 
     private String getFilename() {

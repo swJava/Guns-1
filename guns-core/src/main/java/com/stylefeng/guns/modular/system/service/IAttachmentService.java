@@ -38,4 +38,11 @@ public interface IAttachmentService extends IService<Attachment> {
      * @return
      */
     Attachment get(Long id);
+
+    /**
+     * 更新并移除其他相同类型的附件
+     *
+     * @param icon
+     */
+    void updateAndRemoveOther(Attachment icon);
 }

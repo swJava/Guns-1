@@ -20,6 +20,6 @@ public class MemberWrapper extends BaseControllerWarpper{
     @Override
     protected void warpTheMap(Map<String, Object> map) {
         map.put("genderName", ConstantFactory.me().getSexName((Integer) map.get("gender")));
-        map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
+        map.put("statusName", ConstantFactory.me().getMemberStatusName((Integer) map.get("status")));
     }
 }

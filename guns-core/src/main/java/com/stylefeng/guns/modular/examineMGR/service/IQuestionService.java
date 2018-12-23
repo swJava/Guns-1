@@ -10,4 +10,6 @@ import com.stylefeng.guns.modular.system.model.Question;
  * @Version 1.0
  */
 public interface IQuestionService extends IService<Question> {
+
+    Question get(String questionCode);
 }

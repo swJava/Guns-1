@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.stylefeng.guns.common.constant.state.GenericState;
+import sun.net.www.content.text.Generic;
+
 import java.io.Serializable;
 
 /**
@@ -144,5 +147,12 @@ public class Course extends Model<Course> {
         ", description=" + description +
         ", status=" + status +
         "}";
+    }
+
+    public boolean isValid() {
+        if (null == this.status)
+            return false;
+
+        return GenericState.Valid.code == this.status;
     }
 }

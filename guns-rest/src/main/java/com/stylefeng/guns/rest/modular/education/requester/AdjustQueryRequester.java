@@ -18,8 +18,7 @@ public class AdjustQueryRequester extends SimpleRequester {
     @NotBlank(message = "学员编码不能为空")
     private String student;
 
-    @ApiModelProperty(name = "outlineCode", value = "课时编码", required = true, position = 1, example = "KS000001")
-    @NotBlank(message = "课时编码不能为空")
+    @ApiModelProperty(name = "outlineCode", value = "课时编码", required = false, position = 1, example = "KS000001")
     private String outlineCode;
 
     @ApiModelProperty(name = "classCode", value = "班级编码（当前报名班级）", required = true, position = 2, example = "BJ000001")

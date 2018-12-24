@@ -2,12 +2,18 @@ package com.stylefeng.guns.modular.contentMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.system.dao.ContentMapper;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.util.CodeKit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,6 +25,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> implements IContentService {
+
+    @Autowired
+    private ContentMapper contentMapper;
 
     @Override
     public Content get(String code) {
@@ -38,5 +47,26 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
         insert(content);
 
+    }
+
+    @Override
+    public List<Content> findArticle(String column) {
+
+        Map<String, Object> queryMap = new HashMap<String , Object>();
+        queryMap.put("column", column);
+
+        List<Content> resultList = contentMapper.selectByColumn(queryMap);
+
+        return resultList;
+    }
+
+    @Override
+    public List<Content> findArticleOutline(String column) {
+        Map<String, Object> queryMap = new HashMap<String , Object>();
+        queryMap.put("column", column);
+
+        List<Content> resultList = contentMapper.selectOutlineByColumn(queryMap);
+
+        return resultList;
     }
 }

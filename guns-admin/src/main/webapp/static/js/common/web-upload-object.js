@@ -16,8 +16,8 @@
 		//this.uploadUrl = Feng.ctxPath + '/mgr/upload';
 		this.uploadUrl = Feng.ctxPath + '/attachment/upload/async';
 		this.fileSizeLimit = 5 * 1024 * 1024;
-		this.picWidth = 800;
-		this.picHeight = 800;
+		this.picWidth = 100;
+		this.picHeight = 100;
         this.uploadBarId = null;
         this.formData = $.extend({}, formData);
 	};
@@ -66,7 +66,9 @@
 		bindEvent : function(bindedObj) {
 			var me =  this;
 			bindedObj.on('fileQueued', function(file) {
-				var $li = $('<div><img width="100px" height="100px"></div>');
+				// console.log('me.width' + me.picWidth);
+				// console.log('me.height' + me.picHeight);
+				var $li = $('<div><img width="'+me.picWidth+'px" height="'+me.picHeight+'px"></div>');
 				var $img = $li.find('img');
 
 				$("#" + me.uploadPreId).html($li);
@@ -126,7 +128,21 @@
          */
         setUploadBarId: function (id) {
             this.uploadBarId = id;
-        }
+        },
+
+        /**
+		 * 设置图片预览宽度
+         */
+        setViewWidth : function (width) {
+        	this.picWidth = width;
+		},
+        /**
+		 * 设置图片预览高度
+         * @param height
+         */
+		setViewHeight : function(height) {
+        	this.picHeight = height;
+		}
 	};
 
 	window.$WebUpload = $WebUpload;

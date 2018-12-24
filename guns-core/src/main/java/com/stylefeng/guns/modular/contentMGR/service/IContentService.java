@@ -3,6 +3,8 @@ package com.stylefeng.guns.modular.contentMGR.service;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 内容 服务类
@@ -27,4 +29,22 @@ public interface IContentService extends IService<Content> {
      * @param content
      */
     void create(Content content);
+
+    /**
+     * 获取栏目下所有内容
+     *
+     * @param column
+     * @return
+     */
+    List<Content> findArticle(String column);
+
+    /**
+     * 根据条件查询文章列表
+     *
+     * 只收集主要信息
+     *
+     * @param column
+     * @return
+     */
+    List<Content> findArticleOutline(String column);
 }

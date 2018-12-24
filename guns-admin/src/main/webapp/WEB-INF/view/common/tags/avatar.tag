@@ -3,12 +3,14 @@
     label : 标签
     name : 名称
     id : 头像的id
+    displayWidth : 显示宽度
+    displayHeight : 显示高度
 @*/
 <div class="form-group">
     <label class="col-sm-3 control-label head-scu-label">${label}</label>
     <div class="col-sm-4">
         <div id="${name}PreId">
-            <div><img width="100px" height="100px" src="${ctxPath}/attachment/view/icon/${id}"></div>
+            <div><img width="${displayWidth!100}px" height="${displayHeight!100}px" src="${ctxPath}/attachment/view/icon/${id}"></div>
         </div>
     </div>
     <div class="col-sm-2">

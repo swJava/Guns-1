@@ -411,14 +411,6 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getClassRoomName(String classCode) {
-        Classroom classroom = classroomMapper.selectOne(new Classroom() {{
-            setCode(classCode);
-        }});
-        return  classroom == null?null:classroom.getName();
-    }
-
-    @Override
     public String getSchoolAdressName(Integer classCode) {
         // 当前只有一个校区
         if(ObjectUtils.isEmpty(classCode)){

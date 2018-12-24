@@ -90,7 +90,10 @@ StudentInfoDlg.collectData = function() {
     .set('grade')
     .set('school')
     .set('targetSchool')
-    .set('status');
+    .set('status')
+    .set('masterName')
+    .set('masterCode')
+    ;
 }
 
 /**

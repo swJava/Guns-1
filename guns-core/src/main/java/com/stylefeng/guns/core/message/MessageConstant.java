@@ -116,5 +116,9 @@ public final class MessageConstant {
          * 您已有相同的转班申请
          */
         public static final String CHANGE_CLASS_DUPLICATE = "050002";
+        /**
+         * 排班失败
+         */
+        public static final String SCHEDULE_CLASS_FAILED = "050003";
     }
 }

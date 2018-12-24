@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -36,6 +38,14 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             return null;
 
         return selectOne(new EntityWrapper<Course>().eq("code", code));
+    }
+
+    @Override
+    public Map<String, Object> getMap(String code) {
+        if (null == code)
+            return new HashMap<String, Object>();
+
+        return selectMap(new EntityWrapper<Course>().eq("code", code));
     }
 
     @Override

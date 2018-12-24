@@ -2,6 +2,9 @@
  * 初始化课程管理详情对话框
  */
 var ClassInfoDlg = {
+    courseTable : {
+        id : 'courseTable'
+    },
     classInfoData : {},
     validateFields: {
         code: {
@@ -133,6 +136,22 @@ var ClassInfoDlg = {
     }
 };
 
+
+/**
+ * 初始化表格的列
+ */
+ClassInfoDlg.courseTable.initColumn = function () {
+    return [
+        {field: 'selectItem', radio: true},
+        {title: '课程编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
+        {title: '课程名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
+        {title: '授课方式', field: 'methodName', visible: false, align: 'center', valign: 'middle'},
+        {title: '授课年级', field: 'gradeName', visible: false, align: 'center', valign: 'middle'},
+        {title: '学科', field: 'subjectName', visible: false, align: 'center', valign: 'middle'},
+        {title: '课时数', field: 'period', visible: false, align: 'center', valign: 'middle'},
+    ];
+};
+
 /**
  * 清除数据
  */
@@ -187,8 +206,6 @@ ClassInfoDlg.collectData = function() {
         .set('endTime')
         .set('duration')
         .set('period')
-        .set('classRoomCode')
-        .set('classRoom')
         .set('courseCode')
         .set('courseName')
         .set('star')
@@ -199,7 +216,9 @@ ClassInfoDlg.collectData = function() {
         .set('teacherCode')
         .set('teacher')
         .set('teacherSecondCode')
-        .set('teacherSecond');
+        .set('teacherSecond')
+        .set('classRoomCode')
+        .set('classRoom');
 }
 
 /**
@@ -221,9 +240,15 @@ ClassInfoDlg.addSubmit = function() {
         return;
     }
     $("#classRoom").val($("#classRoomCode option:selected").text());
-    $("#courseName").val($("#courseCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
+    var studyTimeValues = '';
+    $('input[name="studyTimeValue"]').each(function(idx, eo){
+        if ($(eo).is(':checked')) {
+            studyTimeValues = studyTimeValues + $(eo).val() + ',';
+        }
+    })
+    $('#studyTimeValue').val(studyTimeValues);
     this.collectData();
     
     //提交信息
@@ -248,9 +273,15 @@ ClassInfoDlg.editSubmit = function() {
         return;
     }
     $("#classRoom").val($("#classRoomCode option:selected").text());
-    $("#courseName").val($("#courseCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
+    var studyTimeValues = '';
+    $('input[name="studyTimeValue"]').each(function(idx, eo){
+        if ($(eo).is(':checked')) {
+            studyTimeValues = studyTimeValues + $(eo).val() + ',';
+        }
+    })
+    $('#studyTimeValue').val(studyTimeValues);
     this.collectData();
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/update", function(data){
@@ -265,9 +296,28 @@ ClassInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    // 课程列表初始化
+    if ($('#' + ClassInfoDlg.courseTable.id)) {
+        var courseDisplaColumns = ClassInfoDlg.courseTable.initColumn();
+        var table = new BSTable(ClassInfoDlg.courseTable.id, "/course/list", courseDisplaColumns);
+        table.setItemSelectCallback(function (row) {
+            console.log(row);
+            $('#courseCode').val(row.code);
+            $('#courseName').val(row.name);
+            $('#subject').val(row.subject);
+            $('#subjectName').val(row.subjectName);
+            $('#grade').val(row.grade);
+            $('#gradeName').val(row.gradeName);
+            $('#method').val(row.method);
+            $('#methodName').val(row.methodName);
+            $('#period').val(row.period);
+        });
+        table.setPaginationType("server");
+        ClassInfoDlg.courseTable.table = table.init();
+    }
+
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
-
     /* 教室 */
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
@@ -279,19 +329,6 @@ $(function() {
     });
     ajax.start();
     $("#classRoomCode").append(html);
-
-    /* 课程*/
-    var html = "";
-    var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
-        data.forEach(function (item) {
-            html +="<option value="+item.code+">"+item.name+"</option>";
-        })
-    }, function (data) {
-        Feng.error("修改失败!" + data.responseJSON.message + "!");
-    });
-    ajax.start();
-    $("#courseCode").append(html);
-
     /* 老师*/
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/teacher/listAll", function (data) {
@@ -307,10 +344,21 @@ $(function() {
 
     //初始select选项
     $("#classRoomCode").val($("#classRoomCodeValue").val());
-    $("#status").val($("#statusValue").val());
-    $("#studyTimeType").val($("#studyTimeTypeValue").val());
-    $("#courseCode").val($("#courseCodeValue").val());
+    $('#cycle').val($('#cycleValue').val());
+    $('#ability').val($('#abilityValue').val());
     $("#teacherCode").val($("#teacherCodeValue").val());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
-    $("#grade").val($("#gradeValue").val());
+    var studyTimeValues = '';
+    $('input[name="studyTimeValue"]').each(function(idx, eo){
+        if ($(eo).is(':checked')) {
+            studyTimeValues = studyTimeValues + $(eo).val() + ',';
+        }
+    })
+    $('#studyTimeValue').val(studyTimeValues);
+    $.each($('#studyTimeValueValue').val().split(','), function(i, eo) {
+        $('input[name="studyTimeValue"]').each(function(ii, eeo){
+            if ($(eeo).val() == eo)
+                $(eeo).attr('checked', true);
+        })
+    });
 });

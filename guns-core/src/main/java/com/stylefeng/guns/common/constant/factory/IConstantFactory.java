@@ -153,11 +153,6 @@ public interface IConstantFactory {
     String getPayResultName(Integer payResult);
 
     /**
-     * 获取教室名称
-     */
-    String getClassRoomName(String classCode);
-
-    /**
      * 获取校区地址
      */
     String getSchoolAdressName(Integer classCode);

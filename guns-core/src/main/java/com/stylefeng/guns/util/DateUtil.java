@@ -278,4 +278,12 @@ public class DateUtil {
             return c.getTime();
         }
     }
+
+    public static int getMinuteSub(Date beginDate, Date endDate) {
+        int minute = 0;
+
+        minute = (int) ((endDate.getTime() - beginDate.getTime()) / ( 60  * 1000));
+
+        return minute;
+    }
 }

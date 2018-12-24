@@ -1,7 +1,10 @@
 package com.stylefeng.guns.modular.education.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
+
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -11,4 +14,12 @@ import com.stylefeng.guns.modular.system.model.ScheduleClass;
  */
 public interface IScheduleClassService extends IService<ScheduleClass> {
 
+    void scheduleClass(Class classInstance, Integer studyTimeType, List<Integer> valueList);
+
+    /**
+     * 删除排班安排
+     *
+     * @param code
+     */
+    void deleteClassSchedule(String code);
 }

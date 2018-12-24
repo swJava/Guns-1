@@ -23,6 +23,6 @@ public class CourseWrapper extends BaseControllerWarpper {
         map.put("statusName", ConstantFactory.me().getGenericStateName(Integer.parseInt( map.get("status").toString())));
         map.put("methodName", ConstantFactory.me().getCourseMethodname(Integer.parseInt(map.get("method").toString())));
         map.put("gradeName", ConstantFactory.me().getDictsByCode("school_grade", map.get("method").toString()));
-        map.put("subjectName", ConstantFactory.me().getDictsByCode("subject_type", map.get("method").toString()));
+        map.put("subjectName", ConstantFactory.me().getDictsByCode("subject_type", map.get("subject").toString()));
     }
 }

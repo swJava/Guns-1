@@ -63,8 +63,8 @@ public class ScheduleClass extends Model<ScheduleClass> {
     /**
      * 上课时间：17:00-20:30
      */
-    @TableField("class_time")
-    @ApiModelProperty(name = "classTime", value = "下课时间", example = "20点15 2015")
+    @TableField("end_time")
+    @ApiModelProperty(name = "endTime", value = "下课时间", example = "20点15 2015")
     private String endTime;
     /**
      * 大纲条目

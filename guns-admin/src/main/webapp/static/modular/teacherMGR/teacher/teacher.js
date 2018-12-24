@@ -5,7 +5,7 @@ var Teacher = {
     id: "TeacherTable",	//表格id
     seItem: null,		//选中的条目
     table: null,
-    layerIndex: -1
+    layerIndex: -1,
 };
 
 /**
@@ -16,7 +16,7 @@ Teacher.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle', sortable: true,
             formatter:function (value,row,index) {
-                return '<img alt="image" class="img-circle" src="/attachment/download?masterName=Teacher&masterCode='+row.id+'" width="64px" height="64px">';
+                return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Teacher&masterCode='+row.id+'" width="64px" height="64px">';
             }
         },
         {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
@@ -58,6 +58,7 @@ Teacher.openAddTeacher = function () {
         maxmin: true,
         content: Feng.ctxPath + '/teacher/teacher_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -74,6 +75,7 @@ Teacher.openTeacherDetail = function () {
             maxmin: true,
             content: Feng.ctxPath + '/teacher/teacher_update/' + Teacher.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };

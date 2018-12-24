@@ -3,6 +3,8 @@ package com.stylefeng.guns.modular.classMGR.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Course;
 
+import java.util.Map;
+
 /**
  * @Description //TODO
  * @Author 罗华
@@ -17,6 +19,14 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     Course get(String courseCode);
+
+    /**
+     * 获取实体类的Map
+     *
+     * @param courseCode
+     * @return
+     */
+    Map<String, Object> getMap(String courseCode);
 
     /**
      * 删除课程

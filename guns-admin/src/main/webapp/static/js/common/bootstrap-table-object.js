@@ -17,6 +17,7 @@
         this.height = 665;						//默认表格高度665
         this.data = {};
         this.queryParams = {}; // 向后台传递的自定义参数
+        this.itemSelect = function(){};
     };
 
     BSTable.prototype = {
@@ -63,6 +64,7 @@
                         toggle: 'glyphicon-list-alt',
                         columns: 'glyphicon-list'
                     },
+                    onClickRow: this.itemSelect,
                     iconSize: 'outline'
                 });
             return this;
@@ -126,7 +128,12 @@
             } else {
                 this.btInstance.bootstrapTable('refresh');
             }
+        },
+
+        setItemSelectCallback: function(callback) {
+            this.itemSelect = callback;
         }
+
     };
 
     window.BSTable = BSTable;

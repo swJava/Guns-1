@@ -5,7 +5,7 @@ var Teacher = {
     id: "TeacherTable",	//表格id
     seItem: null,		//选中的条目
     table: null,
-    layerIndex: -1,
+    layerIndex: -1
 };
 
 /**

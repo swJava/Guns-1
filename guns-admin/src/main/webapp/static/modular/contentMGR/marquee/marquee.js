@@ -18,7 +18,7 @@ Marquee.initColumn = function () {
         {title: '类型', field: 'typeName', visible: false, align: 'center', valign: 'middle', sortable: true},
         {title: '标题图片', field: 'timage', visible: true, align: 'center', valign: 'middle',
             formatter:function (value,row,index) {
-                return '<img alt="image" class="img-circle" src="'+ row.timage +'" height="64px">';
+                return '<img alt="row.title" class="img-circle" src="'+ row.timage +'" height="64px">';
             }
         },
         {title: '标题', field: 'title', visible: true, align: 'center', valign: 'middle'},
@@ -63,7 +63,7 @@ Marquee.openAddContent = function () {
 /**
  * 打开查看资讯管理详情
  */
-Marquee.openContentDetail = function () {
+Marquee.openMarqueeDetail = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
@@ -71,7 +71,7 @@ Marquee.openContentDetail = function () {
             area: ['800px', '420px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/content/marquee/marquee_update/' + Content.seItem.id
+            content: Feng.ctxPath + '/content/marquee/marquee_update?contentCode=' + Marquee.seItem.code
         });
         layer.full(index);
         this.layerIndex = index;

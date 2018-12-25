@@ -109,6 +109,7 @@ ColumnInfoDlg.addSubmit = function() {
     },function(data){
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
+    //console.log('data ==> ' + this.columnInfoData);
     ajax.set(this.columnInfoData);
     ajax.start();
 }

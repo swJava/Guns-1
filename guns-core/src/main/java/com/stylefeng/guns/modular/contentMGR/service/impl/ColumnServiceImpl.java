@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.contentMGR.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
@@ -34,5 +35,13 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
 
         column.setCode(CodeKit.generateColumn());
         insert(column);
+    }
+
+    @Override
+    public Column get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<Column>().eq("code", code));
     }
 }

@@ -1,8 +1,7 @@
 package com.stylefeng.guns.modular.contentMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
@@ -10,20 +9,18 @@ import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
-import com.stylefeng.guns.util.CodeKit;
+import com.stylefeng.guns.modular.system.warpper.MenuWarpper;
 import com.stylefeng.guns.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.net.httpserver.AuthFilter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -89,24 +86,50 @@ public class ColumnController extends BaseController {
     }
 
     /**
+     * 跳转到修改栏目
+     */
+    @RequestMapping("/collector/{columnCode}")
+    public String columnCollector(@PathVariable("columnCode") String code, Model model) {
+        Column column = columnService.get(code);
+        model.addAttribute("item",column);
+
+        long id = 0L;
+        List<Attachment> attachmentList = attachmentService.listAttachment(Column.class.getSimpleName(), String.valueOf(column.getId()));
+        if (null != attachmentList && attachmentList.size() > 0)
+            id = attachmentList.get(0).getId();
+        Map<String, Object> iconInfo = new HashMap<>();
+        iconInfo.put("id", id);
+        model.addAttribute("icon", iconInfo);
+
+        LogObjectHolder.me().set(column);
+        return PREFIX + "column_collect.html";
+    }
+
+    /**
      * 获取栏目列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
         //分页查詢
-        Page<Column> page = new PageFactory<Column>().defaultPage();
-        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
-                }
-            }
-        });
+//        Page<Column> page = new PageFactory<Column>().defaultPage();
+//        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
+//            {
+//                //name条件分页
+//                if (StringUtils.isNotEmpty(condition)) {
+//                    like("name", condition);
+//                }
+//            }
+//        });
+        Wrapper<Column> queryWrapper = new EntityWrapper<Column>();
+        if (StringUtils.isNoneEmpty(condition)){
+            queryWrapper.like("name", condition);
+        }
+        List<Map<String, Object>> columns = columnService.selectMaps(queryWrapper);
+        return super.warpObject(new ColumnWrapper(columns));
         //包装数据
-        new ColumnWrapper(pageMap.getRecords()).warp();
-        return super.packForBT(pageMap);
+//        new ColumnWrapper(pageMap.getRecords()).warp();
+//        return super.packForBT(pageMap);
     }
     /**
      * 获取栏目列表
@@ -137,7 +160,7 @@ public class ColumnController extends BaseController {
 
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList || attachmentList.size() > 0){
+        if (null != attachmentList && attachmentList.size() > 0){
             icon = attachmentList.get(0);
             column.setIcon(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }

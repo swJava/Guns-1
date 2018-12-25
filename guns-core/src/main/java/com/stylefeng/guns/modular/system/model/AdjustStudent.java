@@ -46,7 +46,7 @@ public class AdjustStudent extends Model<AdjustStudent> {
     @TableField("outline_code")
     private String outlineCode;
     /**
-     * 跳出班级编码
+     * 调出班级编码
      */
     @TableField("source_class")
     private String sourceClass;

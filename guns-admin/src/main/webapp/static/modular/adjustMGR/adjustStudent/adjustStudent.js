@@ -17,11 +17,9 @@ AdjustStudent.initColumn = function () {
             {title: '申请用户名', field: 'userName', visible: true, align: 'center', valign: 'middle'},
             {title: '学生编码（学号）', field: 'studentName', visible: true, align: 'center', valign: 'middle'},
             {title: '当前班级', field: 'className', visible: true, align: 'center', valign: 'middle'},
-            {title: '调入目标编码', field: 'targetName', visible: true, align: 'center', valign: 'middle'},
-            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '流程状态', field: 'workStatusName', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle' },
-            {title: '备注', field: 'remark', visible: true, align: 'center', valign: 'middle'},
+            {title: '审批状态', field: 'workStatusName', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle' },
+            {title: '调整明细', field: 'remark', visible: true, align: 'center', valign: 'middle'},
             {title: '申请时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'},
             {title: '审核时间', field: 'updateTime', visible: true, align: 'center', valign: 'middle'}
     ];
@@ -114,7 +112,7 @@ AdjustStudent.search = function () {
 
 $(function () {
     var defaultColunms = AdjustStudent.initColumn();
-    var table = new BSTable(AdjustStudent.id, "/adjustStudent/list", defaultColunms);
+    var table = new BSTable(AdjustStudent.id, "/adjust/list", defaultColunms);
     table.setPaginationType("server");
     AdjustStudent.table = table.init();
 });

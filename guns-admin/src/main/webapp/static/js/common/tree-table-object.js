@@ -18,6 +18,7 @@
         this.expandAll = false;// 是否默认全部展开
         this.toolbarId = bstableId + "Toolbar";
         this.height = 665;						//默认表格高度665
+        this.rootCodeValue = null;
     };
 
     BSTreeTable.prototype = {

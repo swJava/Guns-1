@@ -1,0 +1,18 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-3">
+                    <#NameCon id="condition" name="名称" />
+                </div>
+                <div class="col-sm-3">
+                    <#button name="搜索" icon="fa-search" clickFun="Collector.Content.search()"/>
+                </div>
+            </div>
+            <#table id="ArticleTable"/>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/column/column/column_collect.js" />
+@}

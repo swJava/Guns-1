@@ -18,4 +18,11 @@ public interface IColumnService extends IService<Column> {
      * @param icon
      */
     void create(Column column);
+
+    /**
+     *
+     * @param column
+     * @return
+     */
+    Column get(String column);
 }

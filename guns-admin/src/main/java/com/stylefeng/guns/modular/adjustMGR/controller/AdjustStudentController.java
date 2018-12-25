@@ -7,6 +7,7 @@ import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.adjustMGR.warpper.AdjustStudentWrapper;
 import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import com.stylefeng.guns.modular.system.model.AdjustStudentTypeEnum;
 import com.stylefeng.guns.modular.system.model.Student;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.AdjustStudent;
 import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,7 +30,7 @@ import java.util.Map;
  * @Date 2018-11-19 23:01:31
  */
 @Controller
-@RequestMapping("/adjustStudent")
+@RequestMapping("/adjust")
 public class AdjustStudentController extends BaseController {
 
     private String PREFIX = "/adjustMGR/adjustStudent/";
@@ -71,7 +73,12 @@ public class AdjustStudentController extends BaseController {
     public Object list(String condition) {
 
         //分页查詢
-        Page<AdjustStudent> page = new PageFactory<AdjustStudent>().defaultPage();
+
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+
+
+        Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Adjust, queryMap);
+/*
         Page<Map<String, Object>> pageMap = adjustStudentService.selectMapsPage(page, new EntityWrapper<AdjustStudent>() {
             {
                 //name条件分页
@@ -79,7 +86,7 @@ public class AdjustStudentController extends BaseController {
                     like("user_name", condition);
                 }
             }
-        });
+        });*/
         //包装数据
         new AdjustStudentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);

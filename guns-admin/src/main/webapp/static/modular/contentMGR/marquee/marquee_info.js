@@ -156,7 +156,7 @@ $(function() {
     var avatarUp = new $WebUpload("timage");
     avatarUp.setUploadBarId("progressBar");
 
-    avatarUp.setViewWidth(600);
+    avatarUp.setViewWidth($('#displayImage').width());
     avatarUp.setViewHeight(150);
     avatarUp.init();
 
@@ -183,7 +183,7 @@ $(function() {
 
             // result 必须是一个 JSON 格式字符串！！！否则报错
         }
-    }
+    };
     editor.create();
     editor.txt.html($("#contentVal").val());
     MarqueeInfoDlg.editor = editor;

@@ -47,4 +47,20 @@ public interface IContentService extends IService<Content> {
      * @return
      */
     List<Content> findArticleOutline(String column);
+
+    /**
+     * 新增内容并放入栏目
+     *
+     * @param content
+     * @param column
+     */
+    void createAndPutInColumn(Content content, String column);
+
+    /**
+     * 删除
+     *
+     * @param contentCode
+     * @param strings
+     */
+    void delete(String contentCode, String[] strings);
 }

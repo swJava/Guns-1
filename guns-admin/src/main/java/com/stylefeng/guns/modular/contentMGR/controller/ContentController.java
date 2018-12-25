@@ -145,8 +145,26 @@ public class ContentController extends BaseController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Object update(Content content) {
+    public Object update(Content content, String masterName, String masterCode) {
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList && attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            content.setTimage(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
         contentService.updateById(content);
+
+        // 更新ICON资源
+        if (null != icon && null != icon.getId())
+            try {
+                icon.setMasterName(Content.class.getSimpleName());
+                icon.setMasterCode(String.valueOf(content.getId()));
+
+                attachmentService.updateAndRemoveOther(icon);
+            }catch(Exception e){
+                log.warn("更新图标失败");
+            }
         return SUCCESS_TIP;
     }
 

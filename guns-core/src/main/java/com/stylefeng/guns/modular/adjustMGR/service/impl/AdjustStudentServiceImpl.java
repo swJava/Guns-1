@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.adjustMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -11,9 +13,11 @@ import com.stylefeng.guns.modular.system.dao.AdjustStudentMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +31,9 @@ import java.util.Map;
 @Service
 public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, AdjustStudent> implements IAdjustStudentService {
     private static final Logger log = LoggerFactory.getLogger(AdjustStudentServiceImpl.class);
+
+    @Autowired
+    private AdjustStudentMapper adjustStudentMapper;
 
     @Override
     public void adjustCourse(Member member, Student student, Map<String, Object> fromData, Map<String, Object> destData) {
@@ -79,6 +86,14 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         adjustCourseApply.setCreateTime(new Date());
 
         insert(adjustCourseApply);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectApplyMapsPage(AdjustStudentTypeEnum adjust, Map<String, Object> queryMap) {
+        Page<AdjustStudent> page = new PageFactory<AdjustStudent>().defaultPage();
+
+        List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, queryMap);
+        return null;
     }
 
     private boolean hasApproving(String student, String sourceClass, String targetClass, String outlineCode, AdjustStudentTypeEnum type) {

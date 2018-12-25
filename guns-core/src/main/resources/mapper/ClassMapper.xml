@@ -45,6 +45,10 @@
             <if test="subjectList.size() > 0 || methodList.size() > 0">
                 tcr.code = tc.course_code
             </if>
+            <!-- 状态 -->
+            <if test="null != status">
+                and tc.status = #{status}
+            </if>
             <!-- 学科 -->
             <if test="subjectList.size() > 0">
                 and tcr.subject in

@@ -1,9 +1,11 @@
 package com.stylefeng.guns.rest.modular.education.requester;
 
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.rest.core.SimpleRequester;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import sun.net.www.content.text.Generic;
 
 import javax.validation.constraints.NotBlank;
 
@@ -33,6 +35,8 @@ public class ClassQueryRequester extends SimpleRequester {
     private String assisterCode;
     @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 10, example = "JS000001")
     private String classroomCode;
+    @ApiModelProperty(name = "status", value = "状态", required = false, position = 11, example = "1")
+    private Integer status = GenericState.Valid.code;
 
     public String getSubjects() {
         return subjects;
@@ -104,6 +108,14 @@ public class ClassQueryRequester extends SimpleRequester {
 
     public void setClassroomCode(String classroomCode) {
         this.classroomCode = classroomCode;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override

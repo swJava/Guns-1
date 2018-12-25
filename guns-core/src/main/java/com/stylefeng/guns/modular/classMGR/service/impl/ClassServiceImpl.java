@@ -57,6 +57,10 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
 
+            if ("status".equals(key)){
+                arguments.put("status", queryParams.get(key));
+            }
+
             if ("teacherCode".equals(key)){
                 arguments.put("teacherCode", queryParams.get(key));
             }

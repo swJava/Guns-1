@@ -58,7 +58,7 @@ public class OrderItem extends Model<OrderItem> {
      * 订单项目金额
      */
     @TableField("item_amount")
-    @ApiModelProperty(name = "itemAmount", value = "订单项目金额", position = 0, example="10000")
+    @ApiModelProperty(name = "itemAmount", value = "订单项目金额， 单位： 分", position = 0, example="10000")
     private Long itemAmount;
 
     public Long getId() {

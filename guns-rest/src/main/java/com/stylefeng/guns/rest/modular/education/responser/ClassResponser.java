@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -18,6 +19,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
     private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
+    private static final BigDecimal TRANSFORM = new BigDecimal(100);
 
     static {
         DayOfWeekMap.put(Calendar.MONDAY, "周一");
@@ -36,6 +38,9 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
     @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
     String classTimeDesp;
 
+    @ApiModelProperty(name = "formatPrice", value = "格式化的金额，保留小数点后两位, 单位： 元", example = "200。00")
+    String formatPrice;
+
     @ApiModelProperty(name = "student", value = "学员名称", example = "小明")
     String student;
 
@@ -51,6 +56,14 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     public void setClassTimeDesp(String classTimeDesp) {
         this.classTimeDesp = classTimeDesp;
+    }
+
+    public String getFormatPrice() {
+        return formatPrice;
+    }
+
+    public void setFormatPrice(String formatPrice) {
+        this.formatPrice = formatPrice;
     }
 
     public String getStudent() {
@@ -80,6 +93,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
     public static ClassResponser me(Class classInfo) {
         ClassResponser dto = new ClassResponser();
         BeanUtils.copyProperties(classInfo, dto);
+        dto.setFormatPrice(dto.getPrice());
 
         // 格式化开课时间描述
         formatClassTime(dto);
@@ -89,6 +103,15 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         judgementChange(dto);
 
         return dto;
+    }
+
+    private void setFormatPrice(Long price) {
+        if (null == price)
+            this.formatPrice = "0.00";
+
+        BigDecimal bigPrice = new BigDecimal(price);
+
+        this.formatPrice = bigPrice.divide(TRANSFORM).setScale(2).toString();
     }
 
 

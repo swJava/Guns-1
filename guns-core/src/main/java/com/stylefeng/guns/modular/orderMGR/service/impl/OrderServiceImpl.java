@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
+import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.system.dao.OrderItemMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMapper;
@@ -35,6 +36,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private OrderMemberMapper orderMemberMapper;
 
+    @Autowired
+    private ICourseCartService courseCartService;
+
     @Override
     public String order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData) {
 
@@ -43,16 +47,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         long amount = calculate(itemList);
 
         Order order = buildOrder(member, amount, payMethod, extraPostData);
-
+        // 生成订单
         insert(order);
-
+        // 生成订单项
         String orderNo = order.getAcceptNo();
-
         for(OrderItem orderItem : itemList){
             orderItem.setOrderNo(orderNo);
             orderItemMapper.insert(orderItem);
+
+            if (OrderItemTypeEnum.Course.equals(OrderItemTypeEnum.instanceOf(orderItem.getItemObject()))){
+                // 清理购物车信息
+                CourseCart courseCart = courseCartService.get(orderItem.getItemObjectCode());
+                courseCart.setStatus(CourseCartStateEnum.Ordered.code);
+
+                courseCartService.updateById(courseCart);
+            }
         }
 
+
+        // 生成订单用户信息
         OrderMember orderMember = new OrderMember();
         orderMember.setOrderNo(orderNo);
         orderMember.setUsername(member.getUserName());

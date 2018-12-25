@@ -74,9 +74,9 @@ public class EducationController extends ApiController {
     @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
     public Responser listClass(ClassQueryRequester requester, HttpServletRequest request){
 
-        String userName = (String) request.getAttribute("USER_NAME");
+        Member member = currMember();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(userName, requester.toMap());
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), requester.toMap());
 
         return ClassListResponse.me(classList);
     }

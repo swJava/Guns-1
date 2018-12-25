@@ -30,4 +30,12 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @param classInfo
      */
     void remove(Member member, Student existStudent, Class classInfo);
+
+    /**
+     * 根据编码获取购课单
+     * 
+     * @param itemObjectCode
+     * @return
+     */
+    CourseCart get(String itemObjectCode);
 }

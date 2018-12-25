@@ -91,6 +91,14 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         updateById(existSelected);
     }
 
+    @Override
+    public CourseCart get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<CourseCart>().eq("code", code));
+    }
+
     private void select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
         CourseCart courseCart = new CourseCart();
         Date now = new Date();

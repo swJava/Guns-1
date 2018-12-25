@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 全局的控制器
  *
@@ -20,7 +22,8 @@ public class GlobalController {
      * @author fengshuonan
      */
     @RequestMapping(path = "/error")
-    public String errorPage() {
+    public String errorPage(HttpServletRequest request, Model model) {
+        model.addAttribute("tips", request.getAttribute("tips"));
         return "/404.html";
     }
 

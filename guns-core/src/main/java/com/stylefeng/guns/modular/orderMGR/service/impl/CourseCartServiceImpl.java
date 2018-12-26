@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.system.dao.CourseCartMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.util.CodeKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,10 +100,28 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         return selectOne(new EntityWrapper<CourseCart>().eq("code", code));
     }
 
+    @Override
+    public void generateOrder(String userName, String student, String classCode) {
+
+        CourseCart existSelected = selectOne(new EntityWrapper<CourseCart>()
+                        .eq("user_name", userName)
+                        .eq("student_code", student)
+                        .eq("class_code", classCode)
+                        .eq("status", CourseCartStateEnum.Valid.code)
+        );
+
+        if (null == existSelected)
+            return;
+
+        existSelected.setStatus(CourseCartStateEnum.Ordered.code);
+        updateById(existSelected);
+    }
+
     private void select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
         CourseCart courseCart = new CourseCart();
         Date now = new Date();
 
+        courseCart.setCode(CodeKit.generateCourseCart());
         courseCart.setUserName(member.getUserName());
         courseCart.setStudentCode(student.getCode());
         courseCart.setStudent(student.getName());

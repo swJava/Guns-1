@@ -169,6 +169,8 @@ public class MemberController {
 
             if (null == member)
                 throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_NOT_FOUND);
+
+            userName = member.getUserName();
         }
 
         // 2 验证密码

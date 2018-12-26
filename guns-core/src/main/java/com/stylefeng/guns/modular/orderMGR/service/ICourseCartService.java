@@ -38,4 +38,13 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @return
      */
     CourseCart get(String itemObjectCode);
+
+    /**
+     * 生成订单回调
+     *
+     * @param userName
+     * @param student
+     * @param itemObjectCode
+     */
+    void generateOrder(String userName, String student, String itemObjectCode);
 }

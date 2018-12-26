@@ -3,6 +3,8 @@ package com.stylefeng.guns.modular.orderMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
@@ -55,15 +57,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderItem.setOrderNo(orderNo);
             orderItemMapper.insert(orderItem);
 
-            if (OrderItemTypeEnum.Course.equals(OrderItemTypeEnum.instanceOf(orderItem.getItemObject()))){
+            CourseCart courseCart = courseCartService.get(orderItem.getCourseCartCode());
+            if (null != courseCart && OrderItemTypeEnum.Course.equals(OrderItemTypeEnum.instanceOf(orderItem.getItemObject()))){
                 // 清理购物车信息
-                CourseCart courseCart = courseCartService.get(orderItem.getItemObjectCode());
-                courseCart.setStatus(CourseCartStateEnum.Ordered.code);
-
-                courseCartService.updateById(courseCart);
+                courseCartService.generateOrder(member.getUserName(), courseCart.getStudent(), orderItem.getItemObjectCode());
             }
         }
-
 
         // 生成订单用户信息
         OrderMember orderMember = new OrderMember();
@@ -125,6 +124,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private List<OrderItem> buildOrderItem(OrderAddList addList, Map<String, Object> extraPostData) {
         List<OrderItem> orderItemList = new ArrayList<OrderItem>();
         for(OrderItem orderItem : addList){
+            OrderItemTypeEnum type = OrderItemTypeEnum.instanceOf(orderItem.getItemObject());
+
+            if (OrderItemTypeEnum.Course.equals(type)){
+                // 是课程， 但是没有选课单号
+                String courseCartCode = orderItem.getCourseCartCode();
+                if (null == courseCartCode)
+                    throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"选课单号"});
+
+                CourseCart courseCart = courseCartService.get(courseCartCode);
+                if (null == courseCart)
+                    throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"选课单"} );
+
+                // 是课程，判断是否已下订单
+                Wrapper<OrderItem> queryWrapper = new EntityWrapper<OrderItem>();
+                queryWrapper.eq("course_cart_code", orderItem.getCourseCartCode());
+
+                if (orderItemMapper.selectCount(queryWrapper) > 0)
+                    // 不能重复提交
+                    throw new ServiceException(MessageConstant.MessageCode.ORDER_REQUEST_ORDERED);
+            }
             orderItem.setItemCode(CodeKit.generateOrderItem());
             orderItemList.add(orderItem);
         }

@@ -23,7 +23,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     static {
         DayOfWeekMap.put(Calendar.MONDAY, "周一");
-        DayOfWeekMap.put(Calendar.THURSDAY, "周二");
+        DayOfWeekMap.put(Calendar.TUESDAY, "周二");
         DayOfWeekMap.put(Calendar.WEDNESDAY, "周三");
         DayOfWeekMap.put(Calendar.THURSDAY, "周四");
         DayOfWeekMap.put(Calendar.FRIDAY, "周五");

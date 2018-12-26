@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import sun.net.www.content.text.Generic;
 
 import java.io.Serializable;
@@ -18,11 +20,13 @@ import java.io.Serializable;
  * @since 2018-11-25
  */
 @TableName("tb_course")
+@ApiModel(value = "Course", description = "课程")
 public class Course extends Model<Course> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 课程编码： KC + 6位序列码

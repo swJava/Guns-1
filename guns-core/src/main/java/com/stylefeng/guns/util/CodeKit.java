@@ -29,11 +29,12 @@ public final class CodeKit {
         TEACHER ("LS", 6),  // 教师
         CLASS ("BJ", 6),  // 课程
         OUTLINE ("KS", 6),  // 课时
-        ORDER_ITEM ("DI", 6),  // 订单项
+        ORDER_ITEM ("DI", 8),  // 订单项
         QUESTION ("ST", 8),  // 试题
         COLUMN ("LM", 6),  // 栏目
         CONTENT ("CT", 8),  // 栏目类容
-        ANSWER("DJ", 8)  // 答卷
+        ANSWER("DJ", 8),  // 答卷
+        COURSE_CART("CC", 8)  // 订单项
         ;
 
         String name;
@@ -56,7 +57,7 @@ public final class CodeKit {
      * @return
      */
     public static String generateStudent() {
-        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, null);
+        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{DateUtil.getyyMMdd()});
     }
     /**
      * 生成教师编码
@@ -121,6 +122,14 @@ public final class CodeKit {
      */
     public static String generateAnswerPaper() {
         return generate(CODE_DEFINE.ANSWER.name, CODE_DEFINE.ANSWER.length, null);
+    }
+
+    /**
+     * 生成选课单项
+     * @return
+     */
+    public static String generateCourseCart() {
+        return generate(CODE_DEFINE.COURSE_CART.name, CODE_DEFINE.COURSE_CART.length, new String[]{DateUtil.getyyMMdd()});
     }
 
     private CodeKit(){}

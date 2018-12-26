@@ -69,6 +69,16 @@ public class Order extends Model<Order> {
      */
     @TableField("user_name")
     private String userName;
+    /**
+     * 支付订单号
+     */
+    @TableField("out_order_no")
+    private String outOrderNo;
+    /**
+     * 支付流水
+     */
+    @TableField("out_sequence")
+    private String outSequence;
 
 
     public Long getId() {
@@ -151,6 +161,22 @@ public class Order extends Model<Order> {
         this.userName = userName;
     }
 
+    public String getOutOrderNo() {
+        return outOrderNo;
+    }
+
+    public void setOutOrderNo(String outOrderNo) {
+        this.outOrderNo = outOrderNo;
+    }
+
+    public String getOutSequence() {
+        return outSequence;
+    }
+
+    public void setOutSequence(String outSequence) {
+        this.outSequence = outSequence;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -169,6 +195,8 @@ public class Order extends Model<Order> {
         ", payDate=" + payDate +
         ", payMethod=" + payMethod +
         ", userName=" + userName +
+        ", outOrderNo=" + outOrderNo +
+        ", outSequence=" + outSequence +
         "}";
     }
 }

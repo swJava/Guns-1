@@ -37,9 +37,10 @@ public class OrderPostResponser extends SimpleResponser {
 
     @ApiModel
     static class Data {
-
         @ApiModelProperty(value = "订单号", example = "OD181130202020022")
         private String orderNo;
+        @ApiModelProperty(value = "支付流水", example = "wx201410272009395522657a690389285100")
+        private String paySequence;
 
         public String getOrderNo() {
             return orderNo;
@@ -47,6 +48,14 @@ public class OrderPostResponser extends SimpleResponser {
 
         public void setOrderNo(String orderNo) {
             this.orderNo = orderNo;
+        }
+
+        public String getPaySequence() {
+            return paySequence;
+        }
+
+        public void setPaySequence(String paySequence) {
+            this.paySequence = paySequence;
         }
     }
 }

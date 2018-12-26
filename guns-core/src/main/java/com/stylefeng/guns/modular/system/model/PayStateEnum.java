@@ -7,8 +7,10 @@ package com.stylefeng.guns.modular.system.model;
  * @Version 1.0
  */
 public enum PayStateEnum {
-    NoPay(1, "待支付"),
-    PayOk(2, "已支付"),
+    Failed(-1, "支付失败"),
+    NoPay(0, "待支付"),
+    Paying(1, "支付请求已发送"),
+    PayOk(2, "成功"),
     Expire(3, "已超时")
     ;
 

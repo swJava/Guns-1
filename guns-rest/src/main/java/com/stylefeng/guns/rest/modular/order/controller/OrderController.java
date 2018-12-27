@@ -9,6 +9,7 @@ import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.orderMGR.OrderServiceTypeEnum;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.payMGR.service.IPayService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
@@ -56,6 +57,9 @@ public class OrderController extends ApiController {
 
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private IPayService payService;
 
     @RequestMapping(value = "/cart/join", method = RequestMethod.POST)
     @ApiOperation(value="加入选课单", httpMethod = "POST", response = SimpleResponser.class)
@@ -149,8 +153,13 @@ public class OrderController extends ApiController {
         switch (serviceType){
             case Order:
                 // 报名(订购)
-                String orderNo = orderService.order(member, requester.getAddList(), payMethod, extraPostData);
-                responser = OrderPostResponser.me(orderNo);
+                Order order = orderService.order(member, requester.getAddList(), payMethod, extraPostData);
+                // 支付下单
+                String paySequence = payService.createPayOrder(order);
+                order.setOutSequence(paySequence);
+                orderService.updateById(order);
+
+                responser = OrderPostResponser.me(order.getAcceptNo(), paySequence);
                 break;
         }
 

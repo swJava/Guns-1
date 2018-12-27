@@ -24,13 +24,14 @@ public class OrderPostResponser extends SimpleResponser {
         this.data = data;
     }
 
-    public static OrderPostResponser me(String orderNo) {
+    public static OrderPostResponser me(String orderNo, String paySequence) {
         OrderPostResponser response = new OrderPostResponser();
         response.setCode(SUCCEED);
         response.setMessage("处理成功");
 
         Data data = new Data();
         data.setOrderNo(orderNo);
+        data.setPaySequence(paySequence);
         response.setData(data);
         return response;
     }

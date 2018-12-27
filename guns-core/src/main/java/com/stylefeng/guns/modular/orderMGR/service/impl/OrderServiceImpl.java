@@ -8,6 +8,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.payMGR.service.IPayService;
 import com.stylefeng.guns.modular.system.dao.OrderItemMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMemberMapper;
@@ -41,13 +42,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private ICourseCartService courseCartService;
 
+    @Autowired
+    private IPayService payService;
+
     @Override
-    public String order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData) {
+    public Order order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData) {
 
         List<OrderItem> itemList = buildOrderItem(addList, extraPostData);
         // 算费
         long amount = calculate(itemList);
-
         Order order = buildOrder(member, amount, payMethod, extraPostData);
         // 生成订单
         insert(order);
@@ -70,7 +73,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMember.setUsername(member.getUserName());
 
         orderMemberMapper.insert(orderMember);
-        return orderNo;
+        return order;
     }
 
     @Override
@@ -86,6 +89,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Wrapper<Order> queryWrapper = new EntityWrapper<Order>();
         queryWrapper.eq("accept_no", orderNo);
         return selectOne(queryWrapper);
+    }
+
+    @Override
+    public void completePay(Order order, String paySequence) {
+
+        order.setOutSequence(paySequence);
+
+        order.setPayStatus(PayStateEnum.Paying.code);
+
+        updateById(order);
     }
 
     /**

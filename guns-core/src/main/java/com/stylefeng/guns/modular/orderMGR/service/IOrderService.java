@@ -25,7 +25,7 @@ public interface IOrderService extends IService<Order> {
      * @param extraPostData
      * @return
      */
-    String order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData);
+    Order order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData);
 
     /**
      * 订单项目列表
@@ -43,4 +43,11 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Order get(String orderNo);
+
+    /**
+     *
+     * @param order
+     * @param paySequence
+     */
+    void completePay(Order order, String paySequence);
 }

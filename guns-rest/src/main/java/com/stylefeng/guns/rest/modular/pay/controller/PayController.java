@@ -19,6 +19,21 @@ public class PayController extends ApiController {
     @Autowired
     private IOrderService orderService;
 
+    @RequestMapping("/retry")
+    public Responser payRetry(
+
+    ){
+        return null;
+    }
+
+    public Responser payWeixin(){
+        return null;
+    }
+
+    public Responser payBank(){
+        return null;
+    }
+
     public Responser payNotifyHandler(){
         return null;
     }

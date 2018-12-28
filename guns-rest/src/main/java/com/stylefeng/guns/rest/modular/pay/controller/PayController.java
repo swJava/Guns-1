@@ -38,12 +38,6 @@ public class PayController extends ApiController {
         return null;
     }
 
-<<<<<<< HEAD
-    @RequestMapping("/wx/notify")
-
-    public Responser wxPayNotifyHandler(){
-        return null;
-=======
     @RequestMapping(value = "/wx/notify", method = RequestMethod.POST)
     public Responser payNotifyHandler(String orderNo){
 
@@ -54,7 +48,6 @@ public class PayController extends ApiController {
 
     private void checkOrderState(Order order) {
 
->>>>>>> b977bd9bad71b6202a534f2e1cdbe7ce00050c91
     }
 
 }

@@ -1,4 +1,4 @@
-package com.stylefeng.guns.core.shiro;
+package com.stylefeng.guns.core.admin;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * @author fengshuonan
  * @date 2016年12月5日 上午10:26:43
  */
-public class ShiroUser implements Serializable {
+public class Administrator implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

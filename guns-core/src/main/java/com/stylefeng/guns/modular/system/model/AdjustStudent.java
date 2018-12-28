@@ -56,11 +56,11 @@ public class AdjustStudent extends Model<AdjustStudent> {
     @TableField("target_class")
     private String targetClass;
     /**
-     * 状态： 1启用 2冻结
+     * 状态： 0 禁用  1启用
      */
     private Integer status;
     /**
-     * 流程状态： 10 新建 11 通过 12 打回
+     * 流程状态： 10 新建 11 通过 12 打回 13 关闭
      */
     @TableField("work_status")
     private Integer workStatus;
@@ -68,6 +68,16 @@ public class AdjustStudent extends Model<AdjustStudent> {
      * 备注
      */
     private String remark;
+    /**
+     * 操作员ID
+     */
+    @TableField("op_id")
+    private Long opId;
+    /**
+     * 操作员
+     */
+    private String operator;
+
     /**
      * 申请时间
      */
@@ -158,6 +168,22 @@ public class AdjustStudent extends Model<AdjustStudent> {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getOpId() {
+        return opId;
+    }
+
+    public void setOpId(Long opId) {
+        this.opId = opId;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public Date getCreateTime() {

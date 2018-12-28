@@ -10,7 +10,8 @@ public enum AdjustStudentApproveStateEnum {
 
     Create(10, "新建"),
     Appove(11, "审核通过"),
-    Refuse(12, "打回")
+    Refuse(12, "打回"),
+    Close(13, "关闭")
     ;
 
     public int code;

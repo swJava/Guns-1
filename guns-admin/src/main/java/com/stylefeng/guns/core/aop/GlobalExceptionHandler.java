@@ -126,19 +126,18 @@ public class GlobalExceptionHandler {
         String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), Locale.CHINA);
         Object result = null;
         if (isAjaxRequest(request)){
-            ErrorTip errorTip = new ErrorTip(500, "系统异常");
-
+            ErrorTip errorTip = new ErrorTip(Integer.parseInt(e.getMessageCode()), "系统异常");
             errorTip.setMessage(message);
             log.error(message);
 
-            response.setStatus(HttpStatus.OK.value());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(JSON.toJSONString(errorTip));
         }else {
-            //request.getRequestDispatcher("/error").forward(request, response);
-            Map<String, Object> model = new HashMap<String, Object>();
+            request.setAttribute("tips", message);
+            request.setAttribute("title", e.getMessageCode());
 
-            model.put("tips", message);
-            result = new ModelAndView("forward:/error", model);
+            result = new ModelAndView("forward:/global/error");
         }
 
         return result;

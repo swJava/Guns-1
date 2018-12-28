@@ -23,5 +23,5 @@ public interface AdjustStudentMapper extends BaseMapper<AdjustStudent> {
      * @param queryMap
      * @return
      */
-    List<Map<String,Object>> selectApplyMapsPage(Page<AdjustStudent> page, Map<String, Object> queryMap);
+    List<Map<String,Object>> selectApplyMapsPage(Page<Map<String, Object>> page, Map<String, Object> queryMap);
 }

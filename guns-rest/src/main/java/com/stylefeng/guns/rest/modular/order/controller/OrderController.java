@@ -210,7 +210,16 @@ public class OrderController extends ApiController {
         queryWrapper.eq("status", OrderStateEnum.Valid.code);
 
         if (null != status) {
-            queryWrapper.eq("pay_status", status);
+            switch(status){
+                case 1:
+                    queryWrapper.in("pay_status", new Integer[]{PayStateEnum.Failed.code, PayStateEnum.NoPay.code});
+                    break;
+                case 2:
+                    queryWrapper.in("pay_status", new Integer[]{PayStateEnum.Paying.code, PayStateEnum.PayOk.code});
+                    break;
+                default:
+                    queryWrapper.eq("pay_status", status); // 按照实际状态值查询
+            }
         }
 
         List<Order> orderList = orderService.selectList(queryWrapper);

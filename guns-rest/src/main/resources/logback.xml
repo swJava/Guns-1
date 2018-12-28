@@ -2,7 +2,7 @@
 <configuration>
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 	    <encoder>
-			<pattern>%yellow(%date{yyyy-MM-dd HH:mm:ss:SSS}) %highlight(%-5level) [%thread] %boldMagenta(%logger{40}) - %boldWhite(%msg%n)</pattern>
+			<pattern>%yellow(%date{yyyy-MM-dd HH:mm:ss:SSS}) %highlight(%-5level) [%thread] %boldMagenta(%logger{40}:%L) - %boldWhite(%msg%n)</pattern>
 	    </encoder>
   	</appender>
   	

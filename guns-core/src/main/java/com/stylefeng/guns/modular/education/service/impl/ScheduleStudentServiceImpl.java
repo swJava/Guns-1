@@ -4,12 +4,24 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
+import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import com.stylefeng.guns.modular.system.model.ScheduleStudent;
+import com.stylefeng.guns.util.CodeKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -20,6 +32,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMapper, ScheduleStudent> implements IScheduleStudentService {
     private static final Logger log = LoggerFactory.getLogger(ScheduleStudentServiceImpl.class);
+
+    @Autowired
+    private IScheduleClassService scheduleClassService;
+
+    @Autowired
+    private IClassService classService;
 
     @Override
     public ScheduleStudent getAdjustedSchedule(String planCode) {
@@ -32,5 +50,103 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
         queryMapper.eq("status", GenericState.Valid.code);
 
         return selectOne(queryMapper);
+    }
+
+    @Override
+    public void doAdjust(String studentCode, String outlineCode, String sourceClass, String targetClass) {
+        Wrapper<ScheduleStudent> loadWrapper = new EntityWrapper<ScheduleStudent>();
+        loadWrapper.eq("student_code", studentCode);
+        loadWrapper.eq("class_code", sourceClass);
+        loadWrapper.eq("outline_code", outlineCode);
+        loadWrapper.eq("status", GenericState.Valid.code);
+
+        ScheduleStudent currPlan = selectOne(loadWrapper);
+
+        if (null == currPlan){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"课程表"});
+        }
+
+        currPlan.setStatus(GenericState.Invalid.code);
+        currPlan.setRemark("调入班级["+targetClass+"]， 课时["+outlineCode+"]");
+        updateById(currPlan);
+
+        Wrapper<ScheduleClass> classQueryWrapper = new EntityWrapper<ScheduleClass>();
+        classQueryWrapper.eq("class_code", targetClass);
+        classQueryWrapper.eq("outline_code", outlineCode);
+        classQueryWrapper.eq("status", GenericState.Valid.code);
+
+        ScheduleClass targetScheduleClass = scheduleClassService.selectOne(classQueryWrapper);
+
+        if (null == targetScheduleClass){
+            throw new ServiceException(MessageConstant.MessageCode.ADJUST_TARGET_FAILED, new String[]{"班级排课信息无效"});
+        }
+
+        Class classInfo = classService.get(targetScheduleClass.getClassCode());
+
+        String[] ignoreProperties = new String[]{"id", "code", "pcode", "fcode", "pcodes", "remark"};
+        ScheduleStudent newPlan = new ScheduleStudent();
+        BeanUtils.copyProperties(currPlan, newPlan, ignoreProperties);
+        newPlan.setCode(CodeKit.generateStudentSchedule());
+        newPlan.setClassCode(targetClass);
+        newPlan.setClassName(classInfo.getName());
+        newPlan.setStudyDate(targetScheduleClass.getClassDate());
+        newPlan.setPcode(currPlan.getCode());
+        newPlan.setFcode(null == currPlan.getFcode() ? currPlan.getCode() : currPlan.getFcode());
+        newPlan.setPcodes(null == currPlan.getPcodes() ? currPlan.getCode() : currPlan.getPcodes() + "," + currPlan.getCode());
+        newPlan.setStatus(GenericState.Valid.code);
+
+        insert(newPlan);
+    }
+
+    @Override
+    public void doChange(String studentCode, String sourceClass, String targetClass) {
+        Wrapper<ScheduleStudent> loadWrapper = new EntityWrapper<ScheduleStudent>();
+        loadWrapper.eq("student_code", studentCode);
+        loadWrapper.eq("class_code", sourceClass);
+        loadWrapper.eq("status", GenericState.Valid.code);
+
+        List<ScheduleStudent> currPlanList = selectList(loadWrapper);
+        String studentName = "";
+
+        if (null == currPlanList || currPlanList.isEmpty()){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"课程表"});
+        }
+
+        for(ScheduleStudent plan : currPlanList) {
+            // 转班不需要记录历史节点
+            studentName = plan.getStudentName();
+            plan.setStatus(GenericState.Invalid.code);
+            plan.setRemark("转入班级[" + targetClass + "]");
+        }
+        updateBatchById(currPlanList);
+
+        Wrapper<ScheduleClass> classQueryWrapper = new EntityWrapper<ScheduleClass>();
+        classQueryWrapper.eq("class_code", targetClass);
+        classQueryWrapper.eq("status", GenericState.Valid.code);
+
+        List<ScheduleClass> targetScheduleClassList = scheduleClassService.selectList(classQueryWrapper);
+
+        if (null == targetScheduleClassList || targetScheduleClassList.isEmpty()) {
+            throw new ServiceException(MessageConstant.MessageCode.ADJUST_TARGET_FAILED, new String[]{"班级排课信息无效"});
+        }
+
+        Class classInfo = classService.get(targetClass);
+        List<ScheduleStudent> planList = new ArrayList<ScheduleStudent>();
+        for(ScheduleClass scheduleClass : targetScheduleClassList) {
+            ScheduleStudent newPlan = new ScheduleStudent();
+
+            newPlan.setCode(CodeKit.generateStudentSchedule());
+            newPlan.setStudentCode(studentCode);
+            newPlan.setStudentName(studentName);
+            newPlan.setClassCode(targetClass);
+            newPlan.setClassName(classInfo.getName());
+            newPlan.setOutlineCode(scheduleClass.getOutlineCode());
+            newPlan.setOutline(scheduleClass.getOutline());
+            newPlan.setStudyDate(scheduleClass.getClassDate());
+            newPlan.setStatus(GenericState.Valid.code);
+
+            planList.add(newPlan);
+        }
+        insertBatch(planList);
     }
 }

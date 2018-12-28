@@ -124,5 +124,9 @@ public final class MessageConstant {
          * 排班失败
          */
         public static final String SCHEDULE_CLASS_FAILED = "050003";
+        /**
+         * 调课失败： 调入班级不满足调课条件
+         */
+        public static final String ADJUST_TARGET_FAILED = "050004";
     }
 }

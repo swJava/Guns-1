@@ -25,7 +25,7 @@ AdjustStudent.initColumn = function () {
             {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle' },
             {title: '调整明细', field: 'remark', visible: true, align: 'center', valign: 'middle',
                 formatter:function (value,row,index) {
-                    return row.dcname + '(' + row.oname + ')';
+                    return row.dcname ;
                 }
             },
             {title: '申请时间', field: 'create_time', visible: true, align: 'center', valign: 'middle'},
@@ -54,11 +54,11 @@ AdjustStudent.openApprove = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
-            title: '审核调课申请',
+            title: '审核转班申请',
             area: ['480px', '320px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/adjust/pass?applyId=' + this.seItem.id
+            content: Feng.ctxPath + '/change/pass?applyId=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -70,11 +70,11 @@ AdjustStudent.openReject = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
-            title: '拒绝调课申请',
+            title: '拒绝转班申请',
             area: ['480px', '320px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/adjust/reject?applyId=' + this.seItem.id
+            content: Feng.ctxPath + '/change/reject?applyId=' + this.seItem.id
         });
         this.layerIndex = index;
     }
@@ -85,7 +85,7 @@ AdjustStudent.openReject = function () {
  */
 AdjustStudent.close = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/adjust/close", function (data) {
+        var ajax = new $ax(Feng.ctxPath + "/change/close", function (data) {
             Feng.success("关闭成功! ");
             AdjustStudent.table.refresh();
         }, function (data) {
@@ -97,7 +97,7 @@ AdjustStudent.close = function () {
 };
 
 /**
- * 查询调课管理列表
+ * 查询转班管理列表
  */
 AdjustStudent.search = function () {
     var queryData = {};
@@ -107,7 +107,7 @@ AdjustStudent.search = function () {
 
 $(function () {
     var defaultColunms = AdjustStudent.initColumn();
-    var table = new BSTable(AdjustStudent.id, "/adjust/list", defaultColunms);
+    var table = new BSTable(AdjustStudent.id, "/change/list", defaultColunms);
     table.setPaginationType("server");
     AdjustStudent.table = table.init();
 });

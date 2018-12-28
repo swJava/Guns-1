@@ -1,5 +1,5 @@
 /**
- * 初始化调课管理详情对话框
+ * 初始化转班管理详情对话框
  */
 var AdjustStudentInfoDlg = {
     adjustStudentInfoData : {}
@@ -60,7 +60,7 @@ AdjustStudentInfoDlg.doApprove = function(op) {
     this.collectData();
 
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/adjust/approve/" + op, function(data){
+    var ajax = new $ax(Feng.ctxPath + "/change/approve/" + op, function(data){
         Feng.success("操作成功!");
         window.parent.AdjustStudent.table.refresh();
         AdjustStudentInfoDlg.close();

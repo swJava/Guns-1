@@ -27,6 +27,11 @@ public class StudentClass extends Model<StudentClass> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
+     * 订单编号
+     */
+    @TableField("order_no")
+    private String orderNo;
+    /**
      * 学员编码
      */
     @TableField("student_code")
@@ -49,6 +54,22 @@ public class StudentClass extends Model<StudentClass> {
      * 状态
      */
     private Integer status;
+    /**
+     * 备注
+     */
+    private String remark;
+    /**
+     * 上一次转出记录id
+     */
+    private Long pcode;
+    /**
+     * 首次转出记录id
+     */
+    private Long fcode;
+    /**
+     * 历史转班记录id， [1],[10],[34]
+     */
+    private String pcodes;
 
 
     public Long getId() {
@@ -57,6 +78,14 @@ public class StudentClass extends Model<StudentClass> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getStudentCode() {
@@ -104,15 +133,52 @@ public class StudentClass extends Model<StudentClass> {
         return this.id;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Long getPcode() {
+        return pcode;
+    }
+
+    public void setPcode(Long pcode) {
+        this.pcode = pcode;
+    }
+
+    public Long getFcode() {
+        return fcode;
+    }
+
+    public void setFcode(Long fcode) {
+        this.fcode = fcode;
+    }
+
+    public String getPcodes() {
+        return pcodes;
+    }
+
+    public void setPcodes(String pcodes) {
+        this.pcodes = pcodes;
+    }
+
     @Override
     public String toString() {
         return "StudentClass{" +
         "id=" + id +
+        ", orderNo=" + orderNo +
         ", studentCode=" + studentCode +
         ", classCode=" + classCode +
         ", className=" + className +
         ", period=" + period +
         ", status=" + status +
+        ", remark=" + remark +
+        ", fcode=" + fcode +
+        ", pcode=" + pcode +
+        ", pcodes=" + pcodes +
         "}";
     }
 }

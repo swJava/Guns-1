@@ -58,11 +58,22 @@ public interface IAdjustStudentService extends IService<AdjustStudent>, IAdminis
     AdjustStudent closeApply(Long applyId);
 
     /**
-     * 审批
+     * 调课审核
+     *
      * @param applyId 申请ID
-     * @param appove  动作
+     * @param action  动作
      * @param remark  备注
      * @return
      */
-    AdjustStudent doApprove(Long applyId, AdjustStudentApproveStateEnum appove, String remark);
+    AdjustStudent doAdjustApprove(Long applyId, AdjustStudentApproveStateEnum action, String remark);
+
+    /**
+     * 转班审核
+     *
+     * @param applyId
+     * @param action
+     * @param remark
+     * @return
+     */
+    AdjustStudent doChangeApprove(Long applyId, AdjustStudentApproveStateEnum action, String remark);
 }

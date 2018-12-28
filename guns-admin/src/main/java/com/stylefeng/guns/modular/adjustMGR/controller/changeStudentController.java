@@ -25,46 +25,50 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 调课管理控制器
+ * 转班
  *
- * @author fengshuonan
- * @Date 2018-11-19 23:01:31
+ * @Description //TODO
+ * @Author 罗华
+ * @Date 2018/12/29 00:25
+ * @Version 1.0
  */
 @Controller
-@RequestMapping("/adjust")
-public class AdjustStudentController extends BaseController {
+@RequestMapping("/change")
+public class changeStudentController extends BaseController {
 
-    private String PREFIX = "/adjustMGR/adjustStudent/";
+    private String PREFIX = "/adjustMGR/changeStudent/";
 
     @Autowired
     private IAdjustStudentService adjustStudentService;
 
+
     /**
-     * 跳转到调课管理首页
+     * 跳转到转班管理首页
      */
     @RequestMapping("")
     public String index() {
-        return PREFIX + "adjustStudent.html";
+        return PREFIX + "changeStudent.html";
     }
 
     /**
      * 跳转到修改调课管理
      */
     @RequestMapping("/{op}")
-    public String adjustStudentUpdate(@PathVariable String op, Long applyId, Model model) {
+    public String changeStudentUpdate(@PathVariable String op, Long applyId, Model model) {
         AdjustStudent adjustStudent = adjustStudentService.selectById(applyId);
 
         if (null == adjustStudent)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"调课申请"});
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"转班申请"});
 
         model.addAttribute("item",adjustStudent);
         model.addAttribute("op", op);
         LogObjectHolder.me().set(adjustStudent);
-        return PREFIX + "changeStudent_edit.html";
+        return PREFIX + "changeStudent_approve.html";
     }
 
+
     /**
-     * 获取调课管理列表
+     * 获取转班管理列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody
@@ -74,14 +78,14 @@ public class AdjustStudentController extends BaseController {
         Map<String, Object> queryMap = new HashMap<String, Object>();
         queryMap.put("status", GenericState.Valid.code);
 
-        Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Adjust, queryMap);
+        Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Change, queryMap);
         //包装数据
         new AdjustStudentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
 
     /**
-     * 关闭调课申请
+     * 关闭转班申请
      */
     @RequestMapping(value = "/close")
     @ResponseBody
@@ -96,7 +100,7 @@ public class AdjustStudentController extends BaseController {
     }
 
     /**
-     * 拒绝调课申请
+     * 拒绝转班申请
      */
     @RequestMapping(value = "/approve/reject")
     @ResponseBody
@@ -104,12 +108,12 @@ public class AdjustStudentController extends BaseController {
 
         Administrator currAdmin = ShiroKit.getUser();
         adjustStudentService.setAdministrator(currAdmin);
-        AdjustStudent adjustStudent = adjustStudentService.doAdjustApprove(applyId, AdjustStudentApproveStateEnum.Refuse, remark);
+        AdjustStudent adjustStudent = adjustStudentService.doChangeApprove(applyId, AdjustStudentApproveStateEnum.Refuse, remark);
         return SUCCESS_TIP;
     }
 
     /**
-     * 审批调课申请
+     * 审批转班申请
      */
     @RequestMapping(value = "/approve/pass")
     @ResponseBody
@@ -117,7 +121,7 @@ public class AdjustStudentController extends BaseController {
 
         Administrator currAdmin = ShiroKit.getUser();
         adjustStudentService.setAdministrator(currAdmin);
-        AdjustStudent adjustStudent = adjustStudentService.doAdjustApprove(applyId, AdjustStudentApproveStateEnum.Appove, remark);
+        AdjustStudent adjustStudent = adjustStudentService.doChangeApprove(applyId, AdjustStudentApproveStateEnum.Appove, remark);
         return SUCCESS_TIP;
     }
 }

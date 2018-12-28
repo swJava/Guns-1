@@ -10,4 +10,12 @@ import com.stylefeng.guns.modular.system.model.StudentClass;
  * @Version 1.0
  */
 public interface IStudentClassService extends IService<StudentClass> {
+    /**
+     * 转班
+     * 
+     * @param studentCode
+     * @param sourceClass
+     * @param targetClass
+     */
+    void doChange(String studentCode, String sourceClass, String targetClass);
 }

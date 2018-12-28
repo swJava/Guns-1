@@ -13,8 +13,27 @@ public interface IScheduleStudentService extends IService<ScheduleStudent>{
     /**
      * 获取调整后的课程计划
      *
-     * @param code
+     * @param preCode
      * @return
      */
     ScheduleStudent getAdjustedSchedule(String preCode);
+
+    /**
+     * 调课
+     * ˙
+     * @param studentCode
+     * @param outlineCode
+     * @param sourceClass
+     * @param targetClass
+     */
+    void doAdjust(String studentCode, String outlineCode, String sourceClass, String targetClass);
+
+    /**
+     * 转班
+     *
+     * @param studentCode
+     * @param sourceClass
+     * @param targetClass
+     */
+    void doChange(String studentCode, String sourceClass, String targetClass);
 }

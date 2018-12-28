@@ -34,7 +34,9 @@ public class PayController extends ApiController {
         return null;
     }
 
-    public Responser payNotifyHandler(){
+    @RequestMapping("/wx/notify")
+
+    public Responser wxPayNotifyHandler(){
         return null;
     }
 

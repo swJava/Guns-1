@@ -3,8 +3,12 @@ package com.stylefeng.guns.modular.orderMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
+import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
@@ -45,6 +49,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private IPayService payService;
 
+    @Autowired
+    private IScheduleClassService scheduleClassService;
+
+    @Autowired
+    private IScheduleStudentService scheduleStudentService;
+
+    @Autowired
+    private IStudentClassService studentClassService;
+
     @Override
     public Order order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData) {
 
@@ -63,7 +76,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             CourseCart courseCart = courseCartService.get(orderItem.getCourseCartCode());
             if (null != courseCart && OrderItemTypeEnum.Course.equals(OrderItemTypeEnum.instanceOf(orderItem.getItemObject()))){
                 // 清理购物车信息
-                courseCartService.generateOrder(member.getUserName(), courseCart.getStudent(), orderItem.getItemObjectCode());
+                courseCartService.generateOrder(member.getUserName(), courseCart.getStudentCode(), orderItem.getItemObjectCode());
             }
         }
 
@@ -77,8 +90,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public List<OrderItem> listItems(String acceptNo, OrderItemTypeEnum course) {
-        return null;
+    public List<OrderItem> listItems(String orderNo, OrderItemTypeEnum type) {
+        if (null == orderNo)
+            return new ArrayList<OrderItem>();
+
+        Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
+        orderItemWrapper.eq("orderNo", orderNo);
+        orderItemWrapper.eq("itemObject", type);
+
+        return orderItemMapper.selectList(orderItemWrapper);
     }
 
     @Override
@@ -92,13 +112,54 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void completePay(Order order, String paySequence) {
+    public void completePay(String order) {
+        Order currOrder = get(order);
 
-        order.setOutSequence(paySequence);
+        currOrder.setPayStatus(PayStateEnum.PayOk.code);
+        currOrder.setPayResult(PayStateEnum.PayOk.text);
 
-        order.setPayStatus(PayStateEnum.Paying.code);
+        updateById(currOrder);
 
-        updateById(order);
+        Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
+        orderItemWrapper.eq("order_no", order);
+        orderItemWrapper.eq("item_object", OrderItemTypeEnum.Course.code);
+
+        List<OrderItem> orderItemList = orderItemMapper.selectList(orderItemWrapper);
+
+        for(OrderItem courseItem : orderItemList){
+
+            CourseCart courseCart = courseCartService.get(courseItem.getCourseCartCode());
+
+            Wrapper<ScheduleClass> scheduleClassWrapper = new EntityWrapper<ScheduleClass>();
+            scheduleClassWrapper.eq("class_code", courseCart.getClassCode());
+
+            List<ScheduleClass> classScheduleList = scheduleClassService.selectList(scheduleClassWrapper);
+
+            // 学员报班信息表
+            StudentClass studentClass = new StudentClass();
+            studentClass.setStudentCode(courseCart.getStudentCode());
+            studentClass.setClassCode(courseCart.getClassCode());
+            studentClass.setClassName(courseCart.getClassName());
+            studentClass.setPeriod(classScheduleList.size());
+            studentClass.setStatus(GenericState.Valid.code);
+
+            studentClassService.insert(studentClass);
+
+            for(ScheduleClass classSchedule : classScheduleList){
+                ScheduleStudent scheduleStudent = new ScheduleStudent();
+                scheduleStudent.setCode(CodeKit.generateStudentSchedule());
+                scheduleStudent.setStudentCode(courseCart.getStudentCode());
+                scheduleStudent.setStudentName(courseCart.getStudent());
+                scheduleStudent.setClassCode(classSchedule.getClassCode());
+                scheduleStudent.setClassName(courseCart.getClassName());
+                scheduleStudent.setOutlineCode(classSchedule.getOutlineCode());
+                scheduleStudent.setOutline(classSchedule.getOutline());
+                scheduleStudent.setStudyDate(classSchedule.getClassDate());
+                scheduleStudent.setStatus(GenericState.Valid.code);
+
+                scheduleStudentService.insert(scheduleStudent);
+            }
+        }
     }
 
     /**

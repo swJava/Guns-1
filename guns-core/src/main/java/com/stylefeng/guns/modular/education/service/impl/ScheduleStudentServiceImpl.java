@@ -3,10 +3,10 @@ package com.stylefeng.guns.modular.education.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.model.ScheduleStudent;
-import com.stylefeng.guns.modular.system.model.ScheduleStudentEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
 
         Wrapper<ScheduleStudent> queryMapper = new EntityWrapper<>();
         queryMapper.eq("fcode", planCode);
-        queryMapper.eq("status", ScheduleStudentEnum.Valid.code);
+        queryMapper.eq("status", GenericState.Valid.code);
 
         return selectOne(queryMapper);
     }

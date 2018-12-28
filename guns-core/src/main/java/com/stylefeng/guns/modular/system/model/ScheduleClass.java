@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -37,7 +38,7 @@ public class ScheduleClass extends Model<ScheduleClass> {
     @ApiModelProperty(name = "classCode", value = "班级编码", example = "BJ000001")
     private String classCode;
     /**
-     * 班级编码
+     * 课时编码
      */
     @TableField("outline_code")
     @ApiModelProperty(name = "outlineCode", value = "课时编码", example = "KS000001")
@@ -45,14 +46,15 @@ public class ScheduleClass extends Model<ScheduleClass> {
     /**
      * 上课日期
      */
-    @TableField("class_date")
-    @ApiModelProperty(name = "classDate", value = "上课日期", example = "2018-11-27 周三")
-    private String classDate;
+    @TableField("study_date")
+    @ApiModelProperty(name = "classDate", value = "上课日期", example = "2018-11-27")
+    private Date classDate;
+
     /**
      * 星期
      */
     @TableField("week")
-    @ApiModelProperty(name = "week", value = "星期， 1-7", example = "2018-11-27 周三")
+    @ApiModelProperty(name = "week", value = "星期， 1-7", example = "7")
     private Integer week;
     /**
      * 上课时间：17:00-20:30
@@ -106,11 +108,11 @@ public class ScheduleClass extends Model<ScheduleClass> {
         this.outlineCode = outlineCode;
     }
 
-    public String getClassDate() {
+    public Date getClassDate() {
         return classDate;
     }
 
-    public void setClassDate(String classDate) {
+    public void setClassDate(Date classDate) {
         this.classDate = classDate;
     }
 

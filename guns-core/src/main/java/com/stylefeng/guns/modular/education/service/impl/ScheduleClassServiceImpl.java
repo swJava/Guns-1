@@ -89,7 +89,7 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
                 c.setTime(calDate);
                 int week = c.get(Calendar.DAY_OF_WEEK);
                 if (valueList.contains(week)){
-                    scheduleClass.setClassDate(DateUtil.formatDate(calDate, "yyyy-MM-dd"));
+                    scheduleClass.setClassDate(calDate);
                     scheduleClass.setWeek(week);
 
                     scheduleClassList.add(scheduleClass);

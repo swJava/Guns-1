@@ -187,9 +187,7 @@ public class OrderController extends ApiController {
 
         Wrapper<CourseCart> queryWrapper = new EntityWrapper<CourseCart>();
         queryWrapper.eq("user_name", currMember.getUserName());
-
-        if (null != status)
-            queryWrapper.eq("status", status);
+        queryWrapper.eq("status", CourseCartStateEnum.Valid.code);
 
         List<CourseCart> courseCartList = courseCartService.selectList(queryWrapper);
 

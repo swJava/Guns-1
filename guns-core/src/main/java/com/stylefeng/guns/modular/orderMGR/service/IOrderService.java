@@ -46,8 +46,8 @@ public interface IOrderService extends IService<Order> {
 
     /**
      *
-     * @param order
      * @param paySequence
+     * @param order
      */
-    void completePay(Order order, String paySequence);
+    void completePay(String order);
 }

@@ -95,8 +95,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return new ArrayList<OrderItem>();
 
         Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
-        orderItemWrapper.eq("orderNo", orderNo);
-        orderItemWrapper.eq("itemObject", type);
+        orderItemWrapper.eq("order_no", orderNo);
+        orderItemWrapper.eq("item_object", type);
 
         return orderItemMapper.selectList(orderItemWrapper);
     }

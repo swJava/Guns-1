@@ -72,7 +72,7 @@ public class StudentController extends BaseController {
         Student student = studentService.selectById(studentId);
 
         if (null == student)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员信息"});
 
         List<Attachment> avatarList = attachmentService.listAttachment(Student.class.getSimpleName(), String.valueOf(studentId));
         if (null != avatarList && avatarList.size() > 0)

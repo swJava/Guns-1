@@ -24,7 +24,8 @@ public class GlobalController {
     @RequestMapping(path = "/error")
     public String errorPage(HttpServletRequest request, Model model) {
         model.addAttribute("tips", request.getAttribute("tips"));
-        return "/404.html";
+        model.addAttribute("title", request.getAttribute("title"));
+        return "/error.html";
     }
 
     /**

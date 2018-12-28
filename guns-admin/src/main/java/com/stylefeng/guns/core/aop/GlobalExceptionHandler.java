@@ -134,10 +134,11 @@ public class GlobalExceptionHandler {
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(JSON.toJSONString(errorTip));
         }else {
-            request.setAttribute("tips", message);
+            Map<String, Object> model = new HashMap<String, Object>();
             request.setAttribute("title", e.getMessageCode());
+            request.setAttribute("tips", message);
 
-            result = new ModelAndView("forward:/global/error");
+            result = new ModelAndView("forward:/global/error", model);
         }
 
         return result;

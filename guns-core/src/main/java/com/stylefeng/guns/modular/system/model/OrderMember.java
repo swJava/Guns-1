@@ -32,6 +32,11 @@ public class OrderMember extends Model<OrderMember> {
      */
     private String username;
 
+    /**
+     * 学员编码
+     */
+    private String student;
+
 
     public Long getId() {
         return id;
@@ -57,6 +62,14 @@ public class OrderMember extends Model<OrderMember> {
         this.username = username;
     }
 
+    public String getStudent() {
+        return student;
+    }
+
+    public void setStudent(String student) {
+        this.student = student;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -68,6 +81,7 @@ public class OrderMember extends Model<OrderMember> {
         "id=" + id +
         ", orderNo=" + orderNo +
         ", username=" + username +
+        ", student=" + student +
         "}";
     }
 }

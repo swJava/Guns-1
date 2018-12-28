@@ -40,7 +40,7 @@ public class OrderItem extends Model<OrderItem> {
 
     @TableField("course_cart_code")
     @ApiModelProperty(name = "courseCartCode", value = "选课单编码", position = 0, example="CC181225000001")
-    private transient String courseCartCode;
+    private String courseCartCode;
     /**
      * 订单项目编码： DI + yyMMdd + 8位序列号
      */

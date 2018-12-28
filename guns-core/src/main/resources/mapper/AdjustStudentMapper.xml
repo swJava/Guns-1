@@ -24,7 +24,7 @@
     </sql>
 
     <select id="selectApplyMapsPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-      SELECT m.name as uname, s.name as sname,
+      SELECT m.name as uname, m.mobile_number as number, s.name as sname,
         (select c.name from tb_class c where code = a.source_class) as scname,
         (select c.name from tb_class c where code = a.target_class) as dcname,
         (select co.outline from tb_course_outline co where code = a.outline_code) as oname,
@@ -35,7 +35,7 @@
           <if test="type != null">
             AND a.type = #{type}
               <if test="type == 1">
-                  AND a.outline is not NULL
+                  AND a.outline_code is not NULL
               </if>
           </if>
           <if test="status != null">

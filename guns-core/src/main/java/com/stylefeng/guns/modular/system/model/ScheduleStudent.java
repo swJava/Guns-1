@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.stylefeng.guns.common.constant.state.GenericState;
+
 import java.io.Serializable;
 
 /**
@@ -77,7 +79,7 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
      */
     private String pcodes;
     /**
-     * 状态： -1  已失效  0  未上课   1  已完成
+     * 状态： 0 失效  1  有效
      */
     private Integer status;
     /**
@@ -224,7 +226,7 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
     }
 
     public boolean isValid() {
-        return this.status == ScheduleStudentEnum.Valid.code;
+        return this.status == GenericState.Valid.code;
     }
 
     public boolean isOver() {

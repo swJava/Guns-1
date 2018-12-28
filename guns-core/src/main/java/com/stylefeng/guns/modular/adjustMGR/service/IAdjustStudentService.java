@@ -3,12 +3,9 @@ package com.stylefeng.guns.modular.adjustMGR.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.common.validator.Validator;
-import com.stylefeng.guns.modular.system.model.AdjustStudent;
-import com.stylefeng.guns.modular.system.model.AdjustStudentTypeEnum;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.core.admin.IAdministratorAware;
+import com.stylefeng.guns.modular.system.model.*;
 
-import javax.validation.executable.ValidateOnExecution;
 import java.util.Map;
 
 /**
@@ -19,7 +16,7 @@ import java.util.Map;
  * @author simple.song
  * @since 2018-11-19
  */
-public interface IAdjustStudentService extends IService<AdjustStudent> {
+public interface IAdjustStudentService extends IService<AdjustStudent>, IAdministratorAware {
 
     /**
      * 调课申请
@@ -52,4 +49,20 @@ public interface IAdjustStudentService extends IService<AdjustStudent> {
      * @return
      */
     Page<Map<String,Object>> selectApplyMapsPage(AdjustStudentTypeEnum type, Map<String, Object> queryMap);
+
+    /**
+     * 关闭申请
+     *
+     * @param applyId
+     */
+    AdjustStudent closeApply(Long applyId);
+
+    /**
+     * 审批
+     * @param applyId 申请ID
+     * @param appove  动作
+     * @param remark  备注
+     * @return
+     */
+    AdjustStudent doApprove(Long applyId, AdjustStudentApproveStateEnum appove, String remark);
 }

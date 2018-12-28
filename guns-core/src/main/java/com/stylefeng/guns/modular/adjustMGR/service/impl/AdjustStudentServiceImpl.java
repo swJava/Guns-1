@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
 import com.stylefeng.guns.modular.system.dao.AdjustStudentMapper;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +36,8 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
 
     @Autowired
     private AdjustStudentMapper adjustStudentMapper;
+
+    private Administrator administrator;
 
     @Override
     public void adjustCourse(Member member, Student student, Map<String, Object> fromData, Map<String, Object> destData) {
@@ -89,11 +93,76 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
     }
 
     @Override
-    public Page<Map<String, Object>> selectApplyMapsPage(AdjustStudentTypeEnum adjust, Map<String, Object> queryMap) {
-        Page<AdjustStudent> page = new PageFactory<AdjustStudent>().defaultPage();
-
+    public Page<Map<String, Object>> selectApplyMapsPage(AdjustStudentTypeEnum type, Map<String, Object> queryMap) {
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+        if (null == queryMap){
+            queryMap = new HashMap<String, Object>();
+        }
+        if (null != type){
+            queryMap.put("type", type.code);
+        }
         List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, queryMap);
-        return null;
+
+        page.setRecords(pageResult);
+        return page;
+    }
+
+    @Override
+    public AdjustStudent closeApply(Long applyId) {
+
+        if (null == applyId)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"需要关闭的申请项"});
+
+        AdjustStudent adjustStudent = selectById(applyId);
+
+        if (null == adjustStudent)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
+
+        if (GenericState.Invalid.code == adjustStudent.getStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
+
+        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
+
+        if (AdjustStudentApproveStateEnum.Appove.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已通过审批的申请不能再进行关闭操作"});
+
+        adjustStudent.setStatus(GenericState.Invalid.code);
+        adjustStudent.setWorkStatus(AdjustStudentApproveStateEnum.Close.code);
+        if (null != administrator) {
+            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
+            adjustStudent.setOperator(administrator.getName());
+        }
+        updateById(adjustStudent);
+
+        return adjustStudent;
+    }
+
+    @Override
+    public AdjustStudent doApprove(Long applyId, AdjustStudentApproveStateEnum approveState, String remark) {
+        if (null == applyId)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"需要关闭的申请项"});
+
+        AdjustStudent adjustStudent = selectById(applyId);
+
+        if (null == adjustStudent)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
+        if (GenericState.Invalid.code == adjustStudent.getStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Create.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"申请单状态异常"});
+
+        adjustStudent.setWorkStatus(approveState.code);
+        adjustStudent.setRemark(remark);
+        if (null != administrator) {
+            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
+            adjustStudent.setOperator(administrator.getName());
+        }
+        updateById(adjustStudent);
+
+        return adjustStudent;
     }
 
     private boolean hasApproving(String student, String sourceClass, String targetClass, String outlineCode, AdjustStudentTypeEnum type) {
@@ -110,5 +179,10 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         queryWrapper.ne("work_status", AdjustStudentApproveStateEnum.Refuse.code);
 
         return 0 < selectCount(queryWrapper);
+    }
+
+    @Override
+    public void setAdministrator(Administrator admin) {
+        administrator = admin;
     }
 }

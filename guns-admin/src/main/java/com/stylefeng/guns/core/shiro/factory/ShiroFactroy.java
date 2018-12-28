@@ -2,12 +2,12 @@ package com.stylefeng.guns.core.shiro.factory;
 
 import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.common.constant.state.ManagerStatus;
-import com.stylefeng.guns.core.shiro.ShiroUser;
-import com.stylefeng.guns.util.Convert;
-import com.stylefeng.guns.util.SpringContextHolder;
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.modular.system.dao.MenuMapper;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.model.User;
+import com.stylefeng.guns.util.Convert;
+import com.stylefeng.guns.util.SpringContextHolder;
 import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
@@ -53,8 +53,8 @@ public class ShiroFactroy implements IShiro {
     }
 
     @Override
-    public ShiroUser shiroUser(User user) {
-        ShiroUser shiroUser = new ShiroUser();
+    public Administrator shiroUser(User user) {
+        Administrator shiroUser = new Administrator();
 
         shiroUser.setId(user.getId());
         shiroUser.setAccount(user.getAccount());
@@ -86,7 +86,7 @@ public class ShiroFactroy implements IShiro {
     }
 
     @Override
-    public SimpleAuthenticationInfo info(ShiroUser shiroUser, User user, String realmName) {
+    public SimpleAuthenticationInfo info(Administrator shiroUser, User user, String realmName) {
         String credentials = user.getPassword();
 
         // 密码加盐处理

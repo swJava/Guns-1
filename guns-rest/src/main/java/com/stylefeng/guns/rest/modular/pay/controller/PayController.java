@@ -1,11 +1,15 @@
 package com.stylefeng.guns.rest.modular.pay.controller;
 
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.system.model.Order;
+import com.stylefeng.guns.modular.system.model.PayResult;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,10 +38,23 @@ public class PayController extends ApiController {
         return null;
     }
 
+<<<<<<< HEAD
     @RequestMapping("/wx/notify")
 
     public Responser wxPayNotifyHandler(){
         return null;
+=======
+    @RequestMapping(value = "/wx/notify", method = RequestMethod.POST)
+    public Responser payNotifyHandler(String orderNo){
+
+        orderService.completePay(orderNo);
+
+        return SimpleResponser.success();
+    }
+
+    private void checkOrderState(Order order) {
+
+>>>>>>> b977bd9bad71b6202a534f2e1cdbe7ce00050c91
     }
 
 }

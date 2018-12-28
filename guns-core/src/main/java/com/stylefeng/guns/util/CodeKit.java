@@ -34,7 +34,8 @@ public final class CodeKit {
         COLUMN ("LM", 6),  // 栏目
         CONTENT ("CT", 8),  // 栏目类容
         ANSWER("DJ", 8),  // 答卷
-        COURSE_CART("CC", 8)  // 订单项
+        COURSE_CART("CC", 8),  // 订单项
+        STUDENT_PLAN("PS", 8)  // 学员排课计划
         ;
 
         String name;
@@ -130,6 +131,14 @@ public final class CodeKit {
      */
     public static String generateCourseCart() {
         return generate(CODE_DEFINE.COURSE_CART.name, CODE_DEFINE.COURSE_CART.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
+    /**
+     * 生成学员排课计划
+     * @return
+     */
+    public static String generateStudentSchedule() {
+        return generate(CODE_DEFINE.STUDENT_PLAN.name, CODE_DEFINE.STUDENT_PLAN.length, new String[]{DateUtil.getyyMMdd()});
     }
 
     private CodeKit(){}

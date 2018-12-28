@@ -45,15 +45,15 @@ public class Order extends Model<Order> {
      */
     private Long amount;
     /**
-     * 支付状态:1=待支付 2=已支付 3=超时
+     * 支付状态: -1=支付失败 0=待支付 1=用户已支付 2=支付成功 3=超时
      */
     @TableField("pay_status")
     private Integer payStatus;
     /**
-     * 支付结果：11成功 12失败 
+     * 支付结果
      */
     @TableField("pay_result")
-    private Integer payResult;
+    private String payResult;
     /**
      * 支付时间
      */
@@ -129,11 +129,11 @@ public class Order extends Model<Order> {
         this.payStatus = payStatus;
     }
 
-    public Integer getPayResult() {
+    public String getPayResult() {
         return payResult;
     }
 
-    public void setPayResult(Integer payResult) {
+    public void setPayResult(String payResult) {
         this.payResult = payResult;
     }
 

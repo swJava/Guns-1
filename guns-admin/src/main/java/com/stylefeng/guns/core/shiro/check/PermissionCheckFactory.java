@@ -15,9 +15,9 @@
  */
 package com.stylefeng.guns.core.shiro.check;
 
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.listener.ConfigListener;
 import com.stylefeng.guns.core.shiro.ShiroKit;
-import com.stylefeng.guns.core.shiro.ShiroUser;
 import com.stylefeng.guns.core.support.CollectionKit;
 import com.stylefeng.guns.core.support.HttpKit;
 import com.stylefeng.guns.util.SpringContextHolder;
@@ -41,7 +41,7 @@ public class PermissionCheckFactory implements ICheck {
 
     @Override
     public boolean check(Object[] permissions) {
-        ShiroUser user = ShiroKit.getUser();
+        Administrator user = ShiroKit.getUser();
         if (null == user) {
             return false;
         }
@@ -55,7 +55,7 @@ public class PermissionCheckFactory implements ICheck {
     @Override
     public boolean checkAll() {
         HttpServletRequest request = HttpKit.getRequest();
-        ShiroUser user = ShiroKit.getUser();
+        Administrator user = ShiroKit.getUser();
         if (null == user) {
             return false;
         }

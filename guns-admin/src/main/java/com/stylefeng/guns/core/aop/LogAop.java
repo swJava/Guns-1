@@ -2,12 +2,12 @@ package com.stylefeng.guns.core.aop;
 
 import com.stylefeng.guns.common.annotion.BussinessLog;
 import com.stylefeng.guns.common.constant.dictmap.base.AbstractDictMap;
+import com.stylefeng.guns.core.admin.Administrator;
+import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.core.support.HttpKit;
 import com.stylefeng.guns.log.LogManager;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.log.factory.LogTaskFactory;
-import com.stylefeng.guns.core.shiro.ShiroKit;
-import com.stylefeng.guns.core.shiro.ShiroUser;
-import com.stylefeng.guns.core.support.HttpKit;
 import com.stylefeng.guns.util.Contrast;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -67,7 +67,7 @@ public class LogAop {
         String methodName = currentMethod.getName();
 
         //如果当前用户未登录，不做日志
-        ShiroUser user = ShiroKit.getUser();
+        Administrator user = ShiroKit.getUser();
         if (null == user) {
             return;
         }

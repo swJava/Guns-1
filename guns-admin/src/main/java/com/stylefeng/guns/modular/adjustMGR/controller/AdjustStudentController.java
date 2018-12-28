@@ -1,25 +1,25 @@
 package com.stylefeng.guns.modular.adjustMGR.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
 import com.stylefeng.guns.modular.adjustMGR.warpper.AdjustStudentWrapper;
-import com.stylefeng.guns.modular.studentMGR.warpper.StudentWrapper;
+import com.stylefeng.guns.modular.system.model.AdjustStudent;
+import com.stylefeng.guns.modular.system.model.AdjustStudentApproveStateEnum;
 import com.stylefeng.guns.modular.system.model.AdjustStudentTypeEnum;
-import com.stylefeng.guns.modular.system.model.Student;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.stylefeng.guns.modular.system.model.AdjustStudent;
-import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.awt.geom.GeneralPath;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,10 +57,11 @@ public class AdjustStudentController extends BaseController {
     /**
      * 跳转到修改调课管理
      */
-    @RequestMapping("/adjustStudent_update/{adjustStudentId}")
-    public String adjustStudentUpdate(@PathVariable Integer adjustStudentId, Model model) {
-        AdjustStudent adjustStudent = adjustStudentService.selectById(adjustStudentId);
+    @RequestMapping("/{op}")
+    public String adjustStudentUpdate(@PathVariable String op, Long applyId, Model model) {
+        AdjustStudent adjustStudent = adjustStudentService.selectById(applyId);
         model.addAttribute("item",adjustStudent);
+        model.addAttribute("op", op);
         LogObjectHolder.me().set(adjustStudent);
         return PREFIX + "adjustStudent_edit.html";
     }
@@ -73,42 +74,50 @@ public class AdjustStudentController extends BaseController {
     public Object list(String condition) {
 
         //分页查詢
-
         Map<String, Object> queryMap = new HashMap<String, Object>();
-
+        queryMap.put("status", GenericState.Valid.code);
 
         Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Adjust, queryMap);
-/*
-        Page<Map<String, Object>> pageMap = adjustStudentService.selectMapsPage(page, new EntityWrapper<AdjustStudent>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("user_name", condition);
-                }
-            }
-        });*/
         //包装数据
         new AdjustStudentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
 
     /**
-     * 新增调课管理
+     * 关闭调课申请
      */
-    @RequestMapping(value = "/add")
+    @RequestMapping(value = "/close")
     @ResponseBody
-    public Object add(AdjustStudent adjustStudent) {
-        adjustStudentService.insert(adjustStudent);
+    public Object close(@RequestParam Long applyId) {
+
+        Administrator currAdmin = ShiroKit.getUser();
+        AdjustStudent adjustStudent = adjustStudentService.closeApply(applyId);
+
+        LogObjectHolder.me().set(adjustStudent);
         return SUCCESS_TIP;
     }
 
     /**
-     * 删除调课管理
+     * 拒绝调课申请
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/approve/reject")
     @ResponseBody
-    public Object delete(@RequestParam Integer adjustStudentId) {
-        adjustStudentService.deleteById(adjustStudentId);
+    public Object reject(@RequestParam Long applyId, String remark) {
+
+        Administrator currAdmin = ShiroKit.getUser();
+        AdjustStudent adjustStudent = adjustStudentService.doApprove(applyId, AdjustStudentApproveStateEnum.Refuse, remark);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 审批调课申请
+     */
+    @RequestMapping(value = "/approve/pass")
+    @ResponseBody
+    public Object pass(@RequestParam Long applyId, String remark) {
+
+        Administrator currAdmin = ShiroKit.getUser();
+        AdjustStudent adjustStudent = adjustStudentService.doApprove(applyId, AdjustStudentApproveStateEnum.Appove, remark);
         return SUCCESS_TIP;
     }
 

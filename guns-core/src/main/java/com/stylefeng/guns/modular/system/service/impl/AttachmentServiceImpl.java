@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  * @Description //TODO
- * @Author 罗华
+ * @Author 缃楀崕
  * @Date 2018/11/19 17:42
  * @Version 1.0
  */
@@ -63,7 +63,7 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
                 continue;
             }
 
-            // 保存附件信息
+            // 淇濆瓨闄勪欢淇℃伅
             Attachment attachment = new Attachment();
             attachment.setFileName((String) uploadAttachment.get("orgName"));
             attachment.setAttachmentName(filename);
@@ -87,9 +87,9 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
             return new ArrayList<>();
 
         return selectList(new EntityWrapper<Attachment>()
-                        .eq("master_code", masterCode)
-                        .eq("master_name", masterName)
-                        .eq("status", 1)
+                .eq("master_code", masterCode)
+                .eq("master_name", masterName)
+                .eq("status", 1)
         );
     }
 

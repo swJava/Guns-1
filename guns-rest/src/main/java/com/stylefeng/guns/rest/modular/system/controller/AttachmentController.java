@@ -67,9 +67,9 @@ public class AttachmentController {
             }
         }
 
-        attachmentService.saveAttachment(uploadInfo, masterName, masterCode);
+        String ids = attachmentService.saveAttachment(uploadInfo, masterName, masterCode);
 
-        return AttachmentUploadResponse.me();
+        return AttachmentUploadResponse.me(ids);
     }
 
 

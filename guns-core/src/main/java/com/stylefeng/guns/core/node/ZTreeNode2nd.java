@@ -4,38 +4,38 @@ package com.stylefeng.guns.core.node;
  * 
  * jquery ztree 插件的节点
  * 
- * @author fengshuonan
- * @date 2017年2月17日 下午8:25:14
+ * @author HH
+ * @date 2018年12月29日 下午8:25:14
  */
-public class ZTreeNode_ {
+public class ZTreeNode2nd {
 
-	private String code;	//节点id
+	private String code;	 //节点id
 	
-	private String pcode;//父节点id
+	private String pcode;    //父节点id
 	
-	private String name;//节点名称
+	private String name;     //节点名称
 	
-	private Boolean open;//是否打开节点
+	private Boolean open;    //是否打开节点
 	
-	private Boolean checked;//是否被选中
+	private Boolean checked; //是否被选中
 
-	public Long getId() {
-		return id;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public Long getpId() {
-		return pId;
-	}
+    public String getPcode() {
+        return pcode;
+    }
 
-	public void setpId(Long pId) {
-		this.pId = pId;
-	}
+    public void setPcode(String pcode) {
+        this.pcode = pcode;
+    }
 
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
@@ -67,11 +67,11 @@ public class ZTreeNode_ {
 		this.checked = checked;
 	}
 	
-	public static ZTreeNode createParent(){
+	public static ZTreeNode createParent(String topName){
 		ZTreeNode zTreeNode = new ZTreeNode();
 		zTreeNode.setChecked(true);
 		zTreeNode.setId(0L);
-		zTreeNode.setName("顶级");
+		zTreeNode.setName(null == topName ? "顶级" : topName);
 		zTreeNode.setOpen(true);
 		zTreeNode.setpId(0L);
 		return zTreeNode;

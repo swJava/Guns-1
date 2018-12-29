@@ -2,21 +2,7 @@ application:
   swagger-open: true
   sign-open: true #签名机制是否开启(true或false)
   message:
-    sms.sender.enable: false
     captch.template: SMS_150742325
-  attachment:
-    visit-url: http://127.0.0.1:8081/api/attachment/download
-    store-path: H:/Datas/gs/upload
-  examine:
-    strategy:
-      default:
-        count: 10
-        duration: 30
-        fullCredit: 100
-        selectRatio: 100
-        fillRatio: 0
-        subjectRatio: 0
-        autoMarking: 1
   auth:
     enable: true #jwt鉴权机制是否开启(true或者false)
     header: Authorization #http请求头所需要的字段
@@ -35,32 +21,6 @@ application:
       - /member/login*
       - /content/**
 
-server:
-  port: 8081 #项目端口
-  servlet:
-    context-path: /api
-  tomcat:
-    max-connections: 1024
-    uri-encoding: UTF-8
-    accept-count: 768
-    max-threads: 1024
-
-spring:
-  profiles:
-    active: local
-
-#启用shutdown
-management:
-  server:
-    port: 8000
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    enabled-by-default: true
-    shutdown.enabled: true
-    web.exposure.include: "*"
-
 mybatis-plus:
   typeAliasesPackage: com.stylefeng.guns.modular.system.model
   mapperLocations: classpath*:mapper/*.xml
@@ -77,18 +37,25 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl #打印sql语句,调试用
 
 spring:
+  profiles:
+    active: local
   messages:
     always-use-message-format: true
     basename: i18n/messages
     cache-seconds: 60
     encoding: UTF-8
     fallback-to-system-locale: true
+
+---
+
+spring:
+  profiles: local
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    jdbcUrl: jdbc:mysql://39.108.237.254:3306/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
-    username: db_user_devep
-    password: rootQAZxsw
-    db-name: guns #用来搜集数据库的所有表
+    jdbcUrl: jdbc:mysql://127.0.0.1:3306/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    username: kcapp
+    password: h,M)Hww0,.rz
+    db-name: kcdb #用来搜集数据库的所有表
     type: com.zaxxer.hikari.HikariDataSource
     hikari.minimum-idle: 5
     hikari.maximum-pool-size: 15
@@ -99,6 +66,69 @@ spring:
     hikari.connection-timeout: 30000
     hikari.connection-test-query: SELECT 1
     filters: wall,mergeStat
-
 logging:
   config: classpath:logback.xml
+server:
+  port: 8081 #项目端口
+  servlet:
+    context-path: /api
+  tomcat:
+    max-connections: 5
+    uri-encoding: UTF-8
+    accept-count: 5
+    max-threads: 10
+application:
+  message:
+    sms.sender.enable: false
+  attachment:
+      visit-url: http://127.0.0.1:8081/api/attachment/download
+      store-path: H:/Datas/gs/upload
+
+---
+
+spring:
+  profiles: produce
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.26.140.96:33009/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    username: kcapp
+    password: h,M)Hww0,.rz
+    db-name: kcdb #用来搜集数据库的所有表
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari.minimum-idle: 10
+    hikari.maximum-pool-size: 50
+    hikari.auto-commit: true
+    hikari.idle-timeout: 30000
+    hikari.pool-name: EduCP
+    hikari.max-lifetime: 1800000
+    hikari.connection-timeout: 30000
+    hikari.connection-test-query: SELECT 1
+    filters: wall,mergeStat
+logging:
+  config: file:///home/app/config/logback-api.xml
+server:
+  port: 18002
+  servlet:
+    context-path: /api
+  tomcat:
+    max-connections: 1024
+    uri-encoding: UTF-8
+    accept-count: 768
+    max-threads: 1024
+application:
+  message:
+    sms.sender.enable: true
+  attachment:
+      visit-url: http://39.98.48.194/download
+      store-path: /home/app/data/upload
+#启用shutdown
+management:
+  server:
+    port: 18011
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    enabled-by-default: true
+    shutdown.enabled: true
+    web.exposure.include: "*"

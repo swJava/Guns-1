@@ -335,9 +335,9 @@ public class EducationController extends ApiController {
             @Valid
             QueryPlanOfDayRequester requester, HttpServletRequest request
     ){
-        String userName = (String) request.getAttribute("USER_NAME");
+        Member member = currMember();
 
-        List<Student> studentList = studentService.listStudents(userName);
+        List<Student> studentList = studentService.listStudents(member.getUserName());
 
         if (studentList.isEmpty()){
             log.warn("Member {} have not student");
@@ -346,7 +346,7 @@ public class EducationController extends ApiController {
 
         List<ScheduleStudent> planList = new ArrayList<ScheduleStudent>();
         for (Student student : studentList){
-            planList.addAll(studentService.listCoursePlan(student.getCode(), requester.getDay(), new Integer[]{0, 1}));
+            planList.addAll(studentService.listCoursePlan(student.getCode(), requester.getDay(), new Integer[]{1}));
         }
 
         List<PlanOfDayResponser> responserList = new ArrayList<PlanOfDayResponser>();

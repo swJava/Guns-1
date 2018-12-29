@@ -16,7 +16,7 @@ Student.initColumn = function () {
         {field: 'selectItem', radio: true},
             {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle',
                 formatter:function (value,row,index) {
-                    return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Student&masterCode='+row.id+'" width="64px" height="64px">';
+                    return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Student&masterCode='+row.code+'" width="64px" height="64px">';
                 }
             },
             {title: '学员编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},

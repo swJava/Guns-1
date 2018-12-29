@@ -56,8 +56,9 @@ Collector.Content.search = function () {
 };
 
 $(function () {
-    var defaultColunms = Collector.Content.initColumn();
-    var table = new BSTable(Collector.Content.id, "/content/list", defaultColunms);
-    table.setPaginationType("server");
-    Collector.Content.table = table.init();
+    //var defaultColunms = Collector.Content.initColumn();
+    //var table = new BSTable(Collector.Content.id, "/content/list", defaultColunms);
+    //table.setPaginationType("server");
+    //Collector.Content.table = table.init();
+    var ztree = new $ZTree("columnTree", "/column/treeList");
 });

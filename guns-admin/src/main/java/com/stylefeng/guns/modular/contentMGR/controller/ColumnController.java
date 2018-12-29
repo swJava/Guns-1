@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.contentMGR.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.node.ZTreeNode;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
@@ -130,6 +131,16 @@ public class ColumnController extends BaseController {
         //包装数据
 //        new ColumnWrapper(pageMap.getRecords()).warp();
 //        return super.packForBT(pageMap);
+    }
+
+
+    /**
+     * 获取栏目列表
+     */
+    @RequestMapping(value = "/treeList")
+    @ResponseBody
+    public List<ZTreeNode> treeList(String condition) {
+
     }
     /**
      * 获取栏目列表

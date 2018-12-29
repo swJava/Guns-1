@@ -262,4 +262,11 @@ public interface IConstantFactory {
      * @return
      */
     Object getCourseMethodname(Integer method);
+
+    /**
+     *
+     * @param amount
+     * @return
+     */
+    String fenToYuan(String amount);
 }

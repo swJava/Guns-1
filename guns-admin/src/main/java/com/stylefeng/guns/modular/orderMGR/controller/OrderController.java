@@ -38,23 +38,15 @@ public class OrderController extends BaseController {
     /**
      * 跳转到订单管理首页
      */
-    @RequestMapping("")
+    @RequestMapping("/class")
     public String index() {
         return PREFIX + "order.html";
     }
 
     /**
-     * 跳转到添加订单管理
-     */
-    @RequestMapping("/order_add")
-    public String orderAdd() {
-        return PREFIX + "order_add.html";
-    }
-
-    /**
      * 跳转到修改订单管理
      */
-    @RequestMapping("/order_update/{orderId}")
+    @RequestMapping("/class/order_update/{orderId}")
     public String orderUpdate(@PathVariable Integer orderId, Model model) {
         Order order = orderService.selectById(orderId);
         model.addAttribute("item", order);
@@ -65,7 +57,7 @@ public class OrderController extends BaseController {
     /**
      * 获取订单管理列表
      */
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = "/class/list")
     @ResponseBody
     public Object list(String condition) {
         //分页查詢
@@ -84,19 +76,9 @@ public class OrderController extends BaseController {
     }
 
     /**
-     * 新增订单管理
-     */
-    @RequestMapping(value = "/add")
-    @ResponseBody
-    public Object add(Order order) {
-        orderService.insert(order);
-        return SUCCESS_TIP;
-    }
-
-    /**
      * 删除订单管理
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/class/delete")
     @ResponseBody
     public Object delete(@RequestParam Integer orderId) {
         orderService.deleteById(orderId);
@@ -106,7 +88,7 @@ public class OrderController extends BaseController {
     /**
      * 修改订单管理
      */
-    @RequestMapping(value = "/update")
+    @RequestMapping(value = "/class/update")
     @ResponseBody
     public Object update(Order order) {
         orderService.updateById(order);
@@ -116,7 +98,7 @@ public class OrderController extends BaseController {
     /**
      * 订单管理详情
      */
-    @RequestMapping(value = "/detail/{orderId}")
+    @RequestMapping(value = "/class/detail/{orderId}")
     @ResponseBody
     public Object detail(@PathVariable("orderId") Integer orderId) {
         return orderService.selectById(orderId);

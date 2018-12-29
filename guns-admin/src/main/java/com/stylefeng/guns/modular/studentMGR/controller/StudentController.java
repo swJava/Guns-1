@@ -146,7 +146,7 @@ public class StudentController extends BaseController {
         if (null != icon && null != icon.getId())
             try {
                 icon.setMasterName(Student.class.getSimpleName());
-                icon.setMasterCode(String.valueOf(student.getId()));
+                icon.setMasterCode(student.getCode());
 
                 attachmentService.updateAndRemoveOther(icon);
             }catch(Exception e){

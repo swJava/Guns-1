@@ -21,4 +21,16 @@ public enum PayStateEnum {
         this.code = code;
         this.text = text;
     }
+
+    public static PayStateEnum instanceOf(int payState) {
+        PayStateEnum payStateEnum = null;
+
+        for(PayStateEnum state : values()){
+            if (payState == state.code){
+                payStateEnum = state;
+                break;
+            }
+        }
+        return payStateEnum;
+    }
 }

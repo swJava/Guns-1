@@ -8,22 +8,22 @@ import com.stylefeng.guns.common.constant.state.ManagerStatus;
 import com.stylefeng.guns.common.constant.state.MenuStatus;
 import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.log.LogObjectHolder;
-import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.system.dao.*;
-import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.Convert;
 import com.stylefeng.guns.util.SpringContextHolder;
 import com.stylefeng.guns.util.ToolUtil;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 常量的生产工厂
@@ -34,6 +34,7 @@ import java.util.Optional;
 @Component
 @DependsOn("springContextHolder")
 public class ConstantFactory implements IConstantFactory {
+    private static final BigDecimal MONEY_TRANSFORM = new BigDecimal(100);
 
     private RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
     private DeptMapper deptMapper = SpringContextHolder.getBean(DeptMapper.class);
@@ -502,5 +503,10 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public Object getCourseMethodname(Integer method) {
         return getDictsByCode("course_method", String.valueOf(method));
+    }
+
+    @Override
+    public String fenToYuan(String amount) {
+        return new BigDecimal(amount).divide(MONEY_TRANSFORM).setScale(2).toString();
     }
 }

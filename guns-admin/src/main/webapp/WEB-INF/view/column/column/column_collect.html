@@ -1,16 +1,25 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="col-sm-12">
+        <div class="form-horizontal" id="columnInfoForm">
             <div class="row">
-                <div class="col-sm-3">
-                    <#NameCon id="condition" name="名称" />
+                <div class="col-sm-6 b-r">
+                    <div id="columnTreeContainer">
+                        <ul id="columnTree" class="ztree tree-box"></ul>
+                    </div>
                 </div>
-                <div class="col-sm-3">
-                    <#button name="搜索" icon="fa-search" clickFun="Collector.Content.search()"/>
+
+                <div class="col-sm-6">
+                    <#input id="name" name="栏目名称" value="" underline="true"/>
                 </div>
             </div>
-            <#table id="ArticleTable"/>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ColumnInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ColumnInfoDlg.close()"/>
+                </div>
+            </div>
         </div>
     </div>
 </div>

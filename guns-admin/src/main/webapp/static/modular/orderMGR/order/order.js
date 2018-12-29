@@ -14,13 +14,13 @@ var Order = {
 Order.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '标示', field: 'id', visible: true, align: 'center', valign: 'middle'},
+            {title: '标示', field: 'id', visible: false, align: 'center', valign: 'middle'},
             {title: '订单号', field: 'acceptNo', visible: true, align: 'center', valign: 'middle'},
+            {title: '金额（元）', field: 'amount', visible: true, align: 'center', valign: 'middle'},
+            {title: 'status', field: 'status', visible: false, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'},
-            {title: '金额', field: 'amount', visible: true, align: 'center', valign: 'middle'},
-            {title: '支付结果', field: 'payResultName', visible: true, align: 'center', valign: 'middle'},
+            {title: '支付结果', field: 'payResult', visible: true, align: 'center', valign: 'middle'},
             {title: '支付渠道', field: 'payMethodName', visible: true, align: 'center', valign: 'middle'},
-            {title: '支付状态', field: 'payStatusName', visible: true, align: 'center', valign: 'middle'},
             {title: '生成时间', field: 'acceptDate', visible: true, align: 'center', valign: 'middle'},
             {title: '支付时间', field: 'payDate', visible: true, align: 'center', valign: 'middle'}
     ];
@@ -43,16 +43,19 @@ Order.check = function () {
 /**
  * 点击添加订单管理
  */
-Order.openAddOrder = function () {
-    var index = layer.open({
-        type: 2,
-        title: '添加订单管理',
-        area: ['800px', '420px'], //宽高
-        fix: false, //不固定
-        maxmin: true,
-        content: Feng.ctxPath + '/order/order_add'
-    });
-    this.layerIndex = index;
+Order.openOrderManager = function () {
+    if (this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '订单管理详情',
+            area: ['640px', '480px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/order/class/order_update/' + Order.seItem.acceptNo
+        });
+        layer.full(index);
+        this.layerIndex = index;
+    }
 };
 
 /**
@@ -62,28 +65,29 @@ Order.openOrderDetail = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
-            title: '订单管理详情',
-            area: ['800px', '420px'], //宽高
+            title: '订单详情',
+            area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/order/order_update/' + Order.seItem.id
+            content: Feng.ctxPath + '/order/class/order_detail/' + Order.seItem.acceptNo
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };
 
 /**
- * 删除订单管理
+ * 关闭订单管理
  */
-Order.delete = function () {
+Order.close = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/order/delete", function (data) {
-            Feng.success("删除成功!");
+        var ajax = new $ax(Feng.ctxPath + "/order/class/close", function (data) {
+            Feng.success("关闭成功!");
             Order.table.refresh();
         }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+            Feng.error("关闭失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("orderId",this.seItem.id);
+        ajax.set("orderNo",this.seItem.acceptNo);
         ajax.start();
     }
 };
@@ -99,7 +103,7 @@ Order.search = function () {
 
 $(function () {
     var defaultColunms = Order.initColumn();
-    var table = new BSTable(Order.id, "/order/list", defaultColunms);
+    var table = new BSTable(Order.id, "/order/class/list", defaultColunms);
     table.setPaginationType("server");
     Order.table = table.init();
 });

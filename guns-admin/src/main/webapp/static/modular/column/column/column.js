@@ -49,11 +49,12 @@ Column.openAddColumn = function () {
     var index = layer.open({
         type: 2,
         title: '添加栏目',
-        area: ['800px', '420px'], //宽高
+        area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/column/column_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -65,11 +66,12 @@ Column.openColumnDetail = function () {
         var index = layer.open({
             type: 2,
             title: '栏目详情',
-            area: ['800px', '420px'], //宽高
+            area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
             content: Feng.ctxPath + '/column/column_update/' + Column.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };

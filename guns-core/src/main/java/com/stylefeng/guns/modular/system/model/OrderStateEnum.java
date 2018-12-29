@@ -9,7 +9,8 @@ package com.stylefeng.guns.modular.system.model;
 public enum OrderStateEnum {
     PreCreate(0, "预生成"),
     Valid(1, "有效"),
-    InValid(-1, "失效")
+    InValid(-1, "失效"),
+    Expire(-2, "过期失效")
     ;
 
     public int code;

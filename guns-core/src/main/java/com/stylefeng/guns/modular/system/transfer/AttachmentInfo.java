@@ -1,7 +1,9 @@
 package com.stylefeng.guns.modular.system.transfer;
 
 import com.stylefeng.guns.common.exception.ServiceException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,6 +29,30 @@ public class AttachmentInfo {
         types = new String[0];
         orgNames = new String[0];
         contents = new ArrayList<byte[]>();
+    }
+
+    public static AttachmentInfo fromUpload(MultipartFile[] files) {
+        if (null == files || files.length == 0)
+            return null;
+
+        AttachmentInfo uploadInfo = new AttachmentInfo();
+
+        for(MultipartFile file : files){
+            if (null == file)
+                continue;
+
+            try {
+                uploadInfo.addContent(file.getBytes());
+                uploadInfo.parseType(file.getContentType());
+                uploadInfo.addOrgNames(file.getOriginalFilename());
+                uploadInfo.addSize(file.getSize());
+                uploadInfo.addDescription(file.getOriginalFilename());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return uploadInfo;
     }
 
     public Long[] getIds() {

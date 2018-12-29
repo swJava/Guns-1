@@ -8,6 +8,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.member.MemberStarEnum;
 import com.stylefeng.guns.modular.member.MemberStateEnum;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
@@ -22,6 +23,7 @@ import com.stylefeng.guns.rest.modular.member.requester.MemberCahngeRequester;
 import com.stylefeng.guns.rest.modular.member.requester.PasswordChangeRequester;
 import com.stylefeng.guns.rest.modular.member.requester.RegistRequester;
 import com.stylefeng.guns.rest.modular.member.responser.MemberDetailResponse;
+import com.stylefeng.guns.rest.modular.member.responser.MemberExt;
 import com.stylefeng.guns.rest.modular.member.responser.RegistResponse;
 import com.stylefeng.guns.util.PathUtil;
 import io.swagger.annotations.Api;
@@ -54,6 +56,9 @@ public class MemberController {
 
     @Autowired
     private IMemberService memberService;
+
+    @Autowired
+    private IStudentService studentService;
 
     @Autowired
     private ICaptchaService captchaService;
@@ -142,7 +147,11 @@ public class MemberController {
         // 2 生成TOKEN
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(member.getUserName(), randomKey);
-        return ResponseEntity.ok(new AuthResponse(token, randomKey));
+//        return ResponseEntity.ok(new AuthResponse(token, randomKey));
+
+        AuthResponse response = new AuthResponse(token, randomKey);
+        response.setMember(MemberExt.me(member).assembleStudent(studentService.listStudents(member.getUserName())));
+        return ResponseEntity.ok(response);
     }
 
     private ResponseEntity<?> loginNormal(
@@ -193,7 +202,10 @@ public class MemberController {
         // 3 生成TOKEN
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(userName, randomKey);
-        return ResponseEntity.ok(new AuthResponse(token, randomKey));
+
+        AuthResponse response = new AuthResponse(token, randomKey);
+        response.setMember(MemberExt.me(member).assembleStudent(studentService.listStudents(userName)));
+        return ResponseEntity.ok(response);
     }
 
     @RequestMapping("/password/change")

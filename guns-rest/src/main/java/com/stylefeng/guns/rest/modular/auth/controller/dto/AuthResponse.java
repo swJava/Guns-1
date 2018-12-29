@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.auth.controller.dto;
 
 import java.io.Serializable;
 
+import com.stylefeng.guns.rest.modular.member.responser.MemberExt;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -22,6 +23,9 @@ public class AuthResponse implements Serializable {
     @ApiModelProperty(name = "token", value = "令牌")
     private final String token;
 
+    @ApiModelProperty(name = "member", value = "用户")
+    private MemberExt member;
+
     /**
      * 用于客户端混淆md5加密
      */
@@ -39,5 +43,13 @@ public class AuthResponse implements Serializable {
 
     public String getSalt() {
         return salt;
+    }
+
+    public void setMember(MemberExt member) {
+        this.member = member;
+    }
+
+    public MemberExt getMember() {
+        return member;
     }
 }

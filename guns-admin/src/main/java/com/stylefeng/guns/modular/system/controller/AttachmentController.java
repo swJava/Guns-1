@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.base.tips.SuccessTip;
 import com.stylefeng.guns.core.base.tips.Tip;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -12,6 +13,7 @@ import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.system.transfer.AttachmentInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,26 +41,13 @@ public class AttachmentController {
     @RequestMapping(value = "/upload/async", method = RequestMethod.POST)
     public Tip uploadDirect(MultipartFile[] files){
 
-        List<byte[]> fileContents = new ArrayList<byte[]>();
-        AttachmentInfo uploadInfo = new AttachmentInfo();
+        AttachmentInfo uploadInfo = AttachmentInfo.fromUpload(files);
 
-        for(MultipartFile file : files){
-            if (null == file)
-                continue;
-
-            try {
-                uploadInfo.addContent(file.getBytes());
-                uploadInfo.parseType(file.getContentType());
-                uploadInfo.addOrgNames(file.getOriginalFilename());
-                uploadInfo.addSize(file.getSize());
-                uploadInfo.addDescription(file.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        if (null == uploadInfo)
+            return new ErrorTip(HttpStatus.BAD_REQUEST.value(), "没有上传文件");
 
         String code = UUID.randomUUID().toString();
-        String savedIds = attachmentService.saveAttachment(uploadInfo, TEMP_MASTER_NAME, code);
+        attachmentService.saveAttachment(uploadInfo, TEMP_MASTER_NAME, code);
 
         Map<String, String> result = new HashMap<String, String>();
         result.put("name", TEMP_MASTER_NAME);
@@ -75,23 +64,10 @@ public class AttachmentController {
             String masterCode,
             String masterName
     ){
-        List<byte[]> fileContents = new ArrayList<byte[]>();
-        AttachmentInfo uploadInfo = new AttachmentInfo();
+        AttachmentInfo uploadInfo = AttachmentInfo.fromUpload(files);
 
-        for(MultipartFile file : files){
-            if (null == file)
-                continue;
-
-            try {
-                uploadInfo.addContent(file.getBytes());
-                uploadInfo.parseType(file.getContentType());
-                uploadInfo.addOrgNames(file.getOriginalFilename());
-                uploadInfo.addSize(file.getSize());
-                uploadInfo.addDescription(file.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        if (null == uploadInfo)
+            return new ErrorTip(HttpStatus.BAD_REQUEST.value(), "没有上传文件");
 
         String savedIds = attachmentService.saveAttachment(uploadInfo, masterName, masterCode);
 

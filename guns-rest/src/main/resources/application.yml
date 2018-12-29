@@ -131,4 +131,3 @@ management:
   endpoints:
     enabled-by-default: true
     shutdown.enabled: true
-    web.exposure.include: "*"

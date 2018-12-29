@@ -67,7 +67,7 @@ spring:
     hikari.connection-test-query: SELECT 1
     filters: wall,mergeStat
 logging:
-  config: classpath:logback.xml
+  config: classpath:logback-spring.xml
 server:
   port: 8081 #项目端口
   servlet:

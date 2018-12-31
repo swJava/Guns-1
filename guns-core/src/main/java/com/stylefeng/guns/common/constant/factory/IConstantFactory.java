@@ -277,5 +277,5 @@ public interface IConstantFactory {
      * @param dictCode
      * @return
      */
-    Map<? extends String,?> getdictsMap(String dictCode);
+    Map<String,Object> getdictsMap(String dictCode);
 }

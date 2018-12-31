@@ -33,11 +33,6 @@ import java.util.*;
 public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements IClassService {
     private static final int[] WeekMapping = new int[]{0, 2, 3, 4, 5, 6, 7, 1};
 
-    private static final Map<String, Object> SubjectMap = new HashMap<String, Object>();
-
-    static {
-        SubjectMap.putAll(ConstantFactory.me().getdictsMap("subject_type"));
-    }
     @Autowired
     private ClassMapper classMapper;
 
@@ -61,6 +56,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         List<Integer> gradeList = new ArrayList<Integer>();
         arguments.put("gradeList", gradeList);
 
+        Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
+
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
 
@@ -83,7 +80,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             if ("subjects".equals(key)){
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
-                    String value = String.valueOf(SubjectMap.get(tokenizer.nextToken()));
+                    String value = String.valueOf(subjectMap.get(tokenizer.nextToken()));
                     if (null != value)
                         subjectList.add(value);
                 }

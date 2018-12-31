@@ -513,7 +513,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public Map<? extends String, ?> getdictsMap(String dictCode) {
+    public Map<String, Object> getdictsMap(String dictCode) {
         Dict temp = new Dict();
         temp.setCode(dictCode);
         Dict dict = dictMapper.selectOne(temp);

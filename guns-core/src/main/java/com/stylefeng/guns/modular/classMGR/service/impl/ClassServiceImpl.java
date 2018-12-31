@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.classMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -31,6 +32,12 @@ import java.util.*;
 @Service
 public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements IClassService {
     private static final int[] WeekMapping = new int[]{0, 2, 3, 4, 5, 6, 7, 1};
+
+    private static final Map<String, Object> SubjectMap = new HashMap<String, Object>();
+
+    static {
+        SubjectMap.putAll(ConstantFactory.me().getdictsMap("subject_type"));
+    }
     @Autowired
     private ClassMapper classMapper;
 
@@ -76,7 +83,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             if ("subjects".equals(key)){
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
-                    subjectList.add(tokenizer.nextToken());
+                    String value = String.valueOf(SubjectMap.get(tokenizer.nextToken()));
+                    if (null != value)
+                        subjectList.add(value);
                 }
                 arguments.put("subjectList", subjectList);
             }

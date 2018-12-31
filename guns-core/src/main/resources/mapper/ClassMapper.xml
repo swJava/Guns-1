@@ -83,7 +83,7 @@
             </if>
             <!-- 周几 -->
             <if test="weekList.size() > 0">
-                and exists (select 1 from tb_course_outline where class_code = tc.code and week in
+                and exists (select 1 from tb_schedule_class where class_code = tc.code and week in
                 <foreach collection="weekList" item="week" open="(" separator="," close=")">
                     #{week}
                 </foreach>

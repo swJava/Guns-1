@@ -23,7 +23,9 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 常量的生产工厂
@@ -508,5 +510,25 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public String fenToYuan(String amount) {
         return new BigDecimal(amount).divide(MONEY_TRANSFORM).setScale(2).toString();
+    }
+
+    @Override
+    public Map<? extends String, ?> getdictsMap(String dictCode) {
+        Dict temp = new Dict();
+        temp.setCode(dictCode);
+        Dict dict = dictMapper.selectOne(temp);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        if (dict == null) {
+            return new HashMap<String, Object>();
+        } else {
+            Wrapper<Dict> wrapper = new EntityWrapper<>();
+            wrapper = wrapper.eq("pid", dict.getId());
+            List<Dict> dicts = dictMapper.selectList(wrapper);
+            for (Dict item : dicts) {
+                resultMap.put(item.getName(), item.getCode());
+            }
+        }
+        return resultMap;
     }
 }

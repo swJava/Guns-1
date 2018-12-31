@@ -3,6 +3,7 @@ package com.stylefeng.guns.common.constant.factory;
 import com.stylefeng.guns.modular.system.model.Dict;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 常量生产工厂的接口
@@ -269,4 +270,12 @@ public interface IConstantFactory {
      * @return
      */
     String fenToYuan(String amount);
+
+    /**
+     * 获取字典Map
+     *
+     * @param dictCode
+     * @return
+     */
+    Map<? extends String,?> getdictsMap(String dictCode);
 }

@@ -17,8 +17,19 @@ import java.util.List;
 @ApiModel(value = "OutlineListResponser", description = "课时列表")
 public class OutlineListResponser extends SimpleResponser {
 
+    @ApiModelProperty(name = "adjustTimes", value = "剩余可调课次数")
+    private Integer adjustTimes = 0;
+
     @ApiModelProperty(name = "data", value = "课时集合")
     private List<OutlineResponse> data = new ArrayList<OutlineResponse>();
+
+    public Integer getAdjustTimes() {
+        return adjustTimes;
+    }
+
+    public void setAdjustTimes(Integer adjustTimes) {
+        this.adjustTimes = adjustTimes;
+    }
 
     public List<OutlineResponse> getData() {
         return data;
@@ -28,8 +39,10 @@ public class OutlineListResponser extends SimpleResponser {
         this.data = data;
     }
 
-    public static Responser me(List<OutlineResponse> outlineResponseList) {
+    public static Responser me(int remain, List<OutlineResponse> outlineResponseList) {
         OutlineListResponser response = new OutlineListResponser();
+
+        response.setAdjustTimes(remain < 0 ? 0 : remain);
         response.setCode(SUCCEED);
         response.setMessage("查询成功");
 

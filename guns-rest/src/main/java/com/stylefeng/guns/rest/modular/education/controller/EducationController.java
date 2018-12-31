@@ -28,6 +28,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +70,9 @@ public class EducationController extends ApiController {
 
     @Autowired
     private IAdjustStudentService adjustStudentService;
+
+    @Value("${application.education.adjust.maxTimes:4}")
+    private int maxAdjustTimes = 4;
 
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
     @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
@@ -116,14 +120,20 @@ public class EducationController extends ApiController {
         }
 
         List<ScheduleStudent> planList = new ArrayList<ScheduleStudent>();
+        Student student = null;
         for(Student currStudent : studentList) {
             planList.addAll(studentService.listCoursePlan(requester.getClassCode(), currStudent.getCode()));
             if (planList.isEmpty()){
                 continue;
             }
 
+            student = currStudent;
             break;
         }
+
+        // 查找已调课次数
+        int adjustTimes = adjustStudentService.countAdjust(requester.getClassCode(), student.getCode(), AdjustStudentTypeEnum.Adjust);
+
 
         List<OutlineResponse> outlineResponseList = new ArrayList<OutlineResponse>();
         for(ScheduleStudent plan : planList){
@@ -158,7 +168,7 @@ public class EducationController extends ApiController {
             outlineResponseList.add(response);
         }
 
-        return OutlineListResponser.me(outlineResponseList);
+        return OutlineListResponser.me(maxAdjustTimes - adjustTimes, outlineResponseList);
     }
 
     @ApiOperation(value="教室详情", httpMethod = "POST", response = ClassroomDetailResponse.class)

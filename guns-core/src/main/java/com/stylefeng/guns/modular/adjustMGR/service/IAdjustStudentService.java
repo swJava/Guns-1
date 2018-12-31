@@ -76,4 +76,13 @@ public interface IAdjustStudentService extends IService<AdjustStudent>, IAdminis
      * @return
      */
     AdjustStudent doChangeApprove(Long applyId, AdjustStudentApproveStateEnum action, String remark);
+
+    /**
+     * 计算已经成功调课/转班次数
+     * @param classCode
+     * @param student
+     * @param student
+     * @return
+     */
+    int countAdjust(String classCode, String student, AdjustStudentTypeEnum type);
 }

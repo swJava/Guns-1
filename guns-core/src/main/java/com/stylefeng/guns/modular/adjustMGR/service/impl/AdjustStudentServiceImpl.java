@@ -195,6 +195,19 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         return adjustStudent;
     }
 
+    @Override
+    public int countAdjust(String classCode, String student, AdjustStudentTypeEnum type) {
+
+        Wrapper<AdjustStudent> queryWrapper = new EntityWrapper<AdjustStudent>();
+
+        queryWrapper.eq("source_class", classCode);
+        queryWrapper.eq("student_code", student);
+        queryWrapper.eq("work_status", AdjustStudentApproveStateEnum.Appove.code);
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        return selectCount(queryWrapper);
+    }
+
     private boolean hasApproving(String student, String sourceClass, String targetClass, String outlineCode, AdjustStudentTypeEnum type) {
         Wrapper<AdjustStudent> queryWrapper = new EntityWrapper<AdjustStudent>();
         queryWrapper.eq("student_code", student);

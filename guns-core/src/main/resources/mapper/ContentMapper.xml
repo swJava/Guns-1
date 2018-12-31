@@ -45,12 +45,33 @@
         </where>
     </select>
 
-    <select id="selectByColumns" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    <select id="selectByColumns" resultType="java.util.HashMap" parameterType="java.util.HashMap">
         select
         <include refid="Base_Column_List" />
-        from tb_content a, tb_content_category b
+        from tb_content a
+        <choose>
+            <when test=" includeList.size() > 0 || excludeList.size() > 0">
+                ,tb_content_category b
+            </when>
+        </choose>
         <where>
-            a.code = b.content_code and b.column_code = #{column}
+            <if test="includeList.size() > 0 || excludeList.size() > 0">
+                a.code = b.content_code
+            </if>
+
+            <if test="includeList.size() > 0">
+                and b.column_code in
+                <foreach collection="includeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+            </if>
+
+            <if test="excludeList.size() > 0">
+                and b.column_code not in
+                <foreach collection="excludeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+            </if>
         </where>
     </select>
 

@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.contentMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.node.ZTreeNode;
 import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.log.LogObjectHolder;
@@ -24,9 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 栏目控制器
@@ -201,6 +201,42 @@ public class ColumnController extends BaseController {
     @ResponseBody
     public Object update(Column column) {
         columnService.updateById(column);
+        return SUCCESS_TIP;
+    }
+
+    @RequestMapping(value = "/relation/add")
+    @ResponseBody
+    public Object addContent(String column , String contents){
+
+        if (null == contents)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"关联文章"});
+
+        StringTokenizer tokenizer = new StringTokenizer(contents, ",");
+        Set<String> contentCodes = new HashSet<String>();
+        while(tokenizer.hasMoreTokens()){
+            contentCodes.add(tokenizer.nextToken());
+        }
+        columnService.addContent(column, contentCodes);
+
+        return SUCCESS_TIP;
+    }
+
+
+    @RequestMapping(value = "/relation/remove")
+    @ResponseBody
+    public Object removeContent(String column , String contents){
+
+        if (null == contents)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"关联文章"});
+
+        StringTokenizer tokenizer = new StringTokenizer(contents, ",");
+        Set<String> contentCodes = new HashSet<String>();
+        while(tokenizer.hasMoreTokens()){
+            contentCodes.add(tokenizer.nextToken());
+        }
+
+        columnService.removeContent(column, contentCodes);
+
         return SUCCESS_TIP;
     }
 

@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.contentMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.system.dao.ColumnMapper;
@@ -15,7 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description //TODO
@@ -54,5 +57,16 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
     @Override
     public List<ZTreeNode2nd> treeList() {
         return columnMapper.columnTreeList();
+    }
+
+    @Override
+    public void addContent(String column, Collection<String> contents) {
+        if(null == column)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目"});
+    }
+
+    @Override
+    public void removeContent(String column, Set<String> contentCodes) {
+
     }
 }

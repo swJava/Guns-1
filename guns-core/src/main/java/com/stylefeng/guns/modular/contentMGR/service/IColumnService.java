@@ -5,7 +5,9 @@ import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description //TODO
@@ -35,4 +37,20 @@ public interface IColumnService extends IService<Column> {
      * @return
      */
     List<ZTreeNode2nd> treeList();
+
+    /**
+     * 加入文章
+     *
+     * @param column
+     * @param contents
+     */
+    void addContent(String column, Collection<String> contents);
+
+    /**
+     * 移除文章
+     *
+     * @param column
+     * @param contentCodes
+     */
+    void removeContent(String column, Set<String> contentCodes);
 }

@@ -84,12 +84,12 @@ Collector.SelectedContent.check = function () {
 
 $(function () {
     var displayColumns = Collector.UnSelectContent.initColumn();
-    var table = new BSTable(Collector.UnSelectContent.id, "/content/list", displayColumns);
+    var table = new BSTable(Collector.UnSelectContent.id, "/content/list?excludeColumns=" + $('#columnCode').val(), displayColumns);
     table.setPaginationType("server");
     Collector.UnSelectContent.table = table.init();
 
     displayColumns = Collector.SelectedContent.initColumn();
-    var table = new BSTable(Collector.SelectedContent.id, "/content/list", displayColumns);
+    var table = new BSTable(Collector.SelectedContent.id, "/content/list?includeColumns=" + $('#columnCode').val(), displayColumns);
     table.setPaginationType("server");
     Collector.SelectedContent.table = table.init();
 });

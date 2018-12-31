@@ -24,8 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 资讯管理控制器
@@ -68,7 +67,7 @@ public class ContentController extends BaseController {
     @RequestMapping("/content_update/{contentId}")
     public String contentUpdate(@PathVariable Integer contentId, Model model) {
         Content content = contentService.selectById(contentId);
-        model.addAttribute("item",content);
+        model.addAttribute("item", content);
         LogObjectHolder.me().set(content);
         return PREFIX + "content_edit.html";
     }
@@ -78,21 +77,41 @@ public class ContentController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(String condition, String excludeColumns, String includeColumns) {
         //分页查詢
-        Page<Content> page = new PageFactory<Content>().defaultPage();
-        Page<Map<String, Object>> pageMap = contentService.selectMapsPage(page, new EntityWrapper<Content>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
-                }
+//        Page<Content> page = new PageFactory<Content>().defaultPage();
+//        Page<Map<String, Object>> pageMap = contentService.selectMapsPage(page, new EntityWrapper<Content>() {
+//            {
+//                //name条件分页
+//                if (StringUtils.isNotEmpty(condition)) {
+//                    like("name", condition);
+//                }
+//            }
+//        });
+        Set<String> excludeColumnList = new HashSet<String>();
+        if (null != excludeColumns) {
+            StringTokenizer excludeToken = new StringTokenizer(excludeColumns, ",");
+
+            while (excludeToken.hasMoreTokens()) {
+                excludeColumnList.add(excludeToken.nextToken());
             }
-        });
+        }
+
+        Set<String> includeColumnList = new HashSet<String>();
+        if (null != includeColumns) {
+            StringTokenizer includeToken = new StringTokenizer(includeColumns, ",");
+
+            while (includeToken.hasMoreTokens()) {
+                includeColumnList.add(includeToken.nextToken());
+            }
+        }
+
+        Page<Map<String, Object>> pageMap = contentService.selectMapsPage(includeColumnList, excludeColumnList, new HashMap<String, Object>());
         //包装数据
         new ContentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
+
     /**
      * 获取资讯管理列表
      */
@@ -110,7 +129,7 @@ public class ContentController extends BaseController {
     public Object add(Content content, String masterCode, String masterName) {
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList || attachmentList.size() > 0){
+        if (null != attachmentList || attachmentList.size() > 0) {
             icon = attachmentList.get(0);
             content.setTimage(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }
@@ -124,7 +143,7 @@ public class ContentController extends BaseController {
                 icon.setMasterCode(String.valueOf(content.getId()));
 
                 attachmentService.updateById(icon);
-            }catch(Exception e){
+            } catch (Exception e) {
                 log.warn("更新图标失败");
             }
         return SUCCESS_TIP;
@@ -148,7 +167,7 @@ public class ContentController extends BaseController {
     public Object update(Content content, String masterName, String masterCode) {
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList && attachmentList.size() > 0){
+        if (null != attachmentList && attachmentList.size() > 0) {
             icon = attachmentList.get(0);
             content.setTimage(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }
@@ -162,7 +181,7 @@ public class ContentController extends BaseController {
                 icon.setMasterCode(String.valueOf(content.getId()));
 
                 attachmentService.updateAndRemoveOther(icon);
-            }catch(Exception e){
+            } catch (Exception e) {
                 log.warn("更新图标失败");
             }
         return SUCCESS_TIP;

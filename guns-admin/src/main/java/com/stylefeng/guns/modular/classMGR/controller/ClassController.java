@@ -161,6 +161,7 @@ public class ClassController extends BaseController {
         // 设置班级容量
         Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
         classInstance.setQuato(classroomEntity.getMaxCount());
+        classInstance.setClassRoom(classroomEntity.getAddress());
 
         classService.createClass(classInstance);
         return SUCCESS_TIP;

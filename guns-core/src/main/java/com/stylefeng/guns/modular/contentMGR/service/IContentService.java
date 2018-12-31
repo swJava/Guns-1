@@ -1,9 +1,13 @@
 package com.stylefeng.guns.modular.contentMGR.service;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -63,4 +67,14 @@ public interface IContentService extends IService<Content> {
      * @param strings
      */
     void delete(String contentCode, String[] strings);
+
+    /**
+     * 分页查询
+     *
+     * @param includeColumnList
+     * @param excludeColumnList
+     * @param name
+     * @return
+     */
+    Page<Map<String, Object>> selectMapsPage(Set<String> includeColumnList, Set<String> excludeColumnList, Map<String, Object> queryMap);
 }

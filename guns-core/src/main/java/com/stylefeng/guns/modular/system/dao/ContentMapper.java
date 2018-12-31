@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.system.dao;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
@@ -29,4 +30,13 @@ public interface ContentMapper extends BaseMapper<Content> {
      * @param queryMap
      */
     List<Content> selectOutlineByColumn(Map<String, Object> queryMap);
+
+    /**
+     * 分页查询
+     *
+     * @param page
+     * @param queryMap
+     * @return
+     */
+    List<Map<String, Object>> selectByColumns(Page<Map<String, Object>> page, Map<String, Object> queryMap);
 }

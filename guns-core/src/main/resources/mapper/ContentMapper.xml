@@ -45,4 +45,13 @@
         </where>
     </select>
 
+    <select id="selectByColumns" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_content a, tb_content_category b
+        <where>
+            a.code = b.content_code and b.column_code = #{column}
+        </where>
+    </select>
+
 </mapper>

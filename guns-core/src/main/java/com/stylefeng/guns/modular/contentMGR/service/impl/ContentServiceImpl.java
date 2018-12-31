@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.contentMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
@@ -16,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.interceptor.CacheableOperation;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -111,5 +110,23 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
         deleteById(content);
 
         contentCategoryService.delete(content.getCode(), removeColumns);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectMapsPage(Set<String> includeColumnList, Set<String> excludeColumnList, Map<String, Object> queryMap) {
+
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+        if (null != includeColumnList){
+            queryMap.put("includeList", includeColumnList);
+        }
+
+        if (null != excludeColumnList){
+            queryMap.put("excludeList", excludeColumnList);
+        }
+
+        List<Map<String, Object>> resultMap = contentMapper.selectByColumns(page, queryMap);
+
+        page.setRecords(resultMap);
+        return page;
     }
 }

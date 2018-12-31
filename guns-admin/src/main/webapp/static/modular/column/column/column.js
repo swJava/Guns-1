@@ -110,7 +110,7 @@ Column.openCollector = function () {
         var index = layer.open({
             type: 2,
             title: '文章列表',
-            area: ['800px', '420px'], //宽高
+            area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
             content: Feng.ctxPath + '/column/collector/' + Column.seItem.code

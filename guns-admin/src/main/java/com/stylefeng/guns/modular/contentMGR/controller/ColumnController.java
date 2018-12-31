@@ -95,14 +95,6 @@ public class ColumnController extends BaseController {
         Column column = columnService.get(code);
         model.addAttribute("item",column);
 
-        long id = 0L;
-        List<Attachment> attachmentList = attachmentService.listAttachment(Column.class.getSimpleName(), String.valueOf(column.getId()));
-        if (null != attachmentList && attachmentList.size() > 0)
-            id = attachmentList.get(0).getId();
-        Map<String, Object> iconInfo = new HashMap<>();
-        iconInfo.put("id", id);
-        model.addAttribute("icon", iconInfo);
-
         LogObjectHolder.me().set(column);
         return PREFIX + "column_collect.html";
     }
@@ -125,8 +117,17 @@ public class ColumnController extends BaseController {
 //        });
         Wrapper<Column> queryWrapper = new EntityWrapper<Column>();
         if (StringUtils.isNoneEmpty(condition)){
-            queryWrapper.like("name", condition);
+            queryWrapper.ge("name", condition);
+            queryWrapper.gt("na", condition);
+            queryWrapper.le("xeer", condition);
+            queryWrapper.lt("yy", condition);
+            queryWrapper.like("xzz", condition);
+            queryWrapper.eq("nd", condition);
         }
+
+        String select = queryWrapper.getSqlSelect();
+        String segment = queryWrapper.getSqlSegment();
+        Map<String, Object> pairs  = queryWrapper.getParamNameValuePairs();
         List<Map<String, Object>> columns = columnService.selectMaps(queryWrapper);
         return super.warpObject(new ColumnWrapper(columns));
         //包装数据
@@ -134,17 +135,6 @@ public class ColumnController extends BaseController {
 //        return super.packForBT(pageMap);
     }
 
-
-    /**
-     * 获取栏目列表
-     */
-    @RequestMapping(value = "/treeList")
-    @ResponseBody
-    public List<ZTreeNode2nd> treeList() {
-
-        return columnService.treeList();
-
-    }
     /**
      * 获取栏目列表
      */

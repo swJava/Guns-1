@@ -16,10 +16,7 @@ import com.stylefeng.guns.util.CodeKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -37,6 +34,18 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
     @Autowired
     private ICourseService courseService;
+
+    private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
+    private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
+    static {
+        DayOfWeekMap.put(Calendar.MONDAY, "周一");
+        DayOfWeekMap.put(Calendar.TUESDAY, "周二");
+        DayOfWeekMap.put(Calendar.WEDNESDAY, "周三");
+        DayOfWeekMap.put(Calendar.THURSDAY, "周四");
+        DayOfWeekMap.put(Calendar.FRIDAY, "周五");
+        DayOfWeekMap.put(Calendar.SATURDAY, "周六");
+        DayOfWeekMap.put(Calendar.SUNDAY, "周日");
+    }
 
     @Override
     public void join(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo) {
@@ -145,6 +154,30 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     }
 
     private String generateTimeDescription(Class classInfo) {
-        return "";
+        int scheduleType = classInfo.getStudyTimeType();
+        StringTokenizer studyTimeTokens = new StringTokenizer(classInfo.getStudyTimeValue(), ",");
+
+        StringBuffer despBuffer = new StringBuffer();
+        despBuffer.append("每");
+
+        while(studyTimeTokens.hasMoreTokens()){
+            int scheduleDay = Integer.parseInt(studyTimeTokens.nextToken());
+
+            switch(scheduleType){
+                case Calendar.DAY_OF_WEEK:
+                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
+                    break;
+                case Calendar.DAY_OF_MONTH:
+                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
+                    break;
+            }
+        }
+
+        despBuffer.append(classInfo.getBeginTime().substring(0, 2)).append(":").append(classInfo.getBeginTime().substring(2));
+        despBuffer.append(" ~ ");
+        despBuffer.append(classInfo.getEndTime().substring(0, 2)).append(":").append(classInfo.getEndTime().substring(2));
+
+
+        return despBuffer.toString();
     }
 }

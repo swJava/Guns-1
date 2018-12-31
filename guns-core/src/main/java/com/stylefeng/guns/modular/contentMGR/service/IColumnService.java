@@ -1,8 +1,11 @@
 package com.stylefeng.guns.modular.contentMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
+
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -25,4 +28,11 @@ public interface IColumnService extends IService<Column> {
      * @return
      */
     Column get(String column);
+
+    /**
+     * 目录树
+     *
+     * @return
+     */
+    List<ZTreeNode2nd> treeList();
 }

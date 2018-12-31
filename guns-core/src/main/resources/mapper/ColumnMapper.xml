@@ -19,31 +19,31 @@
     </sql>
 
 
-    <select id="menuTreeList" resultType="com.stylefeng.guns.core.node.ZTreeNode">
+    <select id="columnTreeList" resultType="com.stylefeng.guns.core.node.ZTreeNode2nd">
         SELECT
-        m1.id AS id,
+        c1.code AS code,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS NULL) THEN
-        0
+        WHEN (c2.code = 'LM000000' OR c2.code IS NULL) THEN
+        'LM000000'
         ELSE
-        m2.id
+        c2.code
         END
-        ) AS pId,
-        m1. NAME
+        ) AS pcode,
+        c1. NAME
         AS NAME,
         (
         CASE
-        WHEN (m2.id = 0 OR m2.id IS NULL) THEN
+        WHEN (c2.code = 'LM000000' OR c2.code IS NULL) THEN
         'true'
         ELSE
         'false'
         END
         ) as isOpen
         FROM
-        sys_menu m1
-        LEFT join sys_menu m2 ON m1.pcode = m2. CODE
+        tb_column c1
+        LEFT join tb_column c2 ON c1.pcode = c2.code
         ORDER BY
-        m1.id ASC
+        c1.id ASC
     </select>
 </mapper>

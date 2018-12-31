@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.node.ZTreeNode;
+import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
@@ -139,9 +140,10 @@ public class ColumnController extends BaseController {
      */
     @RequestMapping(value = "/treeList")
     @ResponseBody
-    public List<ZTreeNode> treeList(String condition) {
+    public List<ZTreeNode2nd> treeList() {
 
-        return null;
+        return columnService.treeList();
+
     }
     /**
      * 获取栏目列表

@@ -36,13 +36,15 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
     }
 
     @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
-    String classTimeDesp;
+    private String classTimeDesp;
 
     @ApiModelProperty(name = "formatPrice", value = "格式化的金额，保留小数点后两位, 单位： 元", example = "200。00")
-    String formatPrice;
+    private String formatPrice;
+
+    private String amount;
 
     @ApiModelProperty(name = "student", value = "学员名称", example = "小明")
-    String student;
+    private String student;
 
     @ApiModelProperty(name = "canAdjust", value = "能否调课", example = "false")
     boolean canAdjust;
@@ -64,6 +66,23 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     public void setFormatPrice(String formatPrice) {
         this.formatPrice = formatPrice;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public void setAmount(Long price){
+        if (null == price)
+            this.formatPrice = "0.00";
+
+        BigDecimal bigPrice = new BigDecimal(price);
+
+        this.formatPrice = bigPrice.divide(TRANSFORM).setScale(2).toString();
     }
 
     public String getStudent() {
@@ -94,6 +113,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         ClassResponser dto = new ClassResponser();
         BeanUtils.copyProperties(classInfo, dto);
         dto.setFormatPrice(dto.getPrice());
+        dto.setAmount(dto.getPrice());
 
         // 格式化开课时间描述
         formatClassTime(dto);

@@ -1,6 +1,9 @@
 application:
   swagger-open: true
   sign-open: true #签名机制是否开启(true或false)
+  pay:
+    mock:
+      enable: true
   message:
     captch.template: SMS_150742325
   education:

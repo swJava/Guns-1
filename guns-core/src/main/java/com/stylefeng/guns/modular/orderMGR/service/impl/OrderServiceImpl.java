@@ -121,6 +121,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         currOrder.setPayStatus(PayStateEnum.PayOk.code);
         currOrder.setPayResult(PayStateEnum.PayOk.text);
+        currOrder.setPayDate(new Date());
 
         updateById(currOrder);
 

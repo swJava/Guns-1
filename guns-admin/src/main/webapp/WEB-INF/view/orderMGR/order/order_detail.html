@@ -13,10 +13,10 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <#input id="payStatus" name="支付状态" value="${order.payStatus}" underline="true"/>
+                    <#input id="payStatus" name="支付状态" value="${order.payStateDesp}" underline="true"/>
                     <#input id="payResult" name="支付结果" value="${order.payResult!}" underline="true"/>
                     <#input id="payDate" name="支付时间" value="${order.payDate!}" underline="true"/>
-                    <#input id="payMethod" name="支付渠道" value="${order.payMethod!}" />
+                    <#input id="payMethod" name="支付渠道" value="${order.payChannelDesp!}" />
                 </div>
             </div>
             <fieldset>

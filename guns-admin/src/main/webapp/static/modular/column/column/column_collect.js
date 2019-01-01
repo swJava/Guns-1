@@ -112,6 +112,13 @@ Collector.remove = function(){
     }
 }
 
+/**
+ * 关闭此对话框
+ */
+Collector.close = function() {
+    parent.layer.close(window.parent.Column.layerIndex);
+}
+
 $(function () {
     var displayColumns = Collector.UnSelectContent.initColumn();
     var table = new BSTable(Collector.UnSelectContent.id, "/content/list?excludeColumns=" + $('#columnCode').val(), displayColumns);

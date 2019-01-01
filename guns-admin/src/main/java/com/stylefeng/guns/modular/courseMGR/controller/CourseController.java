@@ -125,7 +125,6 @@ public class CourseController extends BaseController {
 
         Long id = course.getId();
         if (null == id) {
-            course = null;
             courseService.create(course);
         }else{
             Course existCourse = courseService.get(course.getCode());

@@ -1,14 +1,20 @@
 package com.stylefeng.guns.modular.contentMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
+import com.stylefeng.guns.modular.contentMGR.service.IContentCategoryService;
+import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 import com.stylefeng.guns.modular.system.dao.ColumnMapper;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
+import com.stylefeng.guns.modular.system.model.Content;
+import com.stylefeng.guns.modular.system.model.ContentCategory;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.util.CodeKit;
 import org.slf4j.Logger;
@@ -16,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +41,12 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
     private IAttachmentService attachmentService;
 
     @Autowired
-    private ColumnMapper columnMapper;
+    private IContentService contentService;
+
+    @Autowired
+    private IContentCategoryService contentCategoryService;
+
+
 
     @Override
     public void create(Column column) {
@@ -55,18 +67,49 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
     }
 
     @Override
-    public List<ZTreeNode2nd> treeList() {
-        return columnMapper.columnTreeList();
-    }
-
-    @Override
     public void addContent(String column, Collection<String> contents) {
         if(null == column)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目"});
+
+        Column currColumn = get(column);
+        if (null == currColumn)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"栏目"});
+
+        List<ContentCategory> relContentList = new ArrayList<ContentCategory>();
+        for(String content : contents){
+            Content currContent = contentService.get(content);
+            if (null == currContent)
+                continue;
+
+            ContentCategory contentCategory = new ContentCategory();
+            contentCategory.setColumnCode(currColumn.getCode());
+            contentCategory.setColumnName(currColumn.getName());
+            contentCategory.setContentCode(currContent.getCode());
+            contentCategory.setContentName(currContent.getTitle());
+            contentCategory.setStatus(GenericState.Valid.code);
+
+            relContentList.add(contentCategory);
+        }
+
+        contentCategoryService.createBatch(relContentList);
+
     }
 
     @Override
-    public void removeContent(String column, Set<String> contentCodes) {
+    public void removeContent(String column, Set<String> contents) {
+        if(null == column)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目"});
 
+        Column currColumn = get(column);
+        if (null == currColumn)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"栏目"});
+
+        List<ContentCategory> relContentList = new ArrayList<ContentCategory>();
+        for(String content : contents){
+            Wrapper<ContentCategory> queryWrapper = new EntityWrapper<ContentCategory>();
+            queryWrapper.eq("column_code", currColumn.getCode());
+            queryWrapper.eq("content_code", content);
+            contentCategoryService.delete(queryWrapper);
+        }
     }
 }

@@ -2,6 +2,7 @@
  * 资讯管理管理初始化
  */
 var Collector = {
+    column: $('#columnCode').val(),
     ztreeInstance: null,
     UnSelectContent: {
         id: "UnSelectContentTable",	//表格id
@@ -25,7 +26,7 @@ Collector.SelectedContent.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: '内容编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
         {title: '类型', field: 'typeName', visible: false, align: 'center', valign: 'middle', sortable: true},
-        {title: '标题图片', field: 'timage', visible: cotrue, align: 'center', valign: 'middle',
+        {title: '标题图片', field: 'timage', visible: true, align: 'center', valign: 'middle',
             formatter:function (value,row,index) {
                 return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Content&masterCode='+row.id+'" width="64px" height="64px">';
             }
@@ -84,16 +85,32 @@ Collector.SelectedContent.check = function () {
 Collector.join = function(){
     if (this.UnSelectContent.check()) {
         var ajax = new $ax(Feng.ctxPath + "/column/relation/add", function (data) {
-            Feng.success("删除成功!");
-            Course.table.refresh();
+            Feng.success("加入成功!");
+            Collector.SelectedContent.table.refresh();
+            Collector.UnSelectContent.table.refresh();
         }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+            Feng.error("加入失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("code",this.UnSelectContent.seItem.code);
+        ajax.set("contents",this.UnSelectContent.seItem.code);
+        ajax.set("column",this.column);
         ajax.start();
     }
 }
 
+Collector.remove = function(){
+    if (this.SelectedContent.check()) {
+        var ajax = new $ax(Feng.ctxPath + "/column/relation/remove", function (data) {
+            Feng.success("移除成功!");
+            Collector.SelectedContent.table.refresh();
+            Collector.UnSelectContent.table.refresh();
+        }, function (data) {
+            Feng.error("移除失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("contents",this.SelectedContent.seItem.code);
+        ajax.set("column",this.column);
+        ajax.start();
+    }
+}
 
 $(function () {
     var displayColumns = Collector.UnSelectContent.initColumn();

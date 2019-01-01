@@ -20,7 +20,6 @@ public interface IColumnService extends IService<Column> {
      * 创建栏目
      *
      * @param column
-     * @param icon
      */
     void create(Column column);
 
@@ -30,13 +29,6 @@ public interface IColumnService extends IService<Column> {
      * @return
      */
     Column get(String column);
-
-    /**
-     * 目录树
-     *
-     * @return
-     */
-    List<ZTreeNode2nd> treeList();
 
     /**
      * 加入文章

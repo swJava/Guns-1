@@ -6,6 +6,8 @@ import com.stylefeng.guns.modular.system.model.Column;
 import com.stylefeng.guns.modular.system.model.Content;
 import com.stylefeng.guns.modular.system.model.ContentCategory;
 
+import java.util.List;
+
 /**
  * @Description //TODO
  * @Author 罗华
@@ -34,4 +36,11 @@ public interface IContentCategoryService extends IService<ContentCategory> {
      * @param removeColumns
      */
     void delete(String code, String[] removeColumns);
+
+    /**
+     * 批量增加
+     * 
+     * @param relContentList
+     */
+    void createBatch(List<ContentCategory> relContentList);
 }

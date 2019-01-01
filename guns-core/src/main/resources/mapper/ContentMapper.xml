@@ -49,28 +49,20 @@
         select
         <include refid="Base_Column_List" />
         from tb_content a
-        <choose>
-            <when test=" includeList.size() > 0 || excludeList.size() > 0">
-                ,tb_content_category b
-            </when>
-        </choose>
         <where>
-            <if test="includeList.size() > 0 || excludeList.size() > 0">
-                a.code = b.content_code
-            </if>
-
-            <if test="includeList.size() > 0">
-                and b.column_code in
-                <foreach collection="includeList" item="column" open="(" separator="," close=")">
-                    #{column}
-                </foreach>
-            </if>
-
             <if test="excludeList.size() > 0">
-                and b.column_code not in
+                and not exists ( select 1 from tb_content_category where content_code = a.code and column_code in
                 <foreach collection="excludeList" item="column" open="(" separator="," close=")">
                     #{column}
                 </foreach>
+                )
+            </if>
+            <if test="includeList.size() > 0">
+                and exists ( select 1 from tb_content_category where content_code = a.code and column_code in
+                <foreach collection="includeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+                )
             </if>
         </where>
     </select>

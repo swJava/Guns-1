@@ -14,6 +14,7 @@ import com.stylefeng.guns.modular.system.model.ContentCategory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -87,5 +88,27 @@ public class ContentCategoryServiceImpl extends ServiceImpl<ContentCategoryMappe
         queryWrapper.in("column_code", removeColumns);
 
         delete(queryWrapper);
+    }
+
+    @Override
+    public void createBatch(List<ContentCategory> relationList) {
+        if (null == relationList || relationList.isEmpty())
+            return;
+
+        Iterator<ContentCategory> contentCategoryIterator = relationList.iterator();
+        while(contentCategoryIterator.hasNext()){
+            ContentCategory contentCategory = contentCategoryIterator.next();
+
+            Wrapper<ContentCategory> queryWrapper = new EntityWrapper<ContentCategory>();
+            queryWrapper.eq("column_code", contentCategory.getColumnCode());
+            queryWrapper.eq("content_code", contentCategory.getContentCode());
+
+            if (selectCount(queryWrapper) > 0){
+                contentCategoryIterator.remove();
+            }
+        }
+
+        if (!relationList.isEmpty())
+            insertBatch(relationList);
     }
 }

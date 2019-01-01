@@ -9,6 +9,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.education.service.IStudentClassService;
+import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
@@ -57,6 +58,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private IStudentClassService studentClassService;
+
+    @Autowired
+    private IMemberService memberService;
 
     @Override
     public Order order(Member member, OrderAddList addList, PayMethodEnum payMethod, Map<String, Object> extraPostData) {
@@ -160,6 +164,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 scheduleStudentService.insert(scheduleStudent);
             }
         }
+    }
+
+    @Override
+    public Member getMemberInfo(String orderNo) {
+
+        if (null == orderNo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"订单号"});
+
+        Order order = get(orderNo);
+
+        if (null == order)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"订单"});
+
+        OrderMember orderMemberWrapper = new OrderMember();
+        orderMemberWrapper.setOrderNo(orderNo);
+
+        OrderMember existOrderMember = orderMemberMapper.selectOne(orderMemberWrapper);
+
+        if (null == existOrderMember)
+            return null;
+
+        return memberService.get(existOrderMember.getUsername());
     }
 
     /**

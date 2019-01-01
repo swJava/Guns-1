@@ -1,0 +1,62 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <fieldset>
+                <legend>订单信息</legend>
+            </fieldset>
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#input id="acceptNo" name="订单号" value="${order.acceptNo}" underline="true"/>
+                    <#input id="acceptDate" name="生成时间" value="${order.acceptDate}" underline="true"/>
+                    <#input id="amount" name="金额(元)" value='${order.amount/100}' />
+                </div>
+
+                <div class="col-sm-6">
+                    <#input id="payStatus" name="支付状态" value="${order.payStatus}" underline="true"/>
+                    <#input id="payResult" name="支付结果" value="${order.payResult!}" underline="true"/>
+                    <#input id="payDate" name="支付时间" value="${order.payDate!}" underline="true"/>
+                    <#input id="payMethod" name="支付渠道" value="${order.payMethod!}" />
+                </div>
+            </div>
+            <fieldset>
+                <legend>客户信息</legend>
+            </fieldset>
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#input id="acceptNo" name="用户名" value="${orderMember.userName}" underline="true"/>
+                    <#input id="acceptDate" name="联系号码" value="${orderMember.mobileNumber}" underline="true"/>
+                </div>
+
+                <div class="col-sm-6">
+                    <#input id="payStatus" name="用户姓名" value="${orderMember.name}" underline="true"/>
+                </div>
+            </div>
+            <fieldset>
+                <legend>报班信息</legend>
+            </fieldset>
+            @for(orderItem in orderItemList){
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#input id="acceptNo" name="班级名称" value="${orderItem.classInfo.name}" underline="true"/>
+                    <#input id="acceptDate" name="主讲老师" value="${orderItem.classInfo.teacher}" underline="true"/>
+                    <#input id="status" name="辅导老师" value="${orderItem.classInfo.teacherSecond!}" underline="true"/>
+                </div>
+
+                <div class="col-sm-6">
+                    <#input id="payStatus" name="学员学号" value="${orderItem.courseCartInfo.studentCode}" underline="true"/>
+                    <#input id="payResult" name="学员名称" value="${orderItem.courseCartInfo.student}" underline="true"/>
+                </div>
+            </div>
+            @}
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="danger" name=" 关 闭 " id="cancel" icon="fa-eraser" clickFun="OrderInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<#script src="/static/modular/orderMGR/order/order_info.js" />
+@}

@@ -69,7 +69,7 @@ Order.openOrderDetail = function () {
             area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/order/class/order_detail/' + Order.seItem.acceptNo
+            content: Feng.ctxPath + '/order/class/detail/' + Order.seItem.acceptNo
         });
         layer.full(index);
         this.layerIndex = index;

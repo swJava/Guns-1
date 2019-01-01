@@ -18,13 +18,13 @@
                         </div>
                         <div class="hidden-xs" id="OrderTableToolbar" role="group">
                             @if(shiro.hasPermission("/order/class/update")){
-                                <#button name="管理订单" icon="fa-edit" clickFun="Order.openOrderManager()" space="true"/>
+                                <!--<#button name="管理订单" icon="fa-edit" clickFun="Order.openOrderManager()" space="true"/>-->
                             @}
                             @if(shiro.hasPermission("/order/class/detail")){
                                 <#button name="查看详情" icon="fa-edit" btnCss="info" clickFun="Order.openOrderDetail()" space="true"/>
                             @}
                             @if(shiro.hasPermission("/order/class/close")){
-                                <#button name="关闭订单" icon="fa-remove" btnCss="warning" clickFun="Order.close()" space="true"/>
+                                <!--<#button name="关闭订单" icon="fa-remove" btnCss="warning" clickFun="Order.close()" space="true"/>-->
                             @}
                         </div>
                         <#table id="OrderTable"/>

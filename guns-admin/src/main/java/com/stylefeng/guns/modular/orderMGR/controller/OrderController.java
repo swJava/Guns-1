@@ -3,12 +3,17 @@ package com.stylefeng.guns.modular.orderMGR.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.orderMGR.warpper.OrderDetail;
 import com.stylefeng.guns.modular.orderMGR.warpper.OrderWrapper;
-import com.stylefeng.guns.modular.system.model.Order;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +42,12 @@ public class OrderController extends BaseController {
 
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private IClassService classService;
+
+    @Autowired
+    private ICourseCartService courseCartService;
 
     /**
      * 跳转到订单管理首页
@@ -98,9 +112,35 @@ public class OrderController extends BaseController {
     /**
      * 订单管理详情
      */
-    @RequestMapping(value = "/class/detail/{orderId}")
-    @ResponseBody
-    public Object detail(@PathVariable("orderId") Integer orderId) {
-        return orderService.selectById(orderId);
+    @RequestMapping(value = "/class/detail/{orderNo}")
+    public Object detail(@PathVariable("orderNo") String orderNo, Model model) {
+
+        if (null == orderNo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"订单号"});
+
+        Order order = orderService.get(orderNo);
+        if (null == order)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"订单不存在"});
+
+        OrderDetail orderDetail = OrderDetail.me(order).warp();
+        model.addAttribute("order", orderDetail);
+
+        Member orderMember = orderService.getMemberInfo(orderNo);
+        model.addAttribute("orderMember", orderMember);
+
+        List<OrderItem> orderItemList = orderService.listItems(orderNo, OrderItemTypeEnum.Course);
+        List<Map<String, Object>> itemInfoList = new ArrayList<Map<String, Object>>();
+        for(OrderItem orderItem : orderItemList){
+            Map<String, Object> itemInfo = new HashMap<String, Object>();
+            Class classInfo = classService.get(orderItem.getItemObjectCode());
+            itemInfo.put("classInfo", classInfo);
+            CourseCart courseCart = courseCartService.get(orderItem.getCourseCartCode());
+            itemInfo.put("courseCartInfo", courseCart);
+
+            itemInfoList.add(itemInfo);
+        }
+        model.addAttribute("orderItemList", itemInfoList);
+
+        return PREFIX + "order_detail.html";
     }
 }

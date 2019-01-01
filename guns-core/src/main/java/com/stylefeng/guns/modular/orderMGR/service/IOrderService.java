@@ -50,4 +50,11 @@ public interface IOrderService extends IService<Order> {
      * @param order
      */
     void completePay(String order);
+
+    /**
+     * 获取订单用户信息
+     * @param orderNo
+     * @return
+     */
+    Member getMemberInfo(String orderNo);
 }

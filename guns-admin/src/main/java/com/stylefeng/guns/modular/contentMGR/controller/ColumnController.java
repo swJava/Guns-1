@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
+import com.stylefeng.guns.modular.system.model.Teacher;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.system.warpper.MenuWarpper;
 import com.stylefeng.guns.util.PathUtil;
@@ -175,7 +176,7 @@ public class ColumnController extends BaseController {
         if (null != icon && null != icon.getId())
             try {
                 icon.setMasterName(Column.class.getSimpleName());
-                icon.setMasterCode(String.valueOf(column.getId()));
+                icon.setMasterCode(String.valueOf(column.getCode()));
 
                 attachmentService.updateById(icon);
             }catch(Exception e){
@@ -199,8 +200,26 @@ public class ColumnController extends BaseController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Object update(Column column) {
+    public Object update(Column column, String masterName, String masterCode) {
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList && attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            column.setIcon(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
         columnService.updateById(column);
+
+        // 更新ICON资源
+        if (null != icon && null != icon.getId())
+            try {
+                icon.setMasterName(Column.class.getSimpleName());
+                icon.setMasterCode(String.valueOf(column.getId()));
+
+                attachmentService.updateAndRemoveOther(icon);
+            }catch(Exception e){
+                log.warn("更新图标失败");
+            }
         return SUCCESS_TIP;
     }
 

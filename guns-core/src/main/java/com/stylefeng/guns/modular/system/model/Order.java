@@ -79,6 +79,10 @@ public class Order extends Model<Order> {
      */
     @TableField("out_sequence")
     private String outSequence;
+    /**
+     * 订单描述
+     */
+    private String desc;
 
 
     public Long getId() {
@@ -175,6 +179,14 @@ public class Order extends Model<Order> {
 
     public void setOutSequence(String outSequence) {
         this.outSequence = outSequence;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     @Override

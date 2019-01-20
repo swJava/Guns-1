@@ -16,9 +16,4 @@ public class WxPostRequest extends PostRequest {
     public WxPostRequest(String seq) {
         super(seq);
     }
-
-    @Override
-    public void post(ResponseHandler<String> callback) {
-
-    }
 }

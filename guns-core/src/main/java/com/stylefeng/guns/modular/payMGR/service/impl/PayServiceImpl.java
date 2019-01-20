@@ -1,5 +1,8 @@
 package com.stylefeng.guns.modular.payMGR.service.impl;
 
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
 import com.stylefeng.guns.modular.payMGR.PayRequestBuilderFactory;
 import com.stylefeng.guns.modular.payMGR.service.IPayRequestService;
 import com.stylefeng.guns.modular.payMGR.service.IPayResultService;
@@ -7,17 +10,20 @@ import com.stylefeng.guns.modular.payMGR.service.IPayService;
 import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
 import com.stylefeng.guns.modular.system.service.IDictService;
-import com.stylefeng.guns.modular.system.service.impl.CaptchaServiceImpl;
+import com.thoughtworks.xstream.XStream;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -38,29 +44,53 @@ public class PayServiceImpl implements IPayService {
     private IDictService dictService;
     @Autowired(required = false)
     private PayRequestBuilderFactory builderFactory;
+    @Value("${application.pay.mock.enable}")
+    private boolean mockEnable;
 
     @Override
     public String createPayOrder(Order order) {
 
         if (null == builderFactory) {
-            log.warn("no PayRequestBuilderFactory found, use test mode");
-            return UUID.randomUUID().toString().replaceAll("-", "");
+            if (mockEnable) {
+                log.warn("no PayRequestBuilderFactory found, use test mode");
+                return UUID.randomUUID().toString().replaceAll("-", "");
+            }
+
+            throw new ServiceException(MessageConstant.MessageCode.PAY_ORDER_EXCEPTION, new String[0]);
         }
 
         PayMethodEnum payChannel = PayMethodEnum.instanceOf(order.getPayMethod());
 
         if (null == payChannel) {
             log.warn("No pay channel supoort");
-            return UUID.randomUUID().toString().replaceAll("-", "");
+            throw new ServiceException(MessageConstant.MessageCode.PAY_METHOD_NOT_FOUND, new String[0]);
         }
 
+        String prepayid = null;
+
+        Map<String, Object> postResult = new HashMap<String, Object>();
         builderFactory.select(payChannel).order(order).post(new ResponseHandler<String>() {
             @Override
             public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
+
+                InputStream is = httpResponse.getEntity().getContent();
+                byte[] buff = new byte[1024];
+                StringBuilder builder = new StringBuilder();
+                while(is.read(buff) > 0){
+                    builder.append(new String(buff));
+                }
+
+                System.out.println("Response ===> " + builder.toString());
+//
+                XStream xStream = new XStream();
+                xStream.alias("xml", Map.class);
+                xStream.registerConverter(new MapEntryConvert());
+                Map<String, String> response = (Map<String, String>) xStream.fromXML(httpResponse.getEntity().getContent());
+                postResult.put("prepayid", "111");
                 return null;
             }
         });
 
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        return (String)postResult.get("prepayid");
     }
 }

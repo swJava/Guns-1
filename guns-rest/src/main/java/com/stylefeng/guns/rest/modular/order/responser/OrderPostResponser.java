@@ -14,13 +14,13 @@ import io.swagger.annotations.ApiModelProperty;
 public class OrderPostResponser extends SimpleResponser {
 
     @ApiModelProperty(name = "data", value = "提交返回")
-    private Data data;
+    private OrderData data;
 
-    public Data getData() {
+    public OrderData getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(OrderData data) {
         this.data = data;
     }
 
@@ -29,7 +29,7 @@ public class OrderPostResponser extends SimpleResponser {
         response.setCode(SUCCEED);
         response.setMessage("处理成功");
 
-        Data data = new Data();
+        OrderData data = new OrderData();
         data.setOrderNo(orderNo);
         data.setPaySequence(paySequence);
         response.setData(data);
@@ -37,7 +37,7 @@ public class OrderPostResponser extends SimpleResponser {
     }
 
     @ApiModel
-    static class Data {
+    static class OrderData {
         @ApiModelProperty(value = "订单号", example = "OD181130202020022")
         private String orderNo;
         @ApiModelProperty(value = "支付流水", example = "wx201410272009395522657a690389285100")

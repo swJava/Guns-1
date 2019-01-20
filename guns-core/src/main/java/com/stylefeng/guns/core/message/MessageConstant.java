@@ -109,6 +109,10 @@ public final class MessageConstant {
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";
         /**
+         * 支付下单失败
+         */
+        public static final String PAY_ORDER_EXCEPTION = "030002";
+        /**
          * 已生成订单
          */
         public static final String ORDER_REQUEST_ORDERED = "040001";

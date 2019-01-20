@@ -2,13 +2,18 @@ package com.stylefeng.guns.modular.payMGR;
 
 import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.util.DateUtil;
+import com.stylefeng.guns.util.MD5Util;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.naming.NoNameCoder;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.Xpp3Driver;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -18,6 +23,8 @@ import java.util.*;
  * @Version 1.0
  */
 public class WxPayRequestBuilder extends PayRequestBuilder {
+    private static final Logger log = LoggerFactory.getLogger(WxPayRequestBuilder.class);
+
     /**
      * 商户号
      */
@@ -29,14 +36,62 @@ public class WxPayRequestBuilder extends PayRequestBuilder {
     private String appId;
 
     /**
+     * 应用名称
+     */
+    private String appName;
+
+    /**
+     * 密钥
+     */
+    private String appSecret;
+
+    /**
      * 设备号
      */
     private String deviceId;
 
     /**
-     * 订单信息
+     * 通知URL
      */
-    private Order order;
+    private String notifyUrl;
+
+    public WxPayRequestBuilder(Properties weixinProperties) {
+        Field[] fields = WxPayRequestBuilder.class.getDeclaredFields();
+
+        for(Field field : fields){
+            String fieldName = field.getName();
+
+            if (weixinProperties.containsKey(fieldName)){
+                field.setAccessible(true);
+                try {
+                    field.set(this, weixinProperties.getProperty(fieldName));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        fields = PayRequestBuilder.class.getDeclaredFields();
+        for(Field field : fields){
+            String fieldName = field.getName();
+
+            if (weixinProperties.containsKey(fieldName)){
+                char[] cs = fieldName.toCharArray();
+                cs[0] -= 32;
+                String setMethod = "set" + String.valueOf(cs);
+                try {
+                    Method method = this.getClass().getMethod(setMethod, String.class);
+                    method.invoke(this, weixinProperties.getProperty(fieldName));
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
 
     public String getMchId() {
         return mchId;
@@ -62,19 +117,34 @@ public class WxPayRequestBuilder extends PayRequestBuilder {
         this.deviceId = deviceId;
     }
 
-    public Order getOrder() {
-        return order;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
+    }
+
+    public String getNotifyUrl() {
+        return notifyUrl;
+    }
+
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 
     @Override
     public PostRequest order(Order merchantOrder) {
         String nonce = randomCode();
         WxPostRequest postRequest = new WxPostRequest(nonce);
-        postRequest.putOrderUrl(getOrderUrl());
 
         Date now = new Date();
 
@@ -83,49 +153,57 @@ public class WxPayRequestBuilder extends PayRequestBuilder {
         postData.put("mch_id", this.mchId);
         postData.put("device_info", this.deviceId);
         postData.put("nonce_str", nonce);
-        postData.put("body", "");
-        postData.put("detail", "");
+        postData.put("body", appName + "-" + merchantOrder.getDesc());
+        postData.put("detail", merchantOrder.getAcceptNo());
         postData.put("out_trade_no", merchantOrder.getAcceptNo());
         postData.put("fee_type", "CNY");
         postData.put("total_fee", merchantOrder.getAmount());
         postData.put("spbill_create_ip", "39.98.48.194");
         postData.put("time_start", DateUtil.format(now, "yyyyMMddHHmmss"));
         postData.put("time_expire", DateUtil.format(DateUtil.add(now, Calendar.HOUR, 1), "yyyyMMddHHmmss"));
-        postData.put("notify_url", "");
+        postData.put("notify_url", notifyUrl);
+        postData.put("sign_type", "MD5");
+        postData.put("trade_type", "APP");
 
-        XStream xStream = new XStream();
+        postData.put("sign", signPost(appSecret, postData));
+
+        XStream xStream = new XStream(new StaxDriver(new NoNameCoder()));
         xStream.alias("xml", Map.class);
         xStream.registerConverter(new MapEntryConvert());
 
-        postRequest.setDatagram(xStream.toXML(postData));
-
+        postRequest.setDatagram(StringEscapeUtils.unescapeXml(xStream.toXML(postData)));
+        postRequest.setUrl(getOrderUrl());
         return postRequest;
     }
 
-    class MapEntryConvert implements Converter {
+    private String signPost(String appSecret, Map<String, Object> postData) {
 
-        @Override
-        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext marshallingContext) {
-            AbstractMap map = (AbstractMap) value;
-            for (Object obj : map.entrySet()) {
-                Map.Entry entry = (Map.Entry) obj;
-                writer.startNode(entry.getKey().toString());
-                writer.setValue(entry.getValue().toString());
-                writer.endNode();
-            }
+        Set<String> postKeySet = new TreeSet<String>();
+        Iterator<String> postKeyIter = postData.keySet().iterator();
+        while(postKeyIter.hasNext()){
+            postKeySet.add(postKeyIter.next());
         }
 
-        @Override
-        public Object unmarshal(HierarchicalStreamReader hierarchicalStreamReader, UnmarshallingContext unmarshallingContext) {
-            return null;
+        Iterator<String> sortedKeyIter = postKeySet.iterator();
+        StringBuilder stringSignBuilder = new StringBuilder();
+        while(sortedKeyIter.hasNext()){
+            String key = sortedKeyIter.next();
+            Object value = postData.get(key);
+            if (null == value)
+                continue;
+
+            if (stringSignBuilder.length() > 0)
+                stringSignBuilder.append("&");
+
+            stringSignBuilder.append(key + "=" + value);
         }
 
-        @Override
-        public boolean canConvert(Class aClass) {
-            return AbstractMap.class.isAssignableFrom(aClass);
-        }
+        stringSignBuilder.append("&key=").append(appSecret);
+        String sign = MD5Util.encrypt(stringSignBuilder.toString()).toUpperCase();
+        log.debug("sign ===> {}", sign);
+        return sign;
     }
-/*
+
     public static void main(String[] args){
         Date now = new Date();
         Map<String, Object> postData = new HashMap<String, Object>();
@@ -142,11 +220,17 @@ public class WxPayRequestBuilder extends PayRequestBuilder {
         postData.put("time_start", DateUtil.format(now, "yyyyMMddHHmmss"));
         postData.put("time_expire", DateUtil.format(DateUtil.add(now, Calendar.HOUR, 1), "yyyyMMddHHmmss"));
         postData.put("notify_url", "");
-
+        postData.put("sign_type", "MD5");
+        /*
         XStream xStream = new XStream();
         xStream.alias("xml", Map.class);
         xStream.registerConverter(new WxPayRequestBuilder.MapEntryConvert());
 
         System.out.println(xStream.toXML(postData));
-    }*/
+
+        WxPayRequestBuilder builder = new WxPayRequestBuilder();
+        System.out.println("Sing = " + builder.signPost(postData));
+        */
+
+    }
 }

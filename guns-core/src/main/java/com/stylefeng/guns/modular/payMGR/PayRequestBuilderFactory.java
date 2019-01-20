@@ -3,12 +3,10 @@ package com.stylefeng.guns.modular.payMGR;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.system.model.Dict;
-import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
-import com.stylefeng.guns.modular.system.service.IDictService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @Description //TODO
@@ -18,8 +16,17 @@ import java.util.List;
  */
 public class PayRequestBuilderFactory {
 
-    @Autowired
-    private IDictService dictService;
+    private Properties weixinProperties;
+
+    private Properties unionProperties;
+
+    public void setWeixinProperties(Properties weixinProperties) {
+        this.weixinProperties = weixinProperties;
+    }
+
+    public void setUnionProperties(Properties unionProperties) {
+        this.unionProperties = unionProperties;
+    }
 
     public PayRequestBuilder select(PayMethodEnum payChannel) {
 
@@ -42,30 +49,6 @@ public class PayRequestBuilderFactory {
     }
 
     private PayRequestBuilder createWeixinPayRequestBuilder() {
-
-        List<Dict> weixinPayArguments = dictService.selectByParentCode("weixin_pay");
-
-        WxPayRequestBuilder builder = new WxPayRequestBuilder();
-
-        for(Dict dict : weixinPayArguments) {
-            String property = dict.getName();
-
-            switch(property) {
-                case "app_id":
-                    builder.setAppId(dict.getCode());
-                    break;
-                case "mch_id":
-                    builder.setMchId(dict.getCode());
-                    break;
-                case "device_id":
-                    builder.setDeviceId(dict.getCode());
-                    break;
-                case "order_url":
-                    builder.setOrderUrl(dict.getCode());
-                    break;
-            }
-        }
-
-        return builder ;
+        return new WxPayRequestBuilder(weixinProperties);
     }
 }

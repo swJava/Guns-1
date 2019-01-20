@@ -3,7 +3,16 @@ application:
   sign-open: true #签名机制是否开启(true或false)
   pay:
     mock:
-      enable: true
+      enable: false
+    weixin:
+      mch-id: 1522571191
+      mch-name: 科萃教育
+      app-id: wx98df91feb67af58c
+      app-name: 科萃教育
+      app-secret: abcd
+      device-id: kc00000001
+      order-url: https://api.mch.weixin.qq.com/pay/unifiedorder
+      notify-url: http://www.kecui.com.cn/api/pay/weixin/notify
   message:
     captch.template: SMS_150742325
   education:
@@ -87,7 +96,7 @@ application:
     sms.sender.enable: false
   attachment:
       visit-url: http://127.0.0.1:8081/api/attachment/download
-      store-path: /Users/huahua/Workbase/data/gs/upload
+      store-path: H:/Datas/gs/upload
 
 ---
 

@@ -11,6 +11,8 @@ import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
@@ -21,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -82,7 +83,7 @@ public class PayServiceImpl implements IPayService {
 //
 //                System.out.println("Response ===> " + builder.toString());
 
-                XStream xStream = new XStream();
+                XStream xStream = new XStream(new StaxDriver());
                 xStream.alias("xml", Map.class);
                 xStream.registerConverter(new MapEntryConvert());
                 Map<String, String> response = (Map<String, String>) xStream.fromXML(httpResponse.getEntity().getContent());
@@ -110,4 +111,5 @@ public class PayServiceImpl implements IPayService {
 
         return prepayId;
     }
+
 }

@@ -9,6 +9,7 @@ import com.stylefeng.guns.rest.modular.pay.responser.SignResponser;
 import com.stylefeng.guns.util.MD5Util;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.naming.NoNameCoder;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.Xpp3Driver;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,7 +66,7 @@ public class PayController extends ApiController {
         response.put("return_code", "SUCCESS");
         response.put("return_msg", "OK");
 
-        XStream xStream = new XStream(new Xpp3Driver(new NoNameCoder()));
+        XStream xStream = new XStream(new StaxDriver(new NoNameCoder()));
         xStream.alias("xml", Map.class);
         xStream.registerConverter(new MapEntryConvert());
 

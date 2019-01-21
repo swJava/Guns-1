@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.payMGR.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
@@ -88,6 +89,7 @@ public class PayServiceImpl implements IPayService {
                 xStream.registerConverter(new MapEntryConvert());
                 Map<String, String> response = (Map<String, String>) xStream.fromXML(httpResponse.getEntity().getContent());
 
+                log.debug("Response ===>  {}" , JSON.toJSONString(response));
                 postResult.putAll(response);
 
                 return null;

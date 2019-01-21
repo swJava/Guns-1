@@ -50,7 +50,7 @@ public class QuestionItem extends Model<QuestionItem> {
      * 状态： 0 未启用  1 启用
      */
     @ApiModelProperty(hidden = true)
-    private String status;
+    private Integer status;
 
 
     public Long getId() {
@@ -85,11 +85,11 @@ public class QuestionItem extends Model<QuestionItem> {
         this.value = value;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

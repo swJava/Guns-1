@@ -1,9 +1,11 @@
 package com.stylefeng.guns.modular.examineMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -19,4 +21,12 @@ public interface IQuestionItemService extends IService<QuestionItem> {
      * @return
      */
     List<QuestionItem> findAll(String code);
+
+    /**
+     * 创建问题
+     *
+     * @param question
+     * @param items
+     */
+    void create(Question question, List<QuestionItem> items);
 }

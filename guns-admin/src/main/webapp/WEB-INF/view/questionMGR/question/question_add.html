@@ -49,14 +49,15 @@
     <div class="form-group" name="dictItem" id="dictItem">
         <label class="col-sm-1 control-label">选项</label>
         <div class="col-sm-1">
-            <input class="form-control" type="text" name="itemIndex" readonly>
+            <input class="form-control" type="text" name="itemCode" readonly>
+            <input class="form-control" type="hidden" name="itemIndex" readonly>
         </div>
         <label class="col-sm-1 control-label" >答案</label>
         <div class="col-sm-4">
             <input class="form-control" type="text" name="itemName">
         </div>
         <div class="col-sm-2">
-            <input type="checkbox"> &nbsp;&nbsp;期望答案
+            <input type="checkbox" name="itemValue"> &nbsp;&nbsp;期望答案
         </div>
         <div class="col-sm-2">
             <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="DictInfoDlg.deleteItem(event)"/>

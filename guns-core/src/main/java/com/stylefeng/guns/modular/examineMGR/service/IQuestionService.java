@@ -2,6 +2,9 @@ package com.stylefeng.guns.modular.examineMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Question;
+import com.stylefeng.guns.modular.system.model.QuestionItem;
+
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -19,4 +22,12 @@ public interface IQuestionService extends IService<Question> {
      * @param questionCode
      */
     void delete(String questionCode);
+
+    /**
+     * 创建题目
+     *
+     * @param question
+     * @param items
+     */
+    void create(Question question, List<QuestionItem> items);
 }

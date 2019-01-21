@@ -5,6 +5,7 @@ var QuestionInfoDlg = {
     editor: null,
     questionInfoData : {},
     itemIndex: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
+    answerItems: '',
     itemTemplate: $("#itemTemplate").html(),
     validateFields: {
         code: {
@@ -84,29 +85,22 @@ QuestionInfoDlg.close = function() {
  * 收集数据
  */
 QuestionInfoDlg.collectData = function() {
-    this.questionInfoData['content'] = QuestionInfoDlg.editor.txt.html();
+    this.questionInfoData['question'] = QuestionInfoDlg.editor.txt.html();
 
     this
     .set('id')
-    .set('code')
-    .set('question')
     .set('type')
-    .set('subject')
-    .set('status')
-    .set('expactAnswer');
+    .set('subject');
 
     this.clearNullDom();
-    var mutiString = "";
+    var answerItems = "";
     $("[name='dictItem']").each(function(){
-        var code = $(this).find("[name='itemCode']").val();
+        var index = $(this).find("[name='itemIndex']").val();
         var name = $(this).find("[name='itemName']").val();
-        var num = $(this).find("[name='itemNum']").val();
-        mutiString = mutiString + (code + ":" + name + ":"+ num+";");
+        var value = $(this).find("[name='itemValue']").prop('checked');
+        answerItems = answerItems + (index + ":" + name + ":"+ value+";");
     });
-    this.dictName = $("#dictName").val();
-    this.dictCode = $("#dictCode").val();
-    this.dictTips = $("#dictTips").val();
-    this.mutiString = mutiString;
+    this.questionInfoData.answerItems = answerItems;
 }
 
 
@@ -117,6 +111,19 @@ QuestionInfoDlg.validate = function () {
     $('#questionInfoForm').data("bootstrapValidator").resetForm();
     $('#questionInfoForm').bootstrapValidator('validate');
     return $("#questionInfoForm").data('bootstrapValidator').isValid();
+};
+
+/**
+ * 清除为空的item Dom
+ */
+QuestionInfoDlg.clearNullDom = function(){
+    $("[name='dictItem']").each(function(){
+        var num = $(this).find("[name='itemName']").val();
+        var name = $(this).find("[name='itemIndex']").val();
+        if(num == '' || name == ''){
+            $(this).remove();
+        }
+    });
 };
 
 /**
@@ -137,7 +144,8 @@ QuestionInfoDlg.addItem = function () {
     var itemCount = $('#itemArea [name="dictItem"]').length
 
     $("#itemArea").append(this.itemTemplate);
-    $('#itemArea [name="dictItem"]:last [name="itemIndex"]').val(QuestionInfoDlg.itemIndex[itemCount]);
+    $('#itemArea [name="dictItem"]:last [name="itemCode"]').val(QuestionInfoDlg.itemIndex[itemCount]);
+    $('#itemArea [name="dictItem"]:last [name="itemIndex"]').val(itemCount);
     $("#dictItem").attr("id", this.newId());
 };
 
@@ -163,6 +171,7 @@ QuestionInfoDlg.addSubmit = function() {
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.questionInfoData);
+    ajax.set("answerItems", this.questionInfoData.answerItems);
     ajax.start();
 }
 

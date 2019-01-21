@@ -130,7 +130,6 @@ public class OrderController extends ApiController {
         return SimpleResponser.success();
     }
 
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ApiOperation(value="生成订单", httpMethod = "POST", response = OrderPostResponser.class)
     public Responser createOrder(
@@ -167,12 +166,6 @@ public class OrderController extends ApiController {
             throw new ServiceException(MessageConstant.MessageCode.SYS_EXCEPTION);
 
         return responser;
-    }
-
-    @ApiOperation(value="订单变更", httpMethod = "POST")
-    @RequestMapping("/change")
-    public Responser changeOrder(OrderPostRequester requester){
-        return null;
     }
 
     @ApiOperation(value="选课单", httpMethod = "POST", response = CartListResponser.class)

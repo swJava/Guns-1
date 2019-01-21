@@ -63,7 +63,7 @@ public class Question extends Model<Question> {
      */
     @TableField("auto_marking")
     @ApiModelProperty(hidden = true)
-    private String autoMarking;
+    private Integer autoMarking;
 
     @ApiModelProperty(value = "teacher", name = "出题老师编码", example = "JS000002")
     private String teacher;
@@ -128,12 +128,12 @@ public class Question extends Model<Question> {
         this.expactAnswer = expactAnswer;
     }
 
-    public String getAutoMarking() {
+    public Integer getAutoMarking() {
         return autoMarking;
     }
 
-    public void setAutoMarking(String autoMark) {
-        this.autoMarking = autoMark;
+    public void setAutoMarking(Integer autoMarking) {
+        this.autoMarking = autoMarking;
     }
 
     public String getTeacher() {

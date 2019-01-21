@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.system.dao.QuestionItemMapper;
+import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -31,5 +35,19 @@ public class QuestionItemServiceImpl extends ServiceImpl<QuestionItemMapper, Que
         queryWrapper.eq("status", GenericState.Valid.code);
 
         return selectList(queryWrapper);
+    }
+
+    @Override
+    public void create(Question question, List<QuestionItem> items) {
+
+        if (null == question)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
+
+        for(QuestionItem questionItem : items){
+            questionItem.setQuestionCode(question.getCode());
+            questionItem.setStatus(GenericState.Valid.code);
+        }
+
+        insertBatch(items);
     }
 }

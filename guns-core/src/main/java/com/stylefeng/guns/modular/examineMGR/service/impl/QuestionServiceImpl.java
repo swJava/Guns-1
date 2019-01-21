@@ -7,11 +7,17 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
+import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.system.dao.QuestionMapper;
 import com.stylefeng.guns.modular.system.model.Question;
+import com.stylefeng.guns.modular.system.model.QuestionAutoMarkingEnum;
+import com.stylefeng.guns.modular.system.model.QuestionItem;
+import com.stylefeng.guns.util.CodeKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -24,6 +30,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Autowired
     private IExaminePaperItemService examinePaperItemService;
+
+    @Autowired
+    private IQuestionItemService questionItemService;
 
     @Override
     public Question get(String code) {
@@ -51,5 +60,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
         question.setStatus(GenericState.Invalid.code);
         updateById(question);
+    }
+
+    @Override
+    public void create(Question question, List<QuestionItem> items) {
+
+        question.setCode(CodeKit.generateQuestion());
+        question.setStatus(GenericState.Valid.code);
+        question.setAutoMarking(QuestionAutoMarkingEnum.Yes.code);
+        insert(question);
+
+        questionItemService.create(question, items);
     }
 }

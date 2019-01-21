@@ -9,7 +9,7 @@ application:
       mch-name: 科萃教育
       app-id: wx98df91feb67af58c
       app-name: 科萃教育
-      app-secret: abcd
+      app-secret: eae820aa9d2d01c79bd2432854417b3b
       device-id: kc00000001
       order-url: https://api.mch.weixin.qq.com/pay/unifiedorder
       notify-url: http://www.kecui.com.cn/api/pay/weixin/notify

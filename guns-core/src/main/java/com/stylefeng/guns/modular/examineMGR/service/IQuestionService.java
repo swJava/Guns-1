@@ -12,4 +12,11 @@ import com.stylefeng.guns.modular.system.model.Question;
 public interface IQuestionService extends IService<Question> {
 
     Question get(String questionCode);
+
+    /**
+     * 删除题目
+     *
+     * @param questionCode
+     */
+    void delete(String questionCode);
 }

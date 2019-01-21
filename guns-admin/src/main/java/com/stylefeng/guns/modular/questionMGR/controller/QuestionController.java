@@ -102,8 +102,8 @@ public class QuestionController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer questionId) {
-        questionService.deleteById(questionId);
+    public Object delete(@RequestParam String questionCode) {
+        questionService.delete(questionCode);
         return SUCCESS_TIP;
     }
 

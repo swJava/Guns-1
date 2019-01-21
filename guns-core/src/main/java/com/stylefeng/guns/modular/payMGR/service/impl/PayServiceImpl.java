@@ -44,7 +44,7 @@ public class PayServiceImpl implements IPayService {
     private IDictService dictService;
     @Autowired(required = false)
     private PayRequestBuilderFactory builderFactory;
-    @Value("${application.pay.mock.enable}")
+    @Value("${application.pay.mock.enable:false}")
     private boolean mockEnable;
 
     @Override
@@ -68,29 +68,46 @@ public class PayServiceImpl implements IPayService {
 
         String prepayid = null;
 
-        Map<String, Object> postResult = new HashMap<String, Object>();
+        Map<String, String> postResult = new HashMap<String, String>();
         builderFactory.select(payChannel).order(order).post(new ResponseHandler<String>() {
             @Override
             public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
 
-                InputStream is = httpResponse.getEntity().getContent();
-                byte[] buff = new byte[1024];
-                StringBuilder builder = new StringBuilder();
-                while(is.read(buff) > 0){
-                    builder.append(new String(buff));
-                }
-
-                System.out.println("Response ===> " + builder.toString());
+//                InputStream is = httpResponse.getEntity().getContent();
+//                byte[] buff = new byte[1024];
+//                StringBuilder builder = new StringBuilder();
+//                while(is.read(buff) > 0){
+//                    builder.append(new String(buff));
+//                }
 //
+//                System.out.println("Response ===> " + builder.toString());
+
                 XStream xStream = new XStream();
                 xStream.alias("xml", Map.class);
                 xStream.registerConverter(new MapEntryConvert());
                 Map<String, String> response = (Map<String, String>) xStream.fromXML(httpResponse.getEntity().getContent());
-                postResult.put("prepayid", "111");
+
+                postResult.putAll(response);
+
                 return null;
             }
         });
 
-        return (String)postResult.get("prepayid");
+        String prepayId = null;
+        String message = null;
+        if ("SUCCESS".equals(postResult.get("return_code"))){
+            if ("SUCCESS".equals(postResult.get("result_code"))){
+                prepayId = postResult.get("prepay_id");
+            }else{
+                message = postResult.get("err_code_des");
+            }
+        }else{
+            message = postResult.get("return_msg");
+        }
+
+        if (null == prepayId)
+            throw new ServiceException(MessageConstant.MessageCode.PAY_ORDER_EXCEPTION, new String[]{message});
+
+        return prepayId;
     }
 }

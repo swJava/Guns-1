@@ -40,6 +40,11 @@ public class ExaminePaperItem extends Model<ExaminePaperItem> {
      */
     private String score;
 
+    /**
+     * 状态
+     */
+    private Integer status;
+
 
     public Long getId() {
         return id;
@@ -85,6 +90,7 @@ public class ExaminePaperItem extends Model<ExaminePaperItem> {
         ", paperCode=" + paperCode +
         ", questionCode=" + questionCode +
         ", score=" + score +
+        ", status=" + status +
         "}";
     }
 }

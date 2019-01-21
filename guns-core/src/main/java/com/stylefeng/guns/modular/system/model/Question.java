@@ -65,6 +65,12 @@ public class Question extends Model<Question> {
     @ApiModelProperty(hidden = true)
     private String autoMarking;
 
+    @ApiModelProperty(value = "teacher", name = "出题老师编码", example = "JS000002")
+    private String teacher;
+
+    @TableField("teacher_name")
+    @ApiModelProperty(value = "teacherName", name = "出题老师名称", example = "李明")
+    private String teacherName;
 
     public Long getId() {
         return id;
@@ -130,6 +136,22 @@ public class Question extends Model<Question> {
         this.autoMarking = autoMark;
     }
 
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -146,6 +168,8 @@ public class Question extends Model<Question> {
         ", status=" + status +
         ", expactAnswer=" + expactAnswer +
         ", autoMarking=" + autoMarking +
+        ", teacher=" + teacher +
+        ", teacherName=" + teacherName +
         "}";
     }
 }

@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.examineMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
+import com.stylefeng.guns.modular.system.model.Question;
 
 /**
  * @Description //TODO
@@ -10,4 +11,11 @@ import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
  * @Version 1.0
  */
 public interface IExaminePaperItemService extends IService<ExaminePaperItem> {
+    /**
+     * 问题是否在使用
+     *
+     * @param question
+     * @return
+     */
+    boolean questionOnair(Question question);
 }

@@ -2,10 +2,9 @@ package com.stylefeng.guns.rest.modular.pay.controller;
 
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
+import com.stylefeng.guns.modular.payMGR.WxPayRequestBuilder;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
-import com.stylefeng.guns.rest.core.SimpleResponser;
-import com.stylefeng.guns.rest.modular.order.responser.OrderPostResponser;
 import com.stylefeng.guns.rest.modular.pay.responser.SignResponser;
 import com.stylefeng.guns.util.MD5Util;
 import com.thoughtworks.xstream.XStream;
@@ -13,6 +12,8 @@ import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.Xpp3Driver;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ import java.util.*;
 @RequestMapping("/pay")
 @Api(tags = "支付接口")
 public class PayController extends ApiController {
+    private static final Logger log = LoggerFactory.getLogger(PayController.class);
 
     @Autowired
     private IOrderService orderService;
@@ -42,7 +44,7 @@ public class PayController extends ApiController {
     @ApiOperation(value="微信支付签名", httpMethod = "POST", response = SignResponser.class)
     @RequestMapping(value = "/weixin/sign", method = RequestMethod.POST)
     public Responser weixinSign(@RequestBody Map<String, Object> requestParams){
-        String signCode = sign(requestParams);
+        String signCode = sign(weixinSecret, requestParams);
         return SignResponser.me("MD5", signCode);
     }
 
@@ -50,7 +52,7 @@ public class PayController extends ApiController {
     @ApiOperation(value="银联支付签名", httpMethod = "POST", response = SignResponser.class)
     @RequestMapping(value = "/union/sign", method = RequestMethod.POST)
     public Responser unionSign(@RequestBody Map<String, Object> requestParams){
-        String signCode = sign(requestParams);
+        String signCode = sign(unionSecret, requestParams);
         return SignResponser.me("MD5", signCode);
     }
 
@@ -71,7 +73,7 @@ public class PayController extends ApiController {
     }
 
 
-    private String sign(Map<String, Object> postData) {
+    private String sign(String signKey, Map<String, Object> postData) {
         Set<String> postKeySet = new TreeSet<String>();
         Iterator<String> postKeyIter = postData.keySet().iterator();
         while(postKeyIter.hasNext()){
@@ -92,6 +94,9 @@ public class PayController extends ApiController {
             stringSignBuilder.append(key + "=" + value);
         }
 
-        return MD5Util.encrypt(stringSignBuilder.toString()).toUpperCase();
+        stringSignBuilder.append("&key=").append(signKey);
+        String sign = MD5Util.encrypt(stringSignBuilder.toString()).toUpperCase();
+        log.debug("sign ===> {}", sign);
+        return sign;
     }
 }

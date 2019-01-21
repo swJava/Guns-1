@@ -3,9 +3,14 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.system.dao.QuestionMapper;
 import com.stylefeng.guns.modular.system.model.Question;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +21,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> implements IQuestionService {
+
+    @Autowired
+    private IExaminePaperItemService examinePaperItemService;
+
     @Override
     public Question get(String code) {
         if (null == code)
@@ -26,5 +35,21 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         queryWrapper.eq("code", code);
 
         return selectOne(queryWrapper);
+    }
+
+    @Override
+    public void delete(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
+
+        Question question = get(code);
+        if (null == question)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"题目"});
+
+        if (examinePaperItemService.questionOnair(question))
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"题目"});
+
+        question.setStatus(GenericState.Invalid.code);
+        updateById(question);
     }
 }

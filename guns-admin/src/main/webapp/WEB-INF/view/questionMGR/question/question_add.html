@@ -5,16 +5,34 @@
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                    <#avatar id="question" name="试题题目" underline="true" />
                     <#dictSelector id="type" name ="试题类型" code="question_type" label="试题类型"  underline="true"  width="75%"/>
                 </div>
-
                 <div class="col-sm-6">
                     <#dictSelector id="subject" name ="试题学科" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
-                    <#input id="expactAnswer" name="参考答案" underline="true"/>
-                    <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
                 </div>
             </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">题目内容</label>
+                    <div class="col-sm-11">
+                        <div id="editor" class="editorHeight">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed" ></div >
+
+            <div class="row" id="itemArea">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">答案选项</label>
+                    <div class="col-sm-11">
+                        <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed"></div >
 
             <div class="row btn-group-m-t">
                 <div class="col-sm-10">
@@ -26,5 +44,25 @@
 
     </div>
 </div>
-<script src="${ctxPath}/static/modular/questionMGR/question/question_info.js"></script>
+
+<script type="text/template" id="itemTemplate">
+    <div class="form-group" name="dictItem" id="dictItem">
+        <label class="col-sm-1 control-label">选项</label>
+        <div class="col-sm-1">
+            <input class="form-control" type="text" name="itemIndex" readonly>
+        </div>
+        <label class="col-sm-1 control-label" >答案</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="itemName">
+        </div>
+        <div class="col-sm-2">
+            <input type="checkbox"> &nbsp;&nbsp;期望答案
+        </div>
+        <div class="col-sm-2">
+            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="DictInfoDlg.deleteItem(event)"/>
+        </div>
+    </div>
+</script>
+<script type="text/javascript" src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+<#script src="/static/modular/questionMGR/question/question_info.js" />
 @}

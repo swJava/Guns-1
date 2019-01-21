@@ -28,6 +28,6 @@ public class ExaminePaperItemServiceImpl extends ServiceImpl<ExaminePaperItemMap
         queryWrapper.eq("question_code", question.getCode());
         queryWrapper.eq("status", GenericState.Valid.code);
 
-        return 0 <= selectCount(queryWrapper);
+        return 0 < selectCount(queryWrapper);
     }
 }

@@ -86,7 +86,6 @@ QuestionInfoDlg.close = function() {
  */
 QuestionInfoDlg.collectData = function() {
     this.questionInfoData['question'] = QuestionInfoDlg.editor.txt.html();
-
     this
     .set('id')
     .set('type')
@@ -212,6 +211,10 @@ $(function() {
     //初始化编辑器
     var E = window.wangEditor;
     var editor = new E('#editor');
+    // 只保留图片上传功能
+    editor.customConfig.menus = [
+        'image'
+    ]
     // 配置服务器端地址
     editor.customConfig.uploadImgServer = Feng.ctxPath + '/attachment/upload/async';
     editor.customConfig.uploadFileName = 'files';

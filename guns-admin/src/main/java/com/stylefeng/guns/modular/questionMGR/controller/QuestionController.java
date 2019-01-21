@@ -3,6 +3,7 @@ package com.stylefeng.guns.modular.questionMGR.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
@@ -84,6 +85,8 @@ public class QuestionController extends BaseController {
             if(StringUtils.isNotEmpty(condition)){
                 like("code",condition);
             }
+
+            eq("status", GenericState.Valid.code);
         }});
         //包装数据
         new QuestionWrapper(pageMap.getRecords()).warp();

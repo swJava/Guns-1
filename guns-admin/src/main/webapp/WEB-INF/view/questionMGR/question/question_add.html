@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">题目内容</label>
                     <div class="col-sm-11">
-                        <div id="editor" class="editorHeight">
+                        <div id="editor" style="height: 120px;">
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
 </div>
 
 <script type="text/template" id="itemTemplate">
-    <div class="form-group" name="dictItem" id="dictItem">
+    <div class="form-group" name="dictItem" id="dictItem" style="height: 90px;">
         <label class="col-sm-1 control-label">选项</label>
         <div class="col-sm-1">
             <input class="form-control" type="text" name="itemCode" readonly>
@@ -54,16 +54,17 @@
         </div>
         <label class="col-sm-1 control-label" >答案</label>
         <div class="col-sm-4">
-            <input class="form-control" type="text" name="itemName">
+            <div id="answerEditor" style="height: 70px;"></div>
         </div>
         <div class="col-sm-2">
             <input type="checkbox" name="itemValue"> &nbsp;&nbsp;期望答案
         </div>
         <div class="col-sm-2">
-            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="DictInfoDlg.deleteItem(event)"/>
+            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="QuestionInfoDlg.deleteItem(event)"/>
         </div>
     </div>
 </script>
 <#script src="/static/js/plugins/wangEditor/wangEditor.js" />
+<#script src="/static/js/base64.js" />
 <#script src="/static/modular/questionMGR/question/question_info.js" />
 @}

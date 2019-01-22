@@ -52,6 +52,12 @@ public class QuestionItem extends Model<QuestionItem> {
     @ApiModelProperty(hidden = true)
     private Integer status;
 
+    /**
+     * 是否问题期望答案： 0 不是  1 是
+     */
+    @ApiModelProperty(value = "expect", name = "是否问题期望答案", example = "1")
+    private Integer expect;
+
 
     public Long getId() {
         return id;
@@ -93,6 +99,14 @@ public class QuestionItem extends Model<QuestionItem> {
         this.status = status;
     }
 
+    public Integer getExpect() {
+        return expect;
+    }
+
+    public void setExpect(Integer expect) {
+        this.expect = expect;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -106,6 +120,7 @@ public class QuestionItem extends Model<QuestionItem> {
         ", text=" + text +
         ", value=" + value +
         ", status=" + status +
+        ", expect=" + expect +
         "}";
     }
 }

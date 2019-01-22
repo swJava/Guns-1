@@ -16,7 +16,21 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, question, type, subject, status, expact_answer, auto_marking
+        a.id, a.code, a.question, a.type, a.subject, a.status, a.expact_answer, a.auto_marking
     </sql>
 
+
+    <select id="selectPageByPaper" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_question a
+        <where>
+            <if test="null != excludePaper">
+                and not exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code != #{excludePaper} )
+            </if>
+            <if test="null != includePaper">
+                and exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{includePaper} )
+            </if>
+        </where>
+    </select>
 </mapper>

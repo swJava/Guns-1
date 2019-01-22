@@ -50,4 +50,29 @@ public class QuestionItemServiceImpl extends ServiceImpl<QuestionItemMapper, Que
 
         insertBatch(items);
     }
+
+    @Override
+    public void update(Question question, List<QuestionItem> items) {
+
+        delete(question);
+
+        create(question, items);
+
+    }
+
+    @Override
+    public void delete(Question question) {
+        if (null == question)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
+
+        Wrapper<QuestionItem> queryWrapper = new EntityWrapper<QuestionItem>();
+        queryWrapper.eq("question_code", question.getCode());
+
+        List<QuestionItem> questionItemList = selectList(queryWrapper);
+        List<Long> deleteIds = new ArrayList<Long>();
+        for(QuestionItem questionItem : questionItemList){
+            deleteIds.add(questionItem.getId());
+        }
+        deleteBatchIds(deleteIds);
+    }
 }

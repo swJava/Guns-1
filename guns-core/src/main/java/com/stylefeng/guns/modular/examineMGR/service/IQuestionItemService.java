@@ -23,10 +23,25 @@ public interface IQuestionItemService extends IService<QuestionItem> {
     List<QuestionItem> findAll(String code);
 
     /**
-     * 创建问题
+     * 创建问题答案项
      *
      * @param question
      * @param items
      */
     void create(Question question, List<QuestionItem> items);
+
+    /**
+     * 更新问题答案项
+     * @param existQuestion
+     * @param items
+     */
+    void update(Question existQuestion, List<QuestionItem> items);
+
+    /**
+     * 删除问题答案项
+     *
+     * 物理删除
+     * @param question
+     */
+    void delete(Question question);
 }

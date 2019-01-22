@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -14,10 +16,12 @@ import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionAutoMarkingEnum;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 import com.stylefeng.guns.util.CodeKit;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -27,6 +31,9 @@ import java.util.List;
  */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> implements IQuestionService {
+
+    @Autowired
+    private QuestionMapper questionMapper;
 
     @Autowired
     private IExaminePaperItemService examinePaperItemService;
@@ -71,5 +78,30 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         insert(question);
 
         questionItemService.create(question, items);
+    }
+
+    @Override
+    public void update(Question question, List<QuestionItem> items) {
+
+        Question existQuestion = get(question.getCode());
+
+        if (null == existQuestion)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"题目"});
+
+        String[] ignoreProperties = new String[]{"id", "code", "status"};
+        BeanUtils.copyProperties(question, existQuestion, ignoreProperties);
+
+        updateById(existQuestion);
+
+        questionItemService.update(existQuestion, items);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap) {
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+
+        List<Map<String, Object>> resultMap = questionMapper.selectPageByPaper(page, conditionMap);
+        page.setRecords(resultMap);
+        return page;
     }
 }

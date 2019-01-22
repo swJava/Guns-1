@@ -2,7 +2,8 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
         typeof define === 'function' && define.amd ? define(factory) :
             (global.wangEditor = factory());
-}(this, (function () { 'use strict';
+}(this, (function () {
+    'use strict';
 
     /*
      poly-fill
@@ -43,7 +44,8 @@
             Element.prototype.matches = Element.prototype.matchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector || Element.prototype.oMatchesSelector || Element.prototype.webkitMatchesSelector || function (s) {
                     var matches = (this.document || this.ownerDocument).querySelectorAll(s),
                         i = matches.length;
-                    while (--i >= 0 && matches.item(i) !== this) {}
+                    while (--i >= 0 && matches.item(i) !== this) {
+                    }
                     return i > -1;
                 };
         }
@@ -698,7 +700,8 @@
     /*
      droplist
      */
-    var _emptyFn = function _emptyFn() {};
+    var _emptyFn = function _emptyFn() {
+    };
 
 // 构造函数
     function DropList(menu, opt) {
@@ -828,7 +831,10 @@
             width: 100,
             $title: $('<p>设置标题</p>'),
             type: 'list', // droplist 以列表形式展示
-            list: [{ $elem: $('<h1>H1</h1>'), value: '<h1>' }, { $elem: $('<h2>H2</h2>'), value: '<h2>' }, { $elem: $('<h3>H3</h3>'), value: '<h3>' }, { $elem: $('<h4>H4</h4>'), value: '<h4>' }, { $elem: $('<h5>H5</h5>'), value: '<h5>' }, { $elem: $('<p>正文</p>'), value: '<p>' }],
+            list: [{$elem: $('<h1>H1</h1>'), value: '<h1>'}, {$elem: $('<h2>H2</h2>'), value: '<h2>'}, {$elem: $('<h3>H3</h3>'), value: '<h3>'}, {
+                $elem: $('<h4>H4</h4>'),
+                value: '<h4>'
+            }, {$elem: $('<h5>H5</h5>'), value: '<h5>'}, {$elem: $('<p>正文</p>'), value: '<p>'}],
             onClick: function onClick(value) {
                 // 注意 this 是指向当前的 Head 对象
                 _this._command(value);
@@ -866,7 +872,8 @@
      panel
      */
 
-    var emptyFn = function emptyFn() {};
+    var emptyFn = function emptyFn() {
+    };
 
 // 记录已经显示 panel 的菜单
     var _isCreatedPanelMenus = [];
@@ -1434,7 +1441,10 @@
             width: 120,
             $title: $('<p>设置列表</p>'),
             type: 'list', // droplist 以列表形式展示
-            list: [{ $elem: $('<span><i class="w-e-icon-list-numbered"></i> 有序列表</span>'), value: 'insertOrderedList' }, { $elem: $('<span><i class="w-e-icon-list2"></i> 无序列表</span>'), value: 'insertUnorderedList' }],
+            list: [{$elem: $('<span><i class="w-e-icon-list-numbered"></i> 有序列表</span>'), value: 'insertOrderedList'}, {
+                $elem: $('<span><i class="w-e-icon-list2"></i> 无序列表</span>'),
+                value: 'insertUnorderedList'
+            }],
             onClick: function onClick(value) {
                 // 注意 this 是指向当前的 List 对象
                 _this._command(value);
@@ -1511,7 +1521,10 @@
             width: 100,
             $title: $('<p>对齐方式</p>'),
             type: 'list', // droplist 以列表形式展示
-            list: [{ $elem: $('<span><i class="w-e-icon-paragraph-left"></i> 靠左</span>'), value: 'justifyLeft' }, { $elem: $('<span><i class="w-e-icon-paragraph-center"></i> 居中</span>'), value: 'justifyCenter' }, { $elem: $('<span><i class="w-e-icon-paragraph-right"></i> 靠右</span>'), value: 'justifyRight' }],
+            list: [{$elem: $('<span><i class="w-e-icon-paragraph-left"></i> 靠左</span>'), value: 'justifyLeft'}, {
+                $elem: $('<span><i class="w-e-icon-paragraph-center"></i> 居中</span>'),
+                value: 'justifyCenter'
+            }, {$elem: $('<span><i class="w-e-icon-paragraph-right"></i> 靠右</span>'), value: 'justifyRight'}],
             onClick: function onClick(value) {
                 // 注意 this 是指向当前的 List 对象
                 _this._command(value);
@@ -1549,7 +1562,19 @@
             width: 120,
             $title: $('<p>文字颜色</p>'),
             type: 'inline-block', // droplist 内容以 block 形式展示
-            list: [{ $elem: $('<i style="color:#000000;" class="w-e-icon-pencil2"></i>'), value: '#000000' }, { $elem: $('<i style="color:#eeece0;" class="w-e-icon-pencil2"></i>'), value: '#eeece0' }, { $elem: $('<i style="color:#1c487f;" class="w-e-icon-pencil2"></i>'), value: '#1c487f' }, { $elem: $('<i style="color:#4d80bf;" class="w-e-icon-pencil2"></i>'), value: '#4d80bf' }, { $elem: $('<i style="color:#c24f4a;" class="w-e-icon-pencil2"></i>'), value: '#c24f4a' }, { $elem: $('<i style="color:#8baa4a;" class="w-e-icon-pencil2"></i>'), value: '#8baa4a' }, { $elem: $('<i style="color:#7b5ba1;" class="w-e-icon-pencil2"></i>'), value: '#7b5ba1' }, { $elem: $('<i style="color:#46acc8;" class="w-e-icon-pencil2"></i>'), value: '#46acc8' }, { $elem: $('<i style="color:#f9963b;" class="w-e-icon-pencil2"></i>'), value: '#f9963b' }, { $elem: $('<i style="color:#ffffff;" class="w-e-icon-pencil2"></i>'), value: '#ffffff' }],
+            list: [{$elem: $('<i style="color:#000000;" class="w-e-icon-pencil2"></i>'), value: '#000000'}, {
+                $elem: $('<i style="color:#eeece0;" class="w-e-icon-pencil2"></i>'),
+                value: '#eeece0'
+            }, {$elem: $('<i style="color:#1c487f;" class="w-e-icon-pencil2"></i>'), value: '#1c487f'}, {
+                $elem: $('<i style="color:#4d80bf;" class="w-e-icon-pencil2"></i>'),
+                value: '#4d80bf'
+            }, {$elem: $('<i style="color:#c24f4a;" class="w-e-icon-pencil2"></i>'), value: '#c24f4a'}, {
+                $elem: $('<i style="color:#8baa4a;" class="w-e-icon-pencil2"></i>'),
+                value: '#8baa4a'
+            }, {$elem: $('<i style="color:#7b5ba1;" class="w-e-icon-pencil2"></i>'), value: '#7b5ba1'}, {
+                $elem: $('<i style="color:#46acc8;" class="w-e-icon-pencil2"></i>'),
+                value: '#46acc8'
+            }, {$elem: $('<i style="color:#f9963b;" class="w-e-icon-pencil2"></i>'), value: '#f9963b'}, {$elem: $('<i style="color:#ffffff;" class="w-e-icon-pencil2"></i>'), value: '#ffffff'}],
             onClick: function onClick(value) {
                 // 注意 this 是指向当前的 BackColor 对象
                 _this._command(value);
@@ -1587,7 +1612,22 @@
             width: 120,
             $title: $('<p>背景色</p>'),
             type: 'inline-block', // droplist 内容以 block 形式展示
-            list: [{ $elem: $('<i style="color:#000000;" class="w-e-icon-paint-brush"></i>'), value: '#000000' }, { $elem: $('<i style="color:#eeece0;" class="w-e-icon-paint-brush"></i>'), value: '#eeece0' }, { $elem: $('<i style="color:#1c487f;" class="w-e-icon-paint-brush"></i>'), value: '#1c487f' }, { $elem: $('<i style="color:#4d80bf;" class="w-e-icon-paint-brush"></i>'), value: '#4d80bf' }, { $elem: $('<i style="color:#c24f4a;" class="w-e-icon-paint-brush"></i>'), value: '#c24f4a' }, { $elem: $('<i style="color:#8baa4a;" class="w-e-icon-paint-brush"></i>'), value: '#8baa4a' }, { $elem: $('<i style="color:#7b5ba1;" class="w-e-icon-paint-brush"></i>'), value: '#7b5ba1' }, { $elem: $('<i style="color:#46acc8;" class="w-e-icon-paint-brush"></i>'), value: '#46acc8' }, { $elem: $('<i style="color:#f9963b;" class="w-e-icon-paint-brush"></i>'), value: '#f9963b' }, { $elem: $('<i style="color:#ffffff;" class="w-e-icon-paint-brush"></i>'), value: '#ffffff' }],
+            list: [{$elem: $('<i style="color:#000000;" class="w-e-icon-paint-brush"></i>'), value: '#000000'}, {
+                $elem: $('<i style="color:#eeece0;" class="w-e-icon-paint-brush"></i>'),
+                value: '#eeece0'
+            }, {$elem: $('<i style="color:#1c487f;" class="w-e-icon-paint-brush"></i>'), value: '#1c487f'}, {
+                $elem: $('<i style="color:#4d80bf;" class="w-e-icon-paint-brush"></i>'),
+                value: '#4d80bf'
+            }, {$elem: $('<i style="color:#c24f4a;" class="w-e-icon-paint-brush"></i>'), value: '#c24f4a'}, {
+                $elem: $('<i style="color:#8baa4a;" class="w-e-icon-paint-brush"></i>'),
+                value: '#8baa4a'
+            }, {$elem: $('<i style="color:#7b5ba1;" class="w-e-icon-paint-brush"></i>'), value: '#7b5ba1'}, {
+                $elem: $('<i style="color:#46acc8;" class="w-e-icon-paint-brush"></i>'),
+                value: '#46acc8'
+            }, {$elem: $('<i style="color:#f9963b;" class="w-e-icon-paint-brush"></i>'), value: '#f9963b'}, {
+                $elem: $('<i style="color:#ffffff;" class="w-e-icon-paint-brush"></i>'),
+                value: '#ffffff'
+            }],
             onClick: function onClick(value) {
                 // 注意 this 是指向当前的 ForeColor 对象
                 _this._command(value);
@@ -2830,6 +2870,7 @@
                 // 更新按钮 ative 状态
                 editor.menus.changeActive();
             }
+
             // 按键后保存
             $textElem.on('keyup', saveRange);
             $textElem.on('mousedown', function (e) {
@@ -3783,7 +3824,7 @@
 
                 // 自行创建的，需要配置默认的样式
                 $toolbarElem.css('background-color', '#f1f1f1').css('border', '1px solid #ccc');
-                $textContainerElem.css('border', '1px solid #ccc').css('border-top', 'none').css('height', '150px');
+                $textContainerElem.css('border', '1px solid #ccc').css('border-top', 'none').css('height', '100%');
             } else {
                 // toolbar 和 text 的选择器都有值，记录属性
                 $toolbarElem = $toolbarSelector;

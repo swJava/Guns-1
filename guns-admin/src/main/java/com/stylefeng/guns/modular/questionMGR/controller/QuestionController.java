@@ -4,18 +4,21 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.constant.state.YesOrNoState;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 import com.stylefeng.guns.util.CodeKit;
 import com.stylefeng.guns.util.ToolUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +51,9 @@ public class QuestionController extends BaseController {
     @Autowired
     private IQuestionService questionService;
 
+    @Autowired
+    private IQuestionItemService questionItemService;
+
     /**
      * 跳转到入学诊断首页
      */
@@ -65,10 +73,17 @@ public class QuestionController extends BaseController {
     /**
      * 跳转到修改入学诊断
      */
-    @RequestMapping("/question_update/{questionId}")
-    public String questionUpdate(@PathVariable Integer questionId, Model model) {
-        Question question = questionService.selectById(questionId);
+    @RequestMapping("/question_update/{code}")
+    public String questionUpdate(@PathVariable String code, Model model) {
+        Question question = questionService.get(code);
+
+        if (null == question)
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+
+        List<QuestionItem> questionItemList = questionItemService.selectList(new EntityWrapper<QuestionItem>().eq("question_code", question.getCode()).eq("status", GenericState.Valid.code));
         model.addAttribute("item", question);
+        model.addAttribute("answerItemList", questionItemList);
+
         LogObjectHolder.me().set(question);
         return PREFIX + "question_edit.html";
     }
@@ -119,11 +134,14 @@ public class QuestionController extends BaseController {
             QuestionItem questionItem = new QuestionItem();
             questionItem.setText(item.get(MUTI_STR_NAME));
             questionItem.setValue(item.get(MUTI_STR_CODE));
+            questionItem.setExpect(YesOrNoState.No.code);
 
             boolean isAnswer = Boolean.valueOf(item.get(MUTI_STR_NUM));
-            questionItemList.add(questionItem);
-            if (isAnswer)
+            if (isAnswer) {
+                questionItem.setExpect(YesOrNoState.Yes.code);
                 expectedAnswer.append(questionItem.getValue()).append(",");
+            }
+            questionItemList.add(questionItem);
         }
 
         if (questionItemList.isEmpty())
@@ -153,8 +171,44 @@ public class QuestionController extends BaseController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Object update(Question question) {
-        questionService.updateById(question);
+    public Object update(Question question, String answerItems) {
+        if (ToolUtil.isOneEmpty(question, answerItems)) {
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+        }
+
+        //解析dictValues
+        List<Map<String, String>> items = parseKeyValue(answerItems);
+
+        List<QuestionItem> questionItemList = new ArrayList<QuestionItem>();
+        StringBuilder expectedAnswer = new StringBuilder();
+
+        for(Map<String, String> item : items) {
+            QuestionItem questionItem = new QuestionItem();
+            try {
+                questionItem.setText(URLDecoder.decode(new String(Base64.decodeBase64(item.get(MUTI_STR_NAME)), "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            questionItem.setValue(item.get(MUTI_STR_CODE));
+            questionItem.setExpect(YesOrNoState.No.code);
+
+            boolean isAnswer = Boolean.valueOf(item.get(MUTI_STR_NUM));
+            if (isAnswer) {
+                questionItem.setExpect(YesOrNoState.Yes.code);
+                expectedAnswer.append(questionItem.getValue()).append(",");
+            }
+            questionItemList.add(questionItem);
+        }
+
+        if (questionItemList.isEmpty())
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+
+        Administrator currAdmin = ShiroKit.getUser();
+        question.setExpactAnswer(expectedAnswer.substring(0, expectedAnswer.length() - 1));
+        question.setTeacher(currAdmin.getAccount());
+        question.setTeacherName(currAdmin.getName());
+        questionService.update(question, questionItemList);
+
         return SUCCESS_TIP;
     }
 

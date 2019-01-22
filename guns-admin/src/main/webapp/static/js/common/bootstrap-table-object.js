@@ -17,13 +17,14 @@
         this.data = {};
         this.queryParams = {}; // 向后台传递的自定义参数
         this.itemSelect = function(){};
+        this.loadSuccess = function(){};
     };
 
     BSTable.prototype = {
         /**
          * 初始化bootstrap table
          */
-        init: function () {
+        init: function (handler) {
             var tableId = this.bstableId;
             var me = this;
             this.btInstance =
@@ -63,6 +64,7 @@
                         columns: 'glyphicon-list'
                     },
                     onClickRow: this.itemSelect,
+                    onLoadSuccess: this.loadSuccess,
                     iconSize: 'outline'
                 });
             return this;
@@ -130,6 +132,10 @@
 
         setItemSelectCallback: function(callback) {
             this.itemSelect = callback;
+        },
+
+        setLoadSuccessCallback: function(callback) {
+            this.loadSuccess = callback;
         }
 
     };

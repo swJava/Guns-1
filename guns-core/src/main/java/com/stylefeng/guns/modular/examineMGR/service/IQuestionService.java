@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,8 @@ public interface IQuestionService extends IService<Question> {
      * 分页查询
      *
      * @param conditionMap
+     * @param workingQuestionList
      * @return
      */
-    Page<Map<String,Object>> selectMapsPage(Map<String, Object> conditionMap);
+    Page<Map<String,Object>> selectMapsPage(Map<String, Object> conditionMap, Collection<String> workingQuestionList);
 }

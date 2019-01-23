@@ -4,19 +4,25 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.constant.state.YesOrNoState;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperWrapper;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
+import com.stylefeng.guns.modular.examineMGR.service.impl.ExaminePaperServiceImpl;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
+import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
 import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
+import com.stylefeng.guns.util.ToolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
+
+import static com.stylefeng.guns.common.constant.factory.MutiStrFactory.*;
 
 /**
  * @Description //TODO
@@ -100,45 +108,50 @@ public class PaperController extends BaseController {
      */
     @RequestMapping(value = "/question/list")
     @ResponseBody
-    public Object questionList(@RequestParam Map<String, Object> conditionMap) {
+    public Object questionList(@RequestParam Map<String, Object> conditionMap, String workingCodes) {
+        Set<String> workingQuestionList = new HashSet<String>();
+        if (ToolUtil.isNotEmpty(workingCodes)){
+            StringTokenizer codeIter = new StringTokenizer(workingCodes, ",");
+            while(codeIter.hasMoreTokens()){
+                workingQuestionList.add(codeIter.nextToken());
+            }
+        }
         //分页查詢
-        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(conditionMap);
+        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(conditionMap, workingQuestionList);
         //包装数据
         new QuestionWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
     }
 
-    @RequestMapping(value = "/question/join")
+    /**
+     * 新增入学诊断
+     */
+    @RequestMapping(value = "/add")
     @ResponseBody
-    public Object joinQuestion(String paper , String questions){
-
-        if (null == questions)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
-
-        StringTokenizer tokenizer = new StringTokenizer(questions, ",");
-        Set<String> questionCodes = new HashSet<String>();
-        while(tokenizer.hasMoreTokens()){
-            questionCodes.add(tokenizer.nextToken());
+    public Object add(ExaminePaper paper, String paperItems) {
+        if (ToolUtil.isOneEmpty(paper, paperItems)) {
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
-        examinePaperService.joinQuestion(paper, questionCodes);
+
+        //解析
+        Set<ExaminePaperItem> workingQuestionList = new HashSet<ExaminePaperItem>();
+        if (ToolUtil.isNotEmpty(paperItems)){
+            StringTokenizer codeIter = new StringTokenizer(paperItems, ";");
+            while(codeIter.hasMoreTokens()){
+                ExaminePaperItem paperItem = new ExaminePaperItem();
+                String[] itemMap = codeIter.nextToken().split("=");
+                paperItem.setQuestionCode(itemMap[0]);
+                paperItem.setScore(itemMap[1]);
+                workingQuestionList.add(paperItem);
+            }
+        }
+
+        Administrator currAdmin = ShiroKit.getUser();
+        paper.setTeacher(currAdmin.getName());
+
+        examinePaperService.create(paper, workingQuestionList);
 
         return SUCCESS_TIP;
     }
 
-    @RequestMapping(value = "/question/remove")
-    @ResponseBody
-    public Object removeQuestion(String paper , String questions){
-
-        if (null == questions)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
-
-        StringTokenizer tokenizer = new StringTokenizer(questions, ",");
-        Set<String> questionCodes = new HashSet<String>();
-        while(tokenizer.hasMoreTokens()){
-            questionCodes.add(tokenizer.nextToken());
-        }
-        examinePaperService.removeQuestion(paper, questionCodes);
-
-        return SUCCESS_TIP;
-    }
 }

@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -97,9 +98,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
-    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap) {
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap, Collection<String> excludeCodes) {
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
 
+        conditionMap.put("excludeList", excludeCodes);
         List<Map<String, Object>> resultMap = questionMapper.selectPageByPaper(page, conditionMap);
         page.setRecords(resultMap);
         return page;

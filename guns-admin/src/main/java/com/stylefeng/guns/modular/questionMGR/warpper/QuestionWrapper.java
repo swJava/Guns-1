@@ -22,5 +22,6 @@ public class QuestionWrapper extends BaseControllerWarpper{
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
         map.put("typeName", ConstantFactory.me().getQuestionTypeName((Integer) map.get("type")));
         map.put("subjectName", ConstantFactory.me().getsubjectName((Integer) map.get("subject")));
+        map.put("score", 0);
     }
 }

@@ -30,4 +30,9 @@ public class ExaminePaperItemServiceImpl extends ServiceImpl<ExaminePaperItemMap
 
         return 0 < selectCount(queryWrapper);
     }
+
+    @Override
+    public void create(ExaminePaperItem paperItem) {
+        insert(paperItem);
+    }
 }

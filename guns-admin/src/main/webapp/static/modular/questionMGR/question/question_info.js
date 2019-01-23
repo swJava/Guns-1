@@ -243,7 +243,6 @@ QuestionInfoDlg.editSubmit = function() {
     this.clearData();
     this.collectData();
 
-
     if (!this.validate()) {
         return;
     }

@@ -31,6 +31,13 @@
             <if test="null != includePaper">
                 and exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{includePaper} )
             </if>
+            <if test="excludeList.size() > 0">
+                and a.code not in
+                <foreach collection="excludeList" item="qcode" open="(" separator="," close=")">
+                    #{qcode}
+                </foreach>
+                )
+            </if>
         </where>
     </select>
 </mapper>

@@ -6,32 +6,44 @@
             <div class="row">
                 <div class="col-sm-6 b-r">
                     <#dictSelector id="grades" name ="适应年级" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
-                    <#input id="count" name="题目数量" underline="true"/>
-                    <#input id="totalScore" name="总分值" underline="true"/>
                 </div>
                 <div class="col-sm-6">
                     <#dictSelector id="subject" name ="适应学科" code="subject_type" label="适应学科"  underline="true"  width="75%"/>
                     <#input id="examTime" name="测试时间" underline="true"/>
                 </div>
             </div>
-            <div class="row btn-group-m-t">
-                <div class="col-sm-10">
-                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PaperDlg.save()"/>
-                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PaperDlg.close()"/>
+
+            <div class="hr-line-dashed"></div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <#table id="UnSelectQuestionTable"/>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-sm-5">
-                        <#table id="UnSelectQuestionTable"/>
+                    <div class="col-sm-2 col-sm-offset-5">
+                        <#button btnCss="info" name=" " icon="fa-plus" clickFun="PaperDlg.join();"/>
+                        <#button btnCss="danger" name=" " icon="fa-minus" clickFun="PaperDlg.remove();"/>
                     </div>
-                    <div class="col-sm-1">
-                        <input class="btn-move" type="button" value=">>" onclick="PaperDlg.join();"/>
-                        <input class="btn-move" style="margin-top: 10px;" type="button" value="<<" onclick="PaperDlg.move();"/>
-                    </div>
-                    <div class="col-sm-5">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
                         <#table id="SelectedQuestionTable"/>
                     </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed"></div >
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PaperDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PaperDlg.close()"/>
                 </div>
             </div>
         </div>

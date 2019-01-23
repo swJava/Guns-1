@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.examineMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
+import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
 
 import java.util.Set;
 
@@ -12,22 +13,17 @@ import java.util.Set;
  * @Version 1.0
  */
 public interface IExaminePaperService extends IService<ExaminePaper> {
-
+    /**
+     * 获取试卷
+     *
+     * @param paperCode
+     * @return
+     */
     ExaminePaper get(String paperCode);
-
     /**
-     * 试卷加题
-     *
-     * @param paper
-     * @param questionCodes
+     * 添加试卷
+     *  @param paper
+     * @param workingQuestionList
      */
-    void joinQuestion(String paper, Set<String> questionCodes);
-
-    /**
-     * 试卷减题
-     *
-     * @param paper
-     * @param questionCodes
-     */
-    void removeQuestion(String paper, Set<String> questionCodes);
+    void create(ExaminePaper paper, Set<ExaminePaperItem> workingQuestionList);
 }

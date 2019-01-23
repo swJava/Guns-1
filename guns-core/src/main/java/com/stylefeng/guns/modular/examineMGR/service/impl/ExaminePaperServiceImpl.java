@@ -6,16 +6,16 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperService;
 import com.stylefeng.guns.modular.system.dao.ExaminePaperMapper;
-import com.stylefeng.guns.modular.system.model.Column;
-import com.stylefeng.guns.modular.system.model.Content;
-import com.stylefeng.guns.modular.system.model.ContentCategory;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
+import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
+import com.stylefeng.guns.util.CodeKit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -26,6 +26,10 @@ import java.util.Set;
  */
 @Service
 public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, ExaminePaper> implements IExaminePaperService {
+
+    @Autowired
+    private IExaminePaperItemService examinePaperItemService;
+
     @Override
     public ExaminePaper get(String paperCode) {
         if (null == paperCode)
@@ -38,14 +42,27 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
     }
 
     @Override
-    public void joinQuestion(String paper, Set<String> questionCodes) {
-        if(null == paper)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目"});
+    public void create(ExaminePaper paper, Set<ExaminePaperItem> workingQuestionList) {
+        if (null == paper)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷"});
 
-    }
+        if (null == workingQuestionList || workingQuestionList.isEmpty())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷题目"});
 
-    @Override
-    public void removeQuestion(String paper, Set<String> questionCodes) {
+        Date now = new Date();
+        paper.setCode(CodeKit.generatePaper());
+        paper.setCreateDate(now);
+        paper.setStatus(GenericState.Valid.code);
 
+        insert(paper);
+
+        for(ExaminePaperItem paperItem : workingQuestionList){
+            try {
+                paperItem.setPaperCode(paper.getCode());
+                examinePaperItemService.create(paperItem);
+            }catch(Exception e){
+                throw new ServiceException();
+            }
+        }
     }
 }

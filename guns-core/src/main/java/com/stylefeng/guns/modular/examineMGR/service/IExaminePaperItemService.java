@@ -18,4 +18,11 @@ public interface IExaminePaperItemService extends IService<ExaminePaperItem> {
      * @return
      */
     boolean questionOnair(Question question);
+
+    /**
+     * 创建
+     *
+     * @param paperItem
+     */
+    void create(ExaminePaperItem paperItem);
 }

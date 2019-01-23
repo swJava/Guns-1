@@ -16,8 +16,16 @@
         this.columns = columns;
         this.data = {};
         this.queryParams = {}; // 向后台传递的自定义参数
+        this.showColumnsSwitch = true;
+        this.showRefreshSwitch = true;
+        this.paginational = true;
+        this.pageSize = 10;
         this.itemSelect = function(){};
         this.loadSuccess = function(){};
+        this.refreshListener = function(){};
+        this.refreshOptionsListener = function(){};
+        this.queryParamsGetter = function(){return {};};
+        this.clickCell = function(){};
     };
 
     BSTable.prototype = {
@@ -42,29 +50,32 @@
                     sortable: true,      		//是否启用排序
                     sortOrder: "desc",     		//排序方式
                     pageNumber: 1,      			//初始化加载第一页，默认第一页
-                    pageSize: 10,      			//每页的记录行数（*）
+                    pageSize: this.pageSize,      			//每页的记录行数（*）
                     pageList: [10, 50, 100],  	//可供选择的每页的行数（*）
                     queryParamsType: 'limit', 	//默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
                     queryParams: function (param) {
-                        return $.extend(me.queryParams, param);
+                        return $.extend(me.queryParamsGetter(), me.queryParams, param);
                     }, // 向后台传递的自定义参数
                     sidePagination: this.paginationType,   //分页方式：client客户端分页，server服务端分页（*）
                     search: false,      		//是否显示表格搜索，此搜索是客户端搜索，不会进服务端
                     strictSearch: true,			//设置为 true启用 全匹配搜索，否则为模糊搜索
-                    showColumns: true,     		//是否显示所有的列
-                    showRefresh: true,     		//是否显示刷新按钮
+                    showColumns: this.showColumnsSwitch,     		//是否显示所有的列
+                    showRefresh: this.showRefreshSwitch,     		//是否显示刷新按钮
                     minimumCountColumns: 2,    	//最少允许的列数
                     clickToSelect: true,    	//是否启用点击选中行
                     searchOnEnterKey: true,		//设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                     columns: this.columns,		//列数组
-                    pagination: true,			//是否显示分页条
+                    pagination: this.paginational,			//是否显示分页条
                     icons: {
                         refresh: 'glyphicon-repeat',
                         toggle: 'glyphicon-list-alt',
                         columns: 'glyphicon-list'
                     },
                     onClickRow: this.itemSelect,
+                    onClickCell: this.clickCell,
                     onLoadSuccess: this.loadSuccess,
+                    onRefresh: this.refreshListener,
+                    onRefreshOptions: this.refreshOptionsListener,
                     iconSize: 'outline'
                 });
             return this;
@@ -136,8 +147,42 @@
 
         setLoadSuccessCallback: function(callback) {
             this.loadSuccess = callback;
-        }
+        },
 
+        setShowColumns: function(value) {
+            this.showColumnsSwitch = value;
+        },
+
+        setShowRefresh: function(value) {
+            this.showRefreshSwitch = value;
+        },
+
+        setPaginational: function(value) {
+            this.paginational = value;
+        },
+
+        setPageSize: function(size) {
+            this.pageSize = 10;
+            var newSize = parseInt(size, 10);
+            if (!(isNaN(newSize)))
+                this.pageSize = newSize;
+        },
+
+        setRefreshListener: function(listener) {
+            this.refreshListener = listener;
+        },
+
+        setRefreshOptionsListener: function(listener) {
+            this.refreshOptionsListener = listener;
+        },
+
+        setQueryParamsGetter: function(getter){
+            this.queryParamsGetter = getter;
+        },
+
+        setClickCell: function(clickFn) {
+            this.clickCell = clickFn;
+        }
     };
 
     window.BSTable = BSTable;

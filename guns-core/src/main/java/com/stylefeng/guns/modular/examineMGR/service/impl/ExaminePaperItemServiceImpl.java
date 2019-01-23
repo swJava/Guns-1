@@ -33,6 +33,7 @@ public class ExaminePaperItemServiceImpl extends ServiceImpl<ExaminePaperItemMap
 
     @Override
     public void create(ExaminePaperItem paperItem) {
+        paperItem.setStatus(GenericState.Valid.code);
         insert(paperItem);
     }
 }

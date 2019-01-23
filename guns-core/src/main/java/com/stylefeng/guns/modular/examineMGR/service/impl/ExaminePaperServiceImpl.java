@@ -54,6 +54,20 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
         paper.setCreateDate(now);
         paper.setStatus(GenericState.Valid.code);
 
+
+        int totalScore = 0;
+        int totalCount = 0;
+        for(ExaminePaperItem paperItem : workingQuestionList){
+            totalCount++;
+            int score = 0;
+            try{
+                score = Integer.parseInt(paperItem.getScore());
+            }catch(Exception e){}
+            totalScore += score;
+        }
+
+        paper.setCount(totalCount);
+        paper.setTotalScore(totalScore);
         insert(paper);
 
         for(ExaminePaperItem paperItem : workingQuestionList){

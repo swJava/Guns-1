@@ -17,8 +17,14 @@ public class PageFactory<T> {
 
     public Page<T> defaultPage() {
         HttpServletRequest request = HttpKit.getRequest();
-        int limit = Integer.valueOf(request.getParameter("limit"));     //每页多少条数据
-        int offset = Integer.valueOf(request.getParameter("offset"));   //每页的偏移量(本页当前有多少条)
+        int limit = Integer.MAX_VALUE;
+        try {
+            limit = Integer.valueOf(request.getParameter("limit"));     //每页多少条数据
+        }catch(Exception e){}
+        int offset = 0;
+        try {
+            offset = Integer.valueOf(request.getParameter("offset"));   //每页的偏移量(本页当前有多少条)
+        }catch(Exception e){}
         String sort = request.getParameter("sort");         //排序字段名称
         String order = request.getParameter("order");       //asc或desc(升序或降序)
         if (ToolUtil.isEmpty(sort)) {

@@ -78,6 +78,14 @@ public class ExaminePaperItem extends Model<ExaminePaperItem> {
         this.score = score;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;

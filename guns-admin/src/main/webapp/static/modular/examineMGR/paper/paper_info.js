@@ -185,13 +185,14 @@ PaperDlg.collectData = function() {
         .set('subject')
         .set('examTime');
 
-    var paperItems = new Array();
-
     var questions = PaperDlg.SelectedQuestion.seCodes.slice(0);
+    console.log(questions);
     var paperItems = new Array();
     $.each(questions, function(idx, code){
-        var score = parseInt(PaperDlg.SelectedQuestion.seCodes[code], 10);
+        console.log('code = ' + code);
+        var score = parseInt(PaperDlg.SelectedQuestion.seScores[code], 10);
 
+        console.log('score = ' + score);
         if (isNaN(score))
             return true;
 
@@ -206,6 +207,12 @@ PaperDlg.collectData = function() {
  * 验证数据是否为空
  */
 PaperDlg.validate = function () {
+
+    if (PaperDlg.SelectedQuestion.seItems.length != PaperDlg.SelectedQuestion.seCodes.length) {
+        Feng.error("提交失败: 每道题目需设置分数");
+        return false
+    }
+
     $('#paperInfoForm').data("bootstrapValidator").resetForm();
     $('#paperInfoForm').bootstrapValidator('validate');
     return $("#paperInfoForm").data('bootstrapValidator').isValid();
@@ -219,11 +226,14 @@ PaperDlg.addSubmit = function() {
     this.collectData();
 
     if (!this.validate()) {
+        console.log('validate failed');
         return;
     }
 
+    console.log(this.SelectedQuestion.seItems);
+
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/paper/add", function(data){
+    var ajax = new $ax(Feng.ctxPath + "/examine/paper/add", function(data){
         Feng.success("修改成功!");
         window.parent.Paper.table.refresh();
         PaperDlg.close();
@@ -231,11 +241,17 @@ PaperDlg.addSubmit = function() {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.paperInfoData);
+
+    console.log(this.SelectedQuestion.seItems);
     ajax.set('paperItems', this.SelectedQuestion.seItems.join(';'))
     ajax.start();
 }
 
 $(function () {
+
+    //非空校验
+    Feng.initValidator("paperInfoForm", PaperDlg.validateFields);
+
     var displayColumns = PaperDlg.UnSelectQuestion.initColumn();
     var table = new BSTable(PaperDlg.UnSelectQuestion.id, "/examine/paper/question/list?excludePaper=" + $('#code').val(), displayColumns);
     table.setPaginationType("server");

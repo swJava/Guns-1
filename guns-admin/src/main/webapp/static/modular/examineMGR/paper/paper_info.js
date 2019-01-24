@@ -55,7 +55,17 @@ PaperDlg.SelectedQuestion.initColumn = function () {
         {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle'},
         {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '出题人', field: 'teacherName', visible: true, align: 'center', valign: 'middle'},
-        {title: '分值', field: 'score', visible: true, align: 'center', valign: 'middle'}
+        {title: '分值', field: 'score', visible: true, align: 'center', valign: 'middle',
+            formatter: function(val, row){
+                console.log(PaperDlg.SelectedQuestion.seScores);
+                console.log(row);
+                var score = parseInt(PaperDlg.SelectedQuestion.seScores[row.code], 10);
+                if (isNaN(score))
+                    score = 0;
+
+                return score;
+            }
+        }
     ];
 };
 PaperDlg.UnSelectQuestion.initColumn = function () {
@@ -65,7 +75,7 @@ PaperDlg.UnSelectQuestion.initColumn = function () {
         {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle'},
         {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
         {title: '出题人', field: 'teacherName', visible: true, align: 'center', valign: 'middle'},
-        {title: '分值', field: 'score', visible: false, align: 'center', valign: 'middle' }
+        {title: '分值', field: 'score', visible: false, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -181,6 +191,8 @@ PaperDlg.saveEditColumn = function(index, field, value) {
  */
 PaperDlg.collectData = function() {
     this
+        .set('code')
+        .set('id')
         .set('grades')
         .set('subject')
         .set('examTime');
@@ -218,7 +230,7 @@ PaperDlg.validate = function () {
     return $("#paperInfoForm").data('bootstrapValidator').isValid();
 };
 /**
- * 提交修改
+ * 提交新增
  */
 PaperDlg.addSubmit = function() {
 
@@ -246,12 +258,48 @@ PaperDlg.addSubmit = function() {
     ajax.set('paperItems', this.SelectedQuestion.seItems.join(';'))
     ajax.start();
 }
+/**
+ * 提交修改
+ */
+PaperDlg.editSubmit = function() {
+
+    this.clearData();
+    this.collectData();
+
+    if (!this.validate()) {
+        console.log('validate failed');
+        return;
+    }
+
+    console.log(this.SelectedQuestion.seItems);
+
+    //提交信息
+    var ajax = new $ax(Feng.ctxPath + "/examine/paper/update", function(data){
+        Feng.success("修改成功!");
+        window.parent.Paper.table.refresh();
+        PaperDlg.close();
+    },function(data){
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+    ajax.set(this.paperInfoData);
+
+    console.log(this.SelectedQuestion.seItems);
+    ajax.set('paperItems', this.SelectedQuestion.seItems.join(';'))
+    ajax.start();
+}
 
 $(function () {
 
     //非空校验
     Feng.initValidator("paperInfoForm", PaperDlg.validateFields);
 
+    // 初始化
+    try {
+        PaperDlg.SelectedQuestion.seCodes = eval($('#questionCodes').val());
+        PaperDlg.SelectedQuestion.seScores = JSON.parse($('#questionScores').val());
+    }catch(error){}
+
+    // 其他
     var displayColumns = PaperDlg.UnSelectQuestion.initColumn();
     var table = new BSTable(PaperDlg.UnSelectQuestion.id, "/examine/paper/question/list?excludePaper=" + $('#code').val(), displayColumns);
     table.setPaginationType("server");

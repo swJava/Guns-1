@@ -12,7 +12,9 @@ public enum ExamineAnswerStateEnum {
     Testing(1, "测试中"),
     Pause(2, "测试中"),
     Sumit(3, "已交卷"),
-    Finish(4, "已批改")
+    Finish(4, "已批改"),
+
+    Null(99, "未知")
     ;
 
     public int code;
@@ -23,4 +25,17 @@ public enum ExamineAnswerStateEnum {
         this.text = text;
     }
 
+
+    public static ExamineAnswerStateEnum instanceOf(int value) {
+        ExamineAnswerStateEnum result = ExamineAnswerStateEnum.Null;
+
+        for(ExamineAnswerStateEnum state : values()){
+            if (state.code == value){
+                result = state;
+                break;
+            }
+        }
+
+        return result;
+    }
 }

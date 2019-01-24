@@ -14,7 +14,7 @@ var Paper = {
 Paper.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-        {title: '针对学科', field: 'subject', visible: true, align: 'center', valign: 'middle'},
+        {title: '针对学科', field: 'subjectName', visible: true, align: 'center', valign: 'middle'},
         {title: '题目数量', field: 'count', visible: true, align: 'center', valign: 'middle'},
         {title: '测试时间（分钟）', field: 'examTime', visible: true, align: 'center', valign: 'middle'},
         {title: '总分值', field: 'totalScore', visible: true, align: 'center', valign: 'middle'},
@@ -32,7 +32,7 @@ Paper.check = function () {
         Feng.info("请先选中表格中的某一记录！");
         return false;
     }else{
-        Question.seItem = selected[0];
+        Paper.seItem = selected[0];
         return true;
     }
 };
@@ -60,11 +60,11 @@ Paper.openPaperDetail = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
-            title: '入学诊断详情',
+            title: '试卷详情',
             area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/question/question_update/' + Paper.seItem.code
+            content: Feng.ctxPath + '/examine/paper/paper_update/' + Paper.seItem.code
         });
         layer.full(index);
         this.layerIndex = index;
@@ -78,11 +78,11 @@ Paper.delete = function () {
     if (this.check()) {
         var ajax = new $ax(Feng.ctxPath + "/examine/paper/delete", function (data) {
             Feng.success("删除成功!");
-            Question.table.refresh();
+            Paper.table.refresh();
         }, function (data) {
             Feng.error("删除失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("questionCode",this.seItem.code);
+        ajax.set("code",this.seItem.code);
         ajax.start();
     }
 };

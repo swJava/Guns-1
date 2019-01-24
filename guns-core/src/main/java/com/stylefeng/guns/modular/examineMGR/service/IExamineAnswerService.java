@@ -1,9 +1,12 @@
 package com.stylefeng.guns.modular.examineMGR.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.ExamineAnswer;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
 import com.stylefeng.guns.modular.system.model.Student;
+
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -27,4 +30,20 @@ public interface IExamineAnswerService extends IService<ExamineAnswer> {
      * @param code
      */
     ExamineAnswer get(String code);
+
+    /**
+     * 试卷是否在用
+     *
+     * @param paper
+     * @return
+     */
+    boolean paperOnair(ExaminePaper paper);
+
+    /**
+     * 查询答卷
+     *
+     * @param conditionMap
+     * @return
+     */
+    Page<Map<String,Object>> selectMapsPage(Map<String, Object> conditionMap);
 }

@@ -25,7 +25,40 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, paper_code, student_code, quota, total_score, exam_time, answer_quota, last_answer_question, last_answer_date, status, create_date, score, begin_date, end_date, duration, teacher
+        a.id, a.code, a.paper_code, a.student_code, a.quota, a.total_score, a.exam_time, a.answer_quota, a.last_answer_question, a.last_answer_date, a.status, a.create_date, a.score, a.begin_date, a.end_date, a.duration, a.teacher,
+        paper.subject, paper.grades
     </sql>
 
+
+    <select id="selectPageMix" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        (
+        <if test="null != student">
+            (
+        </if>
+        tb_examine_answer a join tb_examine_paper paper on paper.code = a.paper_code
+        )
+        <if test="null != student">
+            left join tb_student stu on a.student_code = stu.code )
+        </if>
+        <where>
+            <if test="null != student">
+                and a.student_code = #{student} or stu.name like '%#{student}%'
+            </if>
+            <if test="null != subject">
+                and paper.subjects = #{subject}
+            </if>
+            <if test="null != beginScore">
+                and a.score &gt;= #{beginScore}
+            </if>
+            <if test="null != endScore">
+                and a.score &lt; #{beginScore}
+            </if>
+            <if test="null != state">
+                and a.status = #{state}
+            </if>
+        </where>
+    </select>
 </mapper>

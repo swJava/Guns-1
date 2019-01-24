@@ -1,7 +1,10 @@
 package com.stylefeng.guns.modular.examineMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.system.dao.ExamineAnswerMapper;
 import com.stylefeng.guns.modular.system.model.ExamineAnswer;
@@ -9,9 +12,12 @@ import com.stylefeng.guns.modular.system.model.ExamineAnswerStateEnum;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
 import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.CodeKit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -21,6 +27,10 @@ import java.util.Date;
  */
 @Service
 public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, ExamineAnswer> implements IExamineAnswerService {
+
+    @Autowired
+    private ExamineAnswerMapper examineAnswerMapper;
+
     @Override
     public ExamineAnswer generatePaper(Student student, ExaminePaper examinePaper) {
 
@@ -45,5 +55,23 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
             return null;
 
         return selectOne(new EntityWrapper<ExamineAnswer>().eq("code", code));
+    }
+
+    @Override
+    public boolean paperOnair(ExaminePaper paper) {
+        Wrapper<ExamineAnswer> queryWrapper = new EntityWrapper<ExamineAnswer>();
+
+        queryWrapper.eq("paper_code", paper.getCode());
+
+        return 0 < selectCount(queryWrapper);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap) {
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+
+        List<Map<String, Object>> resultMap = examineAnswerMapper.selectPageMix(page, conditionMap);
+        page.setRecords(resultMap);
+        return page;
     }
 }

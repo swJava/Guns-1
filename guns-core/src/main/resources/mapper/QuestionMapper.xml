@@ -26,7 +26,7 @@
         from tb_question a
         <where>
             <if test="null != excludePaper">
-                and not exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code != #{excludePaper} )
+                and not exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{excludePaper} )
             </if>
             <if test="null != includePaper">
                 and exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{includePaper} )
@@ -36,7 +36,6 @@
                 <foreach collection="excludeList" item="qcode" open="(" separator="," close=")">
                     #{qcode}
                 </foreach>
-                )
             </if>
         </where>
     </select>

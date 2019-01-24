@@ -1,6 +1,8 @@
 package com.stylefeng.guns.modular.examineMGR.paper.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
@@ -13,6 +15,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperWrapper;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
@@ -42,6 +45,9 @@ public class PaperController extends BaseController {
 
     @Autowired
     private IExaminePaperService examinePaperService;
+
+    @Autowired
+    private IExaminePaperItemService examinePaperItemService;
 
     @Autowired
     private IQuestionService questionService;
@@ -74,6 +80,25 @@ public class PaperController extends BaseController {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
 
         model.addAttribute("item", paper);
+
+        Wrapper<ExaminePaperItem> questionItemQuery = new EntityWrapper<ExaminePaperItem>();
+        questionItemQuery.eq("paper_code", code);
+        questionItemQuery.eq("status", GenericState.Valid.code);
+
+        List<ExaminePaperItem> questionItemList = examinePaperItemService.selectList(questionItemQuery);
+        List<String> questionCodes = new ArrayList<String>();
+        Map<String, String> questionScores = new HashMap<String, String>();
+
+        for(ExaminePaperItem examinePaperItem : questionItemList){
+            String questionCode = examinePaperItem.getQuestionCode();
+            String questionScore = examinePaperItem.getScore();
+
+            questionCodes.add(questionCode);
+            questionScores.put(questionCode, questionScore);
+        }
+
+        model.addAttribute("questionCodes", JSON.toJSONString(questionCodes));
+        model.addAttribute("questionScores", JSON.toJSONString(questionScores));
 
         LogObjectHolder.me().set(paper);
         return PREFIX + "paper_edit.html";
@@ -118,7 +143,7 @@ public class PaperController extends BaseController {
     }
 
     /**
-     * 新增入学诊断
+     * 新增试卷
      */
     @RequestMapping(value = "/add")
     @ResponseBody
@@ -148,4 +173,49 @@ public class PaperController extends BaseController {
         return SUCCESS_TIP;
     }
 
+    /**
+     * 删除试卷
+     */
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public Object delete(@RequestParam String code) {
+        if (ToolUtil.isOneEmpty(code)) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请选择需要删除的试卷 "});
+        }
+        // 只能逻辑删
+        examinePaperService.delete(code);
+        return SUCCESS_TIP;
+    }
+
+
+    /**
+     * 新增入学诊断
+     */
+    @RequestMapping(value = "/update")
+    @ResponseBody
+    public Object update(ExaminePaper paper, String paperItems) {
+        if (ToolUtil.isOneEmpty(paper, paperItems)) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请检查数据"});
+        }
+
+        //解析
+        Set<ExaminePaperItem> workingQuestionList = new HashSet<ExaminePaperItem>();
+        if (ToolUtil.isNotEmpty(paperItems)){
+            StringTokenizer codeIter = new StringTokenizer(paperItems, ";");
+            while(codeIter.hasMoreTokens()){
+                ExaminePaperItem paperItem = new ExaminePaperItem();
+                String[] itemMap = codeIter.nextToken().split("=");
+                paperItem.setQuestionCode(itemMap[0]);
+                paperItem.setScore(itemMap[1]);
+                workingQuestionList.add(paperItem);
+            }
+        }
+
+        Administrator currAdmin = ShiroKit.getUser();
+        paper.setTeacher(currAdmin.getName());
+
+        examinePaperService.update(paper, workingQuestionList);
+
+        return SUCCESS_TIP;
+    }
 }

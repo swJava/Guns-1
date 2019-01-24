@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.examineMGR.paper.warpper;
 
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.core.base.warpper.BaseControllerWarpper;
 
 import java.util.Map;
@@ -18,6 +19,8 @@ public class PaperWrapper extends BaseControllerWarpper {
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-
+        map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
+        map.put("gradesName", ConstantFactory.me().getGradeName(Integer.parseInt((String)map.get("grades"))));
+        map.put("subjectName", ConstantFactory.me().getsubjectName(Integer.parseInt((String)map.get("subject"))));
     }
 }

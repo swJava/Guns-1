@@ -296,6 +296,115 @@ ClassInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = 1 + now.getMonth();
+    if (month < 10)
+        month = '0' + month;
+    var day = now.getDate();
+    if (day < 10)
+        day = '0' + day;
+
+    var today = year + '-' + month + '-' + day;
+    console.log('Calendar today : ' + today);
+
+    var calendar = $('#calendar').fullCalendar({
+        //isRTL: true,
+        buttonHtml: {
+            prev: '<i class="ace-icon fa fa-chevron-left"></i>',
+            next: '<i class="ace-icon fa fa-chevron-right"></i>'
+        },
+
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        events: [
+            {
+                title: 'All Day Event',
+                start: '2019-01-21',
+                className: 'label-important'
+            }
+        ]
+        ,
+        selectable: true,
+        selectHelper: true,
+        select: function(start, end, allDay) {
+
+            bootbox.prompt("New Event Title:", function(title) {
+                if (title !== null) {
+                    calendar.fullCalendar('renderEvent',
+                        {
+                            title: title,
+                            start: start,
+                            end: end,
+                            allDay: allDay
+                        },
+                        true // make the event "stick"
+                    );
+                }
+            });
+
+
+            calendar.fullCalendar('unselect');
+        }
+        ,
+        eventClick: function(calEvent, jsEvent, view) {
+
+            //display a modal
+            var modal =
+                '<div class="modal fade">\
+                  <div class="modal-dialog">\
+                   <div class="modal-content">\
+                     <div class="modal-body">\
+                       <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                       <form class="no-margin">\
+                          <label>Change event name &nbsp;</label>\
+                          <input class="middle" autocomplete="off" type="text" value="' + calEvent.title + '" />\
+					 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
+				   </form>\
+				 </div>\
+				 <div class="modal-footer">\
+					<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
+					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+				 </div>\
+			  </div>\
+			 </div>\
+			</div>';
+
+
+            var modal = $(modal).appendTo('body');
+            modal.find('form').on('submit', function(ev){
+                ev.preventDefault();
+
+                calEvent.title = $(this).find("input[type=text]").val();
+                calendar.fullCalendar('updateEvent', calEvent);
+                modal.modal("hide");
+            });
+            modal.find('button[data-action=delete]').on('click', function() {
+                calendar.fullCalendar('removeEvents' , function(ev){
+                    return (ev._id == calEvent._id);
+                })
+                modal.modal("hide");
+            });
+
+            modal.modal('show').on('hidden', function(){
+                modal.remove();
+            });
+
+
+            //console.log(calEvent.id);
+            //console.log(jsEvent);
+            //console.log(view);
+
+            // change the border color just for fun
+            //$(this).css('border-color', 'red');
+
+        }
+    });
+
     // 课程列表初始化
     if ($('#' + ClassInfoDlg.courseTable.id)) {
         var courseDisplaColumns = ClassInfoDlg.courseTable.initColumn();
@@ -355,10 +464,12 @@ $(function() {
         }
     })
     $('#studyTimeValue').val(studyTimeValues);
+    /*
     $.each($('#studyTimeValueValue').val().split(','), function(i, eo) {
         $('input[name="studyTimeValue"]').each(function(ii, eeo){
             if ($(eeo).val() == eo)
                 $(eeo).attr('checked', true);
         })
     });
+    */
 });

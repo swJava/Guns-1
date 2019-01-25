@@ -5,6 +5,7 @@ var ClassInfoDlg = {
     courseTable : {
         id : 'courseTable'
     },
+    layerIndex: -1,
     classInfoData : {},
     validateFields: {
         code: {
@@ -313,46 +314,67 @@ $(function() {
         //isRTL: true,
         buttonHtml: {
             prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-            next: '<i class="ace-icon fa fa-chevron-right"></i>'
+            next: '<i class="ace-icon fa fa-chevron-right"></i>',
+            today: '今天'
         },
 
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'month,agendaDay'
         },
-        events: [
-            {
-                title: 'All Day Event',
-                start: '2019-01-21',
-                className: 'label-important'
-            }
-        ]
+        events: function(start, end, timezone, callback) {
+            $.ajax({
+                url: Feng.ctxPath + '/class/plan/list',
+                dataType: 'json',
+                success: function(response) {
+                    var events = [];
+
+                    $(response.allClassPlanList).each(function(idx, eo) {
+                        events.push({
+                            title: eo.description,
+                            start: eo.classBeginTime,
+                            end: eo.classEndTime
+                        });
+                    });
+                    callback(events);
+                }
+            });
+        }
         ,
         selectable: true,
         selectHelper: true,
         select: function(start, end, allDay) {
 
-            bootbox.prompt("New Event Title:", function(title) {
-                if (title !== null) {
-                    calendar.fullCalendar('renderEvent',
-                        {
-                            title: title,
-                            start: start,
-                            end: end,
-                            allDay: allDay
-                        },
-                        true // make the event "stick"
-                    );
-                }
-            });
+            var currView = calendar.fullCalendar('getView');
+            if ('month' == currView.name){
+                // 跳转视图到day
+                calendar.fullCalendar('changeView', 'agendaDay');
+                calendar.fullCalendar('gotoDate', start.format('YYYY-MM-DD'));
+            }else if ('agendaDay' == currView.name){
+                bootbox.prompt("New Event Title:", function(title) {
+                    if (title !== null) {
 
+                        var beginTime = start.format('H:mm');
+                        var endTime = end.format('H:mm');
+                        calendar.fullCalendar('renderEvent',
+                            {
+                                title: beginTime + ' ~ ' + endTime + ': ' + title,
+                                start: start,
+                                end: end
+                            },
+                            true // make the event "stick"
+                        );
+
+                        calendar.fullCalendar('changeView', 'month');
+                    }
+                });
+            }
 
             calendar.fullCalendar('unselect');
         }
         ,
         eventClick: function(calEvent, jsEvent, view) {
-
             //display a modal
             var modal =
                 '<div class="modal fade">\

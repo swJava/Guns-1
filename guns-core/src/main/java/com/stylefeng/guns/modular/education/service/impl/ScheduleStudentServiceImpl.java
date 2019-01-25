@@ -89,7 +89,7 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
         newPlan.setCode(CodeKit.generateStudentSchedule());
         newPlan.setClassCode(targetClass);
         newPlan.setClassName(classInfo.getName());
-        newPlan.setStudyDate(targetScheduleClass.getClassDate());
+        newPlan.setStudyDate(targetScheduleClass.getStudyDate());
         newPlan.setPcode(currPlan.getCode());
         newPlan.setFcode(null == currPlan.getFcode() ? currPlan.getCode() : currPlan.getFcode());
         newPlan.setPcodes(null == currPlan.getPcodes() ? currPlan.getCode() : currPlan.getPcodes() + "," + currPlan.getCode());
@@ -142,7 +142,7 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
             newPlan.setClassName(classInfo.getName());
             newPlan.setOutlineCode(scheduleClass.getOutlineCode());
             newPlan.setOutline(scheduleClass.getOutline());
-            newPlan.setStudyDate(scheduleClass.getClassDate());
+            newPlan.setStudyDate(scheduleClass.getStudyDate());
             newPlan.setStatus(GenericState.Valid.code);
 
             planList.add(newPlan);

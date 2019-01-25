@@ -1,10 +1,12 @@
 package com.stylefeng.guns.modular.education.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -22,4 +24,12 @@ public interface IScheduleClassService extends IService<ScheduleClass> {
      * @param code
      */
     void deleteClassSchedule(String code);
+
+    /**
+     * 查询排课表
+     *
+     * @param queryMap
+     * @return
+     */
+    List<ClassPlanDto> selectPlanList(Map<String, Object> queryMap);
 }

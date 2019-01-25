@@ -159,7 +159,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 scheduleStudent.setClassName(courseCart.getClassName());
                 scheduleStudent.setOutlineCode(classSchedule.getOutlineCode());
                 scheduleStudent.setOutline(classSchedule.getOutline());
-                scheduleStudent.setStudyDate(classSchedule.getClassDate());
+                scheduleStudent.setStudyDate(classSchedule.getStudyDate());
                 scheduleStudent.setStatus(GenericState.Valid.code);
 
                 scheduleStudentService.insert(scheduleStudent);

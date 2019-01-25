@@ -5,6 +5,8 @@ import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
 import com.stylefeng.guns.modular.payMGR.WxPayRequestBuilder;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.core.SimpleResponser;
+import com.stylefeng.guns.rest.modular.pay.responser.RandomResponser;
 import com.stylefeng.guns.rest.modular.pay.responser.SignResponser;
 import com.stylefeng.guns.util.MD5Util;
 import com.thoughtworks.xstream.XStream;
@@ -55,6 +57,14 @@ public class PayController extends ApiController {
     public Responser unionSign(@RequestBody Map<String, Object> requestParams){
         String signCode = sign(unionSecret, requestParams);
         return SignResponser.me("MD5", signCode);
+    }
+
+    @ApiOperation(value="微信支付随机数", httpMethod = "POST", response = RandomResponser.class)
+    @RequestMapping(value = "/weixin/random", method = RequestMethod.POST)
+    public Responser weixinRandom(){
+        String uuid = UUID.randomUUID().toString();
+        String random = MD5Util.encrypt(uuid).toUpperCase();
+        return RandomResponser.me(random);
     }
 
     @RequestMapping(value = "/weixin/notify", method = RequestMethod.POST)

@@ -10,14 +10,19 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.courseMGR.warpper.CourseWrapper;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
+import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import com.stylefeng.guns.util.DateUtil;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +53,8 @@ public class ClassController extends BaseController {
     private ICourseOutlineService courseOutlineService;
     @Autowired
     private ICourseService courseService;
+    @Autowired
+    private IScheduleClassService scheduleClassService;
 
     /**
      * 跳转到课程管理首页
@@ -104,6 +111,15 @@ public class ClassController extends BaseController {
         return PREFIX + "class_edit.html";
     }
 
+
+    /**
+     * 跳转到修改课程管理
+     */
+    @RequestMapping("/class_schedule/add")
+    public String classSchedule(Model model) {
+        return PREFIX + "class_schedule.html";
+    }
+
     /**
      * 获取课程管理列表
      */
@@ -148,7 +164,7 @@ public class ClassController extends BaseController {
     }
 
     /**
-     * 新增课程管理
+     * 新增班级
      */
     @RequestMapping(value = "/add")
     @ResponseBody
@@ -168,7 +184,7 @@ public class ClassController extends BaseController {
     }
 
     /**
-     * 删除课程管理
+     * 删除班级
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
@@ -181,7 +197,7 @@ public class ClassController extends BaseController {
     }
 
     /**
-     * 修改课程管理
+     * 修改班级
      */
     @RequestMapping(value = "/update")
     @ResponseBody
@@ -206,6 +222,28 @@ public class ClassController extends BaseController {
 
         classService.updateClass(classInstance);
         return SUCCESS_TIP;
+    }
+
+    @RequestMapping("/plan/list")
+    @ResponseBody
+    public Object planList(String classCode){
+
+        Map<String, Object> classPlanList = new HashMap<String, Object>();
+
+        Date now = new Date();
+
+        Date beginDate = DateUtils.truncate(now, Calendar.MONTH);
+        Date endDate = DateUtils.addMonths(beginDate, 6);
+
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("beginDate", beginDate);
+        queryMap.put("endDate", endDate);
+        queryMap.put("status", GenericState.Valid.code);
+
+        List<ClassPlanDto> planList = scheduleClassService.selectPlanList(queryMap);
+
+        classPlanList.put("allClassPlanList", planList);
+        return classPlanList;
     }
 
     /**

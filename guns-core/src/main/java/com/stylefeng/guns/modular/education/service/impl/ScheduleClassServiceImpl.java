@@ -7,6 +7,7 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ScheduleClassMapper;
 import com.stylefeng.guns.modular.system.model.Class;
@@ -16,10 +17,7 @@ import com.stylefeng.guns.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -31,6 +29,9 @@ import java.util.List;
 public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, ScheduleClass> implements IScheduleClassService {
     @Autowired
     private ICourseOutlineService courseOutlineService;
+
+    @Autowired
+    private ScheduleClassMapper scheduleClassMapper;
 
     @Override
     public void scheduleClass(com.stylefeng.guns.modular.system.model.Class classInstance, Integer studyTimeType, List<Integer> valueList) {
@@ -56,6 +57,11 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
         classScheduleWrapper.eq("class_code", code);
 
         delete(classScheduleWrapper);
+    }
+
+    @Override
+    public List<ClassPlanDto> selectPlanList(Map<String, Object> queryMap) {
+        return scheduleClassMapper.selectPlanList(queryMap);
     }
 
     private void scheduleClassWeek(Class classInstance, List<CourseOutline> outlineList, List<Integer> valueList) {
@@ -89,7 +95,7 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
                 c.setTime(calDate);
                 int week = c.get(Calendar.DAY_OF_WEEK);
                 if (valueList.contains(week)){
-                    scheduleClass.setClassDate(calDate);
+                    scheduleClass.setStudyDate(calDate);
                     scheduleClass.setWeek(week);
 
                     scheduleClassList.add(scheduleClass);

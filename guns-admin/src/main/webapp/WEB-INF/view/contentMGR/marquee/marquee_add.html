@@ -1,0 +1,74 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="marqueeInfoForm">
+            <input type="hidden" id="type" value="1">
+            <input type="hidden" id="publishType" value="2">
+            <input type="hidden" id="author" value="科萃教育">
+            <div class="row">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2"></label>
+                            <div class="col-sm-9">
+                                <div class="head-scu-btn upload-btn" id="timageBtnId">
+                                    <i class="fa fa-upload"></i>&nbsp;上传
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label head-scu-label">标题图片</label>
+                            <div class="col-sm-9">
+                                <div id="timagePreId">
+                                    <div><img id="displayImage" width="100%" height="150px" src="${ctxPath}/attachment/view/icon/0"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="masterCode" value=""/>
+                            <input type="hidden" id="masterName" value=""/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">内容标题</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="title" name="title" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">内容简介</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="introduce" name="introduce" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">发布内容</label>
+                        <div class="col-sm-9">
+                            <div id="editor" class="editorHeight">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="MarqueeInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="MarqueeInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+<#script src="/static/modular/contentMGR/marquee/marquee_info.js" />
+@}

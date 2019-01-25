@@ -3,25 +3,23 @@ package com.stylefeng.guns.modular.memberMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.member.MemberStateEnum;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
-import com.stylefeng.guns.modular.system.dao.MemberAuthMapper;
-import com.stylefeng.guns.modular.system.dao.MemberMapper;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.MemberAuth;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.dao.*;
+import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.*;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotBlank;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * <p>
@@ -37,6 +35,18 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 
     @Autowired
     private MemberAuthMapper memberAuthMapper;
+
+    @Autowired
+    private IMemberService memberService;
+
+    @Autowired
+    private IStudentService studentService;
+
+    @Autowired
+    private IClassService classService;
+
+    @Autowired
+    private StudentClassMapper studentClassMapper;
 
     @Value("${application.settings.default-password:'201800'}")
     private String defaultPassword;
@@ -176,6 +186,46 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         if (null == userName)
             return null;
         return selectOne(new EntityWrapper<Member>().eq("user_name", userName));
+    }
+
+    @Override
+    public Map<String, Set<Class>> findMyClasses(String userName, String student) {
+        if (null == userName)
+            return new HashMap<>();
+
+        Member member = memberService.selectOne(new EntityWrapper<Member>().eq("user_name", userName));
+
+        if (null == member || !(member.isValid()))
+            return new HashMap<>();
+
+        List<Student> studentList = new ArrayList<Student>();
+        if (null == student){
+             studentList.addAll(studentService.listStudents(userName));
+        }else{
+            Student existStudent = studentService.get(student);
+            if (null != existStudent || existStudent.isValid()){
+                studentList.add(existStudent);
+            }
+        }
+
+        Map<String, Set<Class>> resultMap = new HashMap<>();
+
+        for(Student currStudent : studentList){
+            Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+            Set<Class> classSet = new HashSet<>();
+
+            String studentCode = currStudent.getCode();
+            queryWrapper.eq("student_code", studentCode);
+            queryWrapper.eq("status", GenericState.Valid.code);
+
+            List<StudentClass> studentClassList = studentClassMapper.selectList(queryWrapper);
+            for(StudentClass studentClass : studentClassList){
+                classSet.add(classService.get(studentClass.getClassCode()));
+            }
+            resultMap.put(studentCode, classSet);
+        }
+
+        return resultMap;
     }
 
     private MemberAuth buildMemberAuthInfo(Member member) {

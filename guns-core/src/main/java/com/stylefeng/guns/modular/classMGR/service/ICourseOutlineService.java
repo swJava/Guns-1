@@ -1,7 +1,10 @@
 package com.stylefeng.guns.modular.classMGR.service;
 
-import com.stylefeng.guns.modular.system.model.CourseOutline;
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.Course;
+import com.stylefeng.guns.modular.system.model.CourseOutline;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,10 +19,17 @@ public interface ICourseOutlineService extends IService<CourseOutline> {
 
     /**
      * 新增课程大纲
-     * @param classCode         班级编码
-     * @param courseCode        课程编码
-     * @param courseValues      课程大纲列表str
+     *
+     * @param course        课程
+     * @param outlineList      课程大纲列表
      */
-    void addCourseOutline(String classCode,String courseCode,String courseValues);
+    void addCourseOutline(Course course,List<CourseOutline> outlineList);
 
+    /**
+     * 获取课时信息
+     *
+     * @param outlineCode
+     * @return
+     */
+    CourseOutline get(String outlineCode);
 }

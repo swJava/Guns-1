@@ -21,7 +21,7 @@ public class QuestionWrapper extends BaseControllerWarpper{
     protected void warpTheMap(Map<String, Object> map) {
         map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
         map.put("typeName", ConstantFactory.me().getQuestionTypeName((Integer) map.get("type")));
-        map.put("gradeName", ConstantFactory.me().getGradeName((Integer) map.get("grade")));
         map.put("subjectName", ConstantFactory.me().getsubjectName((Integer) map.get("subject")));
+        map.put("score", 0);
     }
 }

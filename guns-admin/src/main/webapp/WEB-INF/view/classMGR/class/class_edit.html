@@ -1,83 +1,124 @@
 @layout("/common/_container.html"){
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <div class="form-horizontal" id="classInfoForm">
+        <div class="row row-lg">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="form-horizontal" id="classInfoForm">
 
-            <input type="hidden" id="id" value="${item.id}">
-            <input type="hidden" id="statusValue" value="${item.status}">
-            <input type="hidden" id="studyTimeTypeValue" value="${item.studyTimeType}">
-            <input type="hidden" id="classRoomCodeValue" value="${item.classRoomCode}">
-            <input type="hidden" id="gradeValue" value="${item.gradeCode}">
+                        <input type="hidden" id="id" value="${classItem.id}">
+                        <input type="hidden" id="code" value="${classItem.code}">
+                        <input type="hidden" id="courseCode" value="${courseItem.code}">
+                        <input type="hidden" id="grade" value="${courseItem.grade}">
+                        <input type="hidden" id="subject" value="${courseItem.subject}">
+                        <input type="hidden" id="cycleValue" value="${classItem.cycle}">
+                        <input type="hidden" id="abilityValue" value="${classItem.ability}">
+                        <input type="hidden" id="teacherCodeValue" value="${classItem.teacherCode}">
+                        <input type="hidden" id="teacherSecondCodeValue" value="${classItem.teacherSecondCode}">
+                        <input type="hidden" id="studyTimeType" value="7">
+                        <input type="hidden" id="studyTimeValue" value="">
+                        <input type="hidden" id="studyTimeValueValue" value="${classItem.studyTimeValue}">
+                        <input type="hidden" id="classRoomCodeValue" value="${classItem.classRoomCode}">
 
-            <input type="hidden" id="classRoom" >
-            <input type="hidden" id="courseName" >
-            <input type="hidden" id="teacher" >
-            <input type="hidden" id="teacherSecond" >
-
-            <div class="row">
-                <div class="col-sm-6 b-r">
-                            <#input id="code" name="班级编码" value="${item.code}" underline="true"/>
-                            <#input id="name" name="班级名称" value="${item.name}" underline="true"/>
-                            <#dictSelector id="cycle" name="年级" code="school_grade" label="年级"  underline="true" width="75%"/>
-                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
-                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
-                            <#input id="beginDate" name="开课起始日期" value="${item.beginDate}" underline="true"/>
-                            <#input id="endDate" name="开课结束日期" value="${item.endDate}" underline="true"/>
-                            <#dictSelector id="studyTimeType" name ="开课时间类型" code="time_type_code" label="开课时间类型"  underline="true"  width="75%"/>
-                            <#input id="studyTimeValue" name="开课时间" value="${item.studyTimeValue}" underline="true"/>
-                            <#input id="beginTime" name="开始时间" value="${item.beginTime}" underline="true"/>
-                            <#input id="endTime" name="结束时间" value="${item.endTime}" underline="true"/>
-                </div>
-
-                <div class="col-sm-6">
-                            <#input id="duration" name="时长（分钟）" value="${item.duration}" />
-                            <div class="hr-line-dashed" ></div >
-                            <#input id="period" name="课时数" value="${item.period}" underline="true"/>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">教室</label>
-                                <div class="col-sm-9">
-                                    <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
-                                </div>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <#input id="courseName" name="课程名称" readonly="true" value="${courseItem.name}" underline="true"/>
+                                <#input id="gradeName" name="授课年级" readonly="true" value="${courseItem.grade}" underline="true"/>
+                                <#input id="period" name="总学时" readonly="true" value="${courseItem.period}" underline="true"/>
                             </div>
-                            <div class="hr-line-dashed" ></div >
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">课程名称</label>
-                                <div class="col-sm-9">
-                                    <select id="courseCode" name="课程名称" class="form-control" style="width:75%px"></select>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div >
-                            <#input id="star" name="关注度" value="${item.star}" underline="true"/>
-                            <#input id="quato" name="剩余报名人数" value="${item.quato}" underline="true"/>
-                            <#input id="signEndDate" name="报名截止时间" value="${item.signEndDate}" underline="true"/>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">主讲教师名称</label>
-                                <div class="col-sm-9">
-                                    <select id="teacherCode" name="主讲教师名称" class="form-control" style="width:75%px"></select>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div >
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">辅导教师名称</label>
-                                <div class="col-sm-9">
-                                    <select id="teacherSecondCode" name="辅导教师名称" class="form-control" style="width:75%px"></select>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div >
-                            <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
-            </div>
 
-            <div class="row btn-group-m-t">
-                <div class="col-sm-10">
-                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ClassInfoDlg.editSubmit()"/>
-                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ClassInfoDlg.close()"/>
+                            <div class="col-sm-6">
+                                <#input id="subjectName" name="学科" readonly="true" value="${courseItem.subjectName}" underline="true"/>
+                                <#input id="methodName" name="授课方式" readonly="true" value="${courseItem.methodName}" underline="true" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <#input id="name" name="班级名称" value="${classItem.name}" underline="true"/>
+                                <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                                <#input id="beginDate" name="开始日期" value="${classItem.beginDate}" underline="true" type="text"/>
+                                <#input id="beginTime" name="上课时间" value="${classItem.beginTime}" underline="true"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">讲师</label>
+
+                                    <div class="col-sm-9">
+                                        <select id="teacherCode" name="讲师" class="form-control"
+                                                style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <#input id="signEndDate" name="截止时间" value="${classItem.signEndDate}" underline="true"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="price" name="价格(元)" value="${classItem.price}" underline="true"/>
+                                <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
+                                <#input id="endDate" name="结束日期" value="${classItem.endDate}" underline="true"/>
+                                <#input id="endTime" name="下课时间" value="${classItem.endTime}" underline="true"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">辅导员</label>
+
+                                    <div class="col-sm-9">
+                                        <select id="teacherSecondCode" name="辅导员" class="form-control"
+                                                style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">教室</label>
+                                    <div class="col-sm-9">
+                                        <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 b-r">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" style="margin-left: -30px;">排课时间</label>
+
+                                    <div class="col-sm-10">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="1">周日
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="2">周一
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="3">周二
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="4">周三
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="5">周四
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="6">周五
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="studyTimeValue" value="7">周六
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                            </div>
+                        </div>
+
+                        <div class="row btn-group-m-t">
+                            <div class="col-sm-10">
+                                <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ClassInfoDlg.editSubmit()"/>
+                                <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ClassInfoDlg.close()"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-<script src="${ctxPath}/static/modular/classMGR/class/class_info.js"></script>
+<#script src="/static/modular/classMGR/class/class_info.js" />
 <script>
     laydate.render({
         elem: '#beginDate'

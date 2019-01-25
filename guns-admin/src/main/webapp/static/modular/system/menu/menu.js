@@ -53,6 +53,7 @@ Menu.openAddMenu = function () {
         maxmin: true,
         content: Feng.ctxPath + '/menu/menu_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -69,6 +70,7 @@ Menu.openChangeMenu = function () {
             maxmin: true,
             content: Feng.ctxPath + '/menu/menu_edit/' + this.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };

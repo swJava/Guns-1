@@ -45,50 +45,23 @@ AdjustStudentInfoDlg.close = function() {
  */
 AdjustStudentInfoDlg.collectData = function() {
     this
-    .set('id')
-    .set('classCode')
-    .set('studentCode')
-    .set('type')
-    .set('userName')
-    .set('target')
-    .set('status')
-    .set('workStatus')
+    .set('applyId')
     .set('remark')
-    .set('createTime')
-    .set('updateTime');
+    ;
 }
 
-/**
- * 提交添加
- */
-AdjustStudentInfoDlg.addSubmit = function() {
-
-    this.clearData();
-    this.collectData();
-
-    //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/adjustStudent/add", function(data){
-        Feng.success("添加成功!");
-        window.parent.AdjustStudent.table.refresh();
-        AdjustStudentInfoDlg.close();
-    },function(data){
-        Feng.error("添加失败!" + data.responseJSON.message + "!");
-    });
-    ajax.set(this.adjustStudentInfoData);
-    ajax.start();
-}
 
 /**
  * 提交修改
  */
-AdjustStudentInfoDlg.editSubmit = function() {
+AdjustStudentInfoDlg.doApprove = function(op) {
 
     this.clearData();
     this.collectData();
 
     //提交信息
-    var ajax = new $ax(Feng.ctxPath + "/adjustStudent/update", function(data){
-        Feng.success("修改成功!");
+    var ajax = new $ax(Feng.ctxPath + "/adjust/approve/" + op, function(data){
+        Feng.success("操作成功!");
         window.parent.AdjustStudent.table.refresh();
         AdjustStudentInfoDlg.close();
     },function(data){

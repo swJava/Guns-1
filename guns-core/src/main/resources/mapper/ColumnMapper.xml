@@ -18,4 +18,32 @@
         id, code, name, icon, pcode, pcodes, status
     </sql>
 
+
+    <select id="columnTreeList" resultType="com.stylefeng.guns.core.node.ZTreeNode2nd">
+        SELECT
+        c1.code AS code,
+        (
+        CASE
+        WHEN (c2.code = 'LM000000' OR c2.code IS NULL) THEN
+        'LM000000'
+        ELSE
+        c2.code
+        END
+        ) AS pcode,
+        c1. NAME
+        AS NAME,
+        (
+        CASE
+        WHEN (c2.code = 'LM000000' OR c2.code IS NULL) THEN
+        'true'
+        ELSE
+        'false'
+        END
+        ) as isOpen
+        FROM
+        tb_column c1
+        LEFT join tb_column c2 ON c1.pcode = c2.code
+        ORDER BY
+        c1.id ASC
+    </select>
 </mapper>

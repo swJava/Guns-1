@@ -88,7 +88,9 @@ ColumnInfoDlg.collectData = function() {
     .set('icon')
     .set('pcode')
     .set('pcodes')
-    .set('status');
+    .set('status')
+    .set('masterName')
+    .set('masterCode');
 }
 
 /**
@@ -107,6 +109,7 @@ ColumnInfoDlg.addSubmit = function() {
     },function(data){
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
+    //console.log('data ==> ' + this.columnInfoData);
     ajax.set(this.columnInfoData);
     ajax.start();
 }

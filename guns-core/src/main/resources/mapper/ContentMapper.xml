@@ -20,7 +20,51 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, type, timage, title, introduce, author, publish_type, content, create_date, dead_date, status
+        a.id, a.code, a.type, a.timage, a.title, a.introduce, a.author, a.publish_type, a.content, a.create_date, a.dead_date, a.status
     </sql>
+
+    <sql id="Outline_Column_List">
+        a.id, a.code, a.type, a.timage, a.title, a.introduce, a.author, a.publish_type, a.create_date, a.dead_date, a.status
+    </sql>
+
+    <select id="selectByColumn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_content a, tb_content_category b
+        <where>
+            a.code = b.content_code and b.column_code = #{column}
+        </where>
+    </select>
+
+    <select id="selectOutlineByColumn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Outline_Column_List" />
+        from tb_content a, tb_content_category b
+        <where>
+            a.code = b.content_code and b.column_code = #{column}
+        </where>
+    </select>
+
+    <select id="selectByColumns" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_content a
+        <where>
+            <if test="excludeList.size() > 0">
+                and not exists ( select 1 from tb_content_category where content_code = a.code and column_code in
+                <foreach collection="excludeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+                )
+            </if>
+            <if test="includeList.size() > 0">
+                and exists ( select 1 from tb_content_category where content_code = a.code and column_code in
+                <foreach collection="includeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
 
 </mapper>

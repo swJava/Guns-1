@@ -90,6 +90,7 @@ ContentInfoDlg.close = function() {
  */
 ContentInfoDlg.collectData = function() {
     this.contentInfoData['content'] = ContentInfoDlg.editor.txt.html();
+    console.log(ContentInfoDlg.editor.txt.html());
     this
     .set('id')
     .set('code')
@@ -101,7 +102,9 @@ ContentInfoDlg.collectData = function() {
     .set('publishType')
     .set('createDate')
     .set('deadDate')
-    .set('status');
+    .set('status')
+        .set('masterName')
+        .set('masterCode');
 }
 
 /**

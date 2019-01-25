@@ -2,15 +2,23 @@ package com.stylefeng.guns.modular.contentMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.core.node.ZTreeNode;
+import com.stylefeng.guns.core.node.ZTreeNode2nd;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.warpper.ColumnWrapper;
+import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Column;
-import com.stylefeng.guns.util.CodeKit;
+import com.stylefeng.guns.modular.system.model.Teacher;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
+import com.stylefeng.guns.modular.system.warpper.MenuWarpper;
+import com.stylefeng.guns.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * 栏目控制器
@@ -30,11 +38,15 @@ import java.util.Map;
      @Controller
 @RequestMapping("/column")
 public class ColumnController extends BaseController {
+    private static final Logger log = LoggerFactory.getLogger(ColumnController.class);
 
     private String PREFIX = "/column/column/";
 
     @Autowired
     private IColumnService columnService;
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     /**
      * 跳转到栏目首页
@@ -48,7 +60,11 @@ public class ColumnController extends BaseController {
      * 跳转到添加栏目
      */
     @RequestMapping("/column_add")
-    public String columnAdd() {
+    public String columnAdd(Model model) {
+        Map<String, Object> iconInfo = new HashMap<>();
+        iconInfo.put("id", 0);
+        model.addAttribute("icon", iconInfo);
+
         return PREFIX + "column_add.html";
     }
 
@@ -59,8 +75,29 @@ public class ColumnController extends BaseController {
     public String columnUpdate(@PathVariable Integer columnId, Model model) {
         Column column = columnService.selectById(columnId);
         model.addAttribute("item",column);
+
+        long id = 0L;
+        List<Attachment> attachmentList = attachmentService.listAttachment(Column.class.getSimpleName(), String.valueOf(column.getId()));
+        if (null != attachmentList && attachmentList.size() > 0)
+            id = attachmentList.get(0).getId();
+        Map<String, Object> iconInfo = new HashMap<>();
+        iconInfo.put("id", id);
+        model.addAttribute("icon", iconInfo);
+
         LogObjectHolder.me().set(column);
         return PREFIX + "column_edit.html";
+    }
+
+    /**
+     * 跳转到修改栏目
+     */
+    @RequestMapping("/collector/{columnCode}")
+    public String columnCollector(@PathVariable("columnCode") String code, Model model) {
+        Column column = columnService.get(code);
+        model.addAttribute("item",column);
+
+        LogObjectHolder.me().set(column);
+        return PREFIX + "column_collect.html";
     }
 
     /**
@@ -70,19 +107,35 @@ public class ColumnController extends BaseController {
     @ResponseBody
     public Object list(String condition) {
         //分页查詢
-        Page<Column> page = new PageFactory<Column>().defaultPage();
-        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
-                }
-            }
-        });
+//        Page<Column> page = new PageFactory<Column>().defaultPage();
+//        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
+//            {
+//                //name条件分页
+//                if (StringUtils.isNotEmpty(condition)) {
+//                    like("name", condition);
+//                }
+//            }
+//        });
+        Wrapper<Column> queryWrapper = new EntityWrapper<Column>();
+        if (StringUtils.isNoneEmpty(condition)){
+            queryWrapper.ge("name", condition);
+            queryWrapper.gt("na", condition);
+            queryWrapper.le("xeer", condition);
+            queryWrapper.lt("yy", condition);
+            queryWrapper.like("xzz", condition);
+            queryWrapper.eq("nd", condition);
+        }
+
+        String select = queryWrapper.getSqlSelect();
+        String segment = queryWrapper.getSqlSegment();
+        Map<String, Object> pairs  = queryWrapper.getParamNameValuePairs();
+        List<Map<String, Object>> columns = columnService.selectMaps(queryWrapper);
+        return super.warpObject(new ColumnWrapper(columns));
         //包装数据
-        new ColumnWrapper(pageMap.getRecords()).warp();
-        return super.packForBT(pageMap);
+//        new ColumnWrapper(pageMap.getRecords()).warp();
+//        return super.packForBT(pageMap);
     }
+
     /**
      * 获取栏目列表
      */
@@ -97,7 +150,7 @@ public class ColumnController extends BaseController {
      */
     @RequestMapping(value = "/add")
     @ResponseBody
-    public Object add(Column column) {
+    public Object add(Column column, String masterCode, String masterName) {
         if(StringUtils.isNotEmpty(column.getPcode())){
             Column code = columnService.selectOne(new EntityWrapper<Column>() {
                 {
@@ -105,9 +158,30 @@ public class ColumnController extends BaseController {
                 }
             });
             column.setPcodes(code.getPcodes()+","+code.getCode());
+        }else{
+            column.setPcode("LM000000");
+            column.setPcodes("LM000000");
         }
-        column.setCode(CodeKit.generateColumn());
-        columnService.insert(column);
+
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList && attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            column.setIcon(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
+        columnService.create(column);
+
+        // 更新ICON资源
+        if (null != icon && null != icon.getId())
+            try {
+                icon.setMasterName(Column.class.getSimpleName());
+                icon.setMasterCode(String.valueOf(column.getCode()));
+
+                attachmentService.updateById(icon);
+            }catch(Exception e){
+                log.warn("更新图标失败");
+            }
         return SUCCESS_TIP;
     }
 
@@ -126,8 +200,62 @@ public class ColumnController extends BaseController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Object update(Column column) {
+    public Object update(Column column, String masterName, String masterCode) {
+        Attachment icon = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList && attachmentList.size() > 0){
+            icon = attachmentList.get(0);
+            column.setIcon(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
+        }
+
         columnService.updateById(column);
+
+        // 更新ICON资源
+        if (null != icon && null != icon.getId())
+            try {
+                icon.setMasterName(Column.class.getSimpleName());
+                icon.setMasterCode(String.valueOf(column.getId()));
+
+                attachmentService.updateAndRemoveOther(icon);
+            }catch(Exception e){
+                log.warn("更新图标失败");
+            }
+        return SUCCESS_TIP;
+    }
+
+    @RequestMapping(value = "/relation/add")
+    @ResponseBody
+    public Object addContent(String column , String contents){
+
+        if (null == contents)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"关联文章"});
+
+        StringTokenizer tokenizer = new StringTokenizer(contents, ",");
+        Set<String> contentCodes = new HashSet<String>();
+        while(tokenizer.hasMoreTokens()){
+            contentCodes.add(tokenizer.nextToken());
+        }
+        columnService.addContent(column, contentCodes);
+
+        return SUCCESS_TIP;
+    }
+
+
+    @RequestMapping(value = "/relation/remove")
+    @ResponseBody
+    public Object removeContent(String column , String contents){
+
+        if (null == contents)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"关联文章"});
+
+        StringTokenizer tokenizer = new StringTokenizer(contents, ",");
+        Set<String> contentCodes = new HashSet<String>();
+        while(tokenizer.hasMoreTokens()){
+            contentCodes.add(tokenizer.nextToken());
+        }
+
+        columnService.removeContent(column, contentCodes);
+
         return SUCCESS_TIP;
     }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ExamineAnswerDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ExamineAnswerDetail">
+        <id column="id" property="id" />
+        <result column="answer_code" property="answerCode" />
+        <result column="question_code" property="questionCode" />
+        <result column="student_answer" property="studentAnswer" />
+        <result column="answer" property="answer" />
+        <result column="status" property="status" />
+        <result column="score" property="score" />
+        <result column="total_score" property="totalScore" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, answer_code, question_code, student_answer, answer, status, score, total_score
+    </sql>
+
+</mapper>

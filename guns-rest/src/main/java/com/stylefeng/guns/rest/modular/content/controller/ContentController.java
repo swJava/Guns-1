@@ -22,10 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +78,15 @@ public class ContentController {
             @ApiImplicitParam(name = "code", value = "类别编码", required = true, dataType = "String"),
             @ApiImplicitParam(name = "size", value = "数量", defaultValue = "5", dataType = "Integer")
     })
-    public Responser articleList(String keyword, String code, Integer size){
+    public Responser articleList(
+            String keyword,
+            String code,
+            Integer size){
         if (null == size)
             size = 5;
+
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目编码"});
 
         Wrapper<ContentCategory> queryWrapper = new EntityWrapper<ContentCategory>();
         queryWrapper.eq("status", GenericState.Valid.code);
@@ -99,6 +102,9 @@ public class ContentController {
         List<Content> contentList = new ArrayList<Content>();
         for (ContentCategory contentCategory : categoryList){
             Content content = contentService.get(contentCategory.getContentCode());
+            if (null == content)
+                continue;
+
             content.setContent(null);
             contentList.add(content);
         }
@@ -111,9 +117,7 @@ public class ContentController {
     @ApiOperation(value="文章详情", httpMethod = "POST", response = ArticleDetailResponse.class)
     @ApiImplicitParam(name = "code", value = "内容编码", required = true, dataType = "String", example = "CT000001")
     public Responser detailForArticle(@PathVariable("code") String code){
-        Wrapper<Content> queryWrapper = new EntityWrapper<Content>();
-
-        Content content = contentService.selectOne(queryWrapper);
+        Content content = contentService.get(code);
 
         if (null == content)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);

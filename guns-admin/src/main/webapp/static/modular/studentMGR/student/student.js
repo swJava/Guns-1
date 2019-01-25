@@ -16,13 +16,7 @@ Student.initColumn = function () {
         {field: 'selectItem', radio: true},
             {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle',
                 formatter:function (value,row,index) {
-                    var imgUrl;
-                    if(row.avatar != null && row.avatar != ''){
-                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.avatar +'" width="64px" height="64px">';
-                    }else {
-                        imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
-                    }
-                    return imgUrl;
+                    return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Student&masterCode='+row.code+'" width="64px" height="64px">';
                 }
             },
             {title: '学员编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
@@ -56,11 +50,12 @@ Student.openAddStudent = function () {
     var index = layer.open({
         type: 2,
         title: '添加学生管理',
-        area: ['850px', '650px'], //宽高
+        area: ['800px', '640px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/student/student_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -77,6 +72,7 @@ Student.openStudentDetail = function () {
             maxmin: true,
             content: Feng.ctxPath + '/student/student_update/' + Student.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };

@@ -16,5 +16,10 @@ import java.util.Map;
  * @since 2018-10-04
  */
 public interface TeacherService extends IService<Teacher> {
-
+    /**
+     * 创建教师
+     *
+     * @param teacher
+     */
+    void create(Teacher teacher);
 }

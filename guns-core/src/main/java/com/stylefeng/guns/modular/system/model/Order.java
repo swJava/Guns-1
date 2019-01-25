@@ -45,15 +45,15 @@ public class Order extends Model<Order> {
      */
     private Long amount;
     /**
-     * 支付状态:1=待支付 2=已支付 3=超时
+     * 支付状态: -1=支付失败 0=待支付 1=用户已支付 2=支付成功 3=超时
      */
     @TableField("pay_status")
     private Integer payStatus;
     /**
-     * 支付结果：11成功 12失败 
+     * 支付结果
      */
     @TableField("pay_result")
-    private Integer payResult;
+    private String payResult;
     /**
      * 支付时间
      */
@@ -69,6 +69,20 @@ public class Order extends Model<Order> {
      */
     @TableField("user_name")
     private String userName;
+    /**
+     * 支付订单号
+     */
+    @TableField("out_order_no")
+    private String outOrderNo;
+    /**
+     * 支付流水
+     */
+    @TableField("out_sequence")
+    private String outSequence;
+    /**
+     * 订单描述
+     */
+    private String desc;
 
 
     public Long getId() {
@@ -119,11 +133,11 @@ public class Order extends Model<Order> {
         this.payStatus = payStatus;
     }
 
-    public Integer getPayResult() {
+    public String getPayResult() {
         return payResult;
     }
 
-    public void setPayResult(Integer payResult) {
+    public void setPayResult(String payResult) {
         this.payResult = payResult;
     }
 
@@ -151,6 +165,30 @@ public class Order extends Model<Order> {
         this.userName = userName;
     }
 
+    public String getOutOrderNo() {
+        return outOrderNo;
+    }
+
+    public void setOutOrderNo(String outOrderNo) {
+        this.outOrderNo = outOrderNo;
+    }
+
+    public String getOutSequence() {
+        return outSequence;
+    }
+
+    public void setOutSequence(String outSequence) {
+        this.outSequence = outSequence;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -169,6 +207,8 @@ public class Order extends Model<Order> {
         ", payDate=" + payDate +
         ", payMethod=" + payMethod +
         ", userName=" + userName +
+        ", outOrderNo=" + outOrderNo +
+        ", outSequence=" + outSequence +
         "}";
     }
 }

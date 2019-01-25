@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.system.model;
 
+import com.stylefeng.guns.modular.payMGR.PayRequestBuilderFactory;
+
 /**
  * @Description //TODO
  * @Author 罗华

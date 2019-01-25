@@ -23,9 +23,9 @@ public class ClassWrapper extends BaseControllerWarpper{
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("classRoom", ConstantFactory.me().getClassRoomName( map.get("classRoomCode").toString()));
-        map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt( map.get("status").toString())));
-        map.put("studyTimeTypeName", ConstantFactory.me().getStudyTimeTypeName(Integer.parseInt( map.get("studyTimeType").toString())));
-        Optional.ofNullable(map.get("prive")).ifPresent(Price->map.put("prive", (Long)Price/100));
+        map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt(map.get("status").toString())));
+        map.put("gradeName", ConstantFactory.me().getDictsByCode("school_grade", map.get("grade").toString()));
+        map.put("studyTimeTypeName", ConstantFactory.me().getStudyTimeTypeName(Integer.parseInt(map.get("studyTimeType").toString())));
+        Optional.ofNullable(map.get("price")).ifPresent(Price->map.put("price", (Long)Price/100));
     }
 }

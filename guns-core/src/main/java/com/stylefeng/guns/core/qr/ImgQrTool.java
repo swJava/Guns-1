@@ -279,16 +279,16 @@ public class ImgQrTool {
 
     public static void main(String[] args) throws IOException {
         for (int i = 1; i <= 1; i++) {
-            QrImage para = new QrImage.Builder()
-                    .setFileOutputPath("D:\\二维码\\test\\" + i + ".jpg")
-                    .setQrContent("http://www.baidu.com?a=" + "123")
-                    .setQrHeight(300)
-                    .setQrWidth(300)
-                    .setQrIconFilePath("D:\\二维码\\中间图标\\1.png")
-                    .setTopWrodHeight(100)
-                    .setWordContent("test" + 1)
-                    .setWordSize(18).build();
-            ImgQrTool.createQrWithFontsAbove(para);
+//            QrImage para = new QrImage.Builder()
+//                    .setFileOutputPath("D:\\二维码\\test\\" + i + ".jpg")
+//                    .setQrContent("http://www.baidu.com?a=" + "123")
+//                    .setQrHeight(300)
+//                    .setQrWidth(300)
+//                    .setQrIconFilePath("D:/二维码/中间图标/1.png")
+//                    .setTopWrodHeight(100)
+//                    .setWordContent("test" + 1)
+//                    .setWordSize(18).build();
+//            ImgQrTool.createQrWithFontsAbove(para);
         }
     }
 }

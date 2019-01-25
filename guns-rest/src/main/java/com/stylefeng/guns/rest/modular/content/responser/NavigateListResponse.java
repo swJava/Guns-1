@@ -6,6 +6,8 @@ import com.stylefeng.guns.modular.system.model.ColumnAction;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +106,10 @@ public class NavigateListResponse extends SimpleResponser {
             navigate.setIcon(nav.getIcon());
             if (null != action) {
                 navigate.setAction(action.getAction());
-                navigate.setParameter(JSON.parseObject(action.getData()));
+                try {
+                    navigate.setParameter(JSON.parseObject(action.getData()));
+                }catch(Exception e){
+                }
             }
             return navigate;
         }

@@ -3,6 +3,7 @@ package com.stylefeng.guns.common.constant.factory;
 import com.stylefeng.guns.modular.system.model.Dict;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 常量生产工厂的接口
@@ -83,6 +84,16 @@ public interface IConstantFactory {
     String getDictsByName(String name, Integer val);
 
     /**
+     * 根据字典码和字典中的值获取对应的名称
+     */
+    String getDictsByCode(String code, String val);
+
+    /**
+     * 根据字典码和字典中的值获取对应的名称
+     */
+    String getDictsByCode(String code, String val, String defaultValue);
+
+    /**
      * 获取性别名称
      */
     String getTeacherTypeName(Integer teacherType);
@@ -141,11 +152,6 @@ public interface IConstantFactory {
      * 支付结果
      */
     String getPayResultName(Integer payResult);
-
-    /**
-     * 获取教室名称
-     */
-    String getClassRoomName(String classCode);
 
     /**
      * 获取校区地址
@@ -235,4 +241,41 @@ public interface IConstantFactory {
      */
     String getColumnTypeName(Integer type);
 
+    /**
+     * 获取用户状态
+     * @param status
+     * @return
+     */
+    String getMemberStatusName(Integer status);
+
+    /**
+     * 获取通用状态名称
+     *
+     * @param status
+     * @return
+     */
+    Object getGenericStateName(Integer status);
+
+    /**
+     * 获取授课方式
+     *
+     * @param method
+     * @return
+     */
+    Object getCourseMethodname(Integer method);
+
+    /**
+     *
+     * @param amount
+     * @return
+     */
+    String fenToYuan(String amount);
+
+    /**
+     * 获取字典Map
+     *
+     * @param dictCode
+     * @return
+     */
+    Map<String,Object> getdictsMap(String dictCode);
 }

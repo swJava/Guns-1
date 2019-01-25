@@ -1,15 +1,21 @@
 package com.stylefeng.guns.modular.classMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ClassMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.util.CodeKit;
 import org.apache.shiro.util.Assert;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +31,13 @@ import java.util.*;
  */
 @Service
 public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements IClassService {
+    private static final int[] WeekMapping = new int[]{0, 2, 3, 4, 5, 6, 7, 1};
 
     @Autowired
     private ClassMapper classMapper;
+
+    @Autowired
+    private IScheduleClassService scheduleClassService;
 
     @Override
     public List<Class> queryForList(String userName, Map<String, Object> queryParams) {
@@ -43,9 +53,17 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         arguments.put("methodList", methodList);
         List<Integer> weekList = new ArrayList<Integer>();
         arguments.put("weekList", weekList);
+        List<Integer> gradeList = new ArrayList<Integer>();
+        arguments.put("gradeList", gradeList);
+
+        Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
 
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
+
+            if ("status".equals(key)){
+                arguments.put("status", queryParams.get(key));
+            }
 
             if ("teacherCode".equals(key)){
                 arguments.put("teacherCode", queryParams.get(key));
@@ -62,7 +80,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             if ("subjects".equals(key)){
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
-                    subjectList.add(tokenizer.nextToken());
+                    String value = String.valueOf(subjectMap.get(tokenizer.nextToken()));
+                    if (null != value)
+                        subjectList.add(value);
                 }
                 arguments.put("subjectList", subjectList);
             }
@@ -101,10 +121,20 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
                     try {
-                        weekList.add(Integer.parseInt(tokenizer.nextToken()));
+                        weekList.add(WeekMapping[Integer.parseInt(tokenizer.nextToken())]);
                     }catch(Exception e){}
                 }
                 arguments.put("weekList", weekList);
+            }
+
+            if ("grades".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        gradeList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("gradeList", gradeList);
             }
         }
         List<Class> resultList = classMapper.queryForList(arguments);
@@ -120,6 +150,14 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
+    public Map<String, Object> getMap(String code) {
+        if (null == code)
+            return null;
+
+        return selectMap(new EntityWrapper<Class>().eq("code", code));
+    }
+
+    @Override
     public void checkJoinState(Class classInfo, Member member, Student student) {
         Assert.notNull(classInfo);
         Assert.notNull(member);
@@ -130,5 +168,84 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
         if (signEndDate.before(now))
             throw new ServiceException(MessageConstant.MessageCode.COURSE_SELECT_OUTTIME);
+    }
+
+    @Override
+    public List<Class> findClassUsingExaming(Collection<String> paperCodes) {
+        if (null == paperCodes || paperCodes.isEmpty())
+            return new ArrayList<Class>();
+
+        Wrapper<Class> queryWrapper = new EntityWrapper<Class>();
+        queryWrapper.in("examine_paper", paperCodes.toArray());
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        return selectList(queryWrapper);
+    }
+
+    @Override
+    public void createClass(Class classInstance) {
+        classInstance.setCode(CodeKit.generateClass());
+        classInstance.setPrice(classInstance.getPrice() * 100);
+        insert(classInstance);
+
+        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
+        List<Integer> valueList = new ArrayList<>();
+        int totalCount = 0;
+        while(valueToken.hasMoreTokens()){
+            totalCount++;
+            try {
+                valueList.add(Integer.parseInt(valueToken.nextToken()));
+            }catch(Exception e){}
+        }
+
+        if (totalCount != valueList.size()){
+            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
+        }
+        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+    }
+
+    @Override
+    public void updateClass(Class classInstance) {
+
+        scheduleClassService.deleteClassSchedule(classInstance.getCode());
+
+        String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
+        Class currClass = get(classInstance.getCode());
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
+        updateById(classInstance);
+
+        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
+        List<Integer> valueList = new ArrayList<>();
+        int totalCount = 0;
+        while(valueToken.hasMoreTokens()){
+            totalCount++;
+            try {
+                valueList.add(Integer.parseInt(valueToken.nextToken()));
+            }catch(Exception e){}
+        }
+
+        if (totalCount != valueList.size()){
+            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
+        }
+        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+    }
+
+    @Override
+    public void deleteClass(String classCode) {
+        if (null == classCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        Class currClass = get(classCode);
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        currClass.setStatus(GenericState.Invalid.code);
+
+        updateById(currClass);
     }
 }

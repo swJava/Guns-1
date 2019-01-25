@@ -93,7 +93,10 @@ TeacherInfoDlg.collectData = function() {
     .set('havest')
     .set('experience')
     .set('feature')
-    .set('status');
+    .set('status')
+    .set('masterName')
+    .set('masterCode')
+    ;
 }
 
 /**

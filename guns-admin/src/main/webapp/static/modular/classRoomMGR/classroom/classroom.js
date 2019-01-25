@@ -18,7 +18,7 @@ Classroom.initColumn = function () {
             {title: '教室名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '教室地址', field: 'address', visible: true, align: 'center', valign: 'middle'},
-            {title: '最大教学人数', field: 'maxCount', visible: true, align: 'center', valign: 'middle'},
+            {title: '座位数', field: 'maxCount', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };

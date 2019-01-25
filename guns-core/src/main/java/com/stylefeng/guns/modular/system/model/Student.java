@@ -191,4 +191,11 @@ public class Student extends Model<Student> {
         ", status=" + status +
         "}";
     }
+
+    public boolean isValid() {
+        if (null == this.status)
+            return false;
+
+        return StudentStateEnum.Valid.code == this.status;
+    }
 }

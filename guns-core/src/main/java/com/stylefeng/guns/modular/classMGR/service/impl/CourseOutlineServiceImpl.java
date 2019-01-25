@@ -1,17 +1,21 @@
 package com.stylefeng.guns.modular.classMGR.service.impl;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.stylefeng.guns.common.enums.StatusEnum;
-import com.stylefeng.guns.core.support.StrKit;
+import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.system.dao.CourseOutlineMapper;
+import com.stylefeng.guns.modular.system.model.Course;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
-import com.stylefeng.guns.util.ToolUtil;
+import com.stylefeng.guns.util.CodeKit;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -27,35 +31,38 @@ public class CourseOutlineServiceImpl extends ServiceImpl<CourseOutlineMapper, C
     @Resource
     private CourseOutlineMapper courseOutlineMapper;
 
+    @Override
+    public void addCourseOutline(Course course, List<CourseOutline> outlineList) {
+        if (null == course)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
-    /**
-     * 每个条目之间的分隔符
-     */
-    public static final String ITEM_SPLIT = ";";
+        List<CourseOutline> courseOutlineList = selectList(new EntityWrapper<CourseOutline>().eq("course_code", course.getCode()));
+        List<Long> deleteIds = new ArrayList<>();
+        for(CourseOutline courseOutline : courseOutlineList){
+            deleteIds.add(courseOutline.getId());
+        }
+        if (!deleteIds.isEmpty())
+            deleteBatchIds(deleteIds);
 
-    /**
-     * 属性之间的分隔符
-     */
-    public static final String ATTR_SPLIT = ":";
+        for(CourseOutline courseOutline : outlineList){
+            CourseOutline newCourseOutline = new CourseOutline();
+            newCourseOutline.setCode(CodeKit.generateOutline());
+            newCourseOutline.setCourseCode(course.getCode());
+            newCourseOutline.setOutline(courseOutline.getOutline());
+            newCourseOutline.setDescription(courseOutline.getDescription());
+            newCourseOutline.setSort(courseOutline.getSort());
+            newCourseOutline.setStatus(GenericState.Valid.code);
 
-
+            insert(newCourseOutline);
+        }
+    }
 
     @Override
-    public void addCourseOutline(String classCode, String courseCode, String courseValues) {
+    public CourseOutline get(String code) {
+        if (null == code)
+            return null;
 
-        String[] items = StrKit.split(StrKit.removeSuffix(courseValues, ITEM_SPLIT), ITEM_SPLIT);
-        for (String item : items) {
-            CourseOutline courseOutline = new CourseOutline();
-            String[] attrs = item.split(ATTR_SPLIT);
-            courseOutline.setCode(courseCode);
-            courseOutline.setClassCode(classCode);
-            courseOutline.setClassDate(attrs[0]);
-            courseOutline.setClassTime(attrs[1]);
-            courseOutline.setOutline(attrs[2]);
-            courseOutline.setSort(Integer.valueOf(attrs[3]));
-            courseOutline.setStatus(StatusEnum.STATUS_VALID.getCode());
-            courseOutlineMapper.insert(courseOutline);
-        }
+        return selectOne(new EntityWrapper<CourseOutline>().eq("code", code));
     }
 
 }

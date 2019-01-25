@@ -28,13 +28,13 @@ import java.util.HashMap;
  * @Date 2017/5/20 21:58
  */
 @Configuration
-@ConditionalOnProperty(prefix = "guns.muti-datasource", name = "open", havingValue = "true")
+@ConditionalOnProperty(prefix = "application.admin.muti-datasource", name = "open", havingValue = "true")
 @EnableTransactionManagement(order = 2)
 @MapperScan(basePackages = {"com.stylefeng.guns.modular.*.dao","com.stylefeng.guns.multi.mapper"})
 public class MultiDataSourceConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "guns.muti-datasource")
+    @ConfigurationProperties(prefix = "application.muti-datasource")
     public MutiDataSourceProperties mutiDataSourceProperties() {
         return new MutiDataSourceProperties();
     }

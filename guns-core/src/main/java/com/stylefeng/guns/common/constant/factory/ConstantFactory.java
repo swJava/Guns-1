@@ -8,22 +8,24 @@ import com.stylefeng.guns.common.constant.state.ManagerStatus;
 import com.stylefeng.guns.common.constant.state.MenuStatus;
 import com.stylefeng.guns.core.support.StrKit;
 import com.stylefeng.guns.log.LogObjectHolder;
-import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.system.dao.*;
-import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.Convert;
 import com.stylefeng.guns.util.SpringContextHolder;
 import com.stylefeng.guns.util.ToolUtil;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * 常量的生产工厂
@@ -34,6 +36,7 @@ import java.util.Optional;
 @Component
 @DependsOn("springContextHolder")
 public class ConstantFactory implements IConstantFactory {
+    private static final BigDecimal MONEY_TRANSFORM = new BigDecimal(100);
 
     private RoleMapper roleMapper = SpringContextHolder.getBean(RoleMapper.class);
     private DeptMapper deptMapper = SpringContextHolder.getBean(DeptMapper.class);
@@ -265,6 +268,31 @@ public class ConstantFactory implements IConstantFactory {
         }
     }
 
+    @Override
+    public String getDictsByCode(String code, String val) {
+        return getDictsByCode(code, val, "");
+    }
+
+    @Override
+    public String getDictsByCode(String code, String val, String defaultValue) {
+        Dict temp = new Dict();
+        temp.setCode(code);
+        Dict dict = dictMapper.selectOne(temp);
+        if (dict == null) {
+            return null == defaultValue ? "" : defaultValue;
+        } else {
+            Wrapper<Dict> wrapper = new EntityWrapper<>();
+            wrapper = wrapper.eq("pid", dict.getId());
+            List<Dict> dicts = dictMapper.selectList(wrapper);
+            for (Dict item : dicts) {
+                if (item.getCode() != null && item.getCode().equals(val)) {
+                    return item.getName();
+                }
+            }
+            return null == defaultValue ? "" : defaultValue;
+        }
+    }
+
     /**
      * 获取老师类型名称
      * @param teacherType
@@ -386,14 +414,6 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
-    public String getClassRoomName(String classCode) {
-        Classroom classroom = classroomMapper.selectOne(new Classroom() {{
-            setCode(classCode);
-        }});
-        return  classroom == null?null:classroom.getName();
-    }
-
-    @Override
     public String getSchoolAdressName(Integer classCode) {
         // 当前只有一个校区
         if(ObjectUtils.isEmpty(classCode)){
@@ -425,7 +445,7 @@ public class ConstantFactory implements IConstantFactory {
 
     @Override
     public String getClassRoomTypeName(Integer type) {
-        return getDictsByName("教室类型", type);
+        return getDictsByCode("classroom_type", String.valueOf(type));
     }
 
     @Override
@@ -470,5 +490,45 @@ public class ConstantFactory implements IConstantFactory {
     @Override
     public String getColumnTypeName(Integer type) {
         return getDictsByName("栏目行为类型", type);
+    }
+
+    @Override
+    public String getMemberStatusName(Integer status) {
+        return getDictsByCode("account_state", String.valueOf(status));
+    }
+
+    @Override
+    public Object getGenericStateName(Integer status) {
+        return getDictsByCode("generic_state", String.valueOf(status));
+    }
+
+    @Override
+    public Object getCourseMethodname(Integer method) {
+        return getDictsByCode("course_method", String.valueOf(method));
+    }
+
+    @Override
+    public String fenToYuan(String amount) {
+        return new BigDecimal(amount).divide(MONEY_TRANSFORM).setScale(2).toString();
+    }
+
+    @Override
+    public Map<String, Object> getdictsMap(String dictCode) {
+        Dict temp = new Dict();
+        temp.setCode(dictCode);
+        Dict dict = dictMapper.selectOne(temp);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        if (dict == null) {
+            return new HashMap<String, Object>();
+        } else {
+            Wrapper<Dict> wrapper = new EntityWrapper<>();
+            wrapper = wrapper.eq("pid", dict.getId());
+            List<Dict> dicts = dictMapper.selectList(wrapper);
+            for (Dict item : dicts) {
+                resultMap.put(item.getName(), item.getCode());
+            }
+        }
+        return resultMap;
     }
 }

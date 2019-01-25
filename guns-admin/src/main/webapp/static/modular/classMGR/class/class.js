@@ -14,32 +14,34 @@ var Class = {
 Class.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '班级编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
+            {title: 'ID', field: 'id', visible: false, align: 'center', valign: 'middle'},
+            {title: '班级编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
             {title: '班级名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
-            {title: '年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '学期', field: 'cycle', visible: true, align: 'center', valign: 'middle'},
-            {title: '班次', field: 'ability', visible: true, align: 'center', valign: 'middle'},
+            {title: '年级', field: 'gradeName', visible: false, align: 'center', valign: 'middle'},
+            {title: '学期', field: 'cycle', visible: false, align: 'center', valign: 'middle'},
+            {title: '班次', field: 'ability', visible: false, align: 'center', valign: 'middle'},
             {title: '开课起始日期', field: 'beginDate', visible: true, align: 'center', valign: 'middle'},
-            {title: '开课结束日期', field: 'endDate', visible: true, align: 'center', valign: 'middle'},
-            {title: '开课时间类型', field: 'studyTimeType', visible: true, align: 'center', valign: 'middle'},
-            {title: '开课时间', field: 'studyTimeValue', visible: true, align: 'center', valign: 'middle'},
-            {title: '开始时间', field: 'beginTime', visible: true, align: 'center', valign: 'middle'},
-            {title: '结束时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},
-            {title: '时长(分钟)', field: 'duration', visible: true, align: 'center', valign: 'middle'},
-            {title: '总课时数', field: 'period', visible: true, align: 'center', valign: 'middle'},
-            {title: '教室编码', field: 'classRoomCode', visible: true, align: 'center', valign: 'middle'},
+            {title: '开课结束日期', field: 'endDate', visible: false, align: 'center', valign: 'middle'},
+            {title: '开课时间类型', field: 'studyTimeTypeName', visible: false, align: 'center', valign: 'middle'},
+            {title: '开课时间', field: 'studyTimeValue', visible: false, align: 'center', valign: 'middle'},
+            {title: '教学开始时间', field: 'beginTime', visible: true, align: 'center', valign: 'middle'},
+            {title: '教学结束时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},
+            {title: '单节时长(分钟)', field: 'duration', visible: false, align: 'center', valign: 'middle'},
+            {title: '总课时数', field: 'period', visible: false, align: 'center', valign: 'middle'},
+            {title: '教室编码', field: 'classRoomCode', visible: false, align: 'center', valign: 'middle'},
             {title: '教室', field: 'classRoom', visible: true, align: 'center', valign: 'middle'},
-            {title: '教授课程', field: 'courseCode', visible: true, align: 'center', valign: 'middle'},
-            {title: '课程名称', field: 'courseName', visible: true, align: 'center', valign: 'middle'},
-            {title: '关注度', field: 'star', visible: true, align: 'center', valign: 'middle'},
+            {title: '教授课程', field: 'courseCode', visible: false, align: 'center', valign: 'middle'},
+            {title: '课程名称', field: 'courseName', visible: false, align: 'center', valign: 'middle'},
+            {title: '关注度', field: 'star', visible: false, align: 'center', valign: 'middle'},
             {title: '价格(元)', field: 'price', visible: true, align: 'center', valign: 'middle'},
             {title: '剩余报名人数', field: 'quato', visible: true, align: 'center', valign: 'middle'},
             {title: '报名截止时间', field: 'signEndDate', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle'},
-            {title: '主讲教师编码', field: 'teacherCode', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle'},
+            {title: '主讲教师编码', field: 'teacherCode', visible: false, align: 'center', valign: 'middle'},
             {title: '主讲教师名称', field: 'teacher', visible: true, align: 'center', valign: 'middle'},
-            {title: '辅导教师编码', field: 'teacherSecondCode', visible: true, align: 'center', valign: 'middle'},
-            {title: '辅导教室名称', field: 'teacherSecond', visible: true, align: 'center', valign: 'middle'}
+            {title: '辅导教师编码', field: 'teacherSecondCode', visible: false, align: 'center', valign: 'middle'},
+            {title: '辅导教师名称', field: 'teacherSecond', visible: true, align: 'center', valign: 'middle'},
+            {title: '是否需要考前测试', field: 'needTest', visible: false, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -58,49 +60,35 @@ Class.check = function () {
 };
 
 /**
- * 点击添加课程大纲管理
- */
-Class.openAddClassKCDG = function () {
-    if (this.check()) {
-        var index = layer.open({
-            type: 2,
-            title: '添加课程大纲管理',
-            area: ['1200px', '420px'], //宽高
-            fix: false, //不固定
-            maxmin: true,
-            content: Feng.ctxPath + '/class/class_add_kcdg/' + Class.seItem.code + "/" + Class.seItem.courseCode
-        });
-        this.layerIndex = index;
-    }
-};
-/**
- * 点击添加课程管理
+ * 点击添加班级管理
  */
 Class.openAddClass = function () {
     var index = layer.open({
         type: 2,
-        title: '添加课程管理',
-        area: ['800px', '420px'], //宽高
+        title: '添加班级',
+        area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/class/class_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
 /**
- * 打开查看课程管理详情
+ * 打开查看班级详情
  */
 Class.openClassDetail = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
             title: '课程管理详情',
-            area: ['800px', '420px'], //宽高
+            area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/class/class_update/' + Class.seItem.id
+            content: Feng.ctxPath + '/class/class_update/' + Class.seItem.code
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };
@@ -116,7 +104,24 @@ Class.delete = function () {
         }, function (data) {
             Feng.error("删除失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("classId",this.seItem.id);
+        ajax.set("classCode",this.seItem.code);
+        ajax.start();
+    }
+};
+
+
+/**
+ *  打开入学测试设置
+ */
+Class.test = function () {
+    if (this.check()) {
+        var ajax = new $ax(Feng.ctxPath + "/class/setting/test", function (data) {
+            Feng.success("设置成功!");
+            Class.table.refresh();
+        }, function (data) {
+            Feng.error("删除失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("classCode",this.seItem.code);
         ajax.start();
     }
 };

@@ -1,19 +1,22 @@
 package com.stylefeng.guns.modular.classMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
-import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.core.base.controller.BaseController;
-import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
+import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
+import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
+import com.stylefeng.guns.modular.courseMGR.warpper.CourseWrapper;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
-import com.stylefeng.guns.util.CodeKit;
-import com.stylefeng.guns.util.ToolUtil;
+import com.stylefeng.guns.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,10 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 课程管理控制器
@@ -43,7 +43,11 @@ public class ClassController extends BaseController {
     @Autowired
     private IClassService classService;
     @Autowired
+    private IClassroomService classroomService;
+    @Autowired
     private ICourseOutlineService courseOutlineService;
+    @Autowired
+    private ICourseService courseService;
 
     /**
      * 跳转到课程管理首页
@@ -84,11 +88,19 @@ public class ClassController extends BaseController {
     /**
      * 跳转到修改课程管理
      */
-    @RequestMapping("/class_update/{classId}")
-    public String classUpdate(@PathVariable Integer classId, Model model) {
-        Class classInstance = classService.selectById(classId);
-        model.addAttribute("item",classInstance);
-        LogObjectHolder.me().set(classInstance);
+    @RequestMapping("/class_update/{classCode}")
+    public String classUpdate(@PathVariable("classCode") String code, Model model) {
+        Map<String, Object> classInstanceMap = classService.getMap(code);
+        new ClassWrapper(classInstanceMap).warp();
+
+        Map<String, Object> courseInstanceMap = courseService.getMap((String) classInstanceMap.get("courseCode"));
+        new CourseWrapper(courseInstanceMap).warp();
+
+
+        model.addAttribute("classItem",classInstanceMap);
+        model.addAttribute("courseItem",courseInstanceMap);
+
+        LogObjectHolder.me().set(classInstanceMap);
         return PREFIX + "class_edit.html";
     }
 
@@ -106,6 +118,10 @@ public class ClassController extends BaseController {
                 if (StringUtils.isNotEmpty(condition)) {
                     like("name", condition);
                 }
+
+                eq("status", GenericState.Valid.code);
+
+                orderBy("id", false);
             }
         });
         //包装数据
@@ -120,7 +136,15 @@ public class ClassController extends BaseController {
     @ResponseBody
     public Object listRoom(String condition) {
 
-        return classService.selectList(null);
+        Wrapper<Class> classQueryWrapper = new EntityWrapper<Class>();
+        classQueryWrapper.eq("status", GenericState.Valid.code);
+
+        if (null != condition && condition.length() > 0){
+            classQueryWrapper.like("name", condition);
+        }
+        classQueryWrapper.orderBy("id", false);
+
+        return classService.selectList(classQueryWrapper);
     }
 
     /**
@@ -129,23 +153,17 @@ public class ClassController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(Class classInstance) {
-        classInstance.setCode(CodeKit.generateClass());
-        classInstance.setPrice(classInstance.getPrice() * 100);
-        classService.insert(classInstance);
-        return SUCCESS_TIP;
-    }
 
-    /**
-     * 新增课程大纲管理
-     */
-    @RequestMapping(value = "/add_kcdg")
-    @ResponseBody
-    public Object addKCDG(String classCode,String courseCode,String courseValues) {
-        if (ToolUtil.isOneEmpty(classCode,courseCode, courseValues)) {
-            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
-        }
-        courseOutlineService.delete(new EntityWrapper<CourseOutline>().eq("class_code",classCode).eq("code",courseCode));
-        courseOutlineService.addCourseOutline(classCode,courseCode,courseValues);
+        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
+        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
+
+        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
+        // 设置班级容量
+        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
+        classInstance.setQuato(classroomEntity.getMaxCount());
+        classInstance.setClassRoom(classroomEntity.getAddress());
+
+        classService.createClass(classInstance);
         return SUCCESS_TIP;
     }
 
@@ -154,8 +172,11 @@ public class ClassController extends BaseController {
      */
     @RequestMapping(value = "/delete")
     @ResponseBody
-    public Object delete(@RequestParam Integer classId) {
-        classService.deleteById(classId);
+    public Object delete(@RequestParam String classCode) {
+        if (null == classCode)
+            return SUCCESS_TIP;
+
+        classService.deleteClass(classCode);
         return SUCCESS_TIP;
     }
 
@@ -166,7 +187,24 @@ public class ClassController extends BaseController {
     @ResponseBody
     public Object update(Class classInstance) {
         classInstance.setPrice(classInstance.getPrice() * 100);
-        classService.updateById(classInstance);
+
+        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
+        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
+
+        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
+        // 设置班级容量
+        Class currClass = classService.get(classInstance.getCode());
+        int currQuato = null == currClass ? 0 : currClass.getQuato();
+        Classroom currClassroom = classroomService.get(currClass.getClassRoomCode());
+        int maxQuato = currClassroom.getMaxCount();
+        // 已报名人数
+        int orderQuato = maxQuato - currQuato;
+
+        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
+        // 设置当前班级的剩余报名人数
+        classInstance.setQuato(classroomEntity.getMaxCount() - orderQuato);
+
+        classService.updateClass(classInstance);
         return SUCCESS_TIP;
     }
 

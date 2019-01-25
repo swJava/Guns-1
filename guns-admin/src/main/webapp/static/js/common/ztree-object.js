@@ -3,12 +3,14 @@
  */
 (function() {
 
-	var $ZTree = function(id, url) {
+	var $ZTree = function(id, url, idKey, pIdKey) {
 		this.id = id;
 		this.url = url;
 		this.onClick = null;
 		this.settings = null;
 		this.ondblclick=null;
+		this.idKey = idKey ? idKey : 'id';
+		this.pIdKey = pIdKey ? pIdKey : 'pId';
 	};
 
 	$ZTree.prototype = {
@@ -16,12 +18,14 @@
 		 * 初始化ztree的设置
 		 */
 		initSetting : function() {
+			console.log('idKey = ' + this.idKey);
+			console.log('pIdKey = ' + this.pIdKey);
 			var settings = {
 				view : {
 					dblClickExpand : true,
 					selectedMulti : false
 				},
-				data : {simpleData : {enable : true}},
+				data : {simpleData : {enable : true, idKey: this.idKey, pIdKey: this.pIdKey}},
 				callback : {
 					onClick : this.onClick,
 					onDblClick:this.ondblclick

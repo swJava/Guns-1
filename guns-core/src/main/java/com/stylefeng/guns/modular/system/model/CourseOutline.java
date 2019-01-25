@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +19,7 @@ import java.io.Serializable;
  * @since 2018-11-17
  */
 @TableName("tb_course_outline")
+@ApiModel(value = "CourseOutline", description = "课时")
 public class CourseOutline extends Model<CourseOutline> {
 
     private static final long serialVersionUID = 1L;
@@ -24,39 +28,37 @@ public class CourseOutline extends Model<CourseOutline> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 课时编码： KS + 6位序列码
      */
+    @ApiModelProperty(name = "code", value = "课时编码", example = "KS000001")
     private String code;
     /**
      * 班级编码
      */
-    @TableField("class_code")
-    private String classCode;
-    /**
-     * 排课时间
-     */
-    @TableField("class_date")
-    private String classDate;
-    /**
-     * 上课时间：17:00-20:30
-     */
-    @TableField("class_time")
-    private String classTime;
+    @TableField("course_code")
+    @ApiModelProperty(name = "courseCode", value = "课程编码", example = "KC000001")
+    private String courseCode;
     /**
      * 大纲条目
      */
+    @ApiModelProperty(name = "outline", value = "大纲条目", example = "第一课")
     private String outline;
     /**
      * 排序号
      */
+    @ApiModelProperty(name = "sort", value = "排序号", example = "1")
     private Integer sort;
     /**
      * 状态
      */
+    @ApiModelProperty(name = "status", value = "状态", example = "1")
     private Integer status;
 
+    @ApiModelProperty(name = "description", value = "简介", example = "第一课： 自我介绍")
+    private String description;
 
     public Long getId() {
         return id;
@@ -74,28 +76,12 @@ public class CourseOutline extends Model<CourseOutline> {
         this.code = code;
     }
 
-    public String getClassCode() {
-        return classCode;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
-    }
-
-    public String getClassDate() {
-        return classDate;
-    }
-
-    public void setClassDate(String classDate) {
-        this.classDate = classDate;
-    }
-
-    public String getClassTime() {
-        return classTime;
-    }
-
-    public void setClassTime(String classTime) {
-        this.classTime = classTime;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getOutline() {
@@ -122,6 +108,14 @@ public class CourseOutline extends Model<CourseOutline> {
         this.status = status;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -132,12 +126,11 @@ public class CourseOutline extends Model<CourseOutline> {
         return "CourseOutline{" +
         "id=" + id +
         ", code=" + code +
-        ", classCode=" + classCode +
-        ", classDate=" + classDate +
-        ", classTime=" + classTime +
+        ", courseCode=" + courseCode +
         ", outline=" + outline +
         ", sort=" + sort +
         ", status=" + status +
+        ", description=" + description +
         "}";
     }
 }

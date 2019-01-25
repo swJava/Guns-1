@@ -1,7 +1,7 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -28,14 +28,19 @@ public class OrderItem extends Model<OrderItem> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(name = "id", value = "用户名", position = 0, hidden = true)
+    @ApiModelProperty(name = "id", value = "标示", position = 0, hidden = true)
     private Long id;
+
     /**
      * 订单号
      */
     @TableField("order_no")
     @ApiModelProperty(name = "orderNo", value = "订单号", position = 0, example="J23i181116221454490")
     private String orderNo;
+
+    @TableField("course_cart_code")
+    @ApiModelProperty(name = "courseCartCode", value = "选课单编码", position = 0, example="CC181225000001")
+    private String courseCartCode;
     /**
      * 订单项目编码： DI + yyMMdd + 8位序列号
      */
@@ -58,7 +63,7 @@ public class OrderItem extends Model<OrderItem> {
      * 订单项目金额
      */
     @TableField("item_amount")
-    @ApiModelProperty(name = "itemAmount", value = "订单项目金额", position = 0, example="10000")
+    @ApiModelProperty(name = "itemAmount", value = "订单项目金额， 单位： 分", position = 0, example="10000")
     private Long itemAmount;
 
     public Long getId() {
@@ -67,6 +72,14 @@ public class OrderItem extends Model<OrderItem> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCourseCartCode() {
+        return courseCartCode;
+    }
+
+    public void setCourseCartCode(String courseCartCode) {
+        this.courseCartCode = courseCartCode;
     }
 
     public String getOrderNo() {

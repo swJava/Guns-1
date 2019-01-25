@@ -36,7 +36,7 @@ public class AuthController {
 
         User currUser = userService.getByAccount(authRequest.getUserName());
 
-        if (null == currUser){
+        if (null == currUser) {
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_ACCOUNT_NOT_FOUND);
         }
 
@@ -45,15 +45,15 @@ public class AuthController {
         try {
             pwdEncrypt = new String(Sha256Hash.toBytes(authRequest.getPassword()), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        }
 
-        if (!password.equalsIgnoreCase(pwdEncrypt)){
+        if (!password.equalsIgnoreCase(pwdEncrypt)) {
             throw new ServiceException(MessageConstant.MessageCode.LOGIN_FAILED);
         }
 
-            final String randomKey = jwtTokenUtil.getRandomKey();
-            final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
-            return ResponseEntity.ok(new AuthResponse(token, randomKey));
+        final String randomKey = jwtTokenUtil.getRandomKey();
+        final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
+        return ResponseEntity.ok(new AuthResponse(token, randomKey));
     }
 }

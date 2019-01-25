@@ -29,10 +29,14 @@ public final class CodeKit {
         TEACHER ("LS", 6),  // 教师
         CLASS ("BJ", 6),  // 课程
         OUTLINE ("KS", 6),  // 课时
-        ORDER_ITEM ("DI", 6),  // 订单项
+        ORDER_ITEM ("DI", 8),  // 订单项
         QUESTION ("ST", 8),  // 试题
         COLUMN ("LM", 6),  // 栏目
         CONTENT ("CT", 8),  // 栏目类容
+        PAPER("SJ", 8),  // 答卷
+        ANSWER("DJ", 8),  // 答卷
+        COURSE_CART("CC", 8),  // 订单项
+        STUDENT_PLAN("PS", 8)  // 学员排课计划
         ;
 
         String name;
@@ -55,7 +59,7 @@ public final class CodeKit {
      * @return
      */
     public static String generateStudent() {
-        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, null);
+        return generate(CODE_DEFINE.STUDENT.name, CODE_DEFINE.STUDENT.length, new String[]{DateUtil.getyyMMdd()});
     }
     /**
      * 生成教师编码
@@ -104,7 +108,7 @@ public final class CodeKit {
      * @return
      */
     public static String generateCourse() {
-        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[]{DateUtil.getyyMMdd()});
+        return generate(CODE_DEFINE.COURSE.name, CODE_DEFINE.COURSE.length, new String[0]);
     }
     /**
      * 生成订单项
@@ -112,6 +116,39 @@ public final class CodeKit {
      */
     public static String generateContent() {
         return generate(CODE_DEFINE.CONTENT.name, CODE_DEFINE.CONTENT.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
+    /**
+     * 生成试卷
+     * @return
+     */
+    public static String generatePaper() {
+        return generate(CODE_DEFINE.PAPER.name, CODE_DEFINE.PAPER.length, null);
+    }
+
+
+    /**
+     * 生成答卷项
+     * @return
+     */
+    public static String generateAnswerPaper() {
+        return generate(CODE_DEFINE.ANSWER.name, CODE_DEFINE.ANSWER.length, null);
+    }
+
+    /**
+     * 生成选课单项
+     * @return
+     */
+    public static String generateCourseCart() {
+        return generate(CODE_DEFINE.COURSE_CART.name, CODE_DEFINE.COURSE_CART.length, new String[]{DateUtil.getyyMMdd()});
+    }
+
+    /**
+     * 生成学员排课计划
+     * @return
+     */
+    public static String generateStudentSchedule() {
+        return generate(CODE_DEFINE.STUDENT_PLAN.name, CODE_DEFINE.STUDENT_PLAN.length, new String[]{DateUtil.getyyMMdd()});
     }
 
     private CodeKit(){}

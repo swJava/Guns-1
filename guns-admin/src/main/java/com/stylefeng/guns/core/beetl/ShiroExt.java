@@ -15,11 +15,10 @@
  */
 package com.stylefeng.guns.core.beetl;
 
+import com.stylefeng.guns.core.admin.Administrator;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.beetl.core.GroupTemplate;
-
-import com.stylefeng.guns.core.shiro.ShiroUser;
 
 public class ShiroExt {
     private static final String NAMES_DELIMETER = ",";
@@ -38,11 +37,11 @@ public class ShiroExt {
      *
      * @return ShiroUser
      */
-    public ShiroUser getUser() {
+    public Administrator getUser() {
         if (isGuest()) {
             return null;
         } else {
-            return (ShiroUser) getSubject().getPrincipals().getPrimaryPrincipal();
+            return (Administrator) getSubject().getPrincipals().getPrimaryPrincipal();
         }
     }
 

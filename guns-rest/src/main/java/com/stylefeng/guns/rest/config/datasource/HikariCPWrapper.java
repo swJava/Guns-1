@@ -15,7 +15,6 @@ public class HikariCPWrapper extends HikariConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         // TODO
-
         System.out.println("ok");
     }
 }

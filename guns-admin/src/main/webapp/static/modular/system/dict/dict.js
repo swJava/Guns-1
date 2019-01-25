@@ -16,7 +16,7 @@ Dict.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: 'id', field: 'id', visible: false, align: 'center', valign: 'middle'},
         {title: '名称', field: 'name', align: 'center', valign: 'middle', sortable: true},
-        {title: '详情', field: 'detail', align: 'center', valign: 'middle', sortable: true},
+        {title: '详情', field: 'detail', align: 'left', valign: 'middle', sortable: true},
         {title: '备注', field: 'tips', align: 'center', valign: 'middle', sortable: true}];
 };
 

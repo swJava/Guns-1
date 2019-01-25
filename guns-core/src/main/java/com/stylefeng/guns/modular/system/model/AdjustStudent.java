@@ -27,10 +27,10 @@ public class AdjustStudent extends Model<AdjustStudent> {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
-     * 当前班级编码
+     * 申请用户名
      */
-    @TableField("class_code")
-    private String classCode;
+    @TableField("user_name")
+    private String userName;
     /**
      * 学生编码（学号）
      */
@@ -41,20 +41,26 @@ public class AdjustStudent extends Model<AdjustStudent> {
      */
     private Integer type;
     /**
-     * 申请用户名
+     * 调整课时编码（只在调课申请时使用）
      */
-    @TableField("user_name")
-    private String userName;
+    @TableField("outline_code")
+    private String outlineCode;
     /**
-     * 调入目标编码
+     * 调出班级编码
      */
-    private String target;
+    @TableField("source_class")
+    private String sourceClass;
     /**
-     * 状态： 1启用 2冻结
+     * 调入班级编码
+     */
+    @TableField("target_class")
+    private String targetClass;
+    /**
+     * 状态： 0 禁用  1启用
      */
     private Integer status;
     /**
-     * 流程状态： 10 新建 11 通过 12 打回
+     * 流程状态： 10 新建 11 通过 12 打回 13 关闭
      */
     @TableField("work_status")
     private Integer workStatus;
@@ -62,6 +68,16 @@ public class AdjustStudent extends Model<AdjustStudent> {
      * 备注
      */
     private String remark;
+    /**
+     * 操作员ID
+     */
+    @TableField("op_id")
+    private Long opId;
+    /**
+     * 操作员
+     */
+    private String operator;
+
     /**
      * 申请时间
      */
@@ -80,14 +96,6 @@ public class AdjustStudent extends Model<AdjustStudent> {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
     }
 
     public String getStudentCode() {
@@ -114,12 +122,28 @@ public class AdjustStudent extends Model<AdjustStudent> {
         this.userName = userName;
     }
 
-    public String getTarget() {
-        return target;
+    public String getOutlineCode() {
+        return outlineCode;
     }
 
-    public void setTarget(String target) {
-        this.target = target;
+    public void setOutlineCode(String outlineCode) {
+        this.outlineCode = outlineCode;
+    }
+
+    public String getSourceClass() {
+        return sourceClass;
+    }
+
+    public void setSourceClass(String sourceClass) {
+        this.sourceClass = sourceClass;
+    }
+
+    public String getTargetClass() {
+        return targetClass;
+    }
+
+    public void setTargetClass(String targetClass) {
+        this.targetClass = targetClass;
     }
 
     public Integer getStatus() {
@@ -144,6 +168,22 @@ public class AdjustStudent extends Model<AdjustStudent> {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Long getOpId() {
+        return opId;
+    }
+
+    public void setOpId(Long opId) {
+        this.opId = opId;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public Date getCreateTime() {
@@ -171,11 +211,12 @@ public class AdjustStudent extends Model<AdjustStudent> {
     public String toString() {
         return "AdjustStudent{" +
         "id=" + id +
-        ", classCode=" + classCode +
         ", studentCode=" + studentCode +
         ", type=" + type +
         ", userName=" + userName +
-        ", target=" + target +
+        ", outlineCode=" + outlineCode +
+        ", sourceClass=" + sourceClass +
+        ", targetClass=" + targetClass +
         ", status=" + status +
         ", workStatus=" + workStatus +
         ", remark=" + remark +

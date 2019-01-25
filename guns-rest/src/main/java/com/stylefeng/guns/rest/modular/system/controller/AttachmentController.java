@@ -1,17 +1,22 @@
 package com.stylefeng.guns.rest.modular.system.controller;
 
 import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.system.transfer.AttachmentInfo;
 import com.stylefeng.guns.rest.core.Responser;
+import com.stylefeng.guns.rest.modular.auth.filter.AuthFilter;
 import com.stylefeng.guns.rest.modular.system.responser.AttachmentUploadResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +38,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/attachment")
 public class AttachmentController {
+    private static final Logger log = LoggerFactory.getLogger(AttachmentController.class);
 
     @Autowired
     private IAttachmentService attachmentService;
@@ -49,27 +55,14 @@ public class AttachmentController {
             String masterCode,
             String masterName
     ){
-        List<byte[]> fileContents = new ArrayList<byte[]>();
-        AttachmentInfo uploadInfo = new AttachmentInfo();
+        AttachmentInfo uploadInfo = AttachmentInfo.fromUpload(files);
 
-        for(MultipartFile file : files){
-            if (null == file)
-                continue;
+        if (null == uploadInfo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"上传附件"});
 
-            try {
-                uploadInfo.addContent(file.getBytes());
-                uploadInfo.parseType(file.getContentType());
-                uploadInfo.addOrgNames(file.getOriginalFilename());
-                uploadInfo.addSize(file.getSize());
-                uploadInfo.addDescription(file.getOriginalFilename());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        String ids = attachmentService.saveAttachment(uploadInfo, masterName, masterCode);
 
-        attachmentService.saveAttachment(uploadInfo, masterName, masterCode);
-
-        return AttachmentUploadResponse.me();
+        return AttachmentUploadResponse.me(ids);
     }
 
 

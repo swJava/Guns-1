@@ -1,10 +1,11 @@
 package com.stylefeng.guns.modular.memberMGR.service;
 
-import com.stylefeng.guns.modular.system.model.Member;
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.Member;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -52,5 +53,14 @@ public interface IMemberService extends IService<Member> {
      * @param userName
      * @return
      */
-    Member get(@NotBlank(message = "用户名不能为空") String userName);
+    Member get(String userName);
+
+    /**
+     * 查找我的报班信息
+     *
+     * @param userName
+     * @param student
+     * @return
+     */
+    Map<String, Set<Class>> findMyClasses(String userName, String student);
 }

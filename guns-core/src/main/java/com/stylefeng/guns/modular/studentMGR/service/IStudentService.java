@@ -1,9 +1,12 @@
 package com.stylefeng.guns.modular.studentMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.system.model.ScheduleStudent;
 import com.stylefeng.guns.modular.system.model.Student;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,4 +60,25 @@ public interface IStudentService extends IService<Student> {
      * @return
      */
     List<Student> listStudents( String userName );
+
+    /**
+     * 查询课程计划
+     *
+     * 查询学员在指定天的课程计划
+     * @param student
+     * @param day
+     * @param ints
+     * @return
+     */
+    List<ScheduleStudent> listCoursePlan(String student, Date day, Integer... states);
+
+    /**
+     * 查询课程计划
+     *
+     * 查询 学员 报名 指定班级的课程计划
+     * @param classCode
+     * @param code
+     * @return
+     */
+    List<ScheduleStudent> listCoursePlan(String classCode, String studentCode, Integer... states);
 }

@@ -2,24 +2,32 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal">
-
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="主键标示" value="${item.id}" underline="true"/>
-                            <#input id="username" name="用户名" value="${item.username}" underline="true"/>
-                            <#input id="password" name="密码sha256加密" value="${item.password}" underline="true"/>
-                            <#input id="name" name="用户名称" value="${item.name}" underline="true"/>
-                            <#input id="gender" name="性别: 1 男  2 女" value="${item.gender}" underline="true"/>
-                            <#input id="mobileNumber" name="联系手机" value="${item.mobileNumber}" />
+                            <!--<#input id="id" name="主键标示" value="${item.id}" underline="true"/>-->
+                    <input id="id" name="主键标示" type="hidden" value="${item.id}" underline="true"/>
+                    <input id="genderValue" type="hidden" value="${item.gender}" />
+                    <input id="statusValue" type="hidden" value="${item.status}" />
+                    <#input id="userName" name="用户名" value="${item.userName}" underline="true"/>
+                    <#input id="name" name="用户名称" value="${item.name}" underline="true"/>
+                    <#select id="gender" name="性别" underline="true">
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </#select>
+                    <#input id="mobileNumber" name="联系手机" value="${item.mobileNumber}" underline="true" />
+                    <#input id="joinDate" name="加入时间" value="${item.joinDate}" />
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="address" name="联系地址" value="${item.address}" underline="true"/>
-                            <#input id="qq" name="QQ号码" value="${item.qq}" underline="true"/>
-                            <#input id="weiixin" name="微信号" value="${item.weiixin}" underline="true"/>
-                            <#input id="email" name="电子邮箱" value="${item.email}" underline="true"/>
-                            <#input id="status" name="状态：  0 无效 1 有效  2 锁定 " value="${item.status}" underline="true"/>
-                            <#input id="joinDate" name="加入时间" value="${item.joinDate}" />
+                    <#input id="address" name="联系地址" value="${item.address}" underline="true"/>
+                    <#input id="qq" name="QQ号码" value="${item.qq}" underline="true"/>
+                    <#input id="weixin" name="微信号" value="${item.weixin}" underline="true"/>
+                    <#input id="email" name="电子邮箱" value="${item.email}" underline="true"/>
+                    <#select id="status" name="状态" underline="true">
+                        <option value="1">有效</option>
+                        <option value="0">锁定</option>
+                        <option value="-1">失效</option>
+                    </#select>
                 </div>
             </div>
 

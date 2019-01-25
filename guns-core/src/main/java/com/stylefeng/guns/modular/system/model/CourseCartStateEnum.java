@@ -8,9 +8,9 @@ package com.stylefeng.guns.modular.system.model;
  */
 public enum CourseCartStateEnum {
 
-    Invalid(0, "失效"),
-    Valid(1, "有效"),
-    Ordered(2, "已生成订单")
+    Invalid(-1, "失效"),
+    Valid(0, "有效"),
+    Ordered(1, "已生成订单")
     ;
 
     public int code;

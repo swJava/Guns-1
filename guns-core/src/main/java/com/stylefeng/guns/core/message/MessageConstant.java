@@ -50,6 +50,10 @@ public final class MessageConstant {
          */
         public static final String SYS_ARGUMENTS_ILLEGAL_FORMAT = "000008";
         /**
+         * 对象正在使用
+         */
+        public static final String SYS_SUBJECT_ONAIR = "000009";
+        /**
          * 没有获取到有效的用户登录信息
          */
         public static final String SYS_CREDENTIAL_UNKNOW = "000101";
@@ -104,5 +108,29 @@ public final class MessageConstant {
          * 支付方式不支持
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";
+        /**
+         * 支付下单失败
+         */
+        public static final String PAY_ORDER_EXCEPTION = "030002";
+        /**
+         * 已生成订单
+         */
+        public static final String ORDER_REQUEST_ORDERED = "040001";
+        /**
+         * 您已有相同的调课申请
+         */
+        public static final String ADJUST_COURSE_DUPLICATE = "050001";
+        /**
+         * 您已有相同的转班申请
+         */
+        public static final String CHANGE_CLASS_DUPLICATE = "050002";
+        /**
+         * 排班失败
+         */
+        public static final String SCHEDULE_CLASS_FAILED = "050003";
+        /**
+         * 调课失败： 调入班级不满足调课条件
+         */
+        public static final String ADJUST_TARGET_FAILED = "050004";
     }
 }

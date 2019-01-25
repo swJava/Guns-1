@@ -16,10 +16,6 @@ import javax.validation.constraints.NotBlank;
 public class OrderPostRequester extends SimpleRequester {
     private static final long serialVersionUID = -4959430136773709060L;
 
-    @ApiModelProperty(name = "member", value = "用户名", example = "18580255110")
-    @NotBlank(message = "用户名不能为空")
-    private String member;
-
     @ApiModelProperty(name = "service", value = "业务类型", example = "Order")
     @NotBlank(message = "业务类型不能为空")
     private String service;
@@ -35,14 +31,6 @@ public class OrderPostRequester extends SimpleRequester {
 
     @ApiModelProperty(name = "payMethod", value = "支付方式： ", example = "22")
     private Integer payMethod;
-
-    public String getMember() {
-        return member;
-    }
-
-    public void setMember(String member) {
-        this.member = member;
-    }
 
     public String getService() {
         return service;

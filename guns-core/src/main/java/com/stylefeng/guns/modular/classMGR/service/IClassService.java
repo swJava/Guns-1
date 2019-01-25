@@ -6,6 +6,7 @@ import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,15 @@ public interface IClassService extends IService<Class> {
      * @param classCode
      * @return
      */
-    Class get(@NotBlank(message = "班级不能为空")@NotBlank String classCode);
+    Class get(String code);
+
+    /**
+     * 根据班级编码获取班级Map
+     *
+     * @param code
+     * @return
+     */
+    Map<String,Object> getMap(String code);
 
     /**
      * 检查班级报名状态
@@ -39,4 +48,34 @@ public interface IClassService extends IService<Class> {
      * @Exception ServiceException
      */
     void checkJoinState(Class classInfo, Member member, Student student);
+
+    /**
+     * 查找哪些班级需要进行测试的
+     *
+     * @param code
+     * @return
+     */
+    List<Class> findClassUsingExaming(Collection<String> paperCodes);
+
+    /**
+     * 创建班级
+     *
+     * @param classInstance
+     */
+    void createClass(Class classInstance);
+
+    /**
+     * 更新班级信息
+     *
+     * @param classInstance
+     */
+    void updateClass(Class classInstance);
+
+    /**
+     * 删除班级信息
+     *
+     * 逻辑删
+     * @param classCode
+     */
+    void deleteClass(String classCode);
 }

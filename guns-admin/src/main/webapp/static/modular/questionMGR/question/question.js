@@ -14,21 +14,12 @@ var Question = {
 Question.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle',
-                formatter:function (value,row,index) {
-                    var imgUrl;
-                    if(row.question != null && row.question != ''){
-                        imgUrl = '<img alt="image" class="img-circle" src="/kaptcha/'+ row.question +'" width="64px" height="64px">';
-                    }else {
-                        imgUrl = '<img alt="image" class="img-circle" src="/static/img/swiming.png" width="64px" height="64px">';
-                    }
-                    return imgUrl;
-                }
-            },
-            {title: '试题编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
+            {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle'},
+            {title: '试题编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
             {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '试题学科', field: 'subjectName', visible: true, align: 'center', valign: 'middle'},
-            {title: '答案', field: 'expactAnswer', visible: true, align: 'center', valign: 'middle'},
+            {title: '答案', field: 'expactAnswer', visible: false, align: 'center', valign: 'middle'},
+            {title: '出题人', field: 'teacherName', visible: true, align: 'center', valign: 'middle'},
             {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
     ];
 };
@@ -53,12 +44,13 @@ Question.check = function () {
 Question.openAddQuestion = function () {
     var index = layer.open({
         type: 2,
-        title: '添加入学诊断',
-        area: ['800px', '420px'], //宽高
+        title: '添加题目',
+        area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
         content: Feng.ctxPath + '/question/question_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -70,11 +62,12 @@ Question.openQuestionDetail = function () {
         var index = layer.open({
             type: 2,
             title: '入学诊断详情',
-            area: ['800px', '420px'], //宽高
+            area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/question/question_update/' + Question.seItem.id
+            content: Feng.ctxPath + '/question/question_update/' + Question.seItem.code
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };
@@ -90,7 +83,7 @@ Question.delete = function () {
         }, function (data) {
             Feng.error("删除失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("questionId",this.seItem.id);
+        ajax.set("questionCode",this.seItem.code);
         ajax.start();
     }
 };

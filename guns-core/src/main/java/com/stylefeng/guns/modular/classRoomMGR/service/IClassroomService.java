@@ -12,5 +12,11 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-05
  */
 public interface IClassroomService extends IService<Classroom> {
-
+    /**
+     * 获取教室信息
+     *
+     * @param classRoomCode
+     * @return
+     */
+    Classroom get(String classRoomCode);
 }

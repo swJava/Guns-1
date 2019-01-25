@@ -3,7 +3,9 @@ package com.stylefeng.guns.rest.modular.education.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
+import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.requester.StudentAddRequester;
@@ -11,15 +13,16 @@ import com.stylefeng.guns.rest.modular.education.requester.StudentChangeRequeste
 import com.stylefeng.guns.rest.modular.education.responser.StudentDetailResponse;
 import com.stylefeng.guns.rest.modular.education.responser.StudentListResponse;
 import com.stylefeng.guns.rest.modular.member.responser.RegistResponse;
-import io.swagger.annotations.*;
-import org.apache.commons.beanutils.BeanUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -29,7 +32,7 @@ import java.util.List;
 @RequestMapping("/student")
 @Api(tags = "学员接口")
 @Validated
-public class StudentController {
+public class StudentController extends ApiController {
 
     @Autowired
     private IStudentService studentService;
@@ -43,25 +46,22 @@ public class StudentController {
             @Valid
             StudentAddRequester requester){
 
-        String userName = requester.getUserName();
+        Member currMember = currMember();
 
-        Student student = studentService.addStudent(userName, requester.toMap());
+        Student student = studentService.addStudent(currMember.getUserName(), requester.toMap());
 
         return SimpleResponser.success();
     }
 
-    @RequestMapping("/list/{userName}")
+    @RequestMapping("/list")
     @ApiOperation(value="学员列表", httpMethod = "POST", response = StudentListResponse.class)
-    @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String", example = "MM00021")
     @ResponseBody
-    public Responser listStudent(
-            @PathVariable(value = "userName", required = true)
-            @NotBlank(message = "用户名不能为空")
-            String userName){
+    public Responser listStudent(){
 
+        Member currMember = currMember();
         Wrapper<Student> queryWrapper = new EntityWrapper<Student>();
 
-        queryWrapper.eq("user_name", userName);
+        queryWrapper.eq("user_name", currMember.getUserName());
 
         List<Student> studentList = studentService.selectList(queryWrapper);
 
@@ -104,15 +104,5 @@ public class StudentController {
 
         studentService.updateStudent(requester.getCode(), newStudent);
         return SimpleResponser.success();
-    }
-
-    @ApiOperation(value="课程表", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "studentCode", value = "学员编码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "classCode", value = "班级编码", required = true, dataType = "String")
-    })
-    @RequestMapping("/course/list")
-    public Responser 课程表(String studentCode, String classCode){
-        return null;
     }
 }

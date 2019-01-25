@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ScheduleStudent">
+        <id column="id" property="id" />
+        <result column="student_code" property="studentCode" />
+        <result column="student_name" property="studentName" />
+        <result column="class_code" property="classCode" />
+        <result column="class_name" property="className" />
+        <result column="outline_code" property="outlineCode" />
+        <result column="outline" property="outline" />
+        <result column="study_date" property="studyDate" />
+        <result column="pcode" property="pcode" />
+        <result column="fcode" property="fcode" />
+        <result column="pcodes" property="pcodes" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, student_code, student_name, class_code, class_name, outline_code, outline, study_date, pcode, fcode, pcodes, status, remark
+    </sql>
+
+</mapper>

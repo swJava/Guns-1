@@ -4,6 +4,11 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.stylefeng.guns.common.constant.state.GenericState;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import sun.net.www.content.text.Generic;
+
 import java.io.Serializable;
 
 /**
@@ -15,11 +20,13 @@ import java.io.Serializable;
  * @since 2018-11-25
  */
 @TableName("tb_course")
+@ApiModel(value = "Course", description = "课程")
 public class Course extends Model<Course> {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 课程编码： KC + 6位序列码
@@ -38,13 +45,17 @@ public class Course extends Model<Course> {
      */
     private String subject;
     /**
+     * 年级
+     */
+    private Integer grade;
+    /**
+     * 课时长
+     */
+    private Integer period;
+    /**
      * 课程介绍
      */
     private String description;
-    /**
-     * 课时数
-     */
-    private Integer period;
     /**
      * 状态
      */
@@ -91,12 +102,12 @@ public class Course extends Model<Course> {
         this.subject = subject;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getGrade() {
+        return grade;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
     public Integer getPeriod() {
@@ -105,6 +116,14 @@ public class Course extends Model<Course> {
 
     public void setPeriod(Integer period) {
         this.period = period;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getStatus() {
@@ -128,9 +147,16 @@ public class Course extends Model<Course> {
         ", name=" + name +
         ", method=" + method +
         ", subject=" + subject +
-        ", description=" + description +
         ", period=" + period +
+        ", description=" + description +
         ", status=" + status +
         "}";
+    }
+
+    public boolean isValid() {
+        if (null == this.status)
+            return false;
+
+        return GenericState.Valid.code == this.status;
     }
 }

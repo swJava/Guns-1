@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.classRoomMGR.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.dao.ClassroomMapper;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClassroomServiceImpl extends ServiceImpl<ClassroomMapper, Classroom> implements IClassroomService {
 
+    @Override
+    public Classroom get(String code) {
+        if (null == code)
+            return null;
+
+        return selectOne(new EntityWrapper<Classroom>().eq("code", code));
+    }
 }

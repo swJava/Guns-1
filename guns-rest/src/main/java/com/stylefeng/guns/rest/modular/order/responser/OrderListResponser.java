@@ -1,9 +1,9 @@
 package com.stylefeng.guns.rest.modular.order.responser;
 
-import com.stylefeng.guns.modular.system.model.CourseCart;
 import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
+import com.stylefeng.guns.rest.modular.education.responser.ClassResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,18 +17,18 @@ import java.util.List;
  */
 @ApiModel(value = "OrderListResponser", description = "订单列表")
 public class OrderListResponser extends SimpleResponser {
-    @ApiModelProperty(name = "data", value = "选课单集合")
-    private List<Order> data;
+    @ApiModelProperty(name = "data", value = "订单集合")
+    private List<ClassResponser> data;
 
-    public List<Order> getData() {
+    public List<ClassResponser> getData() {
         return data;
     }
 
-    public void setData(List<Order> data) {
+    public void setData(List<ClassResponser> data) {
         this.data = data;
     }
 
-    public static Responser me(List<Order> orderList) {
+    public static Responser me(List<ClassResponser> orderList) {
         OrderListResponser response = new OrderListResponser();
         response.setCode(SUCCEED);
         response.setMessage("查询成功");

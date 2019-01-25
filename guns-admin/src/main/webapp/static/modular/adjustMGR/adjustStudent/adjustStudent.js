@@ -14,16 +14,22 @@ var AdjustStudent = {
 AdjustStudent.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '申请用户名', field: 'userName', visible: true, align: 'center', valign: 'middle'},
-            {title: '学生编码（学号）', field: 'studentName', visible: true, align: 'center', valign: 'middle'},
-            {title: '当前班级', field: 'className', visible: true, align: 'center', valign: 'middle'},
-            {title: '调入目标编码', field: 'targetName', visible: true, align: 'center', valign: 'middle'},
-            {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
-            {title: '流程状态', field: 'workStatusName', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle' },
-            {title: '备注', field: 'remark', visible: true, align: 'center', valign: 'middle'},
-            {title: '申请时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'},
-            {title: '审核时间', field: 'updateTime', visible: true, align: 'center', valign: 'middle'}
+            {title: '申请用户', field: 'number', visible: true, align: 'center', valign: 'middle', width: 100},
+            {title: '申请学生', field: '', visible: true, align: 'center', valign: 'middle',
+                formatter:function (value,row,index) {
+                    return row.sname + '(' + row.student_code + ')';
+                }
+            },
+            {title: '当前班级', field: 'scname', visible: true, align: 'center', valign: 'middle'},
+            {title: '审批状态', field: 'workStatusName', visible: true, align: 'center', valign: 'middle', width: 80},
+            {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle' },
+            {title: '调整明细', field: 'remark', visible: true, align: 'center', valign: 'middle',
+                formatter:function (value,row,index) {
+                    return row.dcname + '(' + row.oname + ')';
+                }
+            },
+            {title: '申请时间', field: 'create_time', visible: true, align: 'center', valign: 'middle'},
+            {title: '审核时间', field: 'update_time', visible: true, align: 'center', valign: 'middle'}
     ];
 };
 
@@ -42,63 +48,50 @@ AdjustStudent.check = function () {
 };
 
 /**
- * 点击添加调课管理
- */
-AdjustStudent.openAddAdjustStudent = function () {
-    var index = layer.open({
-        type: 2,
-        title: '添加调课管理',
-        area: ['800px', '420px'], //宽高
-        fix: false, //不固定
-        maxmin: true,
-        content: Feng.ctxPath + '/adjustStudent/adjustStudent_add'
-    });
-    this.layerIndex = index;
-};
-
-/**
  * 審核通過
  */
-AdjustStudent.openAdjustStudentDetail = function () {
+AdjustStudent.openApprove = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath  + '/adjustStudent/pass/' + AdjustStudent.seItem.id , function (data) {
-            Feng.success("编辑成功!");
-            AdjustStudent.table.refresh();
-        }, function (data) {
-            Feng.error("编辑失败!" + data.responseJSON.message + "!");
+        var index = layer.open({
+            type: 2,
+            title: '审核调课申请',
+            area: ['480px', '320px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/adjust/pass?applyId=' + this.seItem.id
         });
-        ajax.set("adjustStudentId",this.seItem.id);
-        ajax.start();
+        this.layerIndex = index;
     }
 };
 /**
  * 審核打回
  */
-AdjustStudent.openAdjustStudentDetail_not = function () {
+AdjustStudent.openReject = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath  + '/adjustStudent/pass_not/' + AdjustStudent.seItem.id , function (data) {
-            Feng.success("编辑成功!");
-            AdjustStudent.table.refresh();
-        }, function (data) {
-            Feng.error("编辑失败!" + data.responseJSON.message + "!");
+        var index = layer.open({
+            type: 2,
+            title: '拒绝调课申请',
+            area: ['480px', '320px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/adjust/reject?applyId=' + this.seItem.id
         });
-        ajax.set("adjustStudentId",this.seItem.id);
-        ajax.start();
+        this.layerIndex = index;
     }
 };
 
 /**
- * 删除调课管理
+ * 关闭调课管理
  */
-AdjustStudent.delete = function () {
+AdjustStudent.close = function () {
     if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/adjustStudent/delete", function (data) {
-            Feng.success("删除成功!");
+        var ajax = new $ax(Feng.ctxPath + "/adjust/close", function (data) {
+            Feng.success("关闭成功! ");
             AdjustStudent.table.refresh();
         }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
+            Feng.error("关闭失败! " + data.responseJSON.message + "!");
         });
-        ajax.set("adjustStudentId",this.seItem.id);
+        ajax.set("applyId",this.seItem.id);
         ajax.start();
     }
 };
@@ -114,7 +107,7 @@ AdjustStudent.search = function () {
 
 $(function () {
     var defaultColunms = AdjustStudent.initColumn();
-    var table = new BSTable(AdjustStudent.id, "/adjustStudent/list", defaultColunms);
+    var table = new BSTable(AdjustStudent.id, "/adjust/list", defaultColunms);
     table.setPaginationType("server");
     AdjustStudent.table = table.init();
 });

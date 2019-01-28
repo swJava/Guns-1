@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.common.reflect.ClassPath;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
@@ -211,9 +212,16 @@ public class ClassController extends BaseController {
      */
     @RequestMapping(value = "/update")
     @ResponseBody
-    public Object update(Class classInstance) {
-        classInstance.setPrice(classInstance.getPrice() * 100);
+    public Object update(Class classInstance, String planList) {
+        List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
+        try {
+            classPlanList = JSON.parseArray(planList, ClassPlan.class);
+        }catch(Exception e){
+        }
 
+        if (classPlanList.isEmpty())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
+/*
         Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
         Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
 
@@ -228,9 +236,9 @@ public class ClassController extends BaseController {
 
         Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
         // 设置当前班级的剩余报名人数
-        classInstance.setQuato(classroomEntity.getMaxCount() - orderQuato);
+        classInstance.setQuato(classroomEntity.getMaxCount() - orderQuato);*/
 
-        classService.updateClass(classInstance);
+        classService.updateClass(classInstance, classPlanList);
         return SUCCESS_TIP;
     }
 
@@ -252,13 +260,21 @@ public class ClassController extends BaseController {
 
         List<ClassPlan> planList = scheduleClassService.selectPlanList(queryMap);
 
-        classPlanInfo.put("allClassPlanList", planList);
-
         List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
-        if (null != classCode){
-            // TODO
+
+        if (null != classCode) {
+            // 加载可以编辑的排班计划
+            Iterator<ClassPlan> planListIter = planList.iterator();
+            while (planListIter.hasNext()) {
+                ClassPlan plan = planListIter.next();
+                if (classCode.equals(plan.getClassCode())) {
+                    classPlanList.add(plan);
+                    planListIter.remove();
+                }
+            }
         }
 
+        classPlanInfo.put("allClassPlanList", planList);
         classPlanInfo.put("classPlanList", classPlanList);
         return classPlanInfo;
     }

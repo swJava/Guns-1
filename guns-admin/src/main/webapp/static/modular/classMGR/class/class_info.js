@@ -6,8 +6,11 @@ var ClassInfoDlg = {
         id : 'courseTable'
     },
     layerIndex: -1,
+    currClassId: $('#id').val(),
+    currClass: $('#code').val(),
     otherPlanList: new Array(),
     minePlanList: new Array(),
+    calendar: null,
     classInfoData : {},
     validateFields: {
         code: {
@@ -216,7 +219,7 @@ ClassInfoDlg.addSubmit = function() {
  * 提交修改
  */
 ClassInfoDlg.editSubmit = function() {
-
+    console.log('<<< edit submit');
     this.clearData();
     if (!this.validate()) {
         return;
@@ -235,7 +238,183 @@ ClassInfoDlg.editSubmit = function() {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.classInfoData);
+    ajax.set('planList', JSON.stringify(ClassInfoDlg.minePlanList));
     ajax.start();
+}
+
+ClassInfoDlg.initCalendar = function(options){
+
+    var me = this;
+    console.log('<<< init calendar >>>');
+    console.log(options);
+    me.calendar = $('#calendar').fullCalendar({
+        //isRTL: true,
+        eventLimit: true,
+        defaultDate: options.today,
+        buttonText: {
+            today: '今天',
+            month: '月视图',
+            week: '周视图',
+            day: '日视图'
+        },
+        allDayText: "全天",
+        timeFormat: {
+            '': 'H(:mm)'
+        },
+        axisFormat: 'H时(:mm分)',
+        firstHour: 8,
+        minTime: 8,
+        buttonHtml: {
+            prev: '<i class="ace-icon fa fa-chevron-left"></i>',
+            next: '<i class="ace-icon fa fa-chevron-right"></i>'
+        },
+        titleFormat: {
+            month: 'YYYY年 MMMM月',
+            day: 'YYYY年 MMMM月DD日 dddd'
+        },
+        monthNames: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        dayNames: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        dayNamesShort: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaDay'
+        },
+        events: options.calEvents
+        ,
+        selectable: true,
+        selectHelper: true,
+        select: function(start, end, allDay) {
+
+            var currView = me.calendar.fullCalendar('getView');
+            if ('month' == currView.name){
+                // 跳转视图到day
+                me.calendar.fullCalendar('changeView', 'agendaDay');
+                me.calendar.fullCalendar('gotoDate', start.format('YYYY-MM-DD'));
+            }else if ('agendaDay' == currView.name){
+                bootbox.prompt("排班描述:", function(title) {
+                    if (title !== null) {
+
+                        var beginTime = start.format('H:mm');
+                        var endTime = end.format('H:mm');
+                        me.calendar.fullCalendar('renderEvent',
+                            {
+                                id: new Date().getTime(),
+                                title: beginTime + ' ~ ' + endTime + ': ' + title,
+                                start: start,
+                                end: end
+                            },
+                            true // make the event "stick"
+                        );
+
+                        me.minePlanList.push({
+                            studyDate: start.format('YYYY-MM-DD'),
+                            classTime: start.format('HHmm'),
+                            endTime: end.format('HHmm'),
+                            week: start.format('E')
+                        });
+
+                        console.log(ClassInfoDlg.minePlanList);
+
+                        me.calendar.fullCalendar('changeView', 'month');
+                    }
+                });
+            }
+
+            me.calendar.fullCalendar('unselect');
+        }
+        ,
+        editable: true
+        ,
+        eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
+            var newEvent = $.extend({}, event);
+            newEvent.id = (new Date()).getTime();
+            me.calendar.fullCalendar('renderEvent',
+                {
+                    id: new Date().getTime(),
+                    title: event.title,
+                    start: event.start,
+                    end: event.end
+                },
+                true // make the event "stick"
+            );
+
+            me.minePlanList.push({
+                studyDate: event.start.format('YYYY-MM-DD'),
+                classTime: event.start.format('HHmm'),
+                endTime: event.end.format('HHmm'),
+                week: event.start.format('E')
+            });
+
+            revertFunc();
+        }
+        ,
+        eventClick: function(event, jsEvent, view) {
+            var eventId = parseInt(event.id, 10);
+            var _id = me.currClass + '_' + me.currClassId;
+            console.log(event.id);
+            if (isNaN(eventId)) {
+                if ( 0 != event.id.indexOf(me.currClass) )
+                    return false;
+            }
+            //display a modal
+            var modal =
+                '<div class="modal fade">\
+                  <div class="modal-dialog">\
+                   <div class="modal-content">\
+                     <div class="modal-body">\
+                       <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                       <form class="no-margin">\
+                          <label>修改 &nbsp;</label>\
+                          <input class="middle" autocomplete="off" type="text" value="' + event.title + '" />\
+					 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> 保存修改</button>\
+				   </form>\
+				 </div>\
+				 <div class="modal-footer">\
+					<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> 删 除</button>\
+					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> 取 消</button>\
+				 </div>\
+			  </div>\
+			 </div>\
+			</div>';
+
+
+            var modal = $(modal).appendTo('body');
+            modal.find('form').on('submit', function(ev){
+                ev.preventDefault();
+
+                event.title = $(this).find("input[type=text]").val();
+                me.calendar.fullCalendar('updateEvent', event);
+                modal.modal("hide");
+            });
+            modal.find('button[data-action=delete]').on('click', function() {
+                me.calendar.fullCalendar('removeEvents' , function(ev){
+                    return (ev._id == event._id);
+                });
+
+                var newMinePlanList = new Array();
+                $.each(me.minePlanList, function(idx, eo){
+
+                    if (eo._id = event._id)
+                        return true;
+
+                    newMinePlanList.push({
+                        studyDate: event.start.format('YYYY-MM-DD'),
+                        classTime: event.start.format('HHmm'),
+                        endTime: event.end.format('HHmm'),
+                        week: event.start.format('E')
+                    })
+                });
+
+                me.minePlanList = newMinePlanList;
+                modal.modal("hide");
+            });
+
+            modal.modal('show').on('hidden', function(){
+                modal.remove();
+            });
+        }
+    });
 }
 
 $(function() {
@@ -251,196 +430,44 @@ $(function() {
 
     var today = year + '-' + month + '-' + day;
     console.log('Calendar today : ' + today);
+    var initEvents = new Array();
 
-    var calendar = $('#calendar').fullCalendar({
-        //isRTL: true,
-        eventLimit: true,
-        buttonText: {
-            today: '今天',
-            month: '月视图',
-            week: '周视图',
-            day: '日视图'
-        },
-        allDayText: "全天",
-        timeFormat: {
-            '': 'H(:mm)'
-        },
-        axisFormat: 'H时(:mm分)',
-        firstHour: 8,
-        minTime: 6,
-        buttonHtml: {
-            prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-            next: '<i class="ace-icon fa fa-chevron-right"></i>'
-        },
-        titleFormat: {
-            month: 'YYYY年 MMMM月',
-            week: "[yyyy年] MMMM月d日 { '&#8212;' [yyyy年] MMMM月d日}",
-            day: 'yyyy年 MMMM月d日 dddd'
-        },
-        monthNames: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
-        dayNames: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-        dayNamesShort: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,agendaDay'
-        },
-        events: function(start, end, timezone, callback) {
-            $.ajax({
-                url: Feng.ctxPath + '/class/plan/list',
-                dataType: 'json',
-                success: function(response) {
-                    var events = [];
-                    console.log('<<< load events');
+    $.ajax({
+        async: true,
+        url: Feng.ctxPath + '/class/plan/list',
+        dataType: 'json',
+        data: {classCode: ClassInfoDlg.currClass},
+        success: function(response) {
+            console.log('<<< load events');
 
-                    ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
-                    ClassInfoDlg.minePlanList.concat(response.classPlanList);
+            ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
+            ClassInfoDlg.minePlanList.concat(response.classPlanList);
 
-                    $(response.allClassPlanList).each(function(idx, eo) {
-                        events.push({
-                            id: eo.classCode,
-                            title: eo.description,
-                            start: eo.classBeginTime,
-                            end: eo.classEndTime,
-                            color: '#ffffff',
-                            backgroundColor: '#a0a0a0'
-                        });
-                    });
-                    $(response.classPlanList).each(function(idx, eo) {
-                        events.push({
-                            id: eo.classCode,
-                            title: eo.description,
-                            start: eo.classBeginTime,
-                            end: eo.classEndTime,
-                            color: '#ffffff',
-                            backgroundColor: '#82af6f'
-                        });
-                    });
-                    callback(events)
-                }
-            });
-        }
-        ,
-        selectable: true,
-        selectHelper: true,
-        select: function(start, end, allDay) {
-
-            var currView = calendar.fullCalendar('getView');
-            if ('month' == currView.name){
-                // 跳转视图到day
-                calendar.fullCalendar('changeView', 'agendaDay');
-                calendar.fullCalendar('gotoDate', start.format('YYYY-MM-DD'));
-            }else if ('agendaDay' == currView.name){
-                bootbox.prompt("New Event Title:", function(title) {
-                    if (title !== null) {
-
-                        var beginTime = start.format('H:mm');
-                        var endTime = end.format('H:mm');
-                        calendar.fullCalendar('renderEvent',
-                            {
-                                id: new Date().getTime(),
-                                title: beginTime + ' ~ ' + endTime + ': ' + title,
-                                start: start,
-                                end: end
-                            },
-                            true // make the event "stick"
-                        );
-
-                        ClassInfoDlg.minePlanList.push({
-                            studyDate: start.format('YYYY-MM-DD'),
-                            classTime: start.format('HHmm'),
-                            endTime: end.format('HHmm'),
-                            week: start.format('E')
-                        });
-
-                        console.log(ClassInfoDlg.minePlanList);
-
-                        calendar.fullCalendar('changeView', 'month');
-                    }
+            $(response.allClassPlanList).each(function(idx, eo) {
+                initEvents.push({
+                    id: eo.classCode + '_' + eo.id,
+                    title: eo.description,
+                    start: eo.classBeginTime,
+                    end: eo.classEndTime,
+                    editable: false,
+                    color: '#ffffff',
+                    backgroundColor: '#a0a0a0'
                 });
-            }
-
-            calendar.fullCalendar('unselect');
-        }
-        ,
-        editable: true,
-        eventDragStart: function(event, jsEvent, ui, view){
-            var eventId = parseInt(event.id, 10);
-            if (isNaN(eventId)) {
-                Feng.error("不允许编辑!");
-            }
-        }
-        ,
-        eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
-            var newEvent = $.extend({}, event);
-            newEvent.id = (new Date()).getTime();
-            calendar.fullCalendar('renderEvent',
-                {
-                    id: new Date().getTime(),
-                    title: event.title,
-                    start: event.start,
-                    end: event.end
-                },
-                true // make the event "stick"
-            );
-
-            ClassInfoDlg.minePlanList.push({
-                studyDate: event.start.format('YYYY-MM-DD'),
-                classTime: event.start.format('HHmm'),
-                endTime: event.end.format('HHmm'),
-                week: event.start.format('E')
+            });
+            $(response.classPlanList).each(function(idx, eo) {
+                initEvents.push({
+                    id: eo.classCode + '_' + eo.id,
+                    title: eo.description,
+                    start: eo.classBeginTime,
+                    end: eo.classEndTime,
+                    color: '#ffffff',
+                    backgroundColor: '#82af6f'
+                });
             });
 
-            revertFunc();
-        }
-        ,
-        eventResizeStart: function(event, jsEvent, ui, view){
-            var eventId = parseInt(event.id, 10);
-            if (isNaN(eventId)) {
-                Feng.error("不允许编辑!");
-            }
-        }
-        ,
-        eventClick: function(calEvent, jsEvent, view) {
-            //display a modal
-            var modal =
-                '<div class="modal fade">\
-                  <div class="modal-dialog">\
-                   <div class="modal-content">\
-                     <div class="modal-body">\
-                       <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                       <form class="no-margin">\
-                          <label>Change event name &nbsp;</label>\
-                          <input class="middle" autocomplete="off" type="text" value="' + calEvent.title + '" />\
-					 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
-				   </form>\
-				 </div>\
-				 <div class="modal-footer">\
-					<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-				 </div>\
-			  </div>\
-			 </div>\
-			</div>';
-
-
-            var modal = $(modal).appendTo('body');
-            modal.find('form').on('submit', function(ev){
-                ev.preventDefault();
-
-                calEvent.title = $(this).find("input[type=text]").val();
-                calendar.fullCalendar('updateEvent', calEvent);
-                modal.modal("hide");
-            });
-            modal.find('button[data-action=delete]').on('click', function() {
-                calendar.fullCalendar('removeEvents' , function(ev){
-                    return (ev._id == calEvent._id);
-                })
-                modal.modal("hide");
-            });
-
-            modal.modal('show').on('hidden', function(){
-                modal.remove();
+            ClassInfoDlg.initCalendar({
+                today: today,
+                calEvents: initEvents
             });
         }
     });

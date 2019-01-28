@@ -12,11 +12,14 @@ import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ClassMapper;
-import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.Classroom;
+import com.stylefeng.guns.modular.system.model.Member;
+import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.util.Assert;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -239,38 +242,35 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         insert(classInstance);
         // 排班
         scheduleClassService.scheduleClass(classInstance, classPlanList);
-
-//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
     }
 
     @Override
-    public void updateClass(Class classInstance) {
-//
-//        scheduleClassService.deleteClassSchedule(classInstance.getCode());
-//
-//        String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
-//        Class currClass = get(classInstance.getCode());
-//
-//        if (null == currClass)
-//            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
-//
-//        BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
-//        updateById(classInstance);
-//
-//        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
-//        List<Integer> valueList = new ArrayList<>();
-//        int totalCount = 0;
-//        while(valueToken.hasMoreTokens()){
-//            totalCount++;
-//            try {
-//                valueList.add(Integer.parseInt(valueToken.nextToken()));
-//            }catch(Exception e){}
-//        }
-//
-//        if (totalCount != valueList.size()){
-//            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
-//        }
-//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+    public void updateClass(Class classInstance, List<ClassPlan> classPlanList) {
+        if (classInstance.getPeriod() != classPlanList.size()){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_OVERTOP, new String[]{"课时数" + classInstance.getPeriod() + ", 排班计划数：" + classPlanList.size()});
+        }
+        Collections.sort(classPlanList, new Comparator<ClassPlan>() {
+            @Override
+            public int compare(ClassPlan co1, ClassPlan co2) {
+                return co1.getStudyDate().compareTo(co2.getStudyDate());
+            }
+        });
+        Class currClass = get(classInstance.getCode());
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级信息"});
+
+        Date now = new Date();
+        if (currClass.getSignStartDate().before(now)){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"班级已开始报名"});
+        }
+
+        String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
+        BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
+        updateById(classInstance);
+
+        // 排班
+        scheduleClassService.deleteClassSchedule(classInstance.getCode());
+        scheduleClassService.scheduleClass(classInstance, classPlanList);
     }
 
     @Override

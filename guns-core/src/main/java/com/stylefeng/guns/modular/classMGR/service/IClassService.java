@@ -76,8 +76,9 @@ public interface IClassService extends IService<Class> {
      * 更新班级信息
      *
      * @param classInstance
+     * @param classPlanList
      */
-    void updateClass(Class classInstance);
+    void updateClass(Class classInstance, List<ClassPlan> classPlanList);
 
     /**
      * 删除班级信息

@@ -17,18 +17,18 @@ import java.util.List;
  */
 @ApiModel(value = "OrderListResponser", description = "订单列表")
 public class OrderListResponser extends SimpleResponser {
-    @ApiModelProperty(name = "data", value = "订单集合")
-    private List<ClassResponser> data;
+    @ApiModelProperty(name = "data", value = "订单所含课程")
+    private List<ClassOrderResponser> data;
 
-    public List<ClassResponser> getData() {
+    public List<ClassOrderResponser> getData() {
         return data;
     }
 
-    public void setData(List<ClassResponser> data) {
+    public void setData(List<ClassOrderResponser> data) {
         this.data = data;
     }
 
-    public static Responser me(List<ClassResponser> orderList) {
+    public static Responser me(List<ClassOrderResponser> orderList) {
         OrderListResponser response = new OrderListResponser();
         response.setCode(SUCCEED);
         response.setMessage("查询成功");

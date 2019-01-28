@@ -79,12 +79,11 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
             }
         });
 
-
         List<ScheduleClass> scheduleClassList = new ArrayList<>();
         int planIndex = 0;
         for(CourseOutline outline : outlineList){
             ScheduleClass scheduleClass = new ScheduleClass();
-            ClassPlan classPlan = classPlanList.get(0);
+            ClassPlan classPlan = classPlanList.get(planIndex++);
 
             scheduleClass.setClassCode(classInstance.getCode());
             scheduleClass.setClassTime(classPlan.getClassTime());

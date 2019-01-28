@@ -19,6 +19,7 @@ import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.responser.ClassResponser;
 import com.stylefeng.guns.rest.modular.order.requester.OrderPostRequester;
 import com.stylefeng.guns.rest.modular.order.responser.CartListResponser;
+import com.stylefeng.guns.rest.modular.order.responser.ClassOrderResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderListResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderPostResponser;
 import io.swagger.annotations.*;
@@ -30,7 +31,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单
@@ -217,14 +221,13 @@ public class OrderController extends ApiController {
 
         List<Order> orderList = orderService.selectList(queryWrapper);
 
-        List<ClassResponser> classOrderList = new ArrayList<ClassResponser>();
+        List<ClassOrderResponser> classOrderList = new ArrayList<ClassOrderResponser>();
         for(Order order : orderList){
             List<OrderItem> orderItemList = orderService.listItems(order.getAcceptNo(), OrderItemTypeEnum.Course);
 
             for(OrderItem classItem : orderItemList){
                 Class classInfo = classService.get(classItem.getItemObjectCode());
-
-                classOrderList.add(ClassResponser.me(classInfo));
+                classOrderList.add(ClassOrderResponser.me(order, ClassResponser.me(classInfo)));
             }
         }
 

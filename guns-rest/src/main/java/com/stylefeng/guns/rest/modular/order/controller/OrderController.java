@@ -231,6 +231,22 @@ public class OrderController extends ApiController {
         return OrderListResponser.me(classOrderList);
     }
 
+    @ApiOperation(value="订单取消", httpMethod = "POST", response = SimpleResponser.class)
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderNo", value = "订单号", required = true, dataType = "String", example = "h1hj1901011508051789")
+    })
+    public Responser cancelOrder(
+            @RequestParam(name = "orderNo", required = true)
+            String orderNo
+    ){
+        Member member = currMember();
+
+        orderService.cancel(member, orderNo);
+
+        return SimpleResponser.success();
+    }
+
     /**
      * 找到一个合适学员信息
      *

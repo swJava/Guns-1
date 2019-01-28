@@ -254,11 +254,32 @@ $(function() {
 
     var calendar = $('#calendar').fullCalendar({
         //isRTL: true,
+        eventLimit: true,
+        buttonText: {
+            today: '今天',
+            month: '月视图',
+            week: '周视图',
+            day: '日视图'
+        },
+        allDayText: "全天",
+        timeFormat: {
+            '': 'H(:mm)'
+        },
+        axisFormat: 'H时(:mm分)',
+        firstHour: 8,
+        minTime: 6,
         buttonHtml: {
             prev: '<i class="ace-icon fa fa-chevron-left"></i>',
             next: '<i class="ace-icon fa fa-chevron-right"></i>'
         },
-
+        titleFormat: {
+            month: 'YYYY年 MMMM月',
+            week: "[yyyy年] MMMM月d日 { '&#8212;' [yyyy年] MMMM月d日}",
+            day: 'yyyy年 MMMM月d日 dddd'
+        },
+        monthNames: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        dayNames: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        dayNamesShort: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -346,7 +367,7 @@ $(function() {
         eventDragStart: function(event, jsEvent, ui, view){
             var eventId = parseInt(event.id, 10);
             if (isNaN(eventId)) {
-                alert('不允许编辑');
+                Feng.error("不允许编辑!");
             }
         }
         ,
@@ -376,7 +397,7 @@ $(function() {
         eventResizeStart: function(event, jsEvent, ui, view){
             var eventId = parseInt(event.id, 10);
             if (isNaN(eventId)) {
-                alert('不允许编辑');
+                Feng.error("不允许编辑!");
             }
         }
         ,

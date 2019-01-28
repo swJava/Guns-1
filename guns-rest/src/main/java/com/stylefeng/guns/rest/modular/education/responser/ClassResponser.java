@@ -126,7 +126,6 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         dto.setCanChange(false);
         if (now.before(beginDate))
             dto.setCanChange(true);
-
     }
 
     private static void judgementAdjust(ClassResponser dto) {

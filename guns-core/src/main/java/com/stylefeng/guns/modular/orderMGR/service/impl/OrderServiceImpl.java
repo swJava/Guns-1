@@ -189,6 +189,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return memberService.get(existOrderMember.getUsername());
     }
 
+    @Override
+    public void cancel(Member member, String orderNo) {
+        if (null == orderNo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"订单号"});
+
+        Order order = get(orderNo);
+
+        if (null == order)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"订单"});
+
+        order.setStatus(OrderStateEnum.InValid.code);
+        updateById(order);
+    }
+
     /**
      * 算费
      *

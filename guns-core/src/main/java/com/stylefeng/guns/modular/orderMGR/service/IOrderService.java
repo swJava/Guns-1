@@ -57,4 +57,12 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Member getMemberInfo(String orderNo);
+
+    /**
+     * 取消订单
+     *
+     * @param member
+     * @param orderNo
+     */
+    void cancel(Member member, String orderNo);
 }

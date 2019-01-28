@@ -1,7 +1,7 @@
 package com.stylefeng.guns.modular.education.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
 
@@ -31,5 +31,13 @@ public interface IScheduleClassService extends IService<ScheduleClass> {
      * @param queryMap
      * @return
      */
-    List<ClassPlanDto> selectPlanList(Map<String, Object> queryMap);
+    List<ClassPlan> selectPlanList(Map<String, Object> queryMap);
+
+    /**
+     * 生成排班表
+     *
+     * @param classInstance
+     * @param classPlanList
+     */
+    void scheduleClass(Class classInstance, List<ClassPlan> classPlanList);
 }

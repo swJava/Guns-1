@@ -142,7 +142,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         Course course = courseService.get(classInfo.getCourseCode());
         courseCart.setClassMethod(CourseMethodEnum.instanceOf(course.getMethod()).text);
 
-        courseCart.setClassTime(generateTimeDescription(classInfo));
+        courseCart.setClassTime(classInfo.getStudyTimeDesp());
         courseCart.setClassroom(classInfo.getClassRoom());
 
         courseCart.setTeacher(classInfo.getTeacher());
@@ -153,31 +153,4 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         insert(courseCart);
     }
 
-    private String generateTimeDescription(Class classInfo) {
-        int scheduleType = classInfo.getStudyTimeType();
-        StringTokenizer studyTimeTokens = new StringTokenizer(classInfo.getStudyTimeValue(), ",");
-
-        StringBuffer despBuffer = new StringBuffer();
-        despBuffer.append("每");
-
-        while(studyTimeTokens.hasMoreTokens()){
-            int scheduleDay = Integer.parseInt(studyTimeTokens.nextToken());
-
-            switch(scheduleType){
-                case Calendar.DAY_OF_WEEK:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-                case Calendar.DAY_OF_MONTH:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-            }
-        }
-
-        despBuffer.append(classInfo.getBeginTime().substring(0, 2)).append(":").append(classInfo.getBeginTime().substring(2));
-        despBuffer.append(" ~ ");
-        despBuffer.append(classInfo.getEndTime().substring(0, 2)).append(":").append(classInfo.getEndTime().substring(2));
-
-
-        return despBuffer.toString();
-    }
 }

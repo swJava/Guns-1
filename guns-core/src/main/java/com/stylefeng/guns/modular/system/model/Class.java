@@ -74,15 +74,10 @@ public class Class extends Model<Class> {
     @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 6, example="2018-12-30")
     private Date endDate;
     /**
-     * 开课时间类型： 5 DAY_OF_MONTH ； 7 DAY_OF_WEEK
+     * 开课时间描述
      */
-    @TableField("study_time_type")
-    private Integer studyTimeType;
-    /**
-     * 开课时间
-     */
-    @TableField("study_time_value")
-    private String studyTimeValue;
+    @TableField("study_time_desp")
+    private String studyTimeDesp;
     /**
      * 开始时间
      */
@@ -130,11 +125,17 @@ public class Class extends Model<Class> {
      */
     private Long price;
     /**
-     * 剩余报名人数
+     * 开班人数
      */
     private Integer quato;
+
     /**
-     * 报名截止时间
+     * 报名开始日期
+     */
+    @TableField("sign_start_date")
+    private Date signStartDate;
+    /**
+     * 报名截止日期
      */
     @TableField("sign_end_date")
     private Date signEndDate;
@@ -234,20 +235,12 @@ public class Class extends Model<Class> {
         this.endDate = endDate;
     }
 
-    public Integer getStudyTimeType() {
-        return studyTimeType;
+    public String getStudyTimeDesp() {
+        return studyTimeDesp;
     }
 
-    public void setStudyTimeType(Integer studyTimeType) {
-        this.studyTimeType = studyTimeType;
-    }
-
-    public String getStudyTimeValue() {
-        return studyTimeValue;
-    }
-
-    public void setStudyTimeValue(String studyTimeValue) {
-        this.studyTimeValue = studyTimeValue;
+    public void setStudyTimeDesp(String studyTimeDesp) {
+        this.studyTimeDesp = studyTimeDesp;
     }
 
     public String getBeginTime() {
@@ -338,6 +331,14 @@ public class Class extends Model<Class> {
         this.quato = quato;
     }
 
+    public Date getSignStartDate() {
+        return signStartDate;
+    }
+
+    public void setSignStartDate(Date signStartDate) {
+        this.signStartDate = signStartDate;
+    }
+
     public Date getSignEndDate() {
         return signEndDate;
     }
@@ -409,8 +410,7 @@ public class Class extends Model<Class> {
         ", ability=" + ability +
         ", beginDate=" + beginDate +
         ", endDate=" + endDate +
-        ", studyTimeType=" + studyTimeType +
-        ", studyTimeValue=" + studyTimeValue +
+        ", studyTimeDesp=" + studyTimeDesp +
         ", beginTime=" + beginTime +
         ", endTime=" + endTime +
         ", duration=" + duration +
@@ -422,6 +422,7 @@ public class Class extends Model<Class> {
         ", star=" + star +
         ", price=" + price +
         ", quato=" + quato +
+        ", signStartDate=" + signStartDate +
         ", signEndDate=" + signEndDate +
         ", status=" + status +
         ", teacherCode=" + teacherCode +

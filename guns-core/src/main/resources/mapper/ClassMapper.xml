@@ -11,8 +11,6 @@
         <result column="ability" property="ability" />
         <result column="begin_date" property="beginDate" />
         <result column="end_date" property="endDate" />
-        <result column="study_time_type" property="studyTimeType" />
-        <result column="study_time_value" property="studyTimeValue" />
         <result column="begin_time" property="beginTime" />
         <result column="end_time" property="endTime" />
         <result column="duration" property="duration" />
@@ -23,17 +21,19 @@
         <result column="course_name" property="courseName" />
         <result column="star" property="star" />
         <result column="quato" property="quato" />
+        <result column="sign_start_date" property="signStartDate" />
         <result column="sign_end_date" property="signEndDate" />
         <result column="status" property="status" />
         <result column="teacher" property="teacher" />
         <result column="teacher_code" property="teacherCode" />
         <result column="teacher_second" property="teacherSecond" />
         <result column="teacher_second_code" property="teacherSecondCode" />
+        <result column="study_time_desp" property="studyTimeDesp" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        tc.id, tc.code, tc.name, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.study_time_type, tc.study_time_value, tc.begin_time, tc.end_time, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code
+        tc.id, tc.code, tc.name, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.begin_time, tc.end_time, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp
     </sql>
 
     <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">

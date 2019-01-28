@@ -62,6 +62,10 @@ public final class MessageConstant {
          */
         public static final String SYS_CREDENTIAL_EXPIRED = "000102";
         /**
+         * 数据超过限制
+         */
+        public static final String SYS_DATA_OVERTOP = "000103";
+        /**
          * 签名验证失败
          */
         public static final String SYS_TOKEN_ERROR = "000111";

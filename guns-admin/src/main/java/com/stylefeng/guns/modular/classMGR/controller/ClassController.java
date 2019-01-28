@@ -1,16 +1,19 @@
 package com.stylefeng.guns.modular.classMGR.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
-import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.courseMGR.warpper.CourseWrapper;
@@ -18,9 +21,7 @@ import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
-import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import com.stylefeng.guns.util.DateUtil;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,18 +169,27 @@ public class ClassController extends BaseController {
      */
     @RequestMapping(value = "/add")
     @ResponseBody
-    public Object add(Class classInstance) {
+    public Object add(Class classInstance, String planList) {
 
-        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
-        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
+        List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
+        try {
+            classPlanList = JSON.parseArray(planList, ClassPlan.class);
+        }catch(Exception e){
+        }
 
-        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
-        // 设置班级容量
-        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
-        classInstance.setQuato(classroomEntity.getMaxCount());
-        classInstance.setClassRoom(classroomEntity.getAddress());
+        if (classPlanList.isEmpty())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
+//
+//        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
+//        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
+//
+//        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
+//        // 设置班级容量
+//        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
+//        classInstance.setQuato(classroomEntity.getMaxCount());
+//        classInstance.setClassRoom(classroomEntity.getAddress());
 
-        classService.createClass(classInstance);
+        classService.createClass(classInstance, classPlanList);
         return SUCCESS_TIP;
     }
 
@@ -228,7 +238,7 @@ public class ClassController extends BaseController {
     @ResponseBody
     public Object planList(String classCode){
 
-        Map<String, Object> classPlanList = new HashMap<String, Object>();
+        Map<String, Object> classPlanInfo = new HashMap<String, Object>();
 
         Date now = new Date();
 
@@ -240,10 +250,17 @@ public class ClassController extends BaseController {
         queryMap.put("endDate", endDate);
         queryMap.put("status", GenericState.Valid.code);
 
-        List<ClassPlanDto> planList = scheduleClassService.selectPlanList(queryMap);
+        List<ClassPlan> planList = scheduleClassService.selectPlanList(queryMap);
 
-        classPlanList.put("allClassPlanList", planList);
-        return classPlanList;
+        classPlanInfo.put("allClassPlanList", planList);
+
+        List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
+        if (null != classCode){
+            // TODO
+        }
+
+        classPlanInfo.put("classPlanList", classPlanList);
+        return classPlanInfo;
     }
 
     /**

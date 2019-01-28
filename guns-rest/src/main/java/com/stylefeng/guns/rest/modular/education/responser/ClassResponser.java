@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
 
 /**
  * @Description //TODO
@@ -17,23 +17,7 @@ import java.util.*;
 @ApiModel(value = "ClassResponser", description = "班级扩展")
 public class ClassResponser extends com.stylefeng.guns.modular.system.model.Class {
 
-    private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
-    private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
     private static final BigDecimal TRANSFORM = new BigDecimal(100);
-
-    static {
-        DayOfWeekMap.put(Calendar.MONDAY, "周一");
-        DayOfWeekMap.put(Calendar.TUESDAY, "周二");
-        DayOfWeekMap.put(Calendar.WEDNESDAY, "周三");
-        DayOfWeekMap.put(Calendar.THURSDAY, "周四");
-        DayOfWeekMap.put(Calendar.FRIDAY, "周五");
-        DayOfWeekMap.put(Calendar.SATURDAY, "周六");
-        DayOfWeekMap.put(Calendar.SUNDAY, "周日");
-    }
-
-    static {
-        DayOfMonthMap.put(Calendar.MONDAY, "1号");
-    }
 
     @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
     private String classTimeDesp;
@@ -156,30 +140,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
     }
 
     private static void formatClassTime(ClassResponser dto) {
-        int scheduleType = dto.getStudyTimeType();
-        StringTokenizer tokenizer = new StringTokenizer(dto.getStudyTimeValue(), ",");
-
-        StringBuffer despBuffer = new StringBuffer();
-        despBuffer.append("每");
-
-        while(tokenizer.hasMoreTokens()){
-            int scheduleDay = Integer.parseInt(tokenizer.nextToken());
-
-            switch(scheduleType){
-                case Calendar.DAY_OF_WEEK:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append("、");
-                    break;
-                case Calendar.DAY_OF_MONTH:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-            }
-        }
-
-        despBuffer.append(dto.getBeginTime().substring(0, 2)).append(":").append(dto.getBeginTime().substring(2));
-        despBuffer.append(" ~ ");
-        despBuffer.append(dto.getEndTime().substring(0, 2)).append(":").append(dto.getEndTime().substring(2));
-
-        dto.setClassTimeDesp(despBuffer.toString());
+        dto.setClassTimeDesp(dto.getStudyTimeDesp());
 
     }
 }

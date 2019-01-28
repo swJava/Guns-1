@@ -1,11 +1,11 @@
 package com.stylefeng.guns.modular.classMGR.service;
 
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Student;
 
-import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +65,14 @@ public interface IClassService extends IService<Class> {
     void createClass(Class classInstance);
 
     /**
+     * 创建班级
+     *
+     * @param classInstance
+     * @param classPlanList
+     */
+    void createClass(Class classInstance, List<ClassPlan> classPlanList);
+
+    /**
      * 更新班级信息
      *
      * @param classInstance
@@ -78,4 +86,5 @@ public interface IClassService extends IService<Class> {
      * @param classCode
      */
     void deleteClass(String classCode);
+
 }

@@ -8,14 +8,15 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
+import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ClassMapper;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.util.Assert;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
     @Autowired
     private IScheduleClassService scheduleClassService;
+
+    @Autowired
+    private IClassroomService classroomService;
 
     @Override
     public List<Class> queryForList(String userName, Map<String, Object> queryParams) {
@@ -184,54 +188,89 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
     @Override
     public void createClass(Class classInstance) {
+//        classInstance.setCode(CodeKit.generateClass());
+//        classInstance.setPrice(classInstance.getPrice() * 100);
+//        insert(classInstance);
+//
+//        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
+//        List<Integer> valueList = new ArrayList<>();
+//        int totalCount = 0;
+//        while(valueToken.hasMoreTokens()){
+//            totalCount++;
+//            try {
+//                valueList.add(Integer.parseInt(valueToken.nextToken()));
+//            }catch(Exception e){}
+//        }
+//
+//        if (totalCount != valueList.size()){
+//            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
+//        }
+//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+
+    }
+
+    @Override
+    public void createClass(Class classInstance, List<ClassPlan> classPlanList) {
+
+        if (classInstance.getPeriod() != classPlanList.size()){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_OVERTOP, new String[]{"课时数" + classInstance.getPeriod() + ", 排班计划数：" + classPlanList.size()});
+        }
+        Collections.sort(classPlanList, new Comparator<ClassPlan>() {
+            @Override
+            public int compare(ClassPlan co1, ClassPlan co2) {
+                return co1.getStudyDate().compareTo(co2.getStudyDate());
+            }
+        });
+
+        ClassPlan firstPlan = classPlanList.get(0);
+        ClassPlan lastPlan = classPlanList.get(classPlanList.size() - 1);
+        classInstance.setDuration(firstPlan.getClassDuration());
+        classInstance.setBeginDate(DateUtils.truncate(firstPlan.getStudyDate(), Calendar.DAY_OF_MONTH));
+        classInstance.setEndDate(DateUtils.addDays(DateUtils.truncate(lastPlan.getStudyDate(), Calendar.DAY_OF_MONTH), 1));
         classInstance.setCode(CodeKit.generateClass());
-        classInstance.setPrice(classInstance.getPrice() * 100);
+
+        // 设置班级容量
+        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
+        if (classInstance.getQuato().compareTo(classroomEntity.getMaxCount()) > 0){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_OVERTOP, new String[]{"班级人数超过教室座位数"});
+        }
+        classInstance.setClassRoom(classroomEntity.getAddress());
+        // 创建班级信息
         insert(classInstance);
+        // 排班
+        scheduleClassService.scheduleClass(classInstance, classPlanList);
 
-        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
-        List<Integer> valueList = new ArrayList<>();
-        int totalCount = 0;
-        while(valueToken.hasMoreTokens()){
-            totalCount++;
-            try {
-                valueList.add(Integer.parseInt(valueToken.nextToken()));
-            }catch(Exception e){}
-        }
-
-        if (totalCount != valueList.size()){
-            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
-        }
-        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
     }
 
     @Override
     public void updateClass(Class classInstance) {
-
-        scheduleClassService.deleteClassSchedule(classInstance.getCode());
-
-        String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
-        Class currClass = get(classInstance.getCode());
-
-        if (null == currClass)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
-
-        BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
-        updateById(classInstance);
-
-        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
-        List<Integer> valueList = new ArrayList<>();
-        int totalCount = 0;
-        while(valueToken.hasMoreTokens()){
-            totalCount++;
-            try {
-                valueList.add(Integer.parseInt(valueToken.nextToken()));
-            }catch(Exception e){}
-        }
-
-        if (totalCount != valueList.size()){
-            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
-        }
-        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
+//
+//        scheduleClassService.deleteClassSchedule(classInstance.getCode());
+//
+//        String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
+//        Class currClass = get(classInstance.getCode());
+//
+//        if (null == currClass)
+//            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+//
+//        BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
+//        updateById(classInstance);
+//
+//        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
+//        List<Integer> valueList = new ArrayList<>();
+//        int totalCount = 0;
+//        while(valueToken.hasMoreTokens()){
+//            totalCount++;
+//            try {
+//                valueList.add(Integer.parseInt(valueToken.nextToken()));
+//            }catch(Exception e){}
+//        }
+//
+//        if (totalCount != valueList.size()){
+//            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
+//        }
+//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
     }
 
     @Override

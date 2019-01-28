@@ -1516,7 +1516,8 @@ button.dim:active:before {
 
 .fc-event-time,
 .fc-event-title {
-    color: #717171;
+    /*color: #717171;*/
+    color: #ffffff;
     padding: 0 1px;
 }
 

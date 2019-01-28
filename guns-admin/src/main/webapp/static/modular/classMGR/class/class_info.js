@@ -6,6 +6,8 @@ var ClassInfoDlg = {
         id : 'courseTable'
     },
     layerIndex: -1,
+    otherPlanList: new Array(),
+    minePlanList: new Array(),
     classInfoData : {},
     validateFields: {
         code: {
@@ -22,73 +24,11 @@ var ClassInfoDlg = {
                 }
             }
         },
-        beginDate: {
+        price: {
             validators: {
-                notEmpty: {
-                    message: '开课起始日期不能为空'
-                }
-            }
-        },
-        endDate: {
-            validators: {
-                notEmpty: {
-                    message: '开课结束日期不能为空'
-                }
-            }
-        },
-        studyTimeValue: {
-            validators: {
-                notEmpty: {
-                    message: '开课时间不能为空'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        beginTime: {
-            validators: {
-                notEmpty: {
-                    message: '开始时间不能为空'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        endTime: {
-            validators: {
-                notEmpty: {
-                    message: '结束时间'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        duration: {
-            validators: {
-                notEmpty: {
-                    message: '课时时长'
-                },
-                regexp: {
-                    regexp: /^[1-9][0-9]{0,3}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        period: {
-            validators: {
-                notEmpty: {
-                    message: '课时数'
-                },
-                regexp: {
-                    regexp: /^[1-9][0-9]{0,3}$/,
-                    message: '4位数字内'
-                }
+                notEmpty: { message: '金额不能为空'},
+                numeric: { message: '无效的金额'},
+                between: { min: 0.00, max: 9999.99, message: '无效的金额'}
             }
         },
         classRoomCode: {
@@ -106,6 +46,13 @@ var ClassInfoDlg = {
                 regexp: {
                     regexp: /^[1-9][0-9]{0,9}$/,
                     message: '9位数字内'
+                }
+            }
+        },
+        signStartDate: {
+            validators: {
+                notEmpty: {
+                    message: '报名开始时间'
                 }
             }
         },
@@ -157,7 +104,10 @@ ClassInfoDlg.courseTable.initColumn = function () {
  * 清除数据
  */
 ClassInfoDlg.clearData = function() {
+    console.log('<--- clear Data --->');
     this.classInfoData = {};
+    console.log('<--- clear Data over --->');
+
 }
 
 /**
@@ -192,6 +142,9 @@ ClassInfoDlg.close = function() {
  * 收集数据
  */
 ClassInfoDlg.collectData = function() {
+
+    var submitPrice = Math.floor(100 * parseFloat($('#price').val(), 10));
+
     this
         .set('id')
         .set('code')
@@ -199,12 +152,6 @@ ClassInfoDlg.collectData = function() {
         .set('grade')
         .set('cycle')
         .set('ability')
-        .set('beginDate')
-        .set('endDate')
-        .set('studyTimeType')
-        .set('studyTimeValue')
-        .set('beginTime')
-        .set('endTime')
         .set('duration')
         .set('period')
         .set('courseCode')
@@ -212,6 +159,7 @@ ClassInfoDlg.collectData = function() {
         .set('star')
         .set('price')
         .set('quato')
+        .set('signStartDate')
         .set('signEndDate')
         .set('status')
         .set('teacherCode')
@@ -219,7 +167,10 @@ ClassInfoDlg.collectData = function() {
         .set('teacherSecondCode')
         .set('teacherSecond')
         .set('classRoomCode')
-        .set('classRoom');
+        .set('classRoom')
+        .set('studyTimeDesp');
+
+    this.classInfoData['price'] = submitPrice;
 }
 
 /**
@@ -235,7 +186,7 @@ ClassInfoDlg.validate = function () {
  * 提交添加
  */
 ClassInfoDlg.addSubmit = function() {
-
+    console.log('<<< add submit');
     this.clearData();
     if (!this.validate()) {
         return;
@@ -243,13 +194,7 @@ ClassInfoDlg.addSubmit = function() {
     $("#classRoom").val($("#classRoomCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
+
     this.collectData();
     
     //提交信息
@@ -260,7 +205,10 @@ ClassInfoDlg.addSubmit = function() {
     },function(data){
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
+    console.log(this.classInfoData);
+    console.log(ClassInfoDlg.minePlanList);
     ajax.set(this.classInfoData);
+    ajax.set('planList', JSON.stringify(ClassInfoDlg.minePlanList));
     ajax.start();
 }
 
@@ -276,13 +224,7 @@ ClassInfoDlg.editSubmit = function() {
     $("#classRoom").val($("#classRoomCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
+
     this.collectData();
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/update", function(data){
@@ -314,8 +256,7 @@ $(function() {
         //isRTL: true,
         buttonHtml: {
             prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-            next: '<i class="ace-icon fa fa-chevron-right"></i>',
-            today: '今天'
+            next: '<i class="ace-icon fa fa-chevron-right"></i>'
         },
 
         header: {
@@ -329,15 +270,32 @@ $(function() {
                 dataType: 'json',
                 success: function(response) {
                     var events = [];
+                    console.log('<<< load events');
+
+                    ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
+                    ClassInfoDlg.minePlanList.concat(response.classPlanList);
 
                     $(response.allClassPlanList).each(function(idx, eo) {
                         events.push({
+                            id: eo.classCode,
                             title: eo.description,
                             start: eo.classBeginTime,
-                            end: eo.classEndTime
+                            end: eo.classEndTime,
+                            color: '#ffffff',
+                            backgroundColor: '#a0a0a0'
                         });
                     });
-                    callback(events);
+                    $(response.classPlanList).each(function(idx, eo) {
+                        events.push({
+                            id: eo.classCode,
+                            title: eo.description,
+                            start: eo.classBeginTime,
+                            end: eo.classEndTime,
+                            color: '#ffffff',
+                            backgroundColor: '#82af6f'
+                        });
+                    });
+                    callback(events)
                 }
             });
         }
@@ -359,6 +317,7 @@ $(function() {
                         var endTime = end.format('H:mm');
                         calendar.fullCalendar('renderEvent',
                             {
+                                id: new Date().getTime(),
                                 title: beginTime + ' ~ ' + endTime + ': ' + title,
                                 start: start,
                                 end: end
@@ -366,12 +325,59 @@ $(function() {
                             true // make the event "stick"
                         );
 
+                        ClassInfoDlg.minePlanList.push({
+                            studyDate: start.format('YYYY-MM-DD'),
+                            classTime: start.format('HHmm'),
+                            endTime: end.format('HHmm'),
+                            week: start.format('E')
+                        });
+
+                        console.log(ClassInfoDlg.minePlanList);
+
                         calendar.fullCalendar('changeView', 'month');
                     }
                 });
             }
 
             calendar.fullCalendar('unselect');
+        }
+        ,
+        editable: true,
+        eventDragStart: function(event, jsEvent, ui, view){
+            var eventId = parseInt(event.id, 10);
+            if (isNaN(eventId)) {
+                alert('不允许编辑');
+            }
+        }
+        ,
+        eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
+            var newEvent = $.extend({}, event);
+            newEvent.id = (new Date()).getTime();
+            calendar.fullCalendar('renderEvent',
+                {
+                    id: new Date().getTime(),
+                    title: event.title,
+                    start: event.start,
+                    end: event.end
+                },
+                true // make the event "stick"
+            );
+
+            ClassInfoDlg.minePlanList.push({
+                studyDate: event.start.format('YYYY-MM-DD'),
+                classTime: event.start.format('HHmm'),
+                endTime: event.end.format('HHmm'),
+                week: event.start.format('E')
+            });
+
+            revertFunc();
+        }
+        ,
+        eventResizeStart: function(event, jsEvent, ui, view){
+            var eventId = parseInt(event.id, 10);
+            if (isNaN(eventId)) {
+                alert('不允许编辑');
+            }
         }
         ,
         eventClick: function(calEvent, jsEvent, view) {
@@ -415,15 +421,6 @@ $(function() {
             modal.modal('show').on('hidden', function(){
                 modal.remove();
             });
-
-
-            //console.log(calEvent.id);
-            //console.log(jsEvent);
-            //console.log(view);
-
-            // change the border color just for fun
-            //$(this).css('border-color', 'red');
-
         }
     });
 
@@ -446,6 +443,9 @@ $(function() {
         table.setPaginationType("server");
         ClassInfoDlg.courseTable.table = table.init();
     }
+    //日期控件初始化
+    laydate.render({elem: '#signStartDate', min: today});
+    laydate.render({elem: '#signEndDate', min: today});
 
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
@@ -479,19 +479,5 @@ $(function() {
     $('#ability').val($('#abilityValue').val());
     $("#teacherCode").val($("#teacherCodeValue").val());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
-    /*
-    $.each($('#studyTimeValueValue').val().split(','), function(i, eo) {
-        $('input[name="studyTimeValue"]').each(function(ii, eeo){
-            if ($(eeo).val() == eo)
-                $(eeo).attr('checked', true);
-        })
-    });
-    */
+
 });

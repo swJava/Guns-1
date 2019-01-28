@@ -24,8 +24,6 @@ Class.initColumn = function () {
             {title: '开课结束日期', field: 'endDate', visible: false, align: 'center', valign: 'middle'},
             {title: '开课时间类型', field: 'studyTimeTypeName', visible: false, align: 'center', valign: 'middle'},
             {title: '开课时间', field: 'studyTimeValue', visible: false, align: 'center', valign: 'middle'},
-            {title: '教学开始时间', field: 'beginTime', visible: true, align: 'center', valign: 'middle'},
-            {title: '教学结束时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},
             {title: '单节时长(分钟)', field: 'duration', visible: false, align: 'center', valign: 'middle'},
             {title: '总课时数', field: 'period', visible: false, align: 'center', valign: 'middle'},
             {title: '教室编码', field: 'classRoomCode', visible: false, align: 'center', valign: 'middle'},

@@ -3,13 +3,15 @@ package com.stylefeng.guns.modular.classMGR.transfer;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import com.stylefeng.guns.util.DateUtil;
 
+import java.util.Date;
+
 /**
  * @Description //TODO
  * @Author 罗华
  * @Date 2019/1/25 16:49
  * @Version 1.0
  */
-public class ClassPlanDto extends ScheduleClass {
+public class ClassPlan extends ScheduleClass {
 
     private String className;
 
@@ -69,5 +71,23 @@ public class ClassPlanDto extends ScheduleClass {
 
     public void setClassEndTime(String classEndTime) {
         this.classEndTime = classEndTime;
+    }
+
+    public Integer getClassDuration() {
+
+        Date beginDate = DateUtil.parse("20190101" + this.getClassTime() + "00", "yyyyMMddHHmmss");
+        Date endDate = DateUtil.parse("20190101" + this.getEndTime() + "00", "yyyyMMddHHmmss");
+
+        return DateUtil.getMinuteSub(beginDate, endDate);
+    }
+
+    public static void main(String[] args){
+        String begin = "0915";
+        String end = "1115";
+
+        ClassPlan classPlanDto = new ClassPlan();
+        classPlanDto.setClassTime(begin);
+        classPlanDto.setEndTime(end);
+        System.out.println(classPlanDto.getClassDuration());
     }
 }

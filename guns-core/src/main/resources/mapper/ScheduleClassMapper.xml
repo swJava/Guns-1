@@ -16,7 +16,7 @@
         <result column="status" property="status" />
     </resultMap>
 
-    <resultMap id="DtoResultMap" type="com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto">
+    <resultMap id="DtoResultMap" type="com.stylefeng.guns.modular.classMGR.transfer.ClassPlan">
         <id column="id" property="id" />
         <result column="class_code" property="classCode" />
         <result column="class_name" property="className" />

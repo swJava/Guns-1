@@ -1,7 +1,7 @@
 package com.stylefeng.guns.modular.system.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.stylefeng.guns.modular.classMGR.transfer.ClassPlanDto;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public interface ScheduleClassMapper extends BaseMapper<ScheduleClass> {
      * @param queryMap
      * @return
      */
-    List<ClassPlanDto> selectPlanList(Map<String, Object> queryMap);
+    List<ClassPlan> selectPlanList(Map<String, Object> queryMap);
 }

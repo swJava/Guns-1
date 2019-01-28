@@ -12,10 +12,11 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
+import com.stylefeng.guns.modular.education.transfer.StudentPlan;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
-import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
@@ -277,6 +278,46 @@ public class EducationController extends ApiController {
         return ClassListResponse.me(classSet);
     }
 
+
+    @RequestMapping(value = "/class/list4cross", method = RequestMethod.POST)
+    @ApiOperation(value="可跨报班级列表", httpMethod = "POST", response = ClassListResponse.class)
+    public Responser listClass4Cross(
+            @RequestBody
+            @Valid
+            AdjustQueryRequester requester){
+
+        Member member = currMember();
+
+        Class currClass = classService.get(requester.getClassCode());
+        Course course = courseService.get(currClass.getCourseCode());
+
+        Map<String, Object> changeClassQuery = new HashMap<String, Object>();
+        changeClassQuery.put("grades", String.valueOf(currClass.getGrade()));
+        changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
+        changeClassQuery.put("subjects", course.getSubject());
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), changeClassQuery);
+
+        Set<Class> classSet = new HashSet<>();
+        for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
+            if (null == classInfo){
+                continue;
+            }
+            if (!(classInfo.isValid())){
+                continue;
+            }
+            if (classInfo.getCode().equals(currClass.getCode())){
+                // 过滤掉自己
+                continue;
+            }
+            if (currClass.getPrice().equals(classInfo.getPrice())){
+                classSet.add(classInfo);
+            }
+        }
+
+        return ClassListResponse.me(classSet);
+    }
+
     @RequestMapping(value = "/adjust/course", method = RequestMethod.POST)
     @ApiOperation(value = "调课申请", httpMethod = "POST", response = SimpleResponser.class)
     @ResponseBody
@@ -331,10 +372,55 @@ public class EducationController extends ApiController {
         return SimpleResponser.success();
     }
 
-    @ApiOperation(value="课程表", httpMethod = "POST")
+    @RequestMapping(value = "/cross/class", method = RequestMethod.POST)
+    @ApiOperation(value = "跨报申请", httpMethod = "POST", response = SimpleResponser.class)
+    @ResponseBody
+    public Responser crossClass(
+            @ApiParam(required = true, value = "跨报申请")
+            @RequestBody
+            @Valid
+            ChangeApplyRequester requester) {
+
+        Member member = currMember();
+
+        Student student = studentService.get(requester.getStudentCode());
+
+        Class sourceClass = classService.get(requester.getSourceClass());
+        Class targetClass = classService.get(requester.getTargetClass());
+
+        Map<String, Object> fromData = new HashMap<>();
+        fromData.put("sourceClass", sourceClass);
+
+        Map<String, Object> destData = new HashMap<>();
+        destData.put("targetClass", targetClass);
+
+        adjustStudentService.adjustClass(member, student, fromData, destData);
+
+        return SimpleResponser.success();
+    }
+
+    @ApiOperation(value="课程表", httpMethod = "POST", response = PlanListResponser.class)
     @RequestMapping("/course/plan/list")
-    public Responser 课程表(String studentCode, String classCode){
-        return null;
+    public Responser 课程表(
+            @ApiParam(required = true, value = "课程表查询")
+            @RequestBody
+            @Valid
+            QueryPlanListRequester requester){
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        String studentCode = requester.getStudent();
+        String classCode = requester.getClassCode();
+
+        if (null != studentCode && studentCode.length() > 0)
+            queryMap.put("student", studentCode);
+
+        if (null != classCode && classCode.length() > 0)
+            queryMap.put("class", classCode);
+
+        queryMap.put("status", GenericState.Valid.code);
+
+        List<StudentPlan> planList = scheduleStudentService.selectPlanList(queryMap);
+
+        return PlanListResponser.me(planList);
     }
 
     @ApiOperation(value="单天课程表", httpMethod = "POST", response = PlanOfDayResponserWrapper.class)

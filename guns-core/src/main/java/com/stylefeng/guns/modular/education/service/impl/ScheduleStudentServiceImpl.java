@@ -9,6 +9,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
+import com.stylefeng.guns.modular.education.transfer.StudentPlan;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -148,5 +150,10 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
             planList.add(newPlan);
         }
         insertBatch(planList);
+    }
+
+    @Override
+    public List<StudentPlan> selectPlanList(Map<String, Object> queryMap) {
+        return new ArrayList<StudentPlan>();
     }
 }

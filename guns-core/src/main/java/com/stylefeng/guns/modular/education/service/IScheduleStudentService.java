@@ -1,7 +1,12 @@
 package com.stylefeng.guns.modular.education.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
+import com.stylefeng.guns.modular.education.transfer.StudentPlan;
 import com.stylefeng.guns.modular.system.model.ScheduleStudent;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -36,4 +41,12 @@ public interface IScheduleStudentService extends IService<ScheduleStudent>{
      * @param targetClass
      */
     void doChange(String studentCode, String sourceClass, String targetClass);
+
+    /**
+     * 查询学员课程表
+     *
+     * @param queryMap
+     * @return
+     */
+    List<StudentPlan> selectPlanList(Map<String, Object> queryMap);
 }

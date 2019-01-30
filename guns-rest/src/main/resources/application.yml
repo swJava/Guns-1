@@ -35,6 +35,7 @@ application:
       - /member/login*
       - /content/**
       - /pay/weixin/notify
+      - /update/**
 
 mybatis-plus:
   typeAliasesPackage: com.stylefeng.guns.modular.system.model

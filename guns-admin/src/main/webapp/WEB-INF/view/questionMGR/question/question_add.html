@@ -13,10 +13,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group">
-                    <label class="col-sm-1 col-sm-offset-1 control-label">题目内容</label>
-                    <div class="col-sm-10">
-                        <div id="editor" style="height: 120px;">
+                <div class="col-sm-11">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" style="">题目内容</label>
+                        <div class="col-sm-9">
+                            <div id="editor" style="height: 120px;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -24,11 +26,13 @@
 
             <div class="hr-line-dashed" ></div >
 
-            <div class="row" id="itemArea">
-                <div class="form-group">
-                    <label class="col-sm-1 col-sm-offset-2 control-label">答案选项</label>
-                    <div class="col-sm-7 col-sm-offset-1">
-                        <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
+            <div class="row">
+                <div class="col-sm-11" id="itemArea">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">答案选项</label>
+                        <div class="col-sm-9">
+                            <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,7 +58,7 @@
             <input class="form-control" type="hidden" name="itemIndex" readonly>
         </div>
         <label class="col-sm-1 control-label" >答案</label>
-        <div class="col-sm-4">
+        <div class="col-sm-5">
             <div id="answerEditor" style="height: 70px;"></div>
         </div>
         <div class="col-sm-2">

@@ -99,9 +99,9 @@ public class QuestionController extends BaseController {
     public Object list(String condition) {
         //分页查詢
         Page<Question> page = new PageFactory<Question>().defaultPage();
-        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(page, new EntityWrapper<Question>(){{
-            if(StringUtils.isNotEmpty(condition)){
-                like("code",condition);
+        Page<Map<String, Object>> pageMap = questionService.selectMapsPage(page, new EntityWrapper<Question>() {{
+            if (StringUtils.isNotEmpty(condition)) {
+                like("code", condition);
             }
 
             eq("status", GenericState.Valid.code);
@@ -135,7 +135,13 @@ public class QuestionController extends BaseController {
 
         for(Map<String, String> item : items) {
             QuestionItem questionItem = new QuestionItem();
-            questionItem.setText(item.get(MUTI_STR_NAME));
+
+            String itemText = parseItemText(item.get(MUTI_STR_NAME));
+
+            if (null == itemText)
+                continue;
+
+            questionItem.setText(itemText);
             questionItem.setValue(item.get(MUTI_STR_CODE));
             questionItem.setExpect(YesOrNoState.No.code);
 
@@ -162,6 +168,16 @@ public class QuestionController extends BaseController {
         questionService.create(question, questionItemList);
 
         return SUCCESS_TIP;
+    }
+
+    private String parseItemText(String text) {
+        String parsedText = null;
+        try {
+            parsedText = new String(Base64.decodeBase64(text), "UTF-8");
+            parsedText = URLDecoder.decode(parsedText);
+        } catch (UnsupportedEncodingException e) {
+        }
+        return parsedText;
     }
 
     /**

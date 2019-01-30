@@ -41,6 +41,13 @@ var PaperDlg = {
                     message: '测试时间不能为空'
                 }
             }
+        },
+        ability: {
+            validators: {
+                notEmpty: {
+                    message: '适应班次不能为空'
+                }
+            }
         }
     }
 };

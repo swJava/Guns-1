@@ -57,7 +57,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         String number = getString(extraParams, "number");
 
         if (null == number)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"电话号码不能为空"});
 
         // 判断手机号是否重复，并提示
         Member existMember = (Member) selectOne(new EntityWrapper<Member>().eq("mobile_number", number).ne("status", MemberStateEnum.Invalid.code));

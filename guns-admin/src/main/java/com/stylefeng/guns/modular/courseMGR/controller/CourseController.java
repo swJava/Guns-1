@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.log.LogObjectHolder;
@@ -112,6 +113,8 @@ public class CourseController extends BaseController {
                 if (StringUtils.isNotEmpty(condition)) {
                     like("name", condition);
                 }
+
+                eq("status", GenericState.Valid.code);
             }
         });
         //包装数据

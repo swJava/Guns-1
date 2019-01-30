@@ -26,6 +26,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +77,21 @@ public class EducationController extends ApiController {
     private int maxAdjustTimes = 4;
 
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
-    @ApiOperation(value="班级列表", httpMethod = "POST", response = ClassListResponse.class)
+    @ApiOperation(value="可报名班级列表", httpMethod = "POST", response = ClassListResponse.class)
     public Responser listClass(ClassQueryRequester requester, HttpServletRequest request){
 
         Member member = currMember();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), requester.toMap());
+        ClassSignAbility signAbility = memberService.getSignAbility(member);
+
+        Map<String, Object> queryMap = requester.toMap();
+        Date now = new Date();
+
+        if (ClassSignAbility.NORMAL.equals(signAbility))
+            queryMap.put("signDate", DateUtils.truncate(now, Calendar.DAY_OF_MONTH));
+
+        queryMap.put("signable", ClassSignableEnum.YES.code);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), queryMap);
 
         return ClassListResponse.me(classList);
     }

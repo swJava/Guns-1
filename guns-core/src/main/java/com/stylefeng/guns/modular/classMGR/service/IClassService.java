@@ -61,13 +61,6 @@ public interface IClassService extends IService<Class> {
      * 创建班级
      *
      * @param classInstance
-     */
-    void createClass(Class classInstance);
-
-    /**
-     * 创建班级
-     *
-     * @param classInstance
      * @param classPlanList
      */
     void createClass(Class classInstance, List<ClassPlan> classPlanList);
@@ -88,4 +81,17 @@ public interface IClassService extends IService<Class> {
      */
     void deleteClass(String classCode);
 
+    /**
+     * 停止报名
+     *
+     * @param classCode
+     */
+    void stopSign(String classCode);
+
+    /**
+     * 启用报名
+     *
+     * @param classCode
+     */
+    void resumeSign(String classCode);
 }

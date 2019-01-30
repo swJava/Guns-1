@@ -180,15 +180,6 @@ public class ClassController extends BaseController {
 
         if (classPlanList.isEmpty())
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
-//
-//        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
-//        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
-//
-//        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
-//        // 设置班级容量
-//        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
-//        classInstance.setQuato(classroomEntity.getMaxCount());
-//        classInstance.setClassRoom(classroomEntity.getAddress());
 
         classService.createClass(classInstance, classPlanList);
         return SUCCESS_TIP;
@@ -208,6 +199,32 @@ public class ClassController extends BaseController {
     }
 
     /**
+     * 停止报名
+     */
+    @RequestMapping(value = "/stop")
+    @ResponseBody
+    public Object stop(@RequestParam String classCode) {
+        if (null == classCode)
+            return SUCCESS_TIP;
+
+        classService.stopSign(classCode);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 停止报名
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String classCode) {
+        if (null == classCode)
+            return SUCCESS_TIP;
+
+        classService.resumeSign(classCode);
+        return SUCCESS_TIP;
+    }
+
+    /**
      * 修改班级
      */
     @RequestMapping(value = "/update")
@@ -221,22 +238,6 @@ public class ClassController extends BaseController {
 
         if (classPlanList.isEmpty())
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
-/*
-        Date beginDate = DateUtil.parse(DateUtil.getDays() + classInstance.getBeginTime(), "yyyyMMddHHmm");
-        Date endDate = DateUtil.parse(DateUtil.getDays() + classInstance.getEndTime(), "yyyyMMddHHmm");
-
-        classInstance.setDuration(DateUtil.getMinuteSub(beginDate, endDate));
-        // 设置班级容量
-        Class currClass = classService.get(classInstance.getCode());
-        int currQuato = null == currClass ? 0 : currClass.getQuato();
-        Classroom currClassroom = classroomService.get(currClass.getClassRoomCode());
-        int maxQuato = currClassroom.getMaxCount();
-        // 已报名人数
-        int orderQuato = maxQuato - currQuato;
-
-        Classroom classroomEntity = classroomService.get(classInstance.getClassRoomCode());
-        // 设置当前班级的剩余报名人数
-        classInstance.setQuato(classroomEntity.getMaxCount() - orderQuato);*/
 
         classService.updateClass(classInstance, classPlanList);
         return SUCCESS_TIP;

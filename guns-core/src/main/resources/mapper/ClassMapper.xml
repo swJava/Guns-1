@@ -96,6 +96,16 @@
                     #{grade}
                 </foreach>
             </if>
+            <!-- 报名时间 -->
+            <if test="null != signDate">
+                and tc.sign_start_date &gt;= #{signDate} and tc.sign_end_date &lt;= #{signDate}
+            </if>
+
+            <!-- 是否开放报名 -->
+            <if test="null != signable">
+                and tc.signable = #{signable}
+            </if>
+
         </where>
     </select>
 

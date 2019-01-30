@@ -136,5 +136,14 @@ public final class MessageConstant {
          * 调课失败： 调入班级不满足调课条件
          */
         public static final String ADJUST_TARGET_FAILED = "050004";
+
+        /**
+         * 没有设置期望答案
+         */
+        public static final String QUESTION_NO_EXPECT_ANSWER = "060001";
+        /**
+         * 不支持的试题类型
+         */
+        public static final String QUESTION_NO_SUPPORT = "060002";
     }
 }

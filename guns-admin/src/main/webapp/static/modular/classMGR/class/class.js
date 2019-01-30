@@ -106,6 +106,37 @@ Class.delete = function () {
     }
 };
 
+/**
+ * 停止报名
+ */
+Class.stop = function () {
+    if (this.check()) {
+        var ajax = new $ax(Feng.ctxPath + "/class/stop", function (data) {
+            Feng.success("操作成功!");
+            Class.table.refresh();
+        }, function (data) {
+            Feng.error("操作失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("classCode",this.seItem.code);
+        ajax.start();
+    }
+};
+
+/**
+ * 启用报名
+ */
+Class.resume = function () {
+    if (this.check()) {
+        var ajax = new $ax(Feng.ctxPath + "/class/resume", function (data) {
+            Feng.success("启用成功!");
+            Class.table.refresh();
+        }, function (data) {
+            Feng.error("启用失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("classCode",this.seItem.code);
+        ajax.start();
+    }
+};
 
 /**
  *  打开入学测试设置

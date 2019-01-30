@@ -228,6 +228,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         return resultMap;
     }
 
+    @Override
+    public ClassSignAbility getSignAbility(Member member) {
+        return ClassSignAbility.NORMAL;
+    }
+
     private MemberAuth buildMemberAuthInfo(Member member) {
         MemberAuth memberAuth = new MemberAuth();
         Date now = new Date();

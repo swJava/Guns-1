@@ -1,20 +1,22 @@
 package com.stylefeng.guns.rest.modular.pay.controller;
 
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
-import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
-import com.stylefeng.guns.modular.payMGR.WxPayRequestBuilder;
+import com.stylefeng.guns.modular.payMGR.service.IPayService;
+import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
-import com.stylefeng.guns.rest.core.SimpleResponser;
+import com.stylefeng.guns.rest.modular.order.responser.PayOrderResponser;
+import com.stylefeng.guns.rest.modular.pay.requester.PayOrderRequester;
+import com.stylefeng.guns.rest.modular.pay.requester.WxNotifyRequester;
 import com.stylefeng.guns.rest.modular.pay.responser.RandomResponser;
 import com.stylefeng.guns.rest.modular.pay.responser.SignResponser;
+import com.stylefeng.guns.rest.modular.pay.responser.WxNotifyResponser;
 import com.stylefeng.guns.util.MD5Util;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.naming.NoNameCoder;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.Xpp3Driver;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.*;
 
 /**
@@ -36,6 +39,8 @@ public class PayController extends ApiController {
     private static final Logger log = LoggerFactory.getLogger(PayController.class);
 
     @Autowired
+    private IPayService payService;
+    @Autowired
     private IOrderService orderService;
 
     @Value("${application.pay.weixin.app-secret:''}")
@@ -43,6 +48,28 @@ public class PayController extends ApiController {
 
     @Value("${application.pay.union.app-secret:''}")
     private String unionSecret;
+
+    @ApiOperation(value="支付下单", httpMethod = "POST", response = PayOrderResponser.class)
+    @RequestMapping(value = "/preorder", method = RequestMethod.POST)
+    public Responser unionOrder(
+            @Valid
+            @RequestBody
+            @ApiParam(required = true, value = "支付下单请求信息")
+            PayOrderRequester requester
+    ){
+        Order order = orderService.get(requester.getOrder());
+        if (null == order)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"订单"});
+
+        if (null != requester.getChannel())
+            order.setPayMethod(requester.getChannel());
+
+        String paySequence = payService.createPayOrder(order);
+        order.setOutSequence(paySequence);
+        orderService.updateById(order);
+
+        return PayOrderResponser.me(paySequence);
+    }
 
     @ApiOperation(value="微信支付签名", httpMethod = "POST", response = SignResponser.class)
     @RequestMapping(value = "/weixin/sign", method = RequestMethod.POST)
@@ -68,19 +95,28 @@ public class PayController extends ApiController {
     }
 
     @RequestMapping(value = "/weixin/notify", method = RequestMethod.POST)
-    public String payNotifyHandler(@RequestBody String notifyMessage){
+    public String weixinPayNotifyHandler(@RequestBody String notifyMessage){
 
-        System.out.println(notifyMessage);
+        log.info("Notify ===> {}", notifyMessage);
 
-        Map<String, Object> response = new HashMap<String, Object>();
-        response.put("return_code", "SUCCESS");
-        response.put("return_msg", "OK");
+        //WxNotifyRequester notify = WxNotifyRequester.parse(notifyMessage);
 
-        XStream xStream = new XStream(new StaxDriver(new NoNameCoder()));
-        xStream.alias("xml", Map.class);
-        xStream.registerConverter(new MapEntryConvert());
+        WxNotifyResponser response = WxNotifyResponser.success();
+        log.info("Notify result ===> {}", response);
+        return response.toString();
+    }
 
-        return xStream.toXML(response);
+
+    @RequestMapping(value = "/union/notify", method = RequestMethod.POST)
+    public String unionPayNotifyHandler(@RequestBody String notifyMessage){
+
+        log.info("Notify ===> {}", notifyMessage);
+
+        //WxNotifyRequester notify = WxNotifyRequester.parse(notifyMessage);
+
+        WxNotifyResponser response = WxNotifyResponser.success();
+        log.info("Notify result ===> {}", response);
+        return response.toString();
     }
 
 

@@ -170,6 +170,8 @@ public class Class extends Model<Class> {
     @TableField("examine_paper")
     private String examinePaper;
 
+    private Integer signable;
+
 
     public Long getId() {
         return id;
@@ -395,6 +397,14 @@ public class Class extends Model<Class> {
         this.examinePaper = examinePaper;
     }
 
+    public Integer getSignable() {
+        return signable;
+    }
+
+    public void setSignable(Integer signable) {
+        this.signable = signable;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -430,6 +440,7 @@ public class Class extends Model<Class> {
         ", teacherSecondCode=" + teacherSecondCode +
         ", teacherSecond=" + teacherSecond +
         ", examinePaper=" + examinePaper +
+        ", signable=" + signable +
         "}";
     }
 

@@ -75,15 +75,6 @@ public class PayServiceImpl implements IPayService {
             @Override
             public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
 
-//                InputStream is = httpResponse.getEntity().getContent();
-//                byte[] buff = new byte[1024];
-//                StringBuilder builder = new StringBuilder();
-//                while(is.read(buff) > 0){
-//                    builder.append(new String(buff));
-//                }
-//
-//                System.out.println("Response ===> " + builder.toString());
-
                 XStream xStream = new XStream(new StaxDriver());
                 xStream.alias("xml", Map.class);
                 xStream.registerConverter(new MapEntryConvert());

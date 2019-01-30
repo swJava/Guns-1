@@ -35,7 +35,9 @@ public class ClassQueryRequester extends SimpleRequester {
     private String assisterCode;
     @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 10, example = "JS000001")
     private String classroomCode;
-    @ApiModelProperty(name = "status", value = "状态", required = false, position = 11, example = "1")
+    @ApiModelProperty(name = "signType", value = "报名方式: 1 正常报名； 2 跨报", required = false, position = 11, example = "1")
+    private Integer signType;
+    @ApiModelProperty(name = "status", value = "状态", required = false, position = 12, example = "1")
     private Integer status = GenericState.Valid.code;
 
     public String getSubjects() {
@@ -108,6 +110,14 @@ public class ClassQueryRequester extends SimpleRequester {
 
     public void setClassroomCode(String classroomCode) {
         this.classroomCode = classroomCode;
+    }
+
+    public Integer getSignType() {
+        return signType;
+    }
+
+    public void setSignType(Integer signType) {
+        this.signType = signType;
     }
 
     public Integer getStatus() {

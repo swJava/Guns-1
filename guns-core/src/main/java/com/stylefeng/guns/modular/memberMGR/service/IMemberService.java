@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.memberMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ClassSignAbility;
 import com.stylefeng.guns.modular.system.model.Member;
 
 import java.util.Map;
@@ -63,4 +64,12 @@ public interface IMemberService extends IService<Member> {
      * @return
      */
     Map<String, Set<Class>> findMyClasses(String userName, String student);
+
+    /**
+     * 判断用户报名类型
+     *
+     * @param member
+     * @return
+     */
+    ClassSignAbility getSignAbility(Member member);
 }

@@ -1,14 +1,17 @@
 package com.stylefeng.guns.rest.modular.pay.requester;
 
+import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
 import com.stylefeng.guns.rest.core.SimpleRequester;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAliasType;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -314,5 +317,20 @@ public class WxNotifyRequester extends SimpleRequester {
         xStream.processAnnotations(WxNotifyRequester.class);
         WxNotifyRequester requester = (WxNotifyRequester) xStream.fromXML(xml);
 
+    }
+
+    public static WxNotifyRequester parse(String notifyMessage) {
+        WxNotifyRequester notify = null;
+
+        XStream xStream = new XStream(new StaxDriver(new NoNameCoder()));
+        xStream.alias("xml", WxNotifyRequester.class);
+
+        try {
+            notify = (WxNotifyRequester) xStream.fromXML(notifyMessage, new WxNotifyRequester());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return notify;
     }
 }

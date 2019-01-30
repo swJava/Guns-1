@@ -238,7 +238,7 @@ ClassInfoDlg.editSubmit = function() {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.classInfoData);
-    ajax.set('planList', JSON.stringify(ClassInfoDlg.minePlanList));
+    ajax.set('planList', JSON.stringify(this.minePlanList));
     ajax.start();
 }
 
@@ -440,8 +440,11 @@ $(function() {
         success: function(response) {
             console.log('<<< load events');
 
-            ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
-            ClassInfoDlg.minePlanList.concat(response.classPlanList);
+            console.log(response.classPlanList);
+            ClassInfoDlg.otherPlanList = ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
+            ClassInfoDlg.minePlanList = ClassInfoDlg.minePlanList.concat(response.classPlanList);
+
+            console.log(ClassInfoDlg.minePlanList);
 
             $(response.allClassPlanList).each(function(idx, eo) {
                 initEvents.push({

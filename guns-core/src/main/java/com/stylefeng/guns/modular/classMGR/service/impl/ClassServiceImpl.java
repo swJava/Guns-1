@@ -12,10 +12,8 @@ import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ClassMapper;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
-import com.stylefeng.guns.modular.system.model.Classroom;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.util.Assert;
@@ -82,6 +80,10 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
             if ("classroomCode".equals(key)){
                 arguments.put("classroomCode", queryParams.get(key));
+            }
+
+            if ("signDate".equals(key)){
+                arguments.put("signDate", queryParams.get(key));
             }
 
             if ("subjects".equals(key)){
@@ -190,29 +192,6 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public void createClass(Class classInstance) {
-//        classInstance.setCode(CodeKit.generateClass());
-//        classInstance.setPrice(classInstance.getPrice() * 100);
-//        insert(classInstance);
-//
-//        StringTokenizer valueToken = new StringTokenizer(classInstance.getStudyTimeValue(), ",");
-//        List<Integer> valueList = new ArrayList<>();
-//        int totalCount = 0;
-//        while(valueToken.hasMoreTokens()){
-//            totalCount++;
-//            try {
-//                valueList.add(Integer.parseInt(valueToken.nextToken()));
-//            }catch(Exception e){}
-//        }
-//
-//        if (totalCount != valueList.size()){
-//            throw new ServiceException(MessageConstant.MessageCode.SCHEDULE_CLASS_FAILED);
-//        }
-//        scheduleClassService.scheduleClass(classInstance, classInstance.getStudyTimeType(), valueList);
-
-    }
-
-    @Override
     public void createClass(Class classInstance, List<ClassPlan> classPlanList) {
 
         if (classInstance.getPeriod() != classPlanList.size()){
@@ -284,6 +263,36 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
         currClass.setStatus(GenericState.Invalid.code);
+
+        updateById(currClass);
+    }
+
+    @Override
+    public void stopSign(String classCode) {
+        if (null == classCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        Class currClass = get(classCode);
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        currClass.setSignable(ClassSignableEnum.NO.code);
+
+        updateById(currClass);
+    }
+
+    @Override
+    public void resumeSign(String classCode) {
+        if (null == classCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        Class currClass = get(classCode);
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        currClass.setSignable(ClassSignableEnum.YES.code);
 
         updateById(currClass);
     }

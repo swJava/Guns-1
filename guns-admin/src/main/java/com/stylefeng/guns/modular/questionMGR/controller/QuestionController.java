@@ -6,11 +6,14 @@ import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.constant.state.YesOrNoState;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.exception.GunsException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.examineMGR.QuestionTypeEnum;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
@@ -146,6 +149,11 @@ public class QuestionController extends BaseController {
 
         if (questionItemList.isEmpty())
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+
+        if (0 == expectedAnswer.length()){
+            // 没有设置期望答案
+            throw new ServiceException(MessageConstant.MessageCode.QUESTION_NO_EXPECT_ANSWER);
+        }
 
         Administrator currAdmin = ShiroKit.getUser();
         question.setExpactAnswer(expectedAnswer.substring(0, expectedAnswer.length() - 1));

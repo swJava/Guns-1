@@ -9,9 +9,11 @@ package com.stylefeng.guns.modular.examineMGR;
  * @Version 1.0
  */
 public enum QuestionTypeEnum {
-    Select(1, "选择题"),
-    Fill(2, "填空题"),
-    Subject(3, "主观题")
+    SS(1, "单选题"),
+    MS(2, "多选题"),
+    FQ(3, "填空题"),
+    SQ(4, "主观题"),
+    UN(99, "未知题型")
     ;
 
     public int code;
@@ -20,5 +22,18 @@ public enum QuestionTypeEnum {
     QuestionTypeEnum(int code, String text){
         this.code = code;
         this.text = text;
+    }
+
+    public static QuestionTypeEnum instanceOf(Integer value) {
+        QuestionTypeEnum questionType = UN;
+
+        for(QuestionTypeEnum type : values()){
+            if (type.code == value){
+                questionType = type;
+                break;
+            }
+        }
+
+        return questionType;
     }
 }

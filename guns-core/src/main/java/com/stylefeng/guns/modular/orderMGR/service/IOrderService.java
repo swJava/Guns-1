@@ -65,4 +65,12 @@ public interface IOrderService extends IService<Order> {
      * @param orderNo
      */
     void cancel(Member member, String orderNo);
+
+    /**
+     * 支付失败
+     *
+     * @param order
+     * @param message
+     */
+    void failedPay(String order, String message);
 }

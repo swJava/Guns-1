@@ -58,6 +58,7 @@ public class WxNotifyResponser {
         Map<String, String> resultMap = new HashMap<String, String>();
         resultMap.put("return_code", this.return_code);
         resultMap.put("return_msg", this.return_msg);
-        return StringEscapeUtils.unescapeXml(xStream.toXML(resultMap));
+
+        return StringEscapeUtils.unescapeXml(xStream.toXML(resultMap)).replaceAll("<\\?xml version=\\\"1.0\\\" \\?>", "");
     }
 }

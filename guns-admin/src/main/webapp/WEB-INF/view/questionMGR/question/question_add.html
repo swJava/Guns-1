@@ -2,19 +2,20 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal" id="questionInfoForm">
-
             <div class="row">
-                <div class="col-sm-6 b-r">
-                    <#dictSelector id="type" name ="试题类型" code="question_type" label="试题类型"  underline="true"  width="75%"/>
+                <div class="col-sm-11">
+                    <#dictSelector id="type" name ="type" code="question_type" label="试题类型"  underline="true"  width="75%"/>
                 </div>
-                <div class="col-sm-6">
-                    <#dictSelector id="subject" name ="试题学科" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
+            </div>
+            <div class="row">
+                <div class="col-sm-11">
+                    <#dictSelector id="subject" name ="subject" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">题目内容</label>
-                    <div class="col-sm-11">
+                    <label class="col-sm-1 col-sm-offset-1 control-label">题目内容</label>
+                    <div class="col-sm-10">
                         <div id="editor" style="height: 120px;">
                         </div>
                     </div>
@@ -25,8 +26,8 @@
 
             <div class="row" id="itemArea">
                 <div class="form-group">
-                    <label class="col-sm-1 control-label">答案选项</label>
-                    <div class="col-sm-11">
+                    <label class="col-sm-1 col-sm-offset-2 control-label">答案选项</label>
+                    <div class="col-sm-7 col-sm-offset-1">
                         <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
                     </div>
                 </div>

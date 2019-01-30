@@ -1,15 +1,16 @@
 package com.stylefeng.guns.rest.modular.pay.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.payMGR.service.IPayService;
+import com.stylefeng.guns.modular.payMGR.transfer.WeixinNotifier;
 import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.modular.order.responser.PayOrderResponser;
 import com.stylefeng.guns.rest.modular.pay.requester.PayOrderRequester;
-import com.stylefeng.guns.rest.modular.pay.requester.WxNotifyRequester;
 import com.stylefeng.guns.rest.modular.pay.responser.RandomResponser;
 import com.stylefeng.guns.rest.modular.pay.responser.SignResponser;
 import com.stylefeng.guns.rest.modular.pay.responser.WxNotifyResponser;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -95,14 +97,22 @@ public class PayController extends ApiController {
     }
 
     @RequestMapping(value = "/weixin/notify", method = RequestMethod.POST)
-    public String weixinPayNotifyHandler(@RequestBody String notifyMessage){
+    public String weixinPayNotifyHandler(HttpServletRequest request){
 
-        log.info("Notify ===> {}", notifyMessage);
+        WxNotifyResponser response = new WxNotifyResponser();
+        try {
+            WeixinNotifier notidier = WeixinNotifier.parse(request.getInputStream());
 
-        //WxNotifyRequester notify = WxNotifyRequester.parse(notifyMessage);
+            payService.notify(notidier);
 
-        WxNotifyResponser response = WxNotifyResponser.success();
-        log.info("Notify result ===> {}", response);
+            log.info("Success parse notify xml ===> {}", JSON.toJSONString(notidier));
+            response = WxNotifyResponser.success();
+            log.info("Notify result ===> {}", response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setReturn_code("ERROR");
+            response.setReturn_msg("通知报文解析错误");
+        }
         return response.toString();
     }
 

@@ -21,4 +21,31 @@
         id, order_no, student_code, class_code, period, status, remark, fcode, pcode, pcodes
     </sql>
 
+    <sql id="Student_Column_List">
+        s.id, s.code, s.name, s.avatar, s.gender, s.grade, s.school, s.target_school, s.status
+    </sql>
+
+    <select id="listSignedStudent" resultType="com.stylefeng.guns.modular.system.model.Student" parameterType="java.util.HashMap">
+        select
+        <include refid="Student_Column_List" />
+        from tb_student s join ( select ss.code from tb_student ss join tb_student_class sc on sc.student_code = ss.code
+        <where>
+        <!-- 班级 -->
+        <if test="null != classCode">
+            and sc.class_code = #{classCode}
+        </if>
+
+        <!-- 学员名称 -->
+        <if test="null != studentName">
+            and s.name like CONCAT('%',#{studentName},'%')
+        </if>
+
+        <if test="null != targetSchoolName">
+            and s.targetSchool like CONCAT('%',#{targetSchoolName},'%')
+        </if>
+        </where>
+        group by ss.code) sss on sss.code = s.code
+
+    </select>
+
 </mapper>

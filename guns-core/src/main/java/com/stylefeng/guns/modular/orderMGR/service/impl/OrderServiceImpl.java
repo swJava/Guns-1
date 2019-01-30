@@ -203,6 +203,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         updateById(order);
     }
 
+    @Override
+    public void failedPay(String order, String message) {
+        Order currOrder = get(order);
+
+        currOrder.setPayStatus(PayStateEnum.Failed.code);
+        currOrder.setPayResult(message);
+        currOrder.setPayDate(new Date());
+
+        updateById(currOrder);
+    }
+
     /**
      * 算费
      *

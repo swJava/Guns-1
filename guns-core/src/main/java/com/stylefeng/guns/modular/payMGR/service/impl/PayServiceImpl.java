@@ -3,16 +3,19 @@ package com.stylefeng.guns.modular.payMGR.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
 import com.stylefeng.guns.modular.payMGR.PayRequestBuilderFactory;
 import com.stylefeng.guns.modular.payMGR.service.IPayRequestService;
 import com.stylefeng.guns.modular.payMGR.service.IPayResultService;
 import com.stylefeng.guns.modular.payMGR.service.IPayService;
+import com.stylefeng.guns.modular.payMGR.transfer.PayNotifier;
+import com.stylefeng.guns.modular.payMGR.transfer.UnionNotifier;
+import com.stylefeng.guns.modular.payMGR.transfer.WeixinNotifier;
 import com.stylefeng.guns.modular.system.model.Order;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -48,6 +51,8 @@ public class PayServiceImpl implements IPayService {
     private PayRequestBuilderFactory builderFactory;
     @Value("${application.pay.mock.enable:false}")
     private boolean mockEnable;
+    @Autowired
+    private IOrderService orderService;
 
     @Override
     public String createPayOrder(Order order) {
@@ -103,6 +108,36 @@ public class PayServiceImpl implements IPayService {
             throw new ServiceException(MessageConstant.MessageCode.PAY_ORDER_EXCEPTION, new String[]{message});
 
         return prepayId;
+    }
+
+    @Override
+    public void notify(PayNotifier notifier) {
+
+        if(!notifier.paySuccess()){
+            // 支付失败
+            orderService.failedPay(notifier.getOrder(), notifier.getMessage());
+        }
+
+        switch (notifier.getChannel()){
+            case weixin:
+                weixinNotify((WeixinNotifier) notifier);
+                break;
+            case unionpay:
+                unionNotify((UnionNotifier) notifier);
+                break;
+        }
+    }
+
+    private void unionNotify(UnionNotifier notifier) {
+        //TODO 处理银联支付通知
+
+        orderService.completePay(notifier.getOrder());
+    }
+
+    private void weixinNotify(WeixinNotifier notifier) {
+        //TODO 可以添加其他的逻辑
+
+        orderService.completePay(notifier.getOrder());
     }
 
 }

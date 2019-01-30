@@ -12,6 +12,7 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.education.transfer.StudentPlan;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
@@ -73,6 +74,9 @@ public class EducationController extends ApiController {
     @Autowired
     private IAdjustStudentService adjustStudentService;
 
+    @Autowired
+    private IStudentClassService studentClassService;
+
     @Value("${application.education.adjust.maxTimes:4}")
     private int maxAdjustTimes = 4;
 
@@ -94,6 +98,44 @@ public class EducationController extends ApiController {
         List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), queryMap);
 
         return ClassListResponse.me(classList);
+    }
+
+    @RequestMapping(value = "/class/list4teacher", method = RequestMethod.POST)
+    @ApiOperation(value="老师班级列表", httpMethod = "POST", response = ClassListResponse.class)
+    public Responser listTeacherClass(
+            @ApiParam(required = true, value = "老师班级列表查询")
+            @RequestBody
+            @Valid
+            ClassQueryRequester requester){
+
+        Member member = currMember();
+
+        Map<String, Object> queryMap = requester.toMap();
+        queryMap.put("teacherCode", member.getUserName()); // 设置为当前老师
+        Date now = new Date();
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), queryMap);
+
+        return ClassListResponse.me(classList);
+    }
+
+
+    @RequestMapping(value = "/class/signlist", method = RequestMethod.POST)
+    @ApiOperation(value="班级报班学员列表", httpMethod = "POST", response = ClassListResponse.class)
+    public Responser listStudentSign(
+            @ApiParam(required = true, value = "班级报班学员列表查询")
+            @RequestBody
+            @Valid
+            ClassSignQueryRequester requester){
+
+        Member member = currMember();
+
+        Map<String, Object> queryMap = requester.toMap();
+        Date now = new Date();
+
+        List<Student> studentList = studentClassService.listSignedStudent(queryMap);
+
+        return ClassSignListResponse.me(studentList);
     }
 
     @ApiOperation(value="班级详情", httpMethod = "POST", response = ClassDetailResponse.class)

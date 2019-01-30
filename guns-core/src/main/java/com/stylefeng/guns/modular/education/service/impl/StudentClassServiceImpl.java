@@ -10,10 +10,14 @@ import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.system.dao.StudentClassMapper;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.modular.system.model.StudentClass;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -26,6 +30,9 @@ public class StudentClassServiceImpl extends ServiceImpl<StudentClassMapper, Stu
 
     @Autowired
     private IClassService classService;
+
+    @Autowired
+    private StudentClassMapper studentClassMapper;
 
     @Override
     public void doChange(String studentCode, String sourceClass, String targetClass) {
@@ -54,5 +61,10 @@ public class StudentClassServiceImpl extends ServiceImpl<StudentClassMapper, Stu
         newClass.setStatus(GenericState.Valid.code);
 
         insert(newClass);
+    }
+
+    @Override
+    public List<Student> listSignedStudent(Map<String, Object> queryMap) {
+        return studentClassMapper.listSignedStudent(queryMap);
     }
 }

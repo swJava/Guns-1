@@ -11,9 +11,10 @@ import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.system.dao.ClassMapper;
-import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.util.Assert;
@@ -39,6 +40,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     private ClassMapper classMapper;
 
     @Autowired
+    private IStudentClassService studentClassService;
+
+    @Autowired
     private IScheduleClassService scheduleClassService;
 
     @Autowired
@@ -60,6 +64,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         arguments.put("weekList", weekList);
         List<Integer> gradeList = new ArrayList<Integer>();
         arguments.put("gradeList", gradeList);
+        List<String> teacherList = new ArrayList<String>();
+        arguments.put("teacherList", teacherList);
 
         Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
 
@@ -144,6 +150,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                     }catch(Exception e){}
                 }
                 arguments.put("gradeList", gradeList);
+            }
+
+            if ("teachers".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        teacherList.add(tokenizer.nextToken());
+                    }catch(Exception e){}
+                }
+                arguments.put("teacherList", teacherList);
             }
         }
         List<Class> resultList = classMapper.queryForList(arguments);

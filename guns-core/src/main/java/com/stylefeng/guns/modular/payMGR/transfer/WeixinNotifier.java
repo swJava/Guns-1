@@ -1,17 +1,16 @@
-package com.stylefeng.guns.rest.modular.pay.requester;
+package com.stylefeng.guns.modular.payMGR.transfer;
 
-import com.stylefeng.guns.modular.payMGR.MapEntryConvert;
-import com.stylefeng.guns.rest.core.SimpleRequester;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAliasType;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.io.naming.NoNameCoder;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.stylefeng.guns.modular.system.model.PayMethodEnum;
+import org.springframework.util.ReflectionUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import java.io.File;
-import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -19,8 +18,14 @@ import java.util.Map;
  * @Date 2018/12/27 22:30
  * @Version 1.0
  */
-@XStreamAlias("xml")
-public class WxNotifyRequester extends SimpleRequester {
+public class WeixinNotifier extends PayNotifier {
+
+    private static final String SUCCESS_RETURN = "SUCCESS";
+    private static final String SUCCESS_RESULT = "SUCCESS";
+
+    public WeixinNotifier(){
+        this.channel = PayMethodEnum.weixin;
+    }
 
     private String return_code;
 
@@ -66,10 +71,9 @@ public class WxNotifyRequester extends SimpleRequester {
 
     private Integer coupon_count; // 代金券数量
 
-    @XStreamConverter(CouponArrayConverter.class)
-    private String[] coupon_ids; // 代金券ID
+    private List<String> coupon_ids = new ArrayList<String>(); // 代金券ID
 
-    private Integer[] coupon_fees; // 单个代金券支付金额
+    private List<Integer> coupon_fees = new ArrayList<Integer>(); // 单个代金券支付金额
 
     private String transaction_id;  // 微信支付订单号
 
@@ -207,6 +211,12 @@ public class WxNotifyRequester extends SimpleRequester {
         this.total_fee = total_fee;
     }
 
+    public void setTotal_fee(String total_fee) {
+        try {
+            this.total_fee = Integer.parseInt(total_fee);
+        }catch(Exception e){}
+    }
+
     public String getFee_type() {
         return fee_type;
     }
@@ -221,6 +231,12 @@ public class WxNotifyRequester extends SimpleRequester {
 
     public void setCash_fee(Integer cash_fee) {
         this.cash_fee = cash_fee;
+    }
+
+    public void setCash_fee(String cash_fee) {
+        try {
+            this.cash_fee = Integer.parseInt(cash_fee);
+        }catch(Exception e){}
     }
 
     public String getCash_fee_type() {
@@ -247,6 +263,12 @@ public class WxNotifyRequester extends SimpleRequester {
         this.coupon_fee = coupon_fee;
     }
 
+    public void setCoupon_fee(String coupon_fee) {
+        try {
+            this.coupon_fee = Integer.parseInt(coupon_fee);
+        }catch(Exception e){}
+    }
+
     public Integer getCoupon_count() {
         return coupon_count;
     }
@@ -255,20 +277,34 @@ public class WxNotifyRequester extends SimpleRequester {
         this.coupon_count = coupon_count;
     }
 
-    public String[] getCoupon_ids() {
+    public void setCoupon_count(String coupon_count) {
+        try {
+            this.coupon_count = Integer.parseInt(coupon_count);
+        }catch(Exception e){}
+    }
+
+    public List<String> getCoupon_ids() {
         return coupon_ids;
     }
 
-    public void setCoupon_ids(String[] coupon_ids) {
+    public void setCoupon_ids(List<String> coupon_ids) {
         this.coupon_ids = coupon_ids;
     }
 
-    public Integer[] getCoupon_fees() {
+    private void addCoupon_id(String value) {
+        this.coupon_ids.add(value);
+    }
+
+    public List<Integer> getCoupon_fees() {
         return coupon_fees;
     }
 
-    public void setCoupon_fees(Integer[] coupon_fees) {
+    public void setCoupon_fees(List<Integer> coupon_fees) {
         this.coupon_fees = coupon_fees;
+    }
+
+    public void addCoupon_fee(Integer value){
+        this.coupon_fees.add(value);
     }
 
     public String getTransaction_id() {
@@ -303,34 +339,98 @@ public class WxNotifyRequester extends SimpleRequester {
         this.time_end = time_end;
     }
 
-    @Override
-    public boolean checkValidate() {
-        return false;
-    }
+    public static WeixinNotifier parse(InputStream notifyStream) throws Exception {
+        WeixinNotifier notifyRequester = null;
 
-    public static void main(String[] args){
-
-        File xml = new File("/Users/huahua/Desktop/notify");
-
-
-        XStream xStream = new XStream(new StaxDriver());
-        xStream.processAnnotations(WxNotifyRequester.class);
-        WxNotifyRequester requester = (WxNotifyRequester) xStream.fromXML(xml);
-
-    }
-
-    public static WxNotifyRequester parse(String notifyMessage) {
-        WxNotifyRequester notify = null;
-
-        XStream xStream = new XStream(new StaxDriver(new NoNameCoder()));
-        xStream.alias("xml", WxNotifyRequester.class);
-
+        Document document = null;
         try {
-            notify = (WxNotifyRequester) xStream.fromXML(notifyMessage, new WxNotifyRequester());
-        }catch(Exception e){
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            document = documentBuilder.parse(notifyStream);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return notify;
+        if (null == document)
+            throw new Exception ("报文解析失败");
+
+        NodeList rootList = document.getElementsByTagName("xml");
+        NodeList elements = rootList.item(0).getChildNodes();
+
+        notifyRequester = new WeixinNotifier();
+        Map<Integer, String> couponIdMap = new HashMap<Integer, String>();
+        Map<Integer, Integer> couponFeeMap = new HashMap<Integer, Integer>();
+
+        String couponIdPrefix = "coupon_id_";
+        String couponFeePrefix = "coupon_fee_";
+        for(int idx = 0; idx < elements.getLength(); idx++){
+            Node x = elements.item(idx);
+            String name = x.getNodeName();
+            String value = x.getTextContent().replaceAll("<!\\[CDATA\\[", "").replaceAll("]]>", "");
+
+            if (name.startsWith(couponIdPrefix)){
+                int key = Integer.parseInt(name.substring(couponIdPrefix.length()));
+                couponIdMap.put(key, value);
+                continue;
+        }
+
+
+            if (name.startsWith(couponFeePrefix)){
+                int key = Integer.parseInt(name.substring(couponFeePrefix.length()));
+                couponFeeMap.put(key, Integer.parseInt(value));
+                continue;
+            }
+
+            String setterName = String.valueOf(name.charAt(0)).toUpperCase() + name.substring(1);
+            Method method = ReflectionUtils.findMethod(WeixinNotifier.class, "set" + setterName, new Class[]{String.class});
+            if (null == method){
+                continue;
+            }
+
+            method.invoke(notifyRequester, new Object[]{value});
+        }
+
+        if (!couponIdMap.isEmpty()){
+            Iterator<Integer> keyIterator = couponIdMap.keySet().iterator();
+            notifyRequester.addCoupon_id(couponIdMap.get(keyIterator.next()));
+        }
+
+        if (!couponFeeMap.isEmpty()){
+            Iterator<Integer> keyIterator = couponFeeMap.keySet().iterator();
+            notifyRequester.addCoupon_fee(couponFeeMap.get(keyIterator.next()));
+        }
+
+        return notifyRequester;
+    }
+
+    @Override
+    public boolean paySuccess() {
+        if (null == this.return_code)
+            return false;
+        if (! SUCCESS_RETURN.equals(this.return_code) )
+            return false;
+
+        if (null == this.result_code)
+            return false;
+        if (! SUCCESS_RESULT.equals(this.result_code) )
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public String getOrder() {
+        return this.out_trade_no;
+    }
+
+    @Override
+    public String getMessage() {
+        if (!SUCCESS_RETURN.equals(this.return_code))
+            return this.return_msg;
+
+        if (!SUCCESS_RESULT.equals(this.result_code))
+            return "(" + this.err_code + ")" + this.err_code_des;
+
+        return "";
     }
 }

@@ -18,7 +18,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -89,11 +91,11 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
     @Override
     public void delete(String code) {
         if (null == code)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷"});
 
         ExaminePaper paper = get(code);
         if (null == paper)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"题目"});
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"试卷"});
 
         if (examineAnswerService.paperOnair(paper))
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"试卷"});
@@ -111,7 +113,7 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
         if (null == existPaper)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"试卷"});
 
-        if (examineAnswerService.paperOnair(paper))
+        if (examineAnswerService.paperOnair(paper))// 试卷已有答卷了，就不能修改
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"试卷"});
 
         Wrapper<ExaminePaperItem> paperItemWrapper = new EntityWrapper<ExaminePaperItem>();
@@ -144,6 +146,43 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
             }catch(Exception e){
                 throw new ServiceException();
             }
+        }
+    }
+
+    @Override
+    public void copy(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷"});
+
+        ExaminePaper paper = get(code);
+        if (null == paper)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"试卷"});
+
+        ExaminePaper paperCopy = new ExaminePaper();
+        String[] ignoreProperties = new String[]{"id", "code", "createDate", "status"};
+        BeanUtils.copyProperties(paper, paperCopy, ignoreProperties);
+
+        Date now = new Date();
+        paperCopy.setCode(CodeKit.generatePaper());
+        paperCopy.setCreateDate(now);
+        paperCopy.setStatus(GenericState.Valid.code);
+
+        insert(paperCopy);
+
+        // 复制试卷题目
+        Wrapper<ExaminePaperItem> queryWrapper = new EntityWrapper<ExaminePaperItem>();
+        queryWrapper.eq("paper_code", paper.getCode());
+        queryWrapper.eq("status", GenericState.Valid.code);
+        List<ExaminePaperItem> paperItemList = examinePaperItemService.selectList(queryWrapper);
+
+        String[] itemIgnoreProperties = new String[]{"id", "paperCode", "status"};
+
+        for(ExaminePaperItem paperItem : paperItemList){
+            ExaminePaperItem paperItemCopy = new ExaminePaperItem();
+            BeanUtils.copyProperties(paperItem, paperItemCopy, itemIgnoreProperties);
+            paperItemCopy.setPaperCode(paperCopy.getCode());
+
+            examinePaperItemService.create(paperItem);
         }
     }
 }

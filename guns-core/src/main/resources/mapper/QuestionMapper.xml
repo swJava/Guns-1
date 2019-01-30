@@ -12,11 +12,13 @@
         <result column="status" property="status" />
         <result column="expact_answer" property="expactAnswer" />
         <result column="auto_marking" property="autoMarking" />
+        <result column="teacher" property="teacher" />
+        <result column="teacher_name" property="teacherName" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        a.id, a.code, a.question, a.type, a.subject, a.status, a.expact_answer, a.auto_marking
+        a.id, a.code, a.question, a.type, a.subject, a.status, a.expact_answer, a.auto_marking, a.teacher, a.teacher_name
     </sql>
 
 
@@ -36,6 +38,9 @@
                 <foreach collection="excludeList" item="qcode" open="(" separator="," close=")">
                     #{qcode}
                 </foreach>
+            </if>
+            <if test="null != status">
+                and a.status = #{status}
             </if>
         </where>
     </select>

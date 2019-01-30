@@ -41,4 +41,11 @@ public interface IExaminePaperService extends IService<ExaminePaper> {
      * @param workingQuestionList
      */
     void update(ExaminePaper paper, Set<ExaminePaperItem> workingQuestionList);
+
+    /**
+     * 复制试卷
+     *
+     * @param code
+     */
+    void copy(String code);
 }

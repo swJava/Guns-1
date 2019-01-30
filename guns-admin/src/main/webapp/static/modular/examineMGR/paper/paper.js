@@ -70,7 +70,21 @@ Paper.openPaperDetail = function () {
         this.layerIndex = index;
     }
 };
-
+/**
+ * 复制试卷
+ */
+Paper.copy = function () {
+    if (this.check()) {
+        var ajax = new $ax(Feng.ctxPath + "/examine/paper/copy", function (data) {
+            Feng.success("复制成功!");
+            Paper.table.refresh();
+        }, function (data) {
+            Feng.error("复制失败!" + data.responseJSON.message + "!");
+        });
+        ajax.set("code",this.seItem.code);
+        ajax.start();
+    }
+};
 /**
  * 删除试卷
  */

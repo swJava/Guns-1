@@ -39,6 +39,10 @@ public class ExaminePaper extends Model<ExaminePaper> {
      */
     private String subject;
     /**
+     * 班次
+     */
+    private Integer ability;
+    /**
      * 题目数量
      */
     private Integer count;
@@ -97,6 +101,14 @@ public class ExaminePaper extends Model<ExaminePaper> {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public Integer getAbility() {
+        return ability;
+    }
+
+    public void setAbility(Integer ability) {
+        this.ability = ability;
     }
 
     public Integer getCount() {
@@ -159,6 +171,7 @@ public class ExaminePaper extends Model<ExaminePaper> {
         ", code=" + code +
         ", grades=" + grades +
         ", subject=" + subject +
+        ", ability=" + ability +
         ", count=" + count +
         ", examTime=" + examTime +
         ", totalScore=" + totalScore +

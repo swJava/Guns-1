@@ -123,6 +123,8 @@ public class PaperController extends BaseController {
 
     /**
      * 获取入学诊断列表
+     *
+     * workingCodes 已选中的题目编码
      */
     @RequestMapping(value = "/question/list")
     @ResponseBody
@@ -135,6 +137,9 @@ public class PaperController extends BaseController {
                 workingQuestionList.add(codeIter.nextToken());
             }
         }
+
+        conditionMap.put("status", GenericState.Valid.code);
+
         //分页查詢
         Page<Map<String, Object>> pageMap = questionService.selectMapsPage(conditionMap, workingQuestionList);
         //包装数据
@@ -168,8 +173,23 @@ public class PaperController extends BaseController {
         Administrator currAdmin = ShiroKit.getUser();
         paper.setTeacher(currAdmin.getName());
 
-        examinePaperService.create(paper, workingQuestionList);
+        examinePaperService.create
+                (paper, workingQuestionList);
 
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 复制试卷
+     */
+    @RequestMapping(value = "/copy")
+    @ResponseBody
+    public Object copy(@RequestParam String code) {
+        if (ToolUtil.isOneEmpty(code)) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请选择需要复制的试卷 "});
+        }
+        // 复制试卷
+        examinePaperService.copy(code);
         return SUCCESS_TIP;
     }
 
@@ -180,16 +200,15 @@ public class PaperController extends BaseController {
     @ResponseBody
     public Object delete(@RequestParam String code) {
         if (ToolUtil.isOneEmpty(code)) {
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请选择需要删除的试卷 "});
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请选择需要应用的试卷 "});
         }
         // 只能逻辑删
         examinePaperService.delete(code);
         return SUCCESS_TIP;
     }
 
-
     /**
-     * 新增入学诊断
+     * 修改入学诊断
      */
     @RequestMapping(value = "/update")
     @ResponseBody

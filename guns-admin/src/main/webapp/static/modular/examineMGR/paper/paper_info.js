@@ -202,6 +202,7 @@ PaperDlg.collectData = function() {
         .set('id')
         .set('grades')
         .set('subject')
+        .set('ability')
         .set('examTime');
 
     var questions = PaperDlg.SelectedQuestion.seCodes.slice(0);
@@ -302,7 +303,7 @@ $(function () {
 
     // 初始化
     try {
-        PaperDlg.SelectedQuestion.seCodes = eval($('#questionCodes').val());
+        PaperDlg.SelectedQuestion.seCodes = JSON.parse($('#questionCodes').val());
         PaperDlg.SelectedQuestion.seScores = JSON.parse($('#questionScores').val());
     }catch(error){}
 
@@ -360,4 +361,8 @@ $(function () {
     });
     PaperDlg.SelectedQuestion.table = table.init();
 
+    //初始select选项
+    $("#grades").val($("#gradesValue").val());
+    $("#ability").val($("#abilityValue").val());
+    $("#subject").val($("#subjectValue").val());
 });

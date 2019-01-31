@@ -175,6 +175,56 @@ public class AttachmentController {
         return;
     }
 
+
+    @RequestMapping("/download/app")
+    public void download(String platform, HttpServletResponse response) {
+        File zipFile = null;
+
+        if ("android".equalsIgnoreCase(platform)) {
+            Wrapper<Attachment> attachmentWrapper = new EntityWrapper<>();
+            attachmentWrapper.eq("master_name", "APP_ANDROID");
+            attachmentWrapper.eq("master_code", "ANDROID-RELEASE");
+            attachmentWrapper.eq("status", GenericState.Valid.code);
+
+            Attachment attachment = attachmentService.selectOne(attachmentWrapper);
+            InputStream resStream = null;
+            String fileName = "";
+
+            try {
+                if (null != attachment) {
+                    resStream = new FileInputStream(new File(attachment.getPath()));
+                    fileName = attachment.getFileName();
+                }
+            } catch (Exception e) {
+            }
+
+            if (null == resStream)
+                return;
+
+            try {
+                // 输出文件
+                response.reset();
+                response.setContentType("bin");
+                response.addHeader("Content-Disposition",
+                        "attachment; filename=\"" + new String(URLEncoder.encode(fileName, "UTF-8")) + "\"");
+                byte[] buffer = new byte[1024];
+                int byteread = 0;
+                while ((byteread = resStream.read(buffer)) != -1) {
+                    response.getOutputStream().write(buffer, 0, byteread);
+                }
+
+            } catch (Exception e) {
+                // e.printStackTrace();
+            } finally {
+                try {
+                    resStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @RequestMapping("/download/{id}")
     public void download(@PathVariable("id") Long id, HttpServletResponse response) {
         File zipFile = null;

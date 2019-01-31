@@ -37,11 +37,11 @@
 
         <!-- 学员名称 -->
         <if test="null != studentName">
-            and s.name like CONCAT('%',#{studentName},'%')
+            and ss.name like CONCAT('%',#{studentName},'%')
         </if>
 
         <if test="null != targetSchoolName">
-            and s.targetSchool like CONCAT('%',#{targetSchoolName},'%')
+            and ss.targetSchool like CONCAT('%',#{targetSchoolName},'%')
         </if>
         </where>
         group by ss.code) sss on sss.code = s.code

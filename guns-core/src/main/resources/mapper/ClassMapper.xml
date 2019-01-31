@@ -51,6 +51,10 @@
             <if test="subjectList.size() > 0 || methodList.size() > 0">
                 tcr.code = tc.course_code
             </if>
+            <!-- 班级名称 -->
+            <if test="null != name">
+                and tc.name like CONCAT('%',#{name},'%')
+            </if>
             <!-- 状态 -->
             <if test="null != status">
                 and tc.status = #{status}
@@ -111,10 +115,6 @@
                     #{teacher}
                 </foreach>
                 )
-            </if>
-            <!-- 授课老师 -->
-            <if test="null != name">
-                and tc.name like CONCAT('%',#{name},'%')
             </if>
 
             <!-- 授课老师 -->

@@ -18,7 +18,7 @@ public class ClassSignQueryRequester extends SimpleRequester {
     @ApiModelProperty(name = "classCode", value = "班级编码", required = true, position = 0, example = "BJ000001")
     @NotBlank(message = "班级编码不能为空")
     private String classCode;
-    @ApiModelProperty(name = "studentName", value = "学员编码", required = false, position = 1, example = "XY181230000001")
+    @ApiModelProperty(name = "studentName", value = "学员名称", required = false, position = 1, example = "XY181230000001")
     private String studentName;
     @ApiModelProperty(name = "targetSchoolName", value = "目标学校关键字", required = false, position = 2, example = "树人")
     private String targetSchoolName;

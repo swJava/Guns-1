@@ -16,6 +16,7 @@ import com.stylefeng.guns.modular.system.dao.ClassMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.util.Assert;
 import org.springframework.beans.BeanUtils;
@@ -71,6 +72,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
+
+            if ("name".equals(key)){
+                if (StringUtils.isNotEmpty(queryParams.get(key).toString()))
+                    arguments.put("name", queryParams.get(key));
+            }
 
             if ("status".equals(key)){
                 arguments.put("status", queryParams.get(key));

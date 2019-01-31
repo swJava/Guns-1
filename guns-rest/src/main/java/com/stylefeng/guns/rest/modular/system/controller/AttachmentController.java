@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Created by 罗华.
  */
-@Api(tags = "系统接口")
+@Api(tags = "附件接口")
 @RestController
 @RequestMapping("/attachment")
 public class AttachmentController {

@@ -58,6 +58,13 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         if (null == classInfo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
+        int studentGrade = student.getGrade();
+        int classGrade = classInfo.getGrade();
+
+        if (studentGrade != classGrade){
+            throw new ServiceException(MessageConstant.MessageCode.GRADE_NOT_MATCH);
+        }
+
         List<CourseCart> existSelected = selectList(new EntityWrapper<CourseCart>()
                 .eq("user_name", member.getUserName())
                 .eq("student_code", student.getCode())

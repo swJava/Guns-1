@@ -109,6 +109,11 @@ public final class MessageConstant {
         public static final String COURSE_SELECT_OUTTIME = "020002";
 
         /**
+         * 所报班级年级不符合
+         */
+        public static final String GRADE_NOT_MATCH = "020003";
+
+        /**
          * 支付方式不支持
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";

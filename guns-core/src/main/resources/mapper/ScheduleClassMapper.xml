@@ -44,6 +44,10 @@
                 and a.status = #{status}
             </if>
 
+            <if test="null != classCode">
+                and a.class_code = #{classCode}
+            </if>
+
             <if test="null != beginDate">
                 and a.study_date &gt;= #{beginDate}
             </if>

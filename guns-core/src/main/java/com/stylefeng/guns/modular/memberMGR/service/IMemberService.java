@@ -17,9 +17,16 @@ import java.util.Set;
  * @since 2018-10-09
  */
 public interface IMemberService extends IService<Member> {
+
+    /**
+     * 创建用户
+     * @param teacherMember
+     */
+    void createMember(Member teacherMember);
     /**
      * 新增用户
      *
+     * 适用于用户注册方式
      * @param stringObjectMap
      * @param userName
      * @param password

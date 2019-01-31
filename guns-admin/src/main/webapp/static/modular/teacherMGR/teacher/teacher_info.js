@@ -96,6 +96,7 @@ TeacherInfoDlg.collectData = function() {
     .set('status')
     .set('masterName')
     .set('masterCode')
+    .set('mobile')
     ;
 }
 

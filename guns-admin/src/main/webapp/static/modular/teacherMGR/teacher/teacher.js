@@ -27,8 +27,7 @@ Teacher.initColumn = function () {
         {title: '授课年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
         {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
+        {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true}
     ];
 };
 
@@ -91,7 +90,7 @@ Teacher.delete = function () {
         }, function (data) {
             Feng.error("删除失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("teacherId",this.seItem.id);
+        ajax.set("code",this.seItem.code);
         ajax.start();
     }
 };

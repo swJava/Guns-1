@@ -92,6 +92,10 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 arguments.put("signDate", queryParams.get(key));
             }
 
+            if ("signable".equals(key)){
+                arguments.put("signable", queryParams.get(key));
+            }
+
             if ("subjects".equals(key)){
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){

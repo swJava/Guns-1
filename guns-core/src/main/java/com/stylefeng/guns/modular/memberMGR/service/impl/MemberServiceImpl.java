@@ -52,6 +52,37 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     private String defaultPassword;
 
     @Override
+    public void createMember(Member member) {
+        // 电话号码，规则要求必须有
+        String number = member.getMobileNumber();
+
+        if (null == number)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"电话号码不能为空"});
+
+        // 判断手机号是否重复，并提示
+        Member existMember = (Member) selectOne(new EntityWrapper<Member>().eq("mobile_number", number).ne("status", MemberStateEnum.Invalid.code));
+        if (null != existMember) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE, new String[]{number});
+        }
+
+        // 指定用户名注册，判断用户名是否重复，并提示
+        existMember = (Member) selectOne(new EntityWrapper<Member>().eq("user_name", member.getUserName()).ne("status", MemberStateEnum.Invalid.code));
+        if (null != existMember) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE, new String[]{member.getUserName()});
+        }
+
+        member.setPassword(new Sha256Hash(defaultPassword).toHex().toUpperCase());
+        member.setStatus(MemberStateEnum.Valid.code);
+        member.setJoinDate(new Date());
+        // 保存会员信息
+        insert(member);
+        // 构建会员认证信息
+        MemberAuth memberAuth = buildMemberAuthInfo(member);
+        // 保存会员认证信息
+        memberAuthMapper.insert(memberAuth);
+    }
+
+    @Override
     public Member createMember(String userName, String password, Map<String, Object> extraParams) {
         // 电话号码，规则要求必须有
         String number = getString(extraParams, "number");

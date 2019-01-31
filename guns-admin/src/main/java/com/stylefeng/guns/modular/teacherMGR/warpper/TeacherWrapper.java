@@ -21,6 +21,5 @@ public class TeacherWrapper extends BaseControllerWarpper {
         map.put("gradeName", ConstantFactory.me().getGradeName((Integer) map.get("grade")));
         map.put("typeName", ConstantFactory.me().getTeacherTypeName((Integer) map.get("type")));
         map.put("genderName", ConstantFactory.me().getSexName((Integer) map.get("gender")));
-        map.put("statusName", ConstantFactory.me().getStatusName((Integer) map.get("status")));
     }
 }

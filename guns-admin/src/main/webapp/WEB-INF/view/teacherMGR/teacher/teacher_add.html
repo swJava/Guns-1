@@ -18,11 +18,12 @@
                     <#input id="experience" name="教学经验" underline="true"/>
                     <#input id="feature" name="教学特点" underline="true"/>
                     <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                    <#input id="mobile" name="联系电话" underline="true"/>
                 </div>
             </div>
 
             <div class="row btn-group-m-t">
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-sm-offset-5">
                     <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="TeacherInfoDlg.addSubmit()"/>
                     <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="TeacherInfoDlg.close()"/>
                 </div>

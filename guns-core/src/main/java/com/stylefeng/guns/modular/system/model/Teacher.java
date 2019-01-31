@@ -55,33 +55,39 @@ public class Teacher extends Model<Teacher> {
     @ApiModelProperty(name = "gender", value = "性别", position = 4, example="1")
     private Integer gender;
     /**
+     * 手机号码
+     */
+    @ApiModelProperty(name = "mobile", value = "手机号码", position = 5, example="18580255111")
+    private String mobile;
+    /**
      * 毕业院校
      */
-    @ApiModelProperty(name = "graduate", value = "毕业院校", position = 5, example="重庆大学")
+    @ApiModelProperty(name = "graduate", value = "毕业院校", position = 6, example="重庆大学")
     private String graduate;
     /**
      * 授课年级
      */
-    @ApiModelProperty(name = "grade", value = "授课年级", position = 6, example="小学一年级")
+    @ApiModelProperty(name = "grade", value = "授课年级", position = 7, example="小学一年级")
     private Integer grade;
     /**
      * 教学成果
      */
-    @ApiModelProperty(name = "havest", value = "教学成果", position = 7, example="纯文本")
+    @ApiModelProperty(name = "havest", value = "教学成果", position = 8, example="纯文本")
     private String havest;
     /**
      * 教学经验
      */
-    @ApiModelProperty(name = "experience", value = "教学经验", position = 8, example="纯文本")
+    @ApiModelProperty(name = "experience", value = "教学经验", position = 9, example="纯文本")
     private String experience;
     /**
      * 教学特点
      */
-    @ApiModelProperty(name = "feature", value = "教学特点", position = 9, example="纯文本")
+    @ApiModelProperty(name = "feature", value = "教学特点", position = 10, example="纯文本")
     private String feature;
     /**
      * 状态
      */
+    @ApiModelProperty(hidden = true)
     private Integer status;
 
 
@@ -131,6 +137,14 @@ public class Teacher extends Model<Teacher> {
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getGraduate() {
@@ -195,6 +209,7 @@ public class Teacher extends Model<Teacher> {
         ", avatar=" + avatar +
         ", type=" + type +
         ", gender=" + gender +
+        ", mobile=" + mobile +
         ", graduate=" + graduate +
         ", grade=" + grade +
         ", havest=" + havest +

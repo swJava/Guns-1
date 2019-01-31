@@ -74,8 +74,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             String key = queryKeyIter.next();
 
             if ("name".equals(key)){
-                if (StringUtils.isNotEmpty(queryParams.get(key).toString()))
-                    arguments.put("name", queryParams.get(key));
+                arguments.put("name", queryParams.get(key));
             }
 
             if ("status".equals(key)){

@@ -9,6 +9,7 @@ import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
@@ -150,11 +151,15 @@ public class EducationController extends ApiController {
         if (null == classInfo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        return ClassDetailResponse.me(classInfo);
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("classCode", classInfo.getCode());
+        queryMap.put("status", GenericState.Valid.code);
+
+        List<ClassPlan> classPlanList = scheduleClassService.selectPlanList(queryMap);
+        return ClassDetailResponse.me(classInfo, classPlanList);
     }
 
     @ApiOperation(value="课时列表", httpMethod = "POST", response = OutlineListResponser.class)
-    @ApiImplicitParam(name = "code", value = "班级编码", required = true, dataType = "String")
     @RequestMapping(value = "/outline/list", method = RequestMethod.POST)
     public Responser outlineList(
             @ApiParam(required = true, value = "课时查询")
@@ -184,9 +189,13 @@ public class EducationController extends ApiController {
             break;
         }
 
+        if (null == student){
+            // 没有找到
+            return OutlineListResponser.me(0, new ArrayList<OutlineResponse>());
+        }
+
         // 查找已调课次数
         int adjustTimes = adjustStudentService.countAdjust(requester.getClassCode(), student.getCode(), AdjustStudentTypeEnum.Adjust);
-
 
         List<OutlineResponse> outlineResponseList = new ArrayList<OutlineResponse>();
         for(ScheduleStudent plan : planList){

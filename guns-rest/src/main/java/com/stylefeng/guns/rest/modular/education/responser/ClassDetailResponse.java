@@ -1,11 +1,13 @@
 package com.stylefeng.guns.rest.modular.education.responser;
 
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.beans.BeanUtils;
+
+import java.util.List;
 
 /**
  * Created by 罗华.
@@ -17,25 +19,21 @@ public class ClassDetailResponse extends SimpleResponser {
     @ApiModelProperty(name = "data", value = "班级")
     private ClassResponser data;
 
-    public Class getData() {
+    public ClassResponser getData() {
         return data;
     }
 
-    public void setData(Class classInfo) {
-        ClassResponser dto = new ClassResponser();
-        BeanUtils.copyProperties(classInfo, dto);
-        dto.setClassTimeDesp(classInfo.getStudyTimeDesp());
-
-        this.data = dto;
+    public void setData(ClassResponser data) {
+        this.data = data;
     }
 
-    public static Responser me(Class classInfo) {
+    public static Responser me(Class classInfo, List<ClassPlan> classPlanList) {
         ClassDetailResponse response = new ClassDetailResponse();
 
         response.setCode(SUCCEED);
         response.setMessage("查询成功");
 
-        response.setData(classInfo);
+        response.setData(ClassResponser.me(classInfo, classPlanList));
         return response;
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
  * @Date 2019/1/30 23:24
  * @Version 1.0
  */
-@Api(tags = "附件接口")
+@Api(tags = "系统接口")
 @RestController
 @RequestMapping("/update")
 public class UpdateController {

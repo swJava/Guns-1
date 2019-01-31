@@ -1,12 +1,16 @@
 package com.stylefeng.guns.rest.modular.education.responser;
 
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -35,6 +39,9 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     @ApiModelProperty(name = "canChange", value = "能否转班", example = "true")
     boolean canChange;
+
+    @ApiModelProperty(name = "planList", value = "排班计划")
+    private List<ClassPlan> planList = new ArrayList<ClassPlan>();
 
     public String getClassTimeDesp() {
         return classTimeDesp;
@@ -93,6 +100,14 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         this.canChange = canChange;
     }
 
+    public List<ClassPlan> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(List<ClassPlan> planList) {
+        this.planList = planList;
+    }
+
     public static ClassResponser me(Class classInfo) {
         ClassResponser dto = new ClassResponser();
         BeanUtils.copyProperties(classInfo, dto);
@@ -107,6 +122,13 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         judgementChange(dto);
 
         return dto;
+    }
+
+    public static ClassResponser me(Class classInfo, List<ClassPlan> classPlanList) {
+        ClassResponser response = me(classInfo);
+        response.setPlanList(classPlanList);
+
+        return response;
     }
 
     private void setFormatPrice(Long price) {

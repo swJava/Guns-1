@@ -2,6 +2,8 @@ package com.stylefeng.guns.modular.classMGR.transfer;
 
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
 import com.stylefeng.guns.util.DateUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
@@ -11,16 +13,20 @@ import java.util.Date;
  * @Date 2019/1/25 16:49
  * @Version 1.0
  */
+@ApiModel(value = "ClassPlan", description = "排班计划")
 public class ClassPlan extends ScheduleClass {
 
+    @ApiModelProperty(name = "className", value = "班级名称", example = "春季班小学一年级（启航）")
     private String className;
 
+    @ApiModelProperty(name = "courseName", value = "课程名称名称", example = "春季班小学一年级（启航）")
     private String courseName;
 
     private String classBeginTime;
 
     private String classEndTime;
 
+    @ApiModelProperty(name = "description", value = "排课计划介绍", example = "排课计划介绍")
     private String description;
 
     public String getClassName() {

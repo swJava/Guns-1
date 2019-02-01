@@ -1,0 +1,32 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>报名管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="condition" name="名称" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="Class.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="ClassTableToolbar" role="group">
+                            @if(shiro.hasPermission("/order/sign/import/student")){
+                                <#button name="报名" icon="fa-plus" clickFun="Sign.openImportDlg()"/>
+                            @}
+                        </div>
+                        <#table id="ClassTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/orderMGR/order/sign.js" />
+@}

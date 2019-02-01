@@ -45,8 +45,8 @@
 				},
 				accept : {
 					title : 'Images',
-					extensions : 'gif,jpg,jpeg,bmp,png',
-                    mimeTypes : 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
+					extensions : 'gif,jpg,jpeg,bmp,png,txt',
+                    mimeTypes : 'image/gif,image/jpg,image/jpeg,image/bmp,image/png,text/plain'
 				},
 				swf : Feng.ctxPath
 						+ '/static/js/plugins/webuploader/Uploader.swf',

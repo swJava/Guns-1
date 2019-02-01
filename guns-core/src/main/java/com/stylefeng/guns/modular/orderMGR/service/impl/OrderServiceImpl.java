@@ -151,7 +151,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void completePay(String order) {
         Order currOrder = get(order);
 
-        if (PayStateEnum.Paying.code != currOrder.getPayStatus()){
+        if (PayStateEnum.NoPay.code != currOrder.getPayStatus()){
             log.info(" order({}) is handled! ", currOrder.getAcceptNo());
             return;
         }

@@ -126,7 +126,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return null;
 
         Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
-        orderItemWrapper.eq("courseCartCode", courseCart.getCode());
+        orderItemWrapper.eq("course_cart_code", courseCart.getCode());
         orderItemWrapper.eq("item_object", OrderItemTypeEnum.Course.code);
 
         List<OrderItem> orderItemList = orderItemMapper.selectList(orderItemWrapper);

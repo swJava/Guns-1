@@ -68,8 +68,6 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         List<String> teacherList = new ArrayList<String>();
         arguments.put("teacherList", teacherList);
 
-        Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
-
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
 
@@ -104,7 +102,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             if ("subjects".equals(key)){
                 StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
                 while(tokenizer.hasMoreTokens()){
-                    String value = String.valueOf(subjectMap.get(tokenizer.nextToken()));
+                    String value = tokenizer.nextToken();
                     if (null != value)
                         subjectList.add(value);
                 }

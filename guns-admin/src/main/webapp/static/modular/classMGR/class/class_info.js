@@ -297,9 +297,10 @@ ClassInfoDlg.initCalendar = function(options){
 
                         var beginTime = start.format('H:mm');
                         var endTime = end.format('H:mm');
+                        var eventId = new Date().getTime();
                         me.calendar.fullCalendar('renderEvent',
                             {
-                                id: new Date().getTime(),
+                                id: eventId,
                                 title: beginTime + ' ~ ' + endTime + ': ' + title,
                                 start: start,
                                 end: end
@@ -308,6 +309,7 @@ ClassInfoDlg.initCalendar = function(options){
                         );
 
                         me.minePlanList.push({
+                            id: eventId,
                             studyDate: start.format('YYYY-MM-DD'),
                             classTime: start.format('HHmm'),
                             endTime: end.format('HHmm'),
@@ -329,9 +331,10 @@ ClassInfoDlg.initCalendar = function(options){
         eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
             var newEvent = $.extend({}, event);
             newEvent.id = (new Date()).getTime();
+
             me.calendar.fullCalendar('renderEvent',
                 {
-                    id: new Date().getTime(),
+                    id: newEvent.id,
                     title: event.title,
                     start: event.start,
                     end: event.end
@@ -340,6 +343,7 @@ ClassInfoDlg.initCalendar = function(options){
             );
 
             me.minePlanList.push({
+                id: newEvent.id,
                 studyDate: event.start.format('YYYY-MM-DD'),
                 classTime: event.start.format('HHmm'),
                 endTime: event.end.format('HHmm'),
@@ -352,7 +356,6 @@ ClassInfoDlg.initCalendar = function(options){
         eventClick: function(event, jsEvent, view) {
             var eventId = parseInt(event.id, 10);
             var _id = me.currClass + '_' + me.currClassId;
-            console.log(event.id);
             if (isNaN(eventId)) {
                 if ( 0 != event.id.indexOf(me.currClass) )
                     return false;
@@ -388,25 +391,32 @@ ClassInfoDlg.initCalendar = function(options){
                 modal.modal("hide");
             });
             modal.find('button[data-action=delete]').on('click', function() {
+
                 me.calendar.fullCalendar('removeEvents' , function(ev){
                     return (ev._id == event._id);
                 });
 
                 var newMinePlanList = new Array();
-                $.each(me.minePlanList, function(idx, eo){
 
-                    if (eo._id = event._id)
+                console.log('<<< start remove minePlanList');
+                console.log(me.minePlanList);
+                $.each(me.minePlanList, function(idx, eo){
+                    if (me.currClass + '_' + eo.id == event._id)
                         return true;
 
                     newMinePlanList.push({
-                        studyDate: event.start.format('YYYY-MM-DD'),
-                        classTime: event.start.format('HHmm'),
-                        endTime: event.end.format('HHmm'),
-                        week: event.start.format('E')
+                        id: eo.id,
+                        studyDate: eo.studyDate,
+                        classTime: eo.classTime,
+                        endTime: eo.endTime,
+                        week: eo.week
                     })
                 });
 
                 me.minePlanList = newMinePlanList;
+                console.log('>>> update over');
+                console.log(me.minePlanList);
+
                 modal.modal("hide");
             });
 

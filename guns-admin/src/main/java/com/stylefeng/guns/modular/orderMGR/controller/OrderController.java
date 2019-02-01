@@ -324,7 +324,7 @@ public class OrderController extends BaseController {
             addCell(valueRow, order.get("userName"), valueStyle);
             addCell(valueRow, "", valueStyle);
             addCell(valueRow, payChannel, valueStyle);
-            addCell(valueRow, order.get("payResult"), valueStyle);
+            addCell(valueRow, null == order.get("payResult") ? " " : order.get("payResult"), valueStyle);
             addCell(valueRow, acceptDate, valueStyle);
             addCell(valueRow, payDate, valueStyle);
         }

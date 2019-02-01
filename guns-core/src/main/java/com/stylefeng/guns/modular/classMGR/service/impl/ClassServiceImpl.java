@@ -108,8 +108,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                     String subjectValue = subject;
                     try {
                         Integer.parseInt(subject);
+                    }catch(Exception e){
                         subjectValue = String.valueOf(subjectMap.get(subject));
-                    }catch(Exception e){}
+                    }
 
                     if (null != subjectValue)
                         subjectList.add(subjectValue);

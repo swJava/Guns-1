@@ -17,12 +17,6 @@
                             </div>
                         </div>
                         <div class="hidden-xs" id="AdjustStudentTableToolbar" role="group">
-                            @if(shiro.hasPermission("/adjust/ok")){
-                                <#button name="审核通过" icon="fa-edit" clickFun="AdjustStudent.openApprove()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/adjust/reject")){
-                                <#button name="审核打回" icon="fa-edit" clickFun="AdjustStudent.openReject()" space="true"/>
-                            @}
                             @if(shiro.hasPermission("/adjust/close")){
                                 <#button name="关闭申请" icon="fa-remove" clickFun="AdjustStudent.close()" space="true"/>
                             @}

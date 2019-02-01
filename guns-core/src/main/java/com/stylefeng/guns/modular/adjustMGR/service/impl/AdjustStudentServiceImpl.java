@@ -165,10 +165,8 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         if (null == adjustStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
 
-
-        adjustStudent.setWorkStatus(approveState.code);
         adjustStudent.setRemark(remark);
-        doApprove(adjustStudent);
+        doApprove(adjustStudent, approveState);
 
         // 调课
         if (AdjustStudentApproveStateEnum.Appove.code == approveState.code)
@@ -188,9 +186,8 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
 
 
-        adjustStudent.setWorkStatus(approveState.code);
         adjustStudent.setRemark(remark);
-        doApprove(adjustStudent);
+        doApprove(adjustStudent, approveState);
 
         // 转班
         if (AdjustStudentApproveStateEnum.Appove.code == approveState.code) {
@@ -198,6 +195,24 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
             studentClassService.doChange(adjustStudent.getStudentCode(), adjustStudent.getSourceClass(), adjustStudent.getTargetClass());
         }
         return adjustStudent;
+    }
+
+    private void doApprove(AdjustStudent adjustStudent, AdjustStudentApproveStateEnum approveState) {
+
+        if (GenericState.Invalid.code == adjustStudent.getStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Create.code != adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"申请单状态异常"});
+
+        if (null != administrator) {
+            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
+            adjustStudent.setOperator(administrator.getName());
+        }
+        adjustStudent.setWorkStatus(approveState.code);
+        adjustStudent.setUpdateTime(new Date());
+        updateById(adjustStudent);
     }
 
     @Override
@@ -252,23 +267,6 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         queryWrapper.ne("work_status", AdjustStudentApproveStateEnum.Refuse.code);
 
         return 0 < selectCount(queryWrapper);
-    }
-
-    private void doApprove(AdjustStudent adjustStudent) {
-
-        if (GenericState.Invalid.code == adjustStudent.getStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
-        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
-        if (AdjustStudentApproveStateEnum.Create.code != adjustStudent.getWorkStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"申请单状态异常"});
-
-        if (null != administrator) {
-            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
-            adjustStudent.setOperator(administrator.getName());
-        }
-        adjustStudent.setUpdateTime(new Date());
-        updateById(adjustStudent);
     }
 
     @Override

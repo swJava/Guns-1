@@ -49,6 +49,7 @@ public class StudentClassServiceImpl extends ServiceImpl<StudentClassMapper, Stu
 
         currClass.setStatus(GenericState.Invalid.code);
         currClass.setRemark("转入班级 [" + sourceClass +"]");
+        updateById(currClass);
 
         String[] ignoreProperties = new String[]{"id", "fcode", "pcode", "pcodes"};
         StudentClass newClass = new StudentClass();

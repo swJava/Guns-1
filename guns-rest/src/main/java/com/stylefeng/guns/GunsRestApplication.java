@@ -1,5 +1,6 @@
 package com.stylefeng.guns;
 
+import com.stylefeng.guns.rest.task.sms.AdjustTask;
 import com.stylefeng.guns.rest.task.sms.PayMocker;
 import com.stylefeng.guns.rest.task.sms.SmsSender;
 import org.slf4j.Logger;
@@ -15,6 +16,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GunsRestApplication {
 
     private final static Logger logger = LoggerFactory.getLogger(GunsRestApplication.class);
+
+    @Bean
+    public AdjustTask createApproveWorker(){
+        return new AdjustTask();
+    }
 
     @Bean
     @ConditionalOnProperty(prefix = "application.message.sms.sender", name = "enable", havingValue = "true")

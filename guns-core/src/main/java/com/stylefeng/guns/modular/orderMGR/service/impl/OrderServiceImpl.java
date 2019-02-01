@@ -19,6 +19,8 @@ import com.stylefeng.guns.modular.system.dao.OrderMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMemberMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +39,10 @@ import java.util.Map;
  */
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
+    @Autowired
+    private OrderMapper orderMapper;
     @Autowired
     private OrderItemMapper orderItemMapper;
 
@@ -116,8 +121,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
+    public Order get(CourseCart courseCart) {
+        if (null == courseCart || null == courseCart.getCode())
+            return null;
+
+        Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
+        orderItemWrapper.eq("courseCartCode", courseCart.getCode());
+        orderItemWrapper.eq("item_object", OrderItemTypeEnum.Course.code);
+
+        List<OrderItem> orderItemList = orderItemMapper.selectList(orderItemWrapper);
+
+        if (null == orderItemList || orderItemList.isEmpty())
+            return null;
+
+        OrderItem courseItem = orderItemList.get(0);
+
+        if (null == courseItem)
+            return null;
+
+        String orderNo = courseItem.getOrderNo();
+
+        if (null == orderNo)
+            return null;
+
+        return get(orderNo);
+    }
+
+    @Override
     public void completePay(String order) {
         Order currOrder = get(order);
+
+        if (PayStateEnum.Paying.code != currOrder.getPayStatus()){
+            log.info(" order({}) is handled! ", currOrder.getAcceptNo());
+            return;
+        }
 
         currOrder.setPayStatus(PayStateEnum.PayOk.code);
         currOrder.setPayResult(PayStateEnum.PayOk.text);
@@ -137,6 +174,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
             Wrapper<ScheduleClass> scheduleClassWrapper = new EntityWrapper<ScheduleClass>();
             scheduleClassWrapper.eq("class_code", courseCart.getClassCode());
+            scheduleClassWrapper.eq("status", GenericState.Valid.code);
 
             List<ScheduleClass> classScheduleList = scheduleClassService.selectList(scheduleClassWrapper);
 
@@ -190,7 +228,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void cancel(Member member, String orderNo) {
+    public void cancel(String orderNo) {
         if (null == orderNo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"订单号"});
 
@@ -212,6 +250,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         currOrder.setPayDate(new Date());
 
         updateById(currOrder);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryForList(Map<String, Object> queryParams) {
+        return orderMapper.queryForList(queryParams);
     }
 
     /**

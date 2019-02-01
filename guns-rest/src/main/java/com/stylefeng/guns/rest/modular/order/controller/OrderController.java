@@ -245,7 +245,7 @@ public class OrderController extends ApiController {
     ){
         Member member = currMember();
 
-        orderService.cancel(member, orderNo);
+        orderService.cancel(orderNo);
 
         return SimpleResponser.success();
     }

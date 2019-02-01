@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.orderMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -72,7 +73,27 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
                 .ne("status", CourseCartStateEnum.Invalid.code)
         );
 
-        if (existSelected.size() > 0)
+        int existSelectedCount = 0;
+        if (existSelected.size() > 0){
+            // 包含有已失效、过期的订单不纳入已订购的范围
+            for(CourseCart courseCart : existSelected){
+                if (CourseCartStateEnum.Ordered.code == courseCart.getStatus()){
+                    Order order = orderService.get(courseCart);
+                    if (null == order)
+                        continue;
+
+                    int orderState = order.getStatus();
+                    if (OrderStateEnum.InValid.code == orderState
+                            || OrderStateEnum.Expire.code == orderState){
+                        continue;
+                    }
+
+                    existSelectedCount++;
+                }
+            }
+        }
+
+        if (existSelectedCount > 0)
             throw new ServiceException(MessageConstant.MessageCode.COURSE_SELECTED);
 
         // 检查班级报名状态

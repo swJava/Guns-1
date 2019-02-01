@@ -45,6 +45,14 @@ public interface IOrderService extends IService<Order> {
     Order get(String orderNo);
 
     /**
+     * 获取订单
+     *
+     * @param courseCart
+     * @return
+     */
+    Order get(CourseCart courseCart);
+
+    /**
      *
      * @param paySequence
      * @param order
@@ -64,7 +72,7 @@ public interface IOrderService extends IService<Order> {
      * @param member
      * @param orderNo
      */
-    void cancel(Member member, String orderNo);
+    void cancel(String orderNo);
 
     /**
      * 支付失败
@@ -73,4 +81,12 @@ public interface IOrderService extends IService<Order> {
      * @param message
      */
     void failedPay(String order, String message);
+
+    /**
+     * 查询订单
+     *
+     * @param queryParams
+     * @return
+     */
+    List<Map<String, Object>> queryForList(Map<String, Object> queryParams);
 }

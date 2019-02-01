@@ -24,7 +24,10 @@
                                 <#button name="查看详情" icon="fa-edit" clickFun="Order.openOrderDetail()" space="true"/>
                             @}
                             @if(shiro.hasPermission("/order/class/close")){
-                                <!--<#button name="关闭订单" icon="fa-remove" btnCss="warning" clickFun="Order.close()" space="true"/>-->
+                                <#button name="关闭订单" icon="fa-remove" clickFun="Order.close()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/order/class/export")){
+                            <#button name="导出订单" icon="fa-download" clickFun="Order.export()" space="true"/>
                             @}
                         </div>
                         <#table id="OrderTable"/>

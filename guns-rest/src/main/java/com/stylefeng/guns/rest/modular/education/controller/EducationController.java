@@ -292,7 +292,14 @@ public class EducationController extends ApiController {
                 // 过滤掉自己
                 continue;
             }
-            // TODO 是否根据当前报班情况限制？
+            if (0 != classInfo.getCycle().compareTo(currClassInfo.getCycle())){
+                // 不是同学期，过滤掉
+                continue;
+            }
+            if (0 != classInfo.getAbility().compareTo(currClassInfo.getAbility())){
+                // 不是同班次，过滤掉
+                continue;
+            }
 
             classResponserSet.add(classInfo);
         }
@@ -313,6 +320,7 @@ public class EducationController extends ApiController {
         Course course = courseService.get(currClass.getCourseCode());
 
         Map<String, Object> changeClassQuery = new HashMap<String, Object>();
+        changeClassQuery.put("classCycles", String.valueOf(currClass.getGrade()));
         changeClassQuery.put("grades", String.valueOf(currClass.getGrade()));
         changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
         changeClassQuery.put("subjects", course.getSubject());
@@ -369,6 +377,10 @@ public class EducationController extends ApiController {
             }
             if (classInfo.getCode().equals(currClass.getCode())){
                 // 过滤掉自己
+                continue;
+            }
+            if (classInfo.getBeginDate().before(new Date())){
+                // 已经开课的班级过滤掉
                 continue;
             }
             if (currClass.getPrice().equals(classInfo.getPrice())){

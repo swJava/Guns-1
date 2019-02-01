@@ -10,11 +10,13 @@ import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.system.dao.AdjustStudentMapper;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ import java.util.Map;
 @Service
 public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, AdjustStudent> implements IAdjustStudentService {
     private static final Logger log = LoggerFactory.getLogger(AdjustStudentServiceImpl.class);
+
+    @Autowired
+    private IClassService classService;
 
     @Autowired
     private AdjustStudentMapper adjustStudentMapper;
@@ -206,6 +211,31 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         queryWrapper.eq("status", GenericState.Valid.code);
 
         return selectCount(queryWrapper);
+    }
+
+    @Override
+    public boolean canAdjust(AdjustStudent adjustApply) {
+        String targetClassCode = adjustApply.getTargetClass();
+        if (null == targetClassCode)
+            return false;
+        Class classInfo = classService.get(targetClassCode);
+        if (null == classInfo)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public boolean canChange(AdjustStudent adjustApply) {
+
+        String targetClassCode = adjustApply.getTargetClass();
+        if (null == targetClassCode)
+            return false;
+        Class classInfo = classService.get(targetClassCode);
+        if (null == classInfo)
+            return false;
+
+        return true;
     }
 
     private boolean hasApproving(String student, String sourceClass, String targetClass, String outlineCode, AdjustStudentTypeEnum type) {

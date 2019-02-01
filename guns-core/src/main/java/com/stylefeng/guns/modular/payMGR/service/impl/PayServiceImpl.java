@@ -137,6 +137,7 @@ public class PayServiceImpl implements IPayService {
     private void weixinNotify(WeixinNotifier notifier) {
         //TODO 可以添加其他的逻辑
 
+//        notifier.
         orderService.completePay(notifier.getOrder());
     }
 

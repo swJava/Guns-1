@@ -118,7 +118,13 @@ public class AttachmentServiceImpl extends ServiceImpl<AttachmentMapper, Attachm
         updateById(newAttachment);
     }
 
-    private String getFilename() {
+    @Override
+    public File getStoreFolder() {
+        return new File(storePath);
+    }
+
+    @Override
+    public String getFilename() {
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < 6; i++) {

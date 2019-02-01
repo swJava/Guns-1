@@ -85,4 +85,20 @@ public interface IAdjustStudentService extends IService<AdjustStudent>, IAdminis
      * @return
      */
     int countAdjust(String classCode, String student, AdjustStudentTypeEnum type);
+
+    /**
+     * 判断是否可以调课
+     *
+     * @param adjustApply
+     * @return
+     */
+    boolean canAdjust(AdjustStudent adjustApply);
+
+    /**
+     * 判断是否可以转班
+     *
+     * @param adjustApply
+     * @return
+     */
+    boolean canChange(AdjustStudent adjustApply);
 }

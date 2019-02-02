@@ -175,13 +175,14 @@ public class AttachmentController {
         return;
     }
 
-
     @RequestMapping("/download/app")
     public void download(String platform, HttpServletResponse response) throws IOException {
         File zipFile = null;
 
         if ("android".equalsIgnoreCase(platform)) {
             response.sendRedirect("http://www.kecui.com.cn/kecui.apk");
+        } else if ("ios".equalsIgnoreCase(platform)) {
+            response.sendRedirect("https://www.pgyer.com/hioS");
         }
     }
 

@@ -22,8 +22,15 @@ Member.initColumn = function () {
             {title: 'QQ号码', field: 'qq', visible: true, align: 'center', valign: 'middle'},
             {title: '微信号', field: 'weiixin', visible: true, align: 'center', valign: 'middle'},
             {title: '电子邮箱', field: 'email', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态 ', field: 'statusName', visible: true, align: 'center', valign: 'middle'},
-            {title: '加入时间', field: 'joinDate', visible: true, align: 'center', valign: 'middle'}
+            {title: '加入时间', field: 'joinDate', visible: true, align: 'center', valign: 'middle'},
+            {title: '状态 ', field: 'status', visible: true, align: 'center', valign: 'middle',
+                formatter: function(value, row){
+                    if (1 == value)
+                        return '<input type="checkbox" class="js-switch" data-username="'+row.userName+'" checked />';
+                    else
+                        return '<input type="checkbox" class="js-switch" data-username="'+row.userName+'" />';
+                }
+            }
     ];
 };
 
@@ -53,6 +60,7 @@ Member.openAddMember = function () {
         maxmin: true,
         content: Feng.ctxPath + '/member/member_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -69,6 +77,7 @@ Member.openMemberDetail = function () {
             maxmin: true,
             content: Feng.ctxPath + '/member/member_update/' + Member.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };
@@ -95,12 +104,59 @@ Member.delete = function () {
 Member.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['beginQueryDate'] = $("#beginQueryDate").val();
+    queryData['endQueryDate'] = $("#endQueryDate").val();
+    queryData['status'] = $("#status").val();
     Member.table.refresh({query: queryData});
 };
 
 $(function () {
+
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = 1 + now.getMonth();
+    if (month < 10)
+        month = '0' + month;
+    var day = now.getDate();
+    if (day < 10)
+        day = '0' + day;
+
+    var today = year + '-' + month + '-' + day;
+
     var defaultColunms = Member.initColumn();
     var table = new BSTable(Member.id, "/member/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        var switchers = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        switchers.forEach(function(switcher) {
+            var switchery = new Switchery(switcher, {
+                size: 'small'
+            });
+            switcher.onchange = function(){
+                var state = switcher.checked;
+                console.log('<<< change member state' + $(switcher).attr('data-username') + ' : ' + state);
+
+                var reqUrl = '';
+                if (state){
+                    // true 启用
+                    reqUrl = Feng.ctxPath + "/member/resume";
+                }else{
+                    // false 停用
+                    reqUrl = Feng.ctxPath + "/member/pause";
+                }
+
+                var ajax = new $ax(reqUrl, function (data) {
+                }, function (data) {
+                    Feng.error("操作失败!" + data.responseJSON.message + "!");
+                });
+                ajax.set("userName",$(switcher).attr('data-username'));
+                ajax.start();
+
+            }
+        });
+    });
     Member.table = table.init();
+
+    laydate.render({elem: '#beginQueryDate', max: today});
+    laydate.render({elem: '#endQueryDate', max: today});
 });

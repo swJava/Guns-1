@@ -24,12 +24,18 @@ public interface TeacherService extends IService<Teacher> {
     void create(Teacher teacher);
 
     /**
-     * 删除教师
+     * 禁用教师
      *
-     * 逻辑删除
      * @param code
      */
-    void delete(String code);
+    boolean doPause(String code);
+
+    /**
+     * 启用教师
+     *
+     * @param code
+     */
+    boolean doResume(String code);
 
     /**
      * 获取老师信息

@@ -74,14 +74,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        Wrapper<Student> queryWrapper = new EntityWrapper<Student>();
-        queryWrapper.eq("code", code);
-        Student existStudent = selectOne(queryWrapper);
+        Student existStudent = get(code);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        String[] ignoreProperties = new String[]{"id", "code"};
+        String[] ignoreProperties = new String[]{"id", "code", "userName"};
         BeanUtils.copyProperties(newStudent, existStudent, ignoreProperties);
 
         updateById(existStudent);
@@ -128,6 +126,38 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         queryWrapper.in("status", states);
 
         return scheduleStudentMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public boolean doPause(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        Student student = get(code);
+
+        if (null == student)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        student.setStatus(GenericState.Invalid.code);
+        updateStudent(code, student);
+
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        Student student = get(code);
+
+        if (null == student)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        student.setStatus(GenericState.Valid.code);
+        updateStudent(code, student);
+
+        return true;
     }
 
     private Student buildStudent(Map<String, Object> studentInfo) {

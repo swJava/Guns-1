@@ -118,6 +118,4 @@ public abstract class SimpleRequester implements Requester {
         return String.format(ILLEGAL_PARAMETER_TIP, paramName, msg);
     }
 
-
-
 }

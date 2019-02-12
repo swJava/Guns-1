@@ -140,7 +140,6 @@ ClassroomInfoDlg.editSubmit = function() {
         return;
     }
 
-
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/classroom/update", function(data){
         Feng.success("修改成功!");
@@ -159,6 +158,5 @@ $(function() {
 
     //初始select选项
     $("#type").val($("#typeValue").val());
-    $("#status").val($("#statusValue").val());
 
 });

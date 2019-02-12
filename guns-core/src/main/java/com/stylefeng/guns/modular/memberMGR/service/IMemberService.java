@@ -79,4 +79,22 @@ public interface IMemberService extends IService<Member> {
      * @return
      */
     ClassSignAbility getSignAbility(Member member);
+
+    /**
+     * 停用会员
+     *
+     * 逻辑删除，置会员状态为失效
+     *
+     * @param userName
+     * @return
+     */
+    boolean doPause(String userName);
+
+    /**
+     * 启用会员
+     *
+     * @param userName
+     * @return
+     */
+    boolean doResume(String userName);
 }

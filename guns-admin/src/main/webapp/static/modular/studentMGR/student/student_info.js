@@ -25,13 +25,6 @@ var StudentInfoDlg = {
                 }
             }
         },
-        status: {
-            validators: {
-                notEmpty: {
-                    message: '状态不能为空'
-                }
-            }
-        },
         grade: {
             validators: {
                 notEmpty: {
@@ -161,7 +154,6 @@ $(function() {
     $("#gender").val($("#genderValue").val());
     $("#type").val($("#typeValue").val());
     $("#grade").val($("#gradeValue").val());
-    $("#status").val($("#statusValue").val());
 
 
     // 初始化头像上传

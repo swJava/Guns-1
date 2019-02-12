@@ -264,6 +264,38 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         return ClassSignAbility.NORMAL;
     }
 
+    @Override
+    public boolean doPause(String userName) {
+        if (null == userName)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"用户"});
+
+        Member member = get(userName);
+
+        if (null == member)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"用户"});
+
+        member.setStatus(GenericState.Invalid.code);
+
+        updateById(member);
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String userName) {
+        if (null == userName)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"用户"});
+
+        Member member = get(userName);
+
+        if (null == member)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"用户"});
+
+        member.setStatus(GenericState.Valid.code);
+
+        updateById(member);
+        return true;
+    }
+
     private MemberAuth buildMemberAuthInfo(Member member) {
         MemberAuth memberAuth = new MemberAuth();
         Date now = new Date();

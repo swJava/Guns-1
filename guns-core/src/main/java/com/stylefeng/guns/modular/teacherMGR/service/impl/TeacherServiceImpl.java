@@ -37,7 +37,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
     }
 
     @Override
-    public void delete(String code) {
+    public boolean doPause(String code) {
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"教师编码"});
 
@@ -48,6 +48,24 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
         teacher.setStatus(GenericState.Invalid.code);
         updateById(teacher);
+
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"教师编码"});
+
+        Teacher teacher = get(code);
+
+        if (null == teacher)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"教师"});
+
+        teacher.setStatus(GenericState.Valid.code);
+        updateById(teacher);
+
+        return true;
     }
 
     @Override

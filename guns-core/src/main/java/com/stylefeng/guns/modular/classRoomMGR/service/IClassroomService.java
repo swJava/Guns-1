@@ -19,4 +19,20 @@ public interface IClassroomService extends IService<Classroom> {
      * @return
      */
     Classroom get(String classRoomCode);
+
+    /**
+     * 禁用教室
+     *
+     * @param code
+     * @return
+     */
+    boolean doPause(String code);
+
+    /**
+     * 启用教室
+     *
+     * @param code
+     * @return
+     */
+    boolean doResume(String code);
 }

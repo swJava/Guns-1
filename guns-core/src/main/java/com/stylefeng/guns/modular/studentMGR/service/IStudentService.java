@@ -81,4 +81,20 @@ public interface IStudentService extends IService<Student> {
      * @return
      */
     List<ScheduleStudent> listCoursePlan(String classCode, String studentCode, Integer... states);
+
+    /**
+     * 停用学生
+     *
+     * @param code
+     * @return
+     */
+    boolean doPause(String code);
+
+    /**
+     * 恢复学生
+     *
+     * @param code
+     * @return
+     */
+    boolean doResume(String code);
 }

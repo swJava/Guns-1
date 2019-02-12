@@ -16,7 +16,7 @@ Teacher.initColumn = function () {
         {field: 'selectItem', radio: true},
         {title: '头像', field: 'avatar', visible: true, align: 'center', valign: 'middle', sortable: true,
             formatter:function (value,row,index) {
-                return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Teacher&masterCode='+row.id+'" width="64px" height="64px">';
+                return '<img alt="image" class="img-circle" src="'+Feng.ctxPath+'/attachment/download?masterName=Teacher&masterCode='+row.code+'" width="64px" height="64px">';
             }
         },
         {title: '教师编码', field: 'code', visible: true, align: 'center', valign: 'middle', sortable: true},
@@ -25,9 +25,18 @@ Teacher.initColumn = function () {
         {title: '性别', field: 'genderName', visible: true, align: 'center', valign: 'middle'},
         {title: '毕业院校', field: 'graduate', visible: true, align: 'center', valign: 'middle', sortable: true},
         {title: '授课年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
-        {title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle', sortable: true},
-        {title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true}
+        //{title: '教学成果', field: 'havest', visible: true, align: 'center', valign: 'middle', sortable: true},
+        //{title: '教学经验', field: 'experience', visible: true, align: 'center', valign: 'middle', sortable: true},
+        //{title: '教学特点', field: 'feature', visible: true, align: 'center', valign: 'middle', sortable: true},
+        {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',
+            formatter: function(value, row){
+                if (1 == value)
+                    return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
+                else
+                    return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" />';
+            }
+        }
+
     ];
 };
 
@@ -101,12 +110,51 @@ Teacher.delete = function () {
 Teacher.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['status'] = $("#status").val();
     Teacher.table.refresh({query: queryData});
 };
+
+Teacher.doUpdate = function(reqUrl, data){
+    var ajax = new $ax(reqUrl, function (data) {
+    }, function (data) {
+        Feng.error("操作失败!" + data.responseJSON.message + "!");
+    });
+
+    ajax.setData(data);
+    ajax.start();
+}
 
 $(function () {
     var defaultColunms = Teacher.initColumn();
     var table = new BSTable(Teacher.id, "/teacher/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        var switchers = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+        switchers.forEach(function(switcher) {
+            var switchery = new Switchery(switcher, {
+                size: 'small'
+            });
+            switcher.onchange = function(){
+                var state = switcher.checked;
+                console.log('<<< change teacher state' + $(switcher).attr('data-code') + ' : ' + state);
+
+                var reqUrl = '';
+                var postData = {
+                    code : $(switcher).attr('data-code')
+                };
+
+                if (state){
+                    // true 启用
+                    reqUrl = Feng.ctxPath + "/teacher/resume";
+                }else{
+                    // false 停用
+                    reqUrl = Feng.ctxPath + "/teacher/pause";
+                }
+
+                Teacher.doUpdate(reqUrl, postData);
+            }
+        });
+    });
     Teacher.table = table.init();
 });

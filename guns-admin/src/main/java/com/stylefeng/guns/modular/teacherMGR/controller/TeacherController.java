@@ -3,7 +3,6 @@ package com.stylefeng.guns.modular.teacherMGR.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
-import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -78,7 +77,7 @@ public class TeacherController extends BaseController {
         if (null == teacher)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        List<Attachment> avatarList = attachmentService.listAttachment(Teacher.class.getSimpleName(), String.valueOf(teacherId));
+        List<Attachment> avatarList = attachmentService.listAttachment(Teacher.class.getSimpleName(), teacher.getCode());
         if (null != avatarList && avatarList.size() > 0)
             teacher.setAvatar(String.valueOf(avatarList.get(0).getId()));
 
@@ -92,15 +91,25 @@ public class TeacherController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         Page<Teacher> page = new PageFactory<Teacher>().defaultPage();
         Page<Map<String, Object>> mapPage = teacherService.selectMapsPage(page, new EntityWrapper<Teacher>() {
             {
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                //condition条件分页
+                if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                    like("name", queryParams.get("condition"));
+                    or();
+                    eq("code", queryParams.get("condition"));
+                    or();
+                    eq("mobile", queryParams.get("condition"));
                 }
 
-                eq("status", GenericState.Valid.code);
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
+                }
             }
         });
         new TeacherWrapper(mapPage.getRecords()).warp();
@@ -167,10 +176,20 @@ public class TeacherController extends BaseController {
     /**
      * 删除教师管理
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam String code) {
-        teacherService.delete(code);
+    public Object pause(@RequestParam String code) {
+        teacherService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除教师管理
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        teacherService.doResume(code);
         return SUCCESS_TIP;
     }
 
@@ -201,7 +220,7 @@ public class TeacherController extends BaseController {
         if (null != icon && null != icon.getId())
             try {
                 icon.setMasterName(Teacher.class.getSimpleName());
-                icon.setMasterCode(String.valueOf(teacher.getId()));
+                icon.setMasterCode(existTeacher.getCode());
 
                 attachmentService.updateAndRemoveOther(icon);
             } catch (Exception e) {

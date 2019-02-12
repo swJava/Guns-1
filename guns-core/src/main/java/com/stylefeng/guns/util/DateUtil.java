@@ -158,6 +158,8 @@ public class DateUtil {
      * 格式化日期
      */
     public static Date parse(String date, String pattern) {
+        if (null == date)
+            return null;
         try {
             return DateUtils.parseDate(date, pattern);
         } catch (ParseException e) {

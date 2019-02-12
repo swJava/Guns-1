@@ -67,14 +67,21 @@ public class ClassroomController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         //分页查詢
         Page<Classroom> page = new PageFactory<Classroom>().defaultPage();
         Page<Map<String, Object>> pageMap = classroomService.selectMapsPage(page, new EntityWrapper<Classroom>() {
             {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                //condition条件分页
+                if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                    like("name", queryParams.get("condition"));
+                }
+
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
                 }
             }
         });
@@ -106,10 +113,20 @@ public class ClassroomController extends BaseController {
     /**
      * 删除教室管理
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam Integer classroomId) {
-        classroomService.deleteById(classroomId);
+    public Object pause(@RequestParam String code) {
+        classroomService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除教室管理
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        classroomService.doResume(code);
         return SUCCESS_TIP;
     }
 

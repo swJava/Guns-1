@@ -74,7 +74,7 @@ public class StudentController extends BaseController {
         if (null == student)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员信息"});
 
-        List<Attachment> avatarList = attachmentService.listAttachment(Student.class.getSimpleName(), String.valueOf(studentId));
+        List<Attachment> avatarList = attachmentService.listAttachment(Student.class.getSimpleName(), student.getCode());
         if (null != avatarList && avatarList.size() > 0)
             student.setAvatar(String.valueOf(avatarList.get(0).getId()));
 
@@ -88,15 +88,24 @@ public class StudentController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
 
         //分页查詢
         Page<Student> page = new PageFactory<Student>().defaultPage();
         Page<Map<String, Object>> pageMap = studentService.selectMapsPage(page, new EntityWrapper<Student>() {
             {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                //condition条件分页
+                if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                    like("name", queryParams.get("condition"));
+                    or();
+                    eq("code", queryParams.get("condition"));
+                }
+
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
                 }
             }
         });
@@ -117,12 +126,22 @@ public class StudentController extends BaseController {
     }
 
     /**
-     * 删除学生管理
+     * 停用学生
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam Long studentId) {
-        studentService.deleteById(studentId);
+    public Object pause(@RequestParam String code) {
+        studentService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 恢复学生
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        studentService.doResume(code);
         return SUCCESS_TIP;
     }
 

@@ -2,8 +2,10 @@ package com.stylefeng.guns.modular.classMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.factory.ConstantFactory;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -50,134 +52,20 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     private IClassroomService classroomService;
 
     @Override
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParams) {
+
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+
+        List<Map<String, Object>> resultMap = classMapper.selectMapsPage(page, arguments);
+        page.setRecords(resultMap);
+        return page;
+    }
+
+    @Override
     public List<Class> queryForList(String userName, Map<String, Object> queryParams) {
-        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
-        Map<String, Object> arguments = new HashMap<String, Object>();
-        List<String> subjectList = new ArrayList<String>();
-        arguments.put("subjectList", subjectList);
-        List<Integer> cycleList = new ArrayList<Integer>();
-        arguments.put("cycleList", cycleList);
-        List<Integer> abilityList = new ArrayList<Integer>();
-        arguments.put("abilityList", abilityList);
-        List<Integer> methodList = new ArrayList<Integer>();
-        arguments.put("methodList", methodList);
-        List<Integer> weekList = new ArrayList<Integer>();
-        arguments.put("weekList", weekList);
-        List<Integer> gradeList = new ArrayList<Integer>();
-        arguments.put("gradeList", gradeList);
-        List<String> teacherList = new ArrayList<String>();
-        arguments.put("teacherList", teacherList);
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
 
-        Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
-
-        while(queryKeyIter.hasNext()){
-            String key = queryKeyIter.next();
-
-            if ("name".equals(key)){
-                arguments.put("name", queryParams.get(key));
-            }
-
-            if ("status".equals(key)){
-                arguments.put("status", queryParams.get(key));
-            }
-
-            if ("teacherCode".equals(key)){
-                arguments.put("teacherCode", queryParams.get(key));
-            }
-
-            if ("assisterCode".equals(key)){
-                arguments.put("assisterCode", queryParams.get(key));
-            }
-
-            if ("classroomCode".equals(key)){
-                arguments.put("classroomCode", queryParams.get(key));
-            }
-
-            if ("signDate".equals(key)){
-                arguments.put("signDate", queryParams.get(key));
-            }
-
-            if ("signable".equals(key)){
-                arguments.put("signable", queryParams.get(key));
-            }
-
-            if ("subjects".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    String subject = tokenizer.nextToken();
-                    String subjectValue = subject;
-                    try {
-                        Integer.parseInt(subject);
-                    }catch(Exception e){
-                        subjectValue = String.valueOf(subjectMap.get(subject));
-                    }
-
-                    if (null != subjectValue)
-                        subjectList.add(subjectValue);
-                }
-                arguments.put("subjectList", subjectList);
-            }
-
-            if ("classCycles".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        cycleList.add(Integer.parseInt(tokenizer.nextToken()));
-                    }catch(Exception e){}
-                }
-                arguments.put("cycleList", cycleList);
-            }
-
-            if ("abilities".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        abilityList.add(Integer.parseInt(tokenizer.nextToken()));
-                    }catch(Exception e){}
-                }
-                arguments.put("abilityList", abilityList);
-            }
-
-            if ("methods".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        methodList.add(Integer.parseInt(tokenizer.nextToken()));
-                    }catch(Exception e){}
-                }
-                arguments.put("methodList", methodList);
-            }
-
-            if ("weekdays".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        weekList.add(WeekMapping[Integer.parseInt(tokenizer.nextToken())]);
-                    }catch(Exception e){}
-                }
-                arguments.put("weekList", weekList);
-            }
-
-            if ("grades".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        gradeList.add(Integer.parseInt(tokenizer.nextToken()));
-                    }catch(Exception e){}
-                }
-                arguments.put("gradeList", gradeList);
-            }
-
-            if ("teachers".equals(key)){
-                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
-                while(tokenizer.hasMoreTokens()){
-                    try {
-                        teacherList.add(tokenizer.nextToken());
-                    }catch(Exception e){}
-                }
-                arguments.put("teacherList", teacherList);
-            }
-        }
         List<Class> resultList = classMapper.queryForList(arguments);
         return resultList;
     }
@@ -327,5 +215,148 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         currClass.setSignable(ClassSignableEnum.YES.code);
 
         updateById(currClass);
+    }
+
+    @Override
+    public void stopExaminable(String classCode) {
+        if (null == classCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        Class currClass = get(classCode);
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        currClass.setSignable(ClassSignableEnum.NO.code);
+
+        updateById(currClass);
+    }
+
+    @Override
+    public void resumeExaminable(String classCode) {
+        if (null == classCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        Class currClass = get(classCode);
+
+        if (null == currClass)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        currClass.setSignable(ClassExaminableEnum.YES.code);
+
+        updateById(currClass);
+    }
+
+    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+
+        List<String> subjectList = new ArrayList<String>();
+        arguments.put("subjectList", subjectList);
+        List<Integer> cycleList = new ArrayList<Integer>();
+        arguments.put("cycleList", cycleList);
+        List<Integer> abilityList = new ArrayList<Integer>();
+        arguments.put("abilityList", abilityList);
+        List<Integer> methodList = new ArrayList<Integer>();
+        arguments.put("methodList", methodList);
+        List<Integer> weekList = new ArrayList<Integer>();
+        arguments.put("weekList", weekList);
+        List<Integer> gradeList = new ArrayList<Integer>();
+        arguments.put("gradeList", gradeList);
+        List<String> teacherList = new ArrayList<String>();
+        arguments.put("teacherList", teacherList);
+
+        Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            arguments.put(key, queryParams.get(key));
+
+            if ("subjects".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    String subject = tokenizer.nextToken();
+                    String subjectValue = subject;
+                    try {
+                        Integer.parseInt(subject);
+                    }catch(Exception e){
+                        subjectValue = String.valueOf(subjectMap.get(subject));
+                    }
+
+                    if (null != subjectValue)
+                        subjectList.add(subjectValue);
+                }
+                arguments.put("subjectList", subjectList);
+                arguments.remove(key);
+            }
+
+            if ("classCycles".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        cycleList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("cycleList", cycleList);
+                arguments.remove(key);
+            }
+
+            if ("abilities".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        abilityList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("abilityList", abilityList);
+                arguments.remove(key);
+            }
+
+            if ("methods".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        methodList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("methodList", methodList);
+                arguments.remove(key);
+            }
+
+            if ("weekdays".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        weekList.add(WeekMapping[Integer.parseInt(tokenizer.nextToken())]);
+                    }catch(Exception e){}
+                }
+                arguments.put("weekList", weekList);
+                arguments.remove(key);
+            }
+
+            if ("grades".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        gradeList.add(Integer.parseInt(tokenizer.nextToken()));
+                    }catch(Exception e){}
+                }
+                arguments.put("gradeList", gradeList);
+                arguments.remove(key);
+            }
+
+            if ("teachers".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        teacherList.add(tokenizer.nextToken());
+                    }catch(Exception e){}
+                }
+                arguments.put("teacherList", teacherList);
+                arguments.remove(key);
+            }
+        }
+
+        return arguments;
     }
 }

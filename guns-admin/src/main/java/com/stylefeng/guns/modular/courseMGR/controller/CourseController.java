@@ -13,7 +13,9 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.courseMGR.warpper.CourseWrapper;
 import com.stylefeng.guns.modular.system.model.Course;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
+import com.stylefeng.guns.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -72,12 +76,22 @@ public class CourseController extends BaseController {
     }
 
     /**
-     * 删除课程管理
+     * 停用课程
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam String code) {
-        courseService.delete(code);
+    public Object pause(@RequestParam String code) {
+        courseService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 启用课程
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        courseService.doResume(code);
         return SUCCESS_TIP;
     }
 
@@ -104,17 +118,38 @@ public class CourseController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         //分页查詢
         Page<Course> page = new PageFactory<Course>().defaultPage();
         Page<Map<String, Object>> pageMap = courseService.selectMapsPage(page, new EntityWrapper<Course>() {
             {
                 //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                    like("name", queryParams.get("condition").toString());
+                    or();
+                    eq("code", queryParams.get("condition").toString());
                 }
 
-                eq("status", GenericState.Valid.code);
+                if (StringUtils.isNotEmpty(queryParams.get("grade"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("grade"));
+                        eq("grade", status);
+                    }catch(Exception e){}
+                }
+
+                if (StringUtils.isNotEmpty(queryParams.get("subject"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("subject"));
+                        eq("subject", status);
+                    }catch(Exception e){}
+                }
+
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
+                }
             }
         });
         //包装数据

@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.system.dao;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
@@ -22,4 +23,12 @@ public interface ClassMapper extends BaseMapper<Class> {
      * @return
      */
     List<Class> queryForList(Map<String, Object> queryParams);
+
+    /**
+     * 根据条件查询
+     *
+     * @param queryParams
+     * @return
+     */
+    List<Map<String, Object>> selectMapsPage(Page<Map<String, Object>> page, Map<String, Object> queryParams);
 }

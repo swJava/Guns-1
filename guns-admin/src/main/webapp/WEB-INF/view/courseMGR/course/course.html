@@ -10,17 +10,10 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="condition" name="名称" />
+                                <#dictSelectorCondition id="grade" name="年级" code="school_grade" placeholder="-- 选择年级 --" />
                             </div>
                             <div class="col-sm-3">
-                                <#dictSelectorCondition id="grade" name="年级" code="school_grade" />
-                            </div>
-                            <div class="col-sm-3">
-                                <#SelectCon id="status" name="当前状态" >
-                                    <option value="">全部</option>
-                                    <option value="1">启用</option>
-                                    <option value="0">禁用</option>
-                                </#SelectCon>
+                                <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
                             </div>
                             <div class="col-sm-3">
                                 <#SelectCon id="status" name="当前状态" >
@@ -28,6 +21,11 @@
                                     <option value="1">启用</option>
                                     <option value="0">禁用</option>
                                 </#SelectCon>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <#NameCon id="condition" name="关键字" />
                             </div>
                             <div class="col-sm-3">
                                 <#button name="搜索" icon="fa-search" clickFun="Course.search()"/>
@@ -39,9 +37,6 @@
                             @}
                             @if(shiro.hasPermission("/course/update")){
                             <#button name="修改" icon="fa-edit" clickFun="Course.openCourseDetail()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/course/delete")){
-                            <#button name="失效" icon="fa-remove" clickFun="Course.delete()" space="true"/>
                             @}
                             @if(shiro.hasPermission("/course/outline")){
                             <#button name="设置大纲" icon="fa-cog" clickFun="Course.openCourseOutline()" space="true"/>

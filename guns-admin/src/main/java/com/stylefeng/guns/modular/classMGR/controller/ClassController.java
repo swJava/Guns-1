@@ -20,6 +20,7 @@ import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.courseMGR.warpper.CourseWrapper;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ClassSignableEnum;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.CourseOutline;
 import com.stylefeng.guns.util.DateUtil;
@@ -127,21 +128,65 @@ public class ClassController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, Object> queryParams) {
         //分页查詢
-        Page<Class> page = new PageFactory<Class>().defaultPage();
-        Page<Map<String, Object>> pageMap = classService.selectMapsPage(page, new EntityWrapper<Class>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
-                }
+//        Page<Class> page = new PageFactory<Class>().defaultPage();
+//
+//
+//        Page<Map<String, Object>> pageMap = classService.selectMapsPage(page, new EntityWrapper<Class>() {
+//            {
+//                //name条件分页
+//                if (StringUtils.isNotEmpty(condition)) {
+//                    like("name", condition);
+//                }
+//
+//                eq("status", GenericState.Valid.code);
+//
+//                orderBy("id", false);
+//            }
+//        });
 
-                eq("status", GenericState.Valid.code);
-
-                orderBy("id", false);
+        if (queryParams.containsKey("teacher")){
+            if (StringUtils.isNotEmpty(queryParams.get("teacher").toString())){
+                queryParams.put("teacherCode", queryParams.get("teacher"));
+                queryParams.put("teacher", queryParams.get("teacher"));
+                queryParams.put("assisterCode", queryParams.get("teacher"));
+                queryParams.put("assister", queryParams.get("teacher"));
             }
-        });
+        }
+        if (queryParams.containsKey("signState")){
+            int signQueryState = 0;
+            try {
+                Integer.parseInt(queryParams.get("signState").toString());
+            }catch(Exception e){}
+
+            switch (signQueryState){
+                case 1:
+                    // 当天可以报名
+                    queryParams.put("signable", ClassSignableEnum.YES.code);
+                    queryParams.put("signDate", DateUtil.format(new Date(), "yyyy-MM-dd"));
+                    break;
+                case 2:
+                    // 未来一个月内即将报名
+                    queryParams.put("signable", ClassSignableEnum.YES.code);
+                    queryParams.put("signFutureBeginDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
+                    queryParams.put("signFutureEndDate", DateUtil.format(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
+                    break;
+                case 3:
+                    // 已结束报名的班级
+                    queryParams.put("signable", ClassSignableEnum.YES.code);
+                    queryParams.put("signCompleteDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
+                    break;
+                case 4:
+                    // 被禁用报名的班级
+                    queryParams.put("signable", ClassSignableEnum.NO.code);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        Page<Map<String, Object>> pageMap = classService.selectMapsPage(queryParams);
         //包装数据
         new ClassWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);
@@ -201,7 +246,7 @@ public class ClassController extends BaseController {
     /**
      * 停止报名
      */
-    @RequestMapping(value = "/stop")
+    @RequestMapping(value = "/signable/stop")
     @ResponseBody
     public Object stop(@RequestParam String classCode) {
         if (null == classCode)
@@ -212,15 +257,42 @@ public class ClassController extends BaseController {
     }
 
     /**
-     * 停止报名
+     * 启用报名
      */
-    @RequestMapping(value = "/resume")
+    @RequestMapping(value = "/signable/resume")
     @ResponseBody
     public Object resume(@RequestParam String classCode) {
         if (null == classCode)
             return SUCCESS_TIP;
 
         classService.resumeSign(classCode);
+        return SUCCESS_TIP;
+    }
+
+
+    /**
+     * 停止入学测试
+     */
+    @RequestMapping(value = "/examinable/stop")
+    @ResponseBody
+    public Object examinableStop(@RequestParam String classCode) {
+        if (null == classCode)
+            return SUCCESS_TIP;
+
+        classService.stopExaminable(classCode);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 启用报名
+     */
+    @RequestMapping(value = "/examinable/resume")
+    @ResponseBody
+    public Object examinableResume(@RequestParam String classCode) {
+        if (null == classCode)
+            return SUCCESS_TIP;
+
+        classService.resumeExaminable(classCode);
         return SUCCESS_TIP;
     }
 

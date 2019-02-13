@@ -29,11 +29,18 @@ public interface ICourseService extends IService<Course> {
     Map<String, Object> getMap(String courseCode);
 
     /**
-     * 删除课程
+     * 停用课程
      *
      * @param code
      */
-    void delete(String code);
+    boolean doPause(String code);
+
+    /**
+     * 启用课程
+     *
+     * @param code
+     */
+    boolean doResume(String code);
 
     /**
      * 创建课程

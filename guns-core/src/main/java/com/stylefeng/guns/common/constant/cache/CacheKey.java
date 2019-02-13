@@ -34,6 +34,11 @@ public interface CacheKey {
     String DICT_CODE = "dict_code_";
 
     /**
+     * 字典组
+     */
+    String DICT_LIST = "dict_list_";
+
+    /**
      * 科目类型
      */
     String SUBJECT_TYPE = "subject_type_";
@@ -72,4 +77,9 @@ public interface CacheKey {
      * 学期
      */
     String CLASS_CYCLE = "class_cycle_";
+
+    /**
+     * 授课方式
+     */
+    String COURSE_METHOD = "course_method_";
 }

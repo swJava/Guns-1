@@ -55,7 +55,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public void delete(String code) {
+    public boolean doPause(String code) {
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
@@ -65,7 +65,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
         if (!existCourse.isValid()){
-            return;
+            return false;
         }
 
         Wrapper<Class> classQueryWrapper = new EntityWrapper<>();
@@ -80,6 +80,24 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
         existCourse.setStatus(GenericState.Invalid.code);
         updateById(existCourse);
+
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        Course existCourse = get(code);
+
+        if (null == existCourse)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        existCourse.setStatus(GenericState.Valid.code);
+        updateById(existCourse);
+
+        return true;
     }
 
     @Override

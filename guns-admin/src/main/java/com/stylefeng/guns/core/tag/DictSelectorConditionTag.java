@@ -75,6 +75,9 @@ public class DictSelectorConditionTag extends Tag {
         html.append("</div>\r\n");
         html.append("<select class=\"form-control\" id=\""+id+"\">\r\n");
 
+        if(ToolUtil.isNotEmpty(placeholder)){
+            html.append("<option value=\"\">"+placeholder+"</option>\r\n");
+        }
         //将查询出来的数据添加到select中
         list.forEach(obj -> {
             if (ToolUtil.isNotEmpty(value) && value.equals(obj.getCode())) {

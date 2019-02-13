@@ -270,11 +270,13 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#code+#val")
     public String getDictsByCode(String code, String val) {
         return getDictsByCode(code, val, "");
     }
 
     @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#code+#val")
     public String getDictsByCode(String code, String val, String defaultValue) {
         Dict temp = new Dict();
         temp.setCode(code);
@@ -515,6 +517,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.COURSE_METHOD + "'+#method")
     public Object getCourseMethodname(Integer method) {
         return getDictsByCode("course_method", String.valueOf(method));
     }

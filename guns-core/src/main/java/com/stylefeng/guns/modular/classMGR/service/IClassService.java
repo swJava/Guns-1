@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.classMGR.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.baomidou.mybatisplus.service.IService;
@@ -19,7 +20,21 @@ import java.util.Map;
  * @since 2018-10-20
  */
 public interface IClassService extends IService<Class> {
+    /**
+     * 根据条件查询班级列表
+     *
+     * @param queryParams
+     * @return
+     */
+    Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParams);
 
+    /**
+     * 根据条件查询班级列表
+     *
+     * @param userName
+     * @param queryParams
+     * @return
+     */
     List<Class> queryForList(String userName, Map<String, Object> queryParams);
 
     /**
@@ -94,4 +109,18 @@ public interface IClassService extends IService<Class> {
      * @param classCode
      */
     void resumeSign(String classCode);
+
+    /**
+     * 停用入学测试
+     *
+     * @param classCode
+     */
+    void stopExaminable(String classCode);
+
+    /**
+     * 启用入学测试
+     *
+     * @param classCode
+     */
+    void resumeExaminable(String classCode);
 }

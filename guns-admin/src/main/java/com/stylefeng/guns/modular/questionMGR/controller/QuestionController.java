@@ -91,19 +91,38 @@ public class QuestionController extends BaseController {
         return PREFIX + "question_edit.html";
     }
 
+    /**
+     * 跳转到修改入学诊断
+     */
+    @RequestMapping("/question_view/{code}")
+    public String questionView(@PathVariable("code") String code, Model model) {
+
+        if ( null != code ){
+            Question question = questionService.get(code);
+
+            if (null != question){
+                List<QuestionItem> questionItemList = questionItemService.findAll(code);
+
+                model.addAttribute("question", question);
+                model.addAttribute("itemList", questionItemList);
+            }
+        }
+
+        return PREFIX + "question_view.html";
+    }
 
     /**
      * 跳转到修改入学诊断
      */
-    @RequestMapping("/question_update/{code}")
-    public String questionView(Question question, String answerItems, Model model) {
+    @RequestMapping("/question/view")
+    public String questionView2(Question question, String answerItems, Model model) {
         StringBuilder expectedAnswer = new StringBuilder();
         List<QuestionItem> questionItemList = parseQuestionItems(answerItems, expectedAnswer);
 
         model.addAttribute("question", question);
         model.addAttribute("itemList", questionItemList);
 
-        return PREFIX + "question_edit.html";
+        return PREFIX + "question_view.html";
     }
 
     /**

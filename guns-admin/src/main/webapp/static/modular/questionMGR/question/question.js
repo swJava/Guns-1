@@ -39,11 +39,11 @@ Question.openView = function(code){
     console.log(code);
     var index = layer.open({
         type: 2,
-        title: '添加题目',
+        title: '试题预览',
         area: ['320px', '480px'], //宽高
-        fix: false, //不固定
-        maxmin: true,
-        content: Feng.ctxPath + '/question/question_view'
+        fix: true, //不固定
+        maxmin: false,
+        content: Feng.ctxPath + '/question/question_view/' + code
     });
     this.layerIndex = index;
 }
@@ -106,7 +106,6 @@ Question.search = function () {
     Question.table.refresh({query: queryData});
 };
 
-
 Question.doUpdate = function(reqUrl, data){
     var ajax = new $ax(reqUrl, function (data) {
     }, function (data) {
@@ -115,7 +114,7 @@ Question.doUpdate = function(reqUrl, data){
 
     ajax.setData(data);
     ajax.start();
-}
+};
 
 Question.initSwitcher = function(selector, options){
     var switchers = Array.prototype.slice.call(document.querySelectorAll(selector));
@@ -142,7 +141,7 @@ Question.initSwitcher = function(selector, options){
             Question.doUpdate(reqUrl, postData);
         }
     });
-}
+};
 
 $(function () {
     var defaultColunms = Question.initColumn();

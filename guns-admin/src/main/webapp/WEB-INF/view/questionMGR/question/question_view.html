@@ -2,9 +2,29 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="row">
+            <div class="col-sm-12">
+                ${question.question}
+            </div>
+        </div>
+        @for(answerItem in itemList){
+        <div class="row">
+            <div class="form-group">
+                <div class="col-xs-1">
+                    <label class="control-label" style="margin-top: 8px;"><#serialNumber type="letter" index="${answerItemLP.index - 1}" /></label>
+                </div>
+                <div class="col-xs-9">
+                    <pre>${answerItem.text}</pre>
+                </div>
+            </div>
+        </div>
+        @}
 
+        <div class="row btn-group-m-t">
+            <div class="col-xs-10 col-xs-offset-4">
+                <#button btnCss="danger" name="关 闭" id="cancel" icon="fa-eraser" clickFun="QuestionViewDlg.close()"/>
+            </div>
         </div>
     </div>
 </div>
+<#script src="/static/modular/questionMGR/question/question_view.js" />
 @}
-d

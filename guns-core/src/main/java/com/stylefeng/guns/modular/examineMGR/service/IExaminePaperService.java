@@ -28,11 +28,18 @@ public interface IExaminePaperService extends IService<ExaminePaper> {
     void create(ExaminePaper paper, Set<ExaminePaperItem> workingQuestionList);
 
     /**
-     * 删除试卷
+     * 停用试卷
      *
      * @param code
      */
-    void delete(String code);
+    void doPause(String code);
+
+    /**
+     * 停用试卷
+     *
+     * @param code
+     */
+    void doResume(String code);
 
     /**
      * 更新试卷

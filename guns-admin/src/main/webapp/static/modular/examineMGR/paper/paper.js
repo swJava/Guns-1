@@ -14,12 +14,21 @@ var Paper = {
 Paper.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
+        {title: '试卷编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
         {title: '针对学科', field: 'subjectName', visible: true, align: 'center', valign: 'middle'},
         {title: '题目数量', field: 'count', visible: true, align: 'center', valign: 'middle'},
         {title: '测试时间（分钟）', field: 'examTime', visible: true, align: 'center', valign: 'middle'},
         {title: '总分值', field: 'totalScore', visible: true, align: 'center', valign: 'middle'},
         {title: '出题人', field: 'teacher', visible: true, align: 'center', valign: 'middle'},
         {title: '出题时间', field: 'createDate', visible: true, align: 'center', valign: 'middle'},
+        {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',
+            formatter: function(value, row){
+                if (1 == value)
+                    return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
+                else
+                    return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" />';
+            }
+        }
     ];
 };
 
@@ -110,9 +119,58 @@ Paper.search = function () {
     Paper.table.refresh({query: queryData});
 };
 
+
+Paper.doUpdate = function(reqUrl, data){
+    var ajax = new $ax(reqUrl, function (data) {
+    }, function (data) {
+        Feng.error("操作失败!" + data.responseJSON.message + "!");
+    });
+
+    ajax.setData(data);
+    ajax.start();
+};
+
+Paper.initSwitcher = function(selector, options){
+    var switchers = Array.prototype.slice.call(document.querySelectorAll(selector));
+
+    switchers.forEach(function(switcher) {
+        var switchery = new Switchery(switcher, {
+            size: 'small'
+        });
+        switcher.onchange = function(){
+            var state = switcher.checked;
+
+            var reqUrl = '';
+            var postData = {
+                code : $(switcher).attr('data-code')
+            };
+
+            if (state){
+                // true 启用
+                reqUrl = options.resume.url;
+            }else{
+                // false 停用
+                reqUrl = options.pause.url;
+            }
+            Paper.doUpdate(reqUrl, postData);
+        }
+    });
+};
+
 $(function () {
     var defaultColunms = Paper.initColumn();
     var table = new BSTable(Paper.id, "/examine/paper/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        // 初始化报名开关
+        Paper.initSwitcher('.js-switch', {
+            pause: {
+                url: Feng.ctxPath + "/examine/paper/pause"
+            },
+            resume: {
+                url: Feng.ctxPath + "/examine/paper/resume"
+            }
+        });
+    });
     Paper.table = table.init();
 });

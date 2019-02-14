@@ -89,7 +89,7 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
     }
 
     @Override
-    public void delete(String code) {
+    public void doPause(String code) {
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷"});
 
@@ -101,6 +101,19 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"试卷"});
 
         paper.setStatus(GenericState.Invalid.code);
+        updateById(paper);
+    }
+
+    @Override
+    public void doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"试卷"});
+
+        ExaminePaper paper = get(code);
+        if (null == paper)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"试卷"});
+
+        paper.setStatus(GenericState.Valid.code);
         updateById(paper);
     }
 

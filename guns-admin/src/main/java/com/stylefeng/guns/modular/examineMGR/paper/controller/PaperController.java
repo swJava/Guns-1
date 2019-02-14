@@ -113,7 +113,7 @@ public class PaperController extends BaseController {
         //分页查詢
         Page<ExaminePaper> page = new PageFactory<ExaminePaper>().defaultPage();
         Page<Map<String, Object>> pageMap = examinePaperService.selectMapsPage(page, new EntityWrapper<ExaminePaper>() {{
-            eq("status", GenericState.Valid.code);
+
         }});
         //包装数据
         new PaperWrapper(pageMap.getRecords()).warp();
@@ -196,14 +196,22 @@ public class PaperController extends BaseController {
     /**
      * 删除试卷
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam String code) {
-        if (ToolUtil.isOneEmpty(code)) {
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"请选择需要应用的试卷 "});
-        }
+    public Object pause(@RequestParam String code) {
         // 只能逻辑删
-        examinePaperService.delete(code);
+        examinePaperService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 恢复试卷
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        // 只能逻辑删
+        examinePaperService.doResume(code);
         return SUCCESS_TIP;
     }
 

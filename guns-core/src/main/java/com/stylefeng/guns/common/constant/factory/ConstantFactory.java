@@ -528,6 +528,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DICT_MAP + "'+#dictCode")
     public Map<String, Object> getdictsMap(String dictCode) {
         Dict temp = new Dict();
         temp.setCode(dictCode);

@@ -265,11 +265,19 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         arguments.put("gradeList", gradeList);
         List<String> teacherList = new ArrayList<String>();
         arguments.put("teacherList", teacherList);
+        List<String> classPlanList = new ArrayList<String>();
+        arguments.put("classPlanList", classPlanList);
 
         Map<String , Object> subjectMap = ConstantFactory.me().getdictsMap("subject_type");
 
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
             arguments.put(key, queryParams.get(key));
 
             if ("subjects".equals(key)){
@@ -353,6 +361,18 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                     }catch(Exception e){}
                 }
                 arguments.put("teacherList", teacherList);
+                arguments.remove(key);
+            }
+
+
+            if ("classPlans".equals(key)){
+                StringTokenizer tokenizer = new StringTokenizer((String)queryParams.get(key), ",");
+                while(tokenizer.hasMoreTokens()){
+                    try {
+                        classPlanList.add(tokenizer.nextToken());
+                    }catch(Exception e){}
+                }
+                arguments.put("classPlanList", classPlanList);
                 arguments.remove(key);
             }
         }

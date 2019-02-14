@@ -141,9 +141,10 @@ Class.search = function () {
     queryData['subjects'] = $("#subject").val();
     queryData['abilities'] = $("#ability").val();
     queryData['classCycles'] = $("#cycle").val();
+    queryData['classPlans'] = $("#studyDate").val();
     queryData['signState'] = $("#signState").val();
     queryData['examinable'] = $("#examState").val();
-    queryData['teacher'] = $("#teacher").val();
+    queryData['teacherQueryString'] = $("#teacherQueryString").val();
 
     var minPrice = parseFloat($('#minPrice').val(), 10);
     var maxPrice = parseFloat($('#maxPrice').val(), 10);
@@ -157,7 +158,6 @@ Class.search = function () {
     queryData['signDate'] = $("#signDate").val();
     Class.table.refresh({query: queryData});
 };
-
 
 Class.doUpdate = function(reqUrl, data){
     var ajax = new $ax(reqUrl, function (data) {
@@ -197,6 +197,7 @@ Class.initSwitcher = function(selector, options){
 }
 
 $(function () {
+
     var defaultColunms = Class.initColumn();
     var table = new BSTable(Class.id, "/class/list", defaultColunms);
     table.setPaginationType("server");
@@ -222,4 +223,8 @@ $(function () {
 
     });
     Class.table = table.init();
+
+    // 日期条件初始化
+    laydate.render({elem: '#studyDate'});
+    laydate.render({elem: '#signDate'});
 });

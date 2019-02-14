@@ -39,6 +39,11 @@ public interface CacheKey {
     String DICT_LIST = "dict_list_";
 
     /**
+     * 字典组MAP
+     */
+    String DICT_MAP = "dict_map_";
+
+    /**
      * 科目类型
      */
     String SUBJECT_TYPE = "subject_type_";

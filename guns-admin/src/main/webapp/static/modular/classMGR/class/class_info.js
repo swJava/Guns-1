@@ -301,7 +301,7 @@ ClassInfoDlg.initCalendar = function(options){
                         me.calendar.fullCalendar('renderEvent',
                             {
                                 id: eventId,
-                                title: beginTime + ' ~ ' + endTime + ': ' + title,
+                                title: '|' + beginTime + ' ~ ' + endTime + ': ' + title,
                                 start: start,
                                 end: end
                             },
@@ -329,9 +329,11 @@ ClassInfoDlg.initCalendar = function(options){
         editable: true
         ,
         eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
+            console.log('<<< event drop')
+            console.log(event);
             var newEvent = $.extend({}, event);
             newEvent.id = (new Date()).getTime();
-
+            console.log('new event' + newEvent.id);
             me.calendar.fullCalendar('renderEvent',
                 {
                     id: newEvent.id,
@@ -401,8 +403,10 @@ ClassInfoDlg.initCalendar = function(options){
                 console.log('<<< start remove minePlanList');
                 console.log(me.minePlanList);
                 $.each(me.minePlanList, function(idx, eo){
-                    if (me.currClass + '_' + eo.id == event._id)
+
+                    if (eo.id == event._id || me.currClass + '_' + eo.id == event._id){
                         return true;
+                    }
 
                     newMinePlanList.push({
                         id: eo.id,

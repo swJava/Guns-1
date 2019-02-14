@@ -91,20 +91,49 @@ public class QuestionController extends BaseController {
         return PREFIX + "question_edit.html";
     }
 
+
+    /**
+     * 跳转到修改入学诊断
+     */
+    @RequestMapping("/question_update/{code}")
+    public String questionView(Question question, String answerItems, Model model) {
+        StringBuilder expectedAnswer = new StringBuilder();
+        List<QuestionItem> questionItemList = parseQuestionItems(answerItems, expectedAnswer);
+
+        model.addAttribute("question", question);
+        model.addAttribute("itemList", questionItemList);
+
+        return PREFIX + "question_edit.html";
+    }
+
     /**
      * 获取入学诊断列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         //分页查詢
         Page<Question> page = new PageFactory<Question>().defaultPage();
         Page<Map<String, Object>> pageMap = questionService.selectMapsPage(page, new EntityWrapper<Question>() {{
-            if (StringUtils.isNotEmpty(condition)) {
-                like("code", condition);
+            if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                like("question", queryParams.get("condition"));
+                or();
+                eq("code", queryParams.get("condition"));
             }
-
-            eq("status", GenericState.Valid.code);
+            if (StringUtils.isNotEmpty(queryParams.get("status"))) {
+                try {
+                    int status = Integer.parseInt(queryParams.get("status"));
+                    eq("status", status);
+                } catch (Exception e) {
+                }
+            }
+            if (StringUtils.isNotEmpty(queryParams.get("subject"))) {
+                try {
+                    int subject = Integer.parseInt(queryParams.get("subject"));
+                    eq("subject", subject);
+                } catch (Exception e) {
+                }
+            }
         }});
         //包装数据
         new QuestionWrapper(pageMap.getRecords()).warp();
@@ -127,23 +156,27 @@ public class QuestionController extends BaseController {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
 
+        StringBuilder expectedAnswer = new StringBuilder();
+        List<QuestionItem> questionItemList = parseQuestionItems(answerItems, expectedAnswer);
+
+        Administrator currAdmin = ShiroKit.getUser();
+        question.setExpactAnswer(expectedAnswer.substring(0, expectedAnswer.length() - 1));
+        question.setTeacher(currAdmin.getAccount());
+        question.setTeacherName(currAdmin.getName());
+        questionService.create(question, questionItemList);
+
+        return SUCCESS_TIP;
+    }
+
+    private List<QuestionItem> parseQuestionItems(String answerItems, StringBuilder expectedAnswer) {
+        List<QuestionItem> questionItemList = new ArrayList<QuestionItem>();
         //解析dictValues
         List<Map<String, String>> items = parseKeyValue(answerItems);
-
-        List<QuestionItem> questionItemList = new ArrayList<QuestionItem>();
-        StringBuilder expectedAnswer = new StringBuilder();
-
         for(Map<String, String> item : items) {
-            QuestionItem questionItem = new QuestionItem();
+            QuestionItem questionItem = parseQuestionItem(item);
 
-            String itemText = parseItemText(item.get(MUTI_STR_NAME));
-
-            if (null == itemText)
+            if (null == questionItem)
                 continue;
-
-            questionItem.setText(itemText);
-            questionItem.setValue(item.get(MUTI_STR_CODE));
-            questionItem.setExpect(YesOrNoState.No.code);
 
             boolean isAnswer = Boolean.valueOf(item.get(MUTI_STR_NUM));
             if (isAnswer) {
@@ -160,14 +193,20 @@ public class QuestionController extends BaseController {
             // 没有设置期望答案
             throw new ServiceException(MessageConstant.MessageCode.QUESTION_NO_EXPECT_ANSWER);
         }
+        return questionItemList;
+    }
 
-        Administrator currAdmin = ShiroKit.getUser();
-        question.setExpactAnswer(expectedAnswer.substring(0, expectedAnswer.length() - 1));
-        question.setTeacher(currAdmin.getAccount());
-        question.setTeacherName(currAdmin.getName());
-        questionService.create(question, questionItemList);
+    private QuestionItem parseQuestionItem(Map<String, String> item) {
+        String itemText = parseItemText(item.get(MUTI_STR_NAME));
 
-        return SUCCESS_TIP;
+        if (null == itemText)
+            return null;
+
+        QuestionItem questionItem = new QuestionItem();
+        questionItem.setText(itemText);
+        questionItem.setValue(item.get(MUTI_STR_CODE));
+        questionItem.setExpect(YesOrNoState.No.code);
+        return questionItem;
     }
 
     private String parseItemText(String text) {
@@ -181,12 +220,22 @@ public class QuestionController extends BaseController {
     }
 
     /**
-     * 删除入学诊断
+     * 停用题目
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam String questionCode) {
-        questionService.delete(questionCode);
+    public Object pause(@RequestParam String code) {
+        questionService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 启用题目
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        questionService.doResume(code);
         return SUCCESS_TIP;
     }
 
@@ -200,32 +249,36 @@ public class QuestionController extends BaseController {
             throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         }
 
-        //解析dictValues
-        List<Map<String, String>> items = parseKeyValue(answerItems);
-
-        List<QuestionItem> questionItemList = new ArrayList<QuestionItem>();
+//        //解析dictValues
+//        List<Map<String, String>> items = parseKeyValue(answerItems);
+//
+//        List<QuestionItem> questionItemList = new ArrayList<QuestionItem>();
+//        StringBuilder expectedAnswer = new StringBuilder();
+//
+//        for(Map<String, String> item : items) {
+//            QuestionItem questionItem = new QuestionItem();
+//
+//            String itemText = parseItemText(item.get(MUTI_STR_NAME));
+//
+//            if (null == itemText)
+//                continue;
+//
+//            questionItem.setText(itemText);
+//            questionItem.setValue(item.get(MUTI_STR_CODE));
+//            questionItem.setExpect(YesOrNoState.No.code);
+//
+//            boolean isAnswer = Boolean.valueOf(item.get(MUTI_STR_NUM));
+//            if (isAnswer) {
+//                questionItem.setExpect(YesOrNoState.Yes.code);
+//                expectedAnswer.append(questionItem.getValue()).append(",");
+//            }
+//            questionItemList.add(questionItem);
+//        }
+//
+//        if (questionItemList.isEmpty())
+//            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
         StringBuilder expectedAnswer = new StringBuilder();
-
-        for(Map<String, String> item : items) {
-            QuestionItem questionItem = new QuestionItem();
-            try {
-                questionItem.setText(URLDecoder.decode(new String(Base64.decodeBase64(item.get(MUTI_STR_NAME)), "UTF-8")));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            questionItem.setValue(item.get(MUTI_STR_CODE));
-            questionItem.setExpect(YesOrNoState.No.code);
-
-            boolean isAnswer = Boolean.valueOf(item.get(MUTI_STR_NUM));
-            if (isAnswer) {
-                questionItem.setExpect(YesOrNoState.Yes.code);
-                expectedAnswer.append(questionItem.getValue()).append(",");
-            }
-            questionItemList.add(questionItem);
-        }
-
-        if (questionItemList.isEmpty())
-            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+        List<QuestionItem> questionItemList = parseQuestionItems(answerItems, expectedAnswer);
 
         Administrator currAdmin = ShiroKit.getUser();
         question.setExpactAnswer(expectedAnswer.substring(0, expectedAnswer.length() - 1));

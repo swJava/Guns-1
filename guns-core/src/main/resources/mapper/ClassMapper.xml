@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="code" property="code" />
         <result column="name" property="name" />
+        <result column="grade" property="grade" />
         <result column="cycle" property="cycle" />
         <result column="ability" property="ability" />
         <result column="begin_date" property="beginDate" />
@@ -35,21 +36,21 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        tc.id, tc.code, tc.name, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.begin_time, tc.end_time, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable
+        tc.id, tc.code, tc.name, tc.grade, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.begin_time, tc.end_time, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable
     </sql>
-    <!-- 分页查询 -->
-    <select id="selectMapsPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-        select
-        <include refid="Base_Column_List" />
-        from tb_class tc
-        <choose>
-            <when test=" subjectList.size() > 0 || methodList.size() > 0">
-                , tb_course tcr
-            </when>
-        </choose>
+
+    <!-- 查询结果列 -->
+    <sql id="Column_List">
+        tc.id, tc.code, tc.name, tc.grade, tc.cycle, tc.ability, tc.begin_date as beginDate, tc.end_date as endDate, tc.begin_time as beginTime, tc.end_time as endTime, tc.duration, tc.period, tc.class_room_code as classRoomCode, tc.class_room as classRoom, tc.course_code as courseCode, tc.course_name as courseName, tc.star, tc.price, tc.quato, tc.sign_start_date as signStartDate, tc.sign_end_date as signEndDate, tc.status, tc.teacher, tc.teacher_code as teacherCode, tc.teacher_second as teacherSecond, tc.teacher_second_code as teacherSecondCode, tc.study_time_desp as studyTimeDesp, tc.signable, tc.examinable
+    </sql>
+
+    <sql id="Where_Sql">
         <where>
             <if test="subjectList.size() > 0 || methodList.size() > 0">
                 tcr.code = tc.course_code
+            </if>
+            <if test="classPlanList.size() > 0">
+                tc.code = sc.class_code and sc.status = 1
             </if>
             <!-- 班级名称 -->
             <if test="null != name">
@@ -116,6 +117,14 @@
                 </foreach>
                 )
             </if>
+            <!-- 上课日期 -->
+            <if test="classPlanList.size() > 0">
+                and (
+                <foreach collection="classPlanList" item="classPlan" open="" separator=" or " close="">
+                    sc.study_date = #{classPlan}
+                </foreach>
+                )
+            </if>
 
             <!-- 授课老师 -->
             <if test="null != teacherCode">
@@ -126,13 +135,22 @@
                 and tc.teacher like CONCAT('%',#{teacher},'%')
             </if>
 
+            <if test="null != teacherQueryString">
+                and
+                (tc.teacher_code = #{teacherQueryString}
+                or tc.teacher like CONCAT('%',#{teacherQueryString},'%')
+                or tc.teacher_second_code = #{teacherQueryString}
+                or tc.teacher_second like CONCAT('%',#{teacherQueryString},'%')
+                )
+            </if>
+
             <!-- 辅导老师 -->
             <if test="null != assisterCode">
                 and tc.teacher_second_code = #{assisterCode}
             </if>
 
             <if test="null != assister">
-                and tc.teacherSecond like CONCAT('%',#{assister},'%')
+                and tc.teacher_second like CONCAT('%',#{assister},'%')
             </if>
 
             <!-- 报名时间 -->
@@ -150,7 +168,7 @@
             </if>
 
             <if test="null != signCompleteDate">
-                and tc.sign_end_date &lt;= #{signCompleteDate}
+                and tc.sign_end_date &lt; #{signCompleteDate}
             </if>
 
             <!-- 是否开放报名 -->
@@ -173,6 +191,22 @@
                 and tc.examinable = #{examinable}
             </if>
         </where>
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="selectMapsPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Column_List" />
+        from tb_class tc
+        <choose>
+            <when test=" subjectList.size() > 0 || methodList.size() > 0">
+                , tb_course tcr
+            </when>
+            <when test=" classPlanList.size() > 0 ">
+                , tb_schedule_class sc
+            </when>
+        </choose>
+        <include refid="Where_Sql" />
     </select>
     <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select
@@ -182,133 +216,11 @@
             <when test=" subjectList.size() > 0 || methodList.size() > 0">
                 , tb_course tcr
             </when>
+            <when test=" classPlanList.size() > 0 ">
+                , tb_schedule_class sc
+            </when>
         </choose>
-        <where>
-            <if test="subjectList.size() > 0 || methodList.size() > 0">
-                tcr.code = tc.course_code
-            </if>
-            <!-- 班级名称 -->
-            <if test="null != name">
-                and tc.name like CONCAT('%',#{name},'%')
-            </if>
-            <!-- 状态 -->
-            <if test="null != status">
-                and tc.status = #{status}
-            </if>
-            <!-- 学科 -->
-            <if test="subjectList.size() > 0">
-                and tcr.subject in
-                <foreach collection="subjectList" item="subject" open="(" separator="," close=")">
-                  #{subject}
-                </foreach>
-            </if>
-            <!-- 学期 -->
-            <if test="cycleList.size() > 0">
-                and tc.cycle in
-                <foreach collection="cycleList" item="cycle" open="(" separator="," close=")">
-                    #{cycle}
-                </foreach>
-            </if>
-            <!-- 班次 -->
-            <if test="abilityList.size() > 0">
-                and tc.ability in
-                <foreach collection="abilityList" item="ability" open="(" separator="," close=")">
-                    #{ability}
-                </foreach>
-            </if>
-            <!-- 授课方式 -->
-            <if test="methodList.size() > 0">
-                and tcr.method in
-                <foreach collection="methodList" item="method" open="(" separator="," close=")">
-                    #{method}
-                </foreach>
-            </if>
-            <!-- 周几 -->
-            <if test="weekList.size() > 0">
-                and exists (select 1 from tb_schedule_class where class_code = tc.code and week in
-                <foreach collection="weekList" item="week" open="(" separator="," close=")">
-                    #{week}
-                </foreach>
-                )
-            </if>
-            <!-- 年级 -->
-            <if test="gradeList.size() > 0">
-                and tc.grade in
-                <foreach collection="gradeList" item="grade" open="(" separator="," close=")">
-                    #{grade}
-                </foreach>
-            </if>
-
-            <!-- 老师 -->
-            <if test="teacherList.size() > 0">
-                and ( tc.teacher_code in
-                <foreach collection="teacherList" item="teacher" open="(" separator="," close=")">
-                    #{teacher}
-                </foreach>
-
-                or tc.teacher_second_code in
-                <foreach collection="teacherList" item="teacher" open="(" separator="," close=")">
-                    #{teacher}
-                </foreach>
-                )
-            </if>
-
-            <!-- 授课老师 -->
-            <if test="null != teacherCode">
-                and tc.teacher_code = #{teacherCode}
-            </if>
-
-            <if test="null != teacher">
-                and tc.teacher like CONCAT('%',#{teacher},'%')
-            </if>
-
-            <!-- 辅导老师 -->
-            <if test="null != assisterCode">
-                and tc.teacher_second_code = #{assisterCode}
-            </if>
-
-            <if test="null != assister">
-                and tc.teacherSecond like CONCAT('%',#{assister},'%')
-            </if>
-
-            <!-- 报名时间 -->
-            <if test="null != signDate">
-                and tc.sign_start_date &lt;= #{signDate} and tc.sign_end_date &gt;= #{signDate}
-            </if>
-
-            <!-- 即将报名时间段- 开始 -->
-            <if test="null != signFutureBeginDate">
-                and tc.sign_start_date &gt;= #{signFutureBeginDate}
-            </if>
-
-            <if test="null != signFutureEndDate">
-                and tc.sign_end_date &lt;= #{signFutureEndDate}
-            </if>
-
-            <if test="null != signCompleteDate">
-                and tc.sign_end_date &lt;= #{signCompleteDate}
-            </if>
-
-            <!-- 是否开放报名 -->
-            <if test="null != signable">
-                and tc.signable = #{signable}
-            </if>
-
-            <!-- 最小金额 -->
-            <if test="null != minPrice">
-                and tc.price &gt;= #{minPrice}
-            </if>
-
-            <!-- 最大金额 -->
-            <if test="null != maxPrice">
-                and tc.price &lt;= #{maxPrice}
-            </if>
-
-            <!-- 是否需要入学测试 -->
-            <if test="null != examinable">
-                and tc.examinable = #{examinable}
-            </if>
-        </where>
+        <include refid="Where_Sql" />
     </select>
 
 </mapper>

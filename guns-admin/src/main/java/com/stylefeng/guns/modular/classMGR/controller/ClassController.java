@@ -130,34 +130,11 @@ public class ClassController extends BaseController {
     @ResponseBody
     public Object list(@RequestParam Map<String, Object> queryParams) {
         //分页查詢
-//        Page<Class> page = new PageFactory<Class>().defaultPage();
-//
-//
-//        Page<Map<String, Object>> pageMap = classService.selectMapsPage(page, new EntityWrapper<Class>() {
-//            {
-//                //name条件分页
-//                if (StringUtils.isNotEmpty(condition)) {
-//                    like("name", condition);
-//                }
-//
-//                eq("status", GenericState.Valid.code);
-//
-//                orderBy("id", false);
-//            }
-//        });
 
-        if (queryParams.containsKey("teacher")){
-            if (StringUtils.isNotEmpty(queryParams.get("teacher").toString())){
-                queryParams.put("teacherCode", queryParams.get("teacher"));
-                queryParams.put("teacher", queryParams.get("teacher"));
-                queryParams.put("assisterCode", queryParams.get("teacher"));
-                queryParams.put("assister", queryParams.get("teacher"));
-            }
-        }
         if (queryParams.containsKey("signState")){
             int signQueryState = 0;
             try {
-                Integer.parseInt(queryParams.get("signState").toString());
+                signQueryState = Integer.parseInt(queryParams.get("signState").toString());
             }catch(Exception e){}
 
             switch (signQueryState){
@@ -175,7 +152,7 @@ public class ClassController extends BaseController {
                 case 3:
                     // 已结束报名的班级
                     queryParams.put("signable", ClassSignableEnum.YES.code);
-                    queryParams.put("signCompleteDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
+                    queryParams.put("signCompleteDate", DateUtil.format(new Date(), "yyyy-MM-dd"));
                     break;
                 case 4:
                     // 被禁用报名的班级

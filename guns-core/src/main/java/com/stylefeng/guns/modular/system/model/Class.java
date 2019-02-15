@@ -51,7 +51,7 @@ public class Class extends Model<Class> {
     private Integer grade;
 
     /**
-     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
+     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班；5 暑假班 99 活动类
      */
     @ApiModelProperty(name = "cycle", value = "学期", position = 3, example="2")
     private Integer cycle;

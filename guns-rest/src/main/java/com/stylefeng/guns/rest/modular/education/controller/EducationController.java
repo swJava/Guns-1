@@ -24,6 +24,8 @@ import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.requester.*;
 import com.stylefeng.guns.rest.modular.education.responser.*;
+import com.stylefeng.guns.util.DateUtil;
+import com.stylefeng.guns.util.ToolUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -87,18 +89,71 @@ public class EducationController extends ApiController {
 
         Member member = currMember();
 
-        ClassSignAbility signAbility = memberService.getSignAbility(member);
-
         Map<String, Object> queryMap = requester.toMap();
         Date now = new Date();
 
-        if (ClassSignAbility.NORMAL.equals(signAbility))
-            queryMap.put("signDate", DateUtils.truncate(now, Calendar.DAY_OF_MONTH));
-
+        // 当前开放报名的班级
+        queryMap.put("signDate", DateUtil.format(DateUtils.truncate(now, Calendar.DAY_OF_MONTH), "yyyy-MM-dd"));
         queryMap.put("signable", ClassSignableEnum.YES.code);
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), queryMap);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForSign(queryMap);
 
-        return ClassListResponse.me(classList);
+        // 用户历史报班列表
+        Map<String, Object> historyQueryMap = new HashMap<>();
+        List<com.stylefeng.guns.modular.system.model.Class> hisClassList = studentClassService.selectMemberHistorySignedClass(member, historyQueryMap);
+
+        // 只春、秋学期才能支持续保、跨报
+        Iterator<Class> hisClassIterator = hisClassList.iterator();
+        Set<Integer> cycles = new HashSet<>();
+        Set<Integer> grades = new HashSet<>();
+        Set<Integer> subjects = new HashSet<>();
+        while(hisClassIterator.hasNext()){
+            Class hisClassInfo = hisClassIterator.next();
+            Course hisCourseInfo = courseService.get(hisClassInfo.getCourseCode());
+            int cycle = hisClassInfo.getCycle();
+            if (1 != cycle && 2 != cycle){
+                // 春、秋两季班才可以
+                hisClassIterator.remove();
+            }else{
+                cycles.add(cycle);
+                grades.add(hisClassInfo.getGrade());
+                subjects.add(Integer.parseInt(hisCourseInfo.getSubject()));
+            }
+        }
+
+        queryMap.remove("signDate");
+        queryMap.put("signFutureBeginDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
+        queryMap.put("signFutureEndDate", DateUtil.format(DateUtils.addDays(new Date(), 365), "yyyy-MM-dd"));
+        if (!queryMap.containsKey("cycles") || ToolUtil.isEmpty(queryMap.get("cycles"))){
+            StringBuilder cycleBuilder = new StringBuilder();
+            for(int cycle : cycles){
+                cycleBuilder.append(cycle).append(",");
+            }
+            queryMap.put("cycles", cycleBuilder.substring(0, cycleBuilder.length() - 1));
+        }
+        if (!queryMap.containsKey("subjects") || ToolUtil.isEmpty(queryMap.get("subjects"))){
+            StringBuilder subjectBuilder = new StringBuilder();
+            for(int subject : subjects){
+                subjectBuilder.append(subject).append(",");
+            }
+            queryMap.put("subjects", subjectBuilder.substring(0, subjectBuilder.length() - 1));
+        }
+        if (!queryMap.containsKey("grades") || ToolUtil.isEmpty(queryMap.get("grades"))){
+            StringBuilder gradeBuilder = new StringBuilder();
+            for(int grade : grades){
+                gradeBuilder.append(grade).append(",");
+            }
+            queryMap.put("grades", gradeBuilder.substring(0, gradeBuilder.length() - 1));
+        }
+
+        classList.addAll( classService.queryListForSign(queryMap) );
+
+        Set<com.stylefeng.guns.modular.system.model.Class> classSet = new HashSet<>();
+        for(Class classInfo : classList){
+            // 去重
+            classSet.add(classInfo);
+        }
+
+        return ClassListResponse.me(classSet);
     }
 
     @RequestMapping(value = "/class/list4teacher", method = RequestMethod.POST)
@@ -115,7 +170,7 @@ public class EducationController extends ApiController {
         queryMap.put("teacherCode", member.getUserName()); // 设置为当前老师
         Date now = new Date();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), queryMap);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForTeacher(member.getUserName(), queryMap);
 
         return ClassListResponse.me(classList);
     }
@@ -325,7 +380,7 @@ public class EducationController extends ApiController {
         changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
         changeClassQuery.put("subjects", course.getSubject());
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), changeClassQuery);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForChange(changeClassQuery);
 
         Set<Class> classSet = new HashSet<>();
         for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
@@ -365,7 +420,7 @@ public class EducationController extends ApiController {
         changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
         changeClassQuery.put("subjects", course.getSubject());
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryForList(member.getUserName(), changeClassQuery);
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForChange( changeClassQuery );
 
         Set<Class> classSet = new HashSet<>();
         for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){

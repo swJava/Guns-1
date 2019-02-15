@@ -63,10 +63,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public List<Class> queryForList(String userName, Map<String, Object> queryParams) {
+    public List<Class> queryListForSign(Map<String, Object> queryParams) {
         Map<String, Object> arguments = buildQueryArguments(queryParams);
 
         List<Class> resultList = classMapper.queryForList(arguments);
+
         return resultList;
     }
 
@@ -247,6 +248,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         updateById(currClass);
     }
 
+    @Override
+    public List<Class> queryListForTeacher(String userName, Map<String, Object> queryMap) {
+        return new ArrayList<Class>();
+    }
+
+    @Override
+    public List<Class> queryListForChange(Map<String, Object> changeClassQuery) {
+        return new ArrayList<Class>();
+    }
+
     private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
         Iterator<String> queryKeyIter = queryParams.keySet().iterator();
         Map<String, Object> arguments = new HashMap<String, Object>();
@@ -273,6 +284,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         while(queryKeyIter.hasNext()){
             String key = queryKeyIter.next();
             Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
 
             if (String.class.equals(value.getClass())){
                 if (StringUtils.isEmpty((String) value))

@@ -19,6 +19,7 @@
 
                     @for(outline in outlines){
                     <div class="form-group" name="courseOutlineItem" id="courseOutlineItem${outlineLP.index}">
+                        <input type="hidden" name="sort" value="${outline.sort}" />
                         <label class="col-sm-1 control-label">课时条目</label>
                         <div class="col-sm-5">
                             <input class="form-control" type="text" name="outline" value="${outline.outline}">

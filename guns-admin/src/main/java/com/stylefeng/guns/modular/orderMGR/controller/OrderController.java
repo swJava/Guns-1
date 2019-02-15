@@ -59,7 +59,7 @@ public class OrderController extends BaseController {
 
     private String PREFIX = "/orderMGR/order/";
 
-    @Value("${application.attachment.view-path}")
+    @Value("${application.attachment.visit-url}")
     private String viewPath = "/";
 
     @Autowired

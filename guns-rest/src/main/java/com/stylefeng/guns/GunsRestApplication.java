@@ -18,6 +18,7 @@ public class GunsRestApplication {
     private final static Logger logger = LoggerFactory.getLogger(GunsRestApplication.class);
 
     @Bean
+    @ConditionalOnProperty(prefix = "application.adjust.auto", name = "enable", havingValue = "true")
     public AdjustTask createApproveWorker(){
         return new AdjustTask();
     }

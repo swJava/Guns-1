@@ -261,7 +261,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
 
     @Override
     public ClassSignAbility getSignAbility(Member member) {
-        return ClassSignAbility.NORMAL;
+        ClassSignAbility signType = ClassSignAbility.NORMAL;
+
+        return signType;
     }
 
     @Override

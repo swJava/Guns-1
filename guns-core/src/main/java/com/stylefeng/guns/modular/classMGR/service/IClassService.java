@@ -29,13 +29,13 @@ public interface IClassService extends IService<Class> {
     Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParams);
 
     /**
-     * 根据条件查询班级列表
+     * 根据条件查询可报名班级列表
      *
      * @param userName
      * @param queryParams
      * @return
      */
-    List<Class> queryForList(String userName, Map<String, Object> queryParams);
+    List<Class> queryListForSign(Map<String, Object> queryMap);
 
     /**
      * 根据班级编码获取班级
@@ -123,4 +123,21 @@ public interface IClassService extends IService<Class> {
      * @param classCode
      */
     void resumeExaminable(String classCode);
+
+    /**
+     * 查询老师班级列表
+     *
+     * @param userName
+     * @param queryMap
+     * @return
+     */
+    List<Class> queryListForTeacher(String userName, Map<String, Object> queryMap);
+
+    /**
+     * 查询可转入班级列表
+     *
+     * @param changeClassQuery
+     * @return
+     */
+    List<Class> queryListForChange( Map<String, Object> changeClassQuery );
 }

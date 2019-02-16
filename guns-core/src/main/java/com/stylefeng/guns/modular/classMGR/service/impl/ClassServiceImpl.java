@@ -57,7 +57,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         Map<String, Object> arguments = buildQueryArguments(queryParams);
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
 
-        List<Map<String, Object>> resultMap = classMapper.selectMapsPage(page, arguments);
+        List<Map<String, Object>> resultMap = classMapper.selectPageList(page, arguments);
         page.setRecords(resultMap);
         return page;
     }
@@ -129,7 +129,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         ClassPlan lastPlan = classPlanList.get(classPlanList.size() - 1);
         classInstance.setDuration(firstPlan.getClassDuration());
         classInstance.setBeginDate(DateUtils.truncate(firstPlan.getStudyDate(), Calendar.DAY_OF_MONTH));
-        classInstance.setEndDate(DateUtils.addDays(DateUtils.truncate(lastPlan.getStudyDate(), Calendar.DAY_OF_MONTH), 1));
+        classInstance.setEndDate(DateUtils.truncate(lastPlan.getStudyDate(), Calendar.DAY_OF_MONTH));
         classInstance.setCode(CodeKit.generateClass());
 
         // 设置班级容量
@@ -166,6 +166,12 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
         String[] ignoreProperties = new String[]{"id", "code", "grade", "courseCode", "period", "courseName"};
         BeanUtils.copyProperties(classInstance, currClass, ignoreProperties);
+        ClassPlan firstPlan = classPlanList.get(0);
+        ClassPlan lastPlan = classPlanList.get(classPlanList.size() - 1);
+        classInstance.setDuration(firstPlan.getClassDuration());
+        classInstance.setBeginDate(DateUtils.truncate(firstPlan.getStudyDate(), Calendar.DAY_OF_MONTH));
+        classInstance.setEndDate(DateUtils.truncate(lastPlan.getStudyDate(), Calendar.DAY_OF_MONTH));
+
         updateById(classInstance);
 
         // 排班

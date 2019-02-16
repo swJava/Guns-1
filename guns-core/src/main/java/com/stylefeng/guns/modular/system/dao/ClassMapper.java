@@ -30,5 +30,5 @@ public interface ClassMapper extends BaseMapper<Class> {
      * @param queryParams
      * @return
      */
-    List<Map<String, Object>> selectMapsPage(Page<Map<String, Object>> page, Map<String, Object> queryParams);
+    List<Map<String, Object>> selectPageList(Page<Map<String, Object>> page, Map<String, Object> queryParams);
 }

@@ -140,7 +140,12 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         this.formatPrice = bigPrice.divide(TRANSFORM).setScale(2).toString();
     }
 
-
+    /**
+     * 判断能否转班
+     *
+     * 在班级第一课时上课前，都是可以申请转班的
+     * @param dto
+     */
     private static void judgementChange(ClassResponser dto) {
         Date beginDate = dto.getBeginDate();
         Date now = new Date();
@@ -150,18 +155,22 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
             dto.setCanChange(true);
     }
 
+    /**
+     * 判断能否调课
+     *
+     * 在最后一次课时上课前都该班级都是可以调课的
+     * @param dto
+     */
     private static void judgementAdjust(ClassResponser dto) {
-        Date beginDate = dto.getBeginDate();
+        Date endDate = dto.getEndDate();
         Date now = new Date();
 
         dto.setCanAdjust(false);
-        if (now.before(beginDate))
+        if (now.before(endDate))
             dto.setCanAdjust(true);
-
     }
 
     private static void formatClassTime(ClassResponser dto) {
         dto.setClassTimeDesp(dto.getStudyTimeDesp());
-
     }
 }

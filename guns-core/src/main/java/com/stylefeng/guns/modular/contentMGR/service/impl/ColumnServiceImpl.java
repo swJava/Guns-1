@@ -11,10 +11,7 @@ import com.stylefeng.guns.modular.contentMGR.service.IColumnService;
 import com.stylefeng.guns.modular.contentMGR.service.IContentCategoryService;
 import com.stylefeng.guns.modular.contentMGR.service.IContentService;
 import com.stylefeng.guns.modular.system.dao.ColumnMapper;
-import com.stylefeng.guns.modular.system.model.Attachment;
-import com.stylefeng.guns.modular.system.model.Column;
-import com.stylefeng.guns.modular.system.model.Content;
-import com.stylefeng.guns.modular.system.model.ContentCategory;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.util.CodeKit;
 import org.slf4j.Logger;
@@ -111,5 +108,35 @@ public class ColumnServiceImpl extends ServiceImpl<ColumnMapper, Column> impleme
             queryWrapper.eq("content_code", content);
             contentCategoryService.delete(queryWrapper);
         }
+    }
+
+    @Override
+    public void doPause(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目编码"});
+
+        Column column = get(code);
+
+        if (null == column)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"栏目"});
+
+        column.setStatus(GenericState.Invalid.code);
+
+        updateById(column);
+    }
+
+    @Override
+    public void doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"栏目编码"});
+
+        Column column = get(code);
+
+        if (null == column)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"栏目"});
+
+        column.setStatus(GenericState.Valid.code);
+
+        updateById(column);
     }
 }

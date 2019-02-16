@@ -167,7 +167,7 @@ Class.doUpdate = function(reqUrl, data){
 
     ajax.setData(data);
     ajax.start();
-}
+};
 
 Class.initSwitcher = function(selector, options){
     var switchers = Array.prototype.slice.call(document.querySelectorAll(selector));
@@ -194,7 +194,7 @@ Class.initSwitcher = function(selector, options){
             Class.doUpdate(reqUrl, postData);
         }
     });
-}
+};
 
 $(function () {
 

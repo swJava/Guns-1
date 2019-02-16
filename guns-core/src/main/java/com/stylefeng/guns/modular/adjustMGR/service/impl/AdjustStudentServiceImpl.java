@@ -185,7 +185,6 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         if (null == adjustStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
 
-
         adjustStudent.setRemark(remark);
         doApprove(adjustStudent, approveState);
 

@@ -33,6 +33,7 @@ public class AdjustTask {
     public void handleAdjustApply(){
         Administrator administrator = new Administrator();
         administrator.setAccount("1");
+        administrator.setId(1);
         administrator.setName("科萃教育");
         adjustStudentService.setAdministrator(administrator);
         Wrapper<AdjustStudent> queryWrapper = new EntityWrapper<AdjustStudent>()

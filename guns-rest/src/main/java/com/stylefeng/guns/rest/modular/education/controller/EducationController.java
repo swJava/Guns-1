@@ -99,6 +99,7 @@ public class EducationController extends ApiController {
 
         // 用户历史报班列表
         Map<String, Object> historyQueryMap = new HashMap<>();
+        historyQueryMap.put("studyFinished", true);
         List<com.stylefeng.guns.modular.system.model.Class> hisClassList = studentClassService.selectMemberHistorySignedClass(member, historyQueryMap);
 
         // 只春、秋学期才能支持续保、跨报
@@ -120,40 +121,44 @@ public class EducationController extends ApiController {
             }
         }
 
+        if (hisClassList.isEmpty()){
+            // 没有订购过课程的用户，直接返回
+            return assembleClassList(classList);
+        }
+
+        // 老用户可以享受优先报名资格
         queryMap.remove("signDate");
         queryMap.put("signFutureBeginDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
         queryMap.put("signFutureEndDate", DateUtil.format(DateUtils.addDays(new Date(), 365), "yyyy-MM-dd"));
+
         if (!queryMap.containsKey("cycles") || ToolUtil.isEmpty(queryMap.get("cycles"))){
             StringBuilder cycleBuilder = new StringBuilder();
             for(int cycle : cycles){
                 cycleBuilder.append(cycle).append(",");
             }
-            queryMap.put("cycles", cycleBuilder.substring(0, cycleBuilder.length() - 1));
+            if (cycleBuilder.length() > 0)
+                queryMap.put("cycles", cycleBuilder.substring(0, cycleBuilder.length() - 1));
         }
         if (!queryMap.containsKey("subjects") || ToolUtil.isEmpty(queryMap.get("subjects"))){
             StringBuilder subjectBuilder = new StringBuilder();
             for(int subject : subjects){
                 subjectBuilder.append(subject).append(",");
             }
-            queryMap.put("subjects", subjectBuilder.substring(0, subjectBuilder.length() - 1));
+            if (subjectBuilder.length() > 0)
+                queryMap.put("subjects", subjectBuilder.substring(0, subjectBuilder.length() - 1));
         }
         if (!queryMap.containsKey("grades") || ToolUtil.isEmpty(queryMap.get("grades"))){
             StringBuilder gradeBuilder = new StringBuilder();
             for(int grade : grades){
                 gradeBuilder.append(grade).append(",");
             }
-            queryMap.put("grades", gradeBuilder.substring(0, gradeBuilder.length() - 1));
+            if (gradeBuilder.length() > 0)
+                queryMap.put("grades", gradeBuilder.substring(0, gradeBuilder.length() - 1));
         }
 
         classList.addAll( classService.queryListForSign(queryMap) );
 
-        Set<com.stylefeng.guns.modular.system.model.Class> classSet = new HashSet<>();
-        for(Class classInfo : classList){
-            // 去重
-            classSet.add(classInfo);
-        }
-
-        return ClassListResponse.me(classSet);
+        return assembleClassList(classList);
     }
 
     @RequestMapping(value = "/class/list4teacher", method = RequestMethod.POST)
@@ -331,6 +336,7 @@ public class EducationController extends ApiController {
 
         Wrapper<ScheduleClass> planQueryWrapper = new EntityWrapper<>();
         planQueryWrapper.eq("outline_code", requester.getOutlineCode());
+        planQueryWrapper.gt("study_date", DateUtil.format(new Date(), "yyyy-MM-dd"));
         planQueryWrapper.eq("status", GenericState.Valid.code);
 
         List<ScheduleClass> classPlanList = scheduleClassService.selectList(planQueryWrapper);
@@ -591,6 +597,16 @@ public class EducationController extends ApiController {
         }
 
         return PlanOfDayResponserWrapper.me(responserList);
+    }
+
+    private Responser assembleClassList(List<Class> classList) {
+        Set<com.stylefeng.guns.modular.system.model.Class> classSet = new HashSet<>();
+        for(Class classInfo : classList){
+            // 去重
+            classSet.add(classInfo);
+        }
+
+        return ClassListResponse.me(classSet);
     }
 
 }

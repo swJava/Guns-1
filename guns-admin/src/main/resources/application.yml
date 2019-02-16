@@ -50,7 +50,7 @@ server:
 spring:
   profiles: local
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
     username: kcapp
     password: h,M)Hww0,.rz
     db-name: kcdb #用来搜集数据库的所有表
@@ -75,12 +75,12 @@ server:
 spring:
   profiles: produce
   datasource:
-    jdbcUrl: jdbc:mysql://172.26.140.96:33009/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=UTC
+    jdbcUrl: jdbc:mysql://172.26.140.96:33009/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
     username: kcapp
     password: h,M)Hww0,.rz
     db-name: kcdb #用来搜集数据库的所有表
     filters: wall,mergeStat
 application:
   attachment:
-    visit-url: http://39.98.48.194/download
+    visit-url: http://www.kecui.com.cn/download
     store-path: /home/app/data/upload

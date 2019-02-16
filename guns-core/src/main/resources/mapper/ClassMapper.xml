@@ -194,7 +194,7 @@
     </sql>
 
     <!-- 分页查询 -->
-    <select id="selectMapsPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+    <select id="selectPageList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
         select
         <include refid="Column_List" />
         from tb_class tc

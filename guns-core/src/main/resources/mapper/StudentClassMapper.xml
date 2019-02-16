@@ -101,6 +101,10 @@
         <where>
             <!-- 班级 -->
             and m.user_name = #{member}
+
+            <if test="null != studyFinished">
+                and c.end_date &lt; date_format(now(), '%Y-%m-%d')
+            </if>
         </where>
     </select>
 

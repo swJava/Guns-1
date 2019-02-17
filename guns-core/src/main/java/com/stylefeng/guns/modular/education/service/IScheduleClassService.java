@@ -15,9 +15,6 @@ import java.util.Map;
  * @Version 1.0
  */
 public interface IScheduleClassService extends IService<ScheduleClass> {
-
-    void scheduleClass(Class classInstance, Integer studyTimeType, List<Integer> valueList);
-
     /**
      * 删除排班安排
      *

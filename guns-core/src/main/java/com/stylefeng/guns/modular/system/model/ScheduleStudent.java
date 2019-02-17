@@ -1,12 +1,15 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.util.Calendar;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -252,6 +255,8 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
         if (null == this.studyDate)
             return true;
 
-        return this.studyDate.before(now);
+        int cmpResult = DateUtil.compareDate(this.studyDate, now, Calendar.DAY_OF_MONTH);
+
+        return cmpResult < 0 ;
     }
 }

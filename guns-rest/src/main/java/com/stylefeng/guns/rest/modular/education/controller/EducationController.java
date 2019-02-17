@@ -399,10 +399,11 @@ public class EducationController extends ApiController {
         Course course = courseService.get(currClass.getCourseCode());
 
         Map<String, Object> changeClassQuery = new HashMap<String, Object>();
-        changeClassQuery.put("classCycles", String.valueOf(currClass.getGrade()));
+        changeClassQuery.put("classCycles", String.valueOf(currClass.getCycle()));
         changeClassQuery.put("grades", String.valueOf(currClass.getGrade()));
         changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
         changeClassQuery.put("subjects", course.getSubject());
+        changeClassQuery.put("signable", ClassSignableEnum.YES.code);
 
         List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForChange(changeClassQuery);
 
@@ -429,24 +430,72 @@ public class EducationController extends ApiController {
 
     @RequestMapping(value = "/class/list4cross", method = RequestMethod.POST)
     @ApiOperation(value="可跨报班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    public Responser listClass4Cross(
-            @RequestBody
-            @Valid
-            AdjustQueryRequester requester){
+    public Responser listClass4Cross(){
 
         Member member = currMember();
 
-        Class currClass = classService.get(requester.getClassCode());
-        Course course = courseService.get(currClass.getCourseCode());
+        // 用户历史报班列表
+        Map<String, Object> historyQueryMap = new HashMap<>();
+        historyQueryMap.put("studyFinished", true);
+        List<com.stylefeng.guns.modular.system.model.Class> hisClassList = studentClassService.selectMemberHistorySignedClass(member, historyQueryMap);
 
-        Map<String, Object> changeClassQuery = new HashMap<String, Object>();
-        changeClassQuery.put("grades", String.valueOf(currClass.getGrade()));
-        changeClassQuery.put("abilities", String.valueOf(currClass.getAbility()));
-        changeClassQuery.put("subjects", course.getSubject());
+        // 只春、秋学期才能支持续保、跨报
+        Iterator<Class> hisClassIterator = hisClassList.iterator();
+        Set<Integer> cycles = new HashSet<>();
+        Set<Integer> grades = new HashSet<>();
+        Set<Integer> subjects = new HashSet<>();
+        while(hisClassIterator.hasNext()){
+            Class hisClassInfo = hisClassIterator.next();
+            Course hisCourseInfo = courseService.get(hisClassInfo.getCourseCode());
+            int cycle = hisClassInfo.getCycle();
 
-        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForChange( changeClassQuery );
+            switch(cycle){
+                case 1:
+                case 2:
+                    hisClassIterator.remove();
+                    break;
+                default:
+                    cycles.add(cycle);
+                    grades.add(hisClassInfo.getGrade());
+                    subjects.add(Integer.parseInt(hisCourseInfo.getSubject()));
+                    break;
+            }
+        }
 
         Set<Class> classSet = new HashSet<>();
+        if (hisClassList.isEmpty()){
+            // 没有订购过课程的用户，直接返回
+            return ClassListResponse.me(classSet);
+        }
+
+        // 老用户可以享受优先报名资格
+        Map<String, Object> changeClassQuery = new HashMap<String, Object>();
+        changeClassQuery.put("signFutureBeginDate", DateUtil.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd"));
+        changeClassQuery.put("signFutureEndDate", DateUtil.format(DateUtils.addDays(new Date(), 365), "yyyy-MM-dd"));
+        changeClassQuery.put("signable", ClassSignableEnum.YES.code);
+
+        StringBuilder cycleBuilder = new StringBuilder();
+        for(int cycle : cycles){
+            cycleBuilder.append(cycle).append(",");
+        }
+        if (cycleBuilder.length() > 0)
+            changeClassQuery.put("cycles", cycleBuilder.substring(0, cycleBuilder.length() - 1));
+        StringBuilder subjectBuilder = new StringBuilder();
+        for(int subject : subjects){
+            subjectBuilder.append(subject).append(",");
+        }
+        if (subjectBuilder.length() > 0)
+            changeClassQuery.put("subjects", subjectBuilder.substring(0, subjectBuilder.length() - 1));
+        StringBuilder gradeBuilder = new StringBuilder();
+        for(int grade : grades){
+            gradeBuilder.append(grade).append(",");
+        }
+        if (gradeBuilder.length() > 0)
+            changeClassQuery.put("grades", gradeBuilder.substring(0, gradeBuilder.length() - 1));
+
+        List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForChange(changeClassQuery);
+
+
         for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
             if (null == classInfo){
                 continue;
@@ -454,17 +503,8 @@ public class EducationController extends ApiController {
             if (!(classInfo.isValid())){
                 continue;
             }
-            if (classInfo.getCode().equals(currClass.getCode())){
-                // 过滤掉自己
-                continue;
-            }
-            if (classInfo.getBeginDate().before(new Date())){
-                // 已经开课的班级过滤掉
-                continue;
-            }
-            if (currClass.getPrice().equals(classInfo.getPrice())){
-                classSet.add(classInfo);
-            }
+
+            classSet.add(classInfo);
         }
 
         return ClassListResponse.me(classSet);
@@ -524,36 +564,9 @@ public class EducationController extends ApiController {
         return SimpleResponser.success();
     }
 
-    @RequestMapping(value = "/cross/class", method = RequestMethod.POST)
-    @ApiOperation(value = "跨报申请", httpMethod = "POST", response = SimpleResponser.class)
-    @ResponseBody
-    public Responser crossClass(
-            @ApiParam(required = true, value = "跨报申请")
-            @RequestBody
-            @Valid
-            ChangeApplyRequester requester) {
-
-        Member member = currMember();
-
-        Student student = studentService.get(requester.getStudentCode());
-
-        Class sourceClass = classService.get(requester.getSourceClass());
-        Class targetClass = classService.get(requester.getTargetClass());
-
-        Map<String, Object> fromData = new HashMap<>();
-        fromData.put("sourceClass", sourceClass);
-
-        Map<String, Object> destData = new HashMap<>();
-        destData.put("targetClass", targetClass);
-
-        adjustStudentService.adjustClass(member, student, fromData, destData);
-
-        return SimpleResponser.success();
-    }
-
     @ApiOperation(value="课程表", httpMethod = "POST", response = PlanListResponser.class)
     @RequestMapping("/course/plan/list")
-    public Responser 课程表(
+    public Responser planList(
             @ApiParam(required = true, value = "课程表查询")
             @RequestBody
             @Valid

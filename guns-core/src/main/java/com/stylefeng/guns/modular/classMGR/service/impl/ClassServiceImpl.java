@@ -234,7 +234,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         if (null == currClass)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
-        currClass.setSignable(ClassSignableEnum.NO.code);
+        currClass.setSignable(ClassExaminableEnum.NO.code);
 
         updateById(currClass);
     }
@@ -255,13 +255,21 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public List<Class> queryListForTeacher(String userName, Map<String, Object> queryMap) {
-        return new ArrayList<Class>();
+    public List<Class> queryListForTeacher(String userName, Map<String, Object> queryParams) {
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+
+        List<Class> resultList = classMapper.queryForList(arguments);
+
+        return resultList;
     }
 
     @Override
-    public List<Class> queryListForChange(Map<String, Object> changeClassQuery) {
-        return new ArrayList<Class>();
+    public List<Class> queryListForChange(Map<String, Object> queryParams) {
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+
+        List<Class> resultList = classMapper.queryForList(arguments);
+
+        return resultList;
     }
 
     private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {

@@ -3,12 +3,14 @@ package com.stylefeng.guns.rest.modular.education.responser;
 import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
+import com.stylefeng.guns.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -151,7 +153,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date now = new Date();
 
         dto.setCanChange(false);
-        if (now.before(beginDate))
+        if (DateUtil.compareDate(now, beginDate, Calendar.DAY_OF_MONTH) > 0)
             dto.setCanChange(true);
     }
 
@@ -166,7 +168,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date now = new Date();
 
         dto.setCanAdjust(false);
-        if (now.before(endDate))
+        if (DateUtil.compareDate(now, endDate, Calendar.DAY_OF_MONTH) > 0)
             dto.setCanAdjust(true);
     }
 

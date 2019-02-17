@@ -332,7 +332,18 @@ public class EducationController extends ApiController {
 
         Member currMember = currMember();
         // 当前报班信息
-        Class currClassInfo = classService.get(requester.getClassCode());
+        Wrapper<ScheduleStudent> studentPlanQueryWrapper = new EntityWrapper<>();
+        studentPlanQueryWrapper.eq("student_code", requester.getStudent());
+        studentPlanQueryWrapper.eq("outline_code", requester.getOutlineCode());
+        studentPlanQueryWrapper.eq("status", GenericState.Valid.code);
+        List<ScheduleStudent> studentPlanList = scheduleStudentService.selectList(studentPlanQueryWrapper);
+
+        if (studentPlanList.isEmpty() || studentPlanList.size() > 1){
+            // 只能有一个
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL);
+        }
+
+        Class currClassInfo = classService.get(studentPlanList.get(0).getClassCode());
 
         Wrapper<ScheduleClass> planQueryWrapper = new EntityWrapper<>();
         planQueryWrapper.eq("outline_code", requester.getOutlineCode());
@@ -341,6 +352,8 @@ public class EducationController extends ApiController {
 
         List<ScheduleClass> classPlanList = scheduleClassService.selectList(planQueryWrapper);
         Set<Class> classResponserSet = new HashSet<>();
+
+        Date now = new Date();
         for(ScheduleClass classPlan : classPlanList){
             Class classInfo = classService.get(classPlan.getClassCode());
             if (null == classInfo){
@@ -359,6 +372,11 @@ public class EducationController extends ApiController {
             }
             if (0 != classInfo.getAbility().compareTo(currClassInfo.getAbility())){
                 // 不是同班次，过滤掉
+                continue;
+            }
+            int cmpResult = DateUtil.compareDate(now, classInfo.getSignStartDate(), Calendar.DAY_OF_MONTH);
+            if ((cmpResult >= 0 && ClassSignableEnum.YES.code != classInfo.getSignable()) || cmpResult < 0){
+                // 班级还未开放报名
                 continue;
             }
 

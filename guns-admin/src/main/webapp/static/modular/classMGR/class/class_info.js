@@ -429,7 +429,7 @@ ClassInfoDlg.initCalendar = function(options){
             });
         }
     });
-}
+};
 
 $(function() {
 

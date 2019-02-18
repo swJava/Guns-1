@@ -15,10 +15,7 @@ import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
-import com.stylefeng.guns.rest.modular.examine.requester.BeginExamineRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.ExamPaperSubmitRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.PaperQueryRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.QuestionRequester;
+import com.stylefeng.guns.rest.modular.examine.requester.*;
 import com.stylefeng.guns.rest.modular.examine.responser.*;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +58,59 @@ public class ExamController extends ApiController {
     @Autowired
     private IAttachmentService attachmentService;
 
+    @ApiOperation(value="", httpMethod = "POST", response = PaperListResponse.class)
+    @RequestMapping(value = "/paper/prepare", method = RequestMethod.POST)
+    public Responser getPaper(
+            @RequestBody
+            @Valid
+            PaperPrepareRequester requester
+    ){
+        Member member = currMember();
+
+        // 查找所有适合当前学员的试卷
+        List<ExaminePaper> examinePaperList = examineService.findExaminePaper(student);
+        for(ExaminePaper examinePaper : examinePaperList){
+            List<com.stylefeng.guns.modular.system.model.Class> classInfoList = classService.findClassUsingExaming(Arrays.asList(new String[]{examinePaper.getCode()}));
+            paperResponseList.add(PaperResponse.me(examinePaper, classInfoList));
+        }
+    }
+
+    @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)
+    @RequestMapping(value = "/paper/list", method = RequestMethod.POST)
+    public Responser listPaper(
+            @RequestBody
+            @Valid
+            PaperQueryRequester requester
+    ){
+        Member member = currMember();
+        Set<PaperResponse> paperResponseList = new HashSet<>();
+
+        Student student = studentService.get(requester.getStudent());
+
+        if (null == student || !(student.isValid()))
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        List<Student> studentList = studentService.listStudents(member.getUserName());
+        boolean isMemberStudent = false;
+        for(Student studentMember : studentList){
+            if (studentMember.getCode().equals(requester.getStudent())){
+                isMemberStudent = true;
+                break;
+            }
+        }
+
+        if (isMemberStudent)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL, new String[]{"没有该学员信息"});
+
+        // 查找之学员的试卷列表
+        List<ExaminePaper> paperList = examineService.findPaperList(student);
+
+
+
+
+        return PaperListResponse.me(paperResponseList);
+    }
+
     @ApiOperation(value="开始测试", httpMethod = "POST", response = ExamineOutlineResponse.class)
     @RequestMapping("/begin")
     public Responser beginExamine(
@@ -78,33 +128,6 @@ public class ExamController extends ApiController {
         Map<String, Collection<Question>> beginResult = examineService.doBeginExamine(student, paper);
 
         return ExamineOutlineResponse.me(beginResult);
-    }
-
-    @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)
-    @RequestMapping(value = "/paper/list", method = RequestMethod.POST)
-    public Responser listPaper(
-            @RequestBody @Valid
-            PaperQueryRequester requester
-    ){
-        Member member = currMember();
-        Set<PaperResponse> paperResponseList = new HashSet<>();
-
-        Student student = studentService.get(requester.getStudent().getCode());
-
-        if (null == student || !(student.isValid()))
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
-
-        // 查找之前没有做完的试卷
-        List<ExaminePaper> unCompletePaperList = examineService.findUnCompletePaper(student);
-        // 查找所有适合当前学员的试卷
-        List<ExaminePaper> examinePaperList = examineService.findExaminePaper(student);
-
-        for(ExaminePaper examinePaper : examinePaperList){
-            List<com.stylefeng.guns.modular.system.model.Class> classInfoList = classService.findClassUsingExaming(Arrays.asList(new String[]{examinePaper.getCode()}));
-            paperResponseList.add(PaperResponse.me(examinePaper, classInfoList));
-        }
-
-        return PaperListResponse.me(paperResponseList);
     }
 
     @ApiOperation(value="试题详情", response = QuestionDetailResponse.class)

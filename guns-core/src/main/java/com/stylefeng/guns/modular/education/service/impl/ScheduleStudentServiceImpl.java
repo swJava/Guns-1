@@ -36,6 +36,9 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
     private static final Logger log = LoggerFactory.getLogger(ScheduleStudentServiceImpl.class);
 
     @Autowired
+    private ScheduleStudentMapper scheduleStudentMapper;
+
+    @Autowired
     private IScheduleClassService scheduleClassService;
 
     @Autowired
@@ -154,6 +157,6 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
 
     @Override
     public List<StudentPlan> selectPlanList(Map<String, Object> queryMap) {
-        return new ArrayList<StudentPlan>();
+        return scheduleStudentMapper.selectPlanList(queryMap);
     }
 }

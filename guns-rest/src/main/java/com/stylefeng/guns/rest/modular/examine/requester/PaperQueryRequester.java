@@ -15,27 +15,16 @@ import javax.validation.constraints.NotNull;
  */
 @ApiModel(value = "PaperQueryRequester", description = "试卷列表查询")
 public class PaperQueryRequester extends SimpleRequester {
-    @ApiModelProperty(value = "student", name = "学员信息", required = true)
+    @ApiModelProperty(value = "student", name = "学员信息", required = true, example = "XY190201000001")
     @NotNull(message = "学员信息不能为空")
-    private Student student;
+    private String student;
 
-    @ApiModelProperty(value = "classCode", name = "班级信息")
-    private String classCode;
-
-    public Student getStudent() {
+    public String getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(String student) {
         this.student = student;
-    }
-
-    public String getClassCode() {
-        return classCode;
-    }
-
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
     }
 
     @Override

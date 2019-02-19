@@ -8,6 +8,8 @@
         <result column="code" property="code" />
         <result column="paper_code" property="paperCode" />
         <result column="student_code" property="studentCode" />
+        <result column="class_code" property="classCode" />
+        <result column="user_name" property="userName" />
         <result column="quota" property="quota" />
         <result column="total_score" property="totalScore" />
         <result column="exam_time" property="examTime" />
@@ -25,7 +27,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        a.id, a.code, a.paper_code, a.student_code, a.quota, a.total_score, a.exam_time, a.answer_quota, a.last_answer_question, a.last_answer_date, a.status, a.create_date, a.score, a.begin_date, a.end_date, a.duration, a.teacher,
+        a.id, a.code, a.paper_code, a.classCode, a.userName, a.student_code, a.quota, a.total_score, a.exam_time, a.answer_quota, a.last_answer_question, a.last_answer_date, a.status, a.create_date, a.score, a.begin_date, a.end_date, a.duration, a.teacher,
         paper.subject, paper.grades
     </sql>
 

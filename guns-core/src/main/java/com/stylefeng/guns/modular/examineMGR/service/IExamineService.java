@@ -17,22 +17,12 @@ import java.util.Map;
  */
 public interface IExamineService {
     /**
-     * 查找该学员之前参与的考试
+     * 查找适合的测试试卷
      *
-     * @param student
+     * @param queryParams
      * @return
      */
-    List<ExaminePaper> findUnCompletePaper(Student student);
-
-    /**
-     * 查找适合该学员的测试试卷
-     *
-     * 通过学员所在年级进行匹配
-     *
-     * @param student
-     * @return
-     */
-    List<ExaminePaper> findExaminePaper(Student student);
+    ExaminePaper findExaminePaper(Map<String, Object> queryParams);
 
     /**
      * 获取试卷
@@ -56,4 +46,12 @@ public interface IExamineService {
      * @param submitItems
      */
     void doFinishExamine(String code, List<ExamineAnswerDetail> submitItems);
+
+    /**
+     * 查找学员试卷
+     *
+     * @param student
+     * @return
+     */
+    Collection<Map<String, Object>> findExamineAnswerPaperList(String student);
 }

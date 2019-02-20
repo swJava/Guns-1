@@ -63,11 +63,22 @@ public class PaperController extends BaseController {
     /**
      * 跳转到添加入学诊断
      */
+    @RequestMapping("/wizard")
+    public String wizard( Model model ) {
+        model.addAttribute("code", UUID.randomUUID().toString().replaceAll("-", ""));
+        return PREFIX + "paper_wizard.html";
+    }
+
+    /**
+     * 跳转到添加入学诊断
+     */
     @RequestMapping("/paper_add")
     public String questionAdd( Model model ) {
         model.addAttribute("code", UUID.randomUUID().toString().replaceAll("-", ""));
         return PREFIX + "paper_add.html";
     }
+
+
 
     /**
      * 跳转到修改入学诊断

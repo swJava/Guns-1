@@ -28,10 +28,10 @@
                         </div>
                         <div class="hidden-xs" id="QuestionTableToolbar" role="group">
                             @if(shiro.hasPermission("/question/add")){
-                                <#button name="添加" icon="fa-plus" clickFun="Question.openAddQuestion()"/>
+                                <#button name="添 加" icon="fa-plus" clickFun="Question.openAddQuestion()"/>
                             @}
                             @if(shiro.hasPermission("/question/update")){
-                                <#button name="修改" icon="fa-edit" clickFun="Question.openQuestionDetail()" space="true"/>
+                                <#button name="修 改" icon="fa-edit" clickFun="Question.openQuestionDetail()" space="true"/>
                             @}
                         </div>
                         <#table id="QuestionTable"/>

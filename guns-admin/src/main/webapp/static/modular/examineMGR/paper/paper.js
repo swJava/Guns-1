@@ -56,7 +56,7 @@ Paper.openAddPaper = function () {
         area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/examine/paper/paper_add'
+        content: Feng.ctxPath + '/examine/paper/wizard'
     });
     layer.full(index);
     this.layerIndex = index;

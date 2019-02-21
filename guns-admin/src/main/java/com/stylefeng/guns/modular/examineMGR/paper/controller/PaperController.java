@@ -87,9 +87,8 @@ public class PaperController extends BaseController {
         }
 
         model.addAttribute("item", paper);
-        model.addAttribute("questionItemList", JSON.toJSONString(questionCodes));
-        model.addAttribute("questionItemCount", questionCodes.size());
-        model.addAttribute("questionItemScoreList", JSON.toJSONString(questionScores));
+        model.addAttribute("questionCodes", JSON.toJSONString(questionCodes));
+        model.addAttribute("questionScores", JSON.toJSONString(questionScores));
         LogObjectHolder.me().set(paper);
         return PREFIX + "paper_wizard.html";
     }

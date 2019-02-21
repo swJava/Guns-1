@@ -56,10 +56,9 @@ Paper.openAddPaper = function () {
         area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: Feng.ctxPath + '/examine/paper/wizard'
+        content: Feng.ctxPath + '/examine/paper/wizard?code=0' // 新增 传入一个不可能的code
     });
     layer.full(index);
-    ajax.set("code", '0'); // 新增 传入一个不可能的code
     this.layerIndex = index;
 };
 

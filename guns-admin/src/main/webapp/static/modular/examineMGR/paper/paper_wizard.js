@@ -3,7 +3,8 @@
  */
 var PaperWizard = {
     Wizard: {
-        id: 'wizard'
+        id: 'wizard',
+        paper: $('#paper').val()
     },
     UnSelectQuestion: {
         id: "UnSelectQuestionTable",	        //表格id
@@ -19,6 +20,47 @@ var PaperWizard = {
         table: null,
         layerIndex: -1
     },
+    validateFields: [
+        {
+            grades: {
+                validators: {
+                    notEmpty: {
+                        message: '适应年级不能为空'
+                    }
+                }
+            },
+            subject: {
+                validators: {
+                    notEmpty: {
+                        message: '学科不能为空'
+                    }
+                }
+            },
+            examTime: {
+                validators: {
+                    notEmpty: {
+                        message: '测试时间不能为空'
+                    }
+                }
+            },
+            ability: {
+                validators: {
+                    notEmpty: {
+                        message: '适应班次不能为空'
+                    }
+                }
+            }
+        },
+        {
+            questionItemCount: {
+                validators: {
+                    notEmpty: {
+                        message: '请加入试题'
+                    }
+                }
+            }
+        }
+    ]
 };
 
 PaperWizard.UnSelectQuestion.initColumn = function () {
@@ -36,20 +78,22 @@ PaperWizard.UnSelectQuestion.initColumn = function () {
 /**
  * 打开试卷题目预览界面
  */
-Paper.openPaperViewer = function () {
+PaperWizard.openPaperViewer = function () {
     var index = layer.open({
         type: 2,
         title: '添加题目',
         area: ['320px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content:
+        content: ''
     });
     this.layerIndex = index;
 };
 
 $(function () {
-    $('#' + PaperWizard.Wizard.id).steps({
+
+    var form = $('#' + PaperWizard.Wizard.id);
+    form.steps({
         headerTag: "h1",
         bodyTag: "fieldset",
         transitionEffect: "slideLeft",
@@ -59,6 +103,15 @@ $(function () {
             next: "下一步", // 下一步按钮的文本
             previous: "上一步", // 上一步按钮的文本
             loading: "Loading ..."
+        },
+        onStepChanging: function(event, step, next){
+
+            console.log('<<< step ' + step + ' change');
+
+            Feng.initValidator('basePaperForm', PaperWizard.validateFields[curr]);
+            $('#basePaperForm').data("bootstrapValidator").resetForm();
+            $('#basePaperForm').bootstrapValidator('validate');
+            return $('#basePaperForm').data('bootstrapValidator').isValid();
         }
     });
 

@@ -1,10 +1,12 @@
 @layout("/common/_container.html"){
 <link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<input type="hidden" id="paper" value="${item.code!}" />
 <div class="ibox float-e-margins">
     <div class="ibox-content">
-        <form id="wizard" class="form-horizontal wizard-big">
+        <div id="wizard" class="wizard-big">
             <h1>基本信息</h1>
             <fieldset>
+                <form id="basePaperForm" class="form-horizontal">
                 <div class="row">
                     <div class="col-sm-8">
                         <#dictSelector id="grades" name ="grades" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
@@ -20,9 +22,14 @@
                         </div>
                     </div>
                 </div>
+                </form>
             </fieldset>
             <h1>选择题目</h1>
             <fieldset>
+                <form id="questionItemForm" style="display: none;">
+                    <input type="hidden" id="questionItemList" value="" />
+                    <input type="hidden" id="questionItemCount" value="${" />
+                </form>
                 <div class="row">
                     <div class="col-sm-3">
                         <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
@@ -47,7 +54,7 @@
                     </div>
                 </div>
             </fieldset>
-        </form>
+        </div>
     </div>
 </div>
 <div id="UnSelectQuestionTableToolbar" role="group">

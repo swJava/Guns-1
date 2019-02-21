@@ -64,8 +64,33 @@ public class PaperController extends BaseController {
      * 跳转到添加入学诊断
      */
     @RequestMapping("/wizard")
-    public String wizard( Model model ) {
-        model.addAttribute("code", UUID.randomUUID().toString().replaceAll("-", ""));
+    public String wizard( String code, Model model ) {
+        ExaminePaper paper = examinePaperService.get(code);
+        List<String> questionCodes = new ArrayList<String>();
+        Map<String, String> questionScores = new HashMap<String, String>();
+
+        if (null != paper) {
+
+            Wrapper<ExaminePaperItem> questionItemQuery = new EntityWrapper<ExaminePaperItem>();
+            questionItemQuery.eq("paper_code", code);
+            questionItemQuery.eq("status", GenericState.Valid.code);
+
+            List<ExaminePaperItem> questionItemList = examinePaperItemService.selectList(questionItemQuery);
+
+            for (ExaminePaperItem examinePaperItem : questionItemList) {
+                String questionCode = examinePaperItem.getQuestionCode();
+                String questionScore = examinePaperItem.getScore();
+
+                questionCodes.add(questionCode);
+                questionScores.put(questionCode, questionScore);
+            }
+        }
+
+        model.addAttribute("item", paper);
+        model.addAttribute("questionItemList", JSON.toJSONString(questionCodes));
+        model.addAttribute("questionItemCount", questionCodes.size());
+        model.addAttribute("questionItemScoreList", JSON.toJSONString(questionScores));
+        LogObjectHolder.me().set(paper);
         return PREFIX + "paper_wizard.html";
     }
 
@@ -77,8 +102,6 @@ public class PaperController extends BaseController {
         model.addAttribute("code", UUID.randomUUID().toString().replaceAll("-", ""));
         return PREFIX + "paper_add.html";
     }
-
-
 
     /**
      * 跳转到修改入学诊断

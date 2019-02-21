@@ -59,6 +59,7 @@ Paper.openAddPaper = function () {
         content: Feng.ctxPath + '/examine/paper/wizard'
     });
     layer.full(index);
+    ajax.set("code", '0'); // 新增 传入一个不可能的code
     this.layerIndex = index;
 };
 

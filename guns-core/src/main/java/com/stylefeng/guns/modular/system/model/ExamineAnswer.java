@@ -32,6 +32,17 @@ public class ExamineAnswer extends Model<ExamineAnswer> {
      */
     @TableField("paper_code")
     private String paperCode;
+
+    /**
+     * 班级编码
+     */
+    @TableField("class_code")
+    private String classCode;
+    /**
+     * 用户名
+     */
+    @TableField("user_name")
+    private String userName;
     /**
      * 学员编码
      */
@@ -117,6 +128,22 @@ public class ExamineAnswer extends Model<ExamineAnswer> {
 
     public String getPaperCode() {
         return paperCode;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setPaperCode(String paperCode) {
@@ -246,6 +273,8 @@ public class ExamineAnswer extends Model<ExamineAnswer> {
         "id=" + id +
         ", code=" + code +
         ", paperCode=" + paperCode +
+        ", classCode=" + classCode +
+        ", userName=" + userName +
         ", studentCode=" + studentCode +
         ", quota=" + quota +
         ", totalScore=" + totalScore +

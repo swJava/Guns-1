@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +20,7 @@ import java.io.Serializable;
  * @since 2018-12-22
  */
 @TableName("tb_examine_paper")
+@ApiModel(value = "ExaminePaper", description = "试卷")
 public class ExaminePaper extends Model<ExaminePaper> {
 
     private static final long serialVersionUID = 1L;
@@ -25,49 +29,60 @@ public class ExaminePaper extends Model<ExaminePaper> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 试卷编码： SJ + 8位序列码
      */
+    @ApiModelProperty(name = "code", value = "编码", position = 0, example = "SJ00000001")
     private String code;
     /**
      * 适应年级： 多年级以逗号分隔
      */
+    @ApiModelProperty(name = "grades", value = "适应年纪", position = 1, example = "1,2")
     private String grades;
     /**
      * 学科
      */
+    @ApiModelProperty(name = "subject", value = "适应学科", position = 2, example = "1")
     private String subject;
     /**
      * 班次
      */
+    @ApiModelProperty(name = "ability", value = "适应班次", position = 3, example = "3")
     private Integer ability;
     /**
      * 题目数量
      */
+    @ApiModelProperty(name = "code", value = "题目数量", position = 4, example = "20")
     private Integer count;
     /**
      * 测试时间， 单位： 分钟
      */
+    @ApiModelProperty(name = "code", value = "测试时间， 单位： 分钟", position = 5, example = "30")
     @TableField("exam_time")
     private Integer examTime;
     /**
      * 总分数
      */
+    @ApiModelProperty(name = "code", value = "总分数", position = 6, example = "100")
     @TableField("total_score")
     private Integer totalScore;
     /**
      * 出题人
      */
+    @ApiModelProperty(name = "teacher", value = "出题老师", position = 7, example = "LS000001")
     private String teacher;
     /**
      * 出题时间
      */
     @TableField("create_date")
+    @ApiModelProperty(hidden = true)
     private Date createDate;
     /**
      * 状态： 0 无效  1 有效
      */
+    @ApiModelProperty(hidden = true)
     private Integer status;
 
 

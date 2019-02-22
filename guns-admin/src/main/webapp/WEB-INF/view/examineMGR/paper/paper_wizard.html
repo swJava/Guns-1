@@ -1,0 +1,114 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<input type="hidden" id="paper" value="${item.code!}" />
+<input type="hidden" id="questionCodes" value="${questionCodes}" />
+<input type="hidden" id="questionScores" value="${questionScores}" />
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div id="wizard" class="wizard-big">
+            <h1>基本信息</h1>
+            <fieldset>
+                <form id="basePaperForm" class="form-horizontal">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <#dictSelector id="grades" name ="grades" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
+                        <#dictSelector id="ability" name ="ability" code="ability" label="适应班次"  underline="true"  width="75%"/>
+                        <#dictSelector id="subject" name ="subject" code="subject_type" label="适应学科"  underline="true"  width="75%"/>
+                        <#input id="examTime" name="测试时间"/>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="text-center">
+                            <div style="margin-top: 20px">
+                                <i class="fa fa-sign-in" style="font-size: 180px;color: #e5e5e5 "></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </fieldset>
+            <h1>选择题目</h1>
+            <fieldset>
+                <form id="questionItemForm" style="display: none; width: 1px; height: 1px;">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="questionItemCount" name="questionItemCount" value="0" />
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                    </div>
+                    <div class="col-sm-3">
+                        <#SelectCon id="status" name="状态" >
+                            <option value="">全部</option>
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </#SelectCon>
+                    </div>
+                    <div class="col-sm-3">
+                        <#NameCon id="condition" name="关键字" />
+                    </div>
+                    <div class="col-sm-3">
+                        <#button name="搜索" icon="fa-search" clickFun="Question.search()"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <#table id="UnSelectQuestionTable"/>
+                    </div>
+                </div>
+            </fieldset>
+            <h1>设置分值</h1>
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                    </div>
+                    <div class="col-sm-3">
+                        <#SelectCon id="status" name="状态" >
+                        <option value="">全部</option>
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </#SelectCon>
+                </div>
+                <div class="col-sm-3">
+                    <#NameCon id="condition" name="关键字" />
+                </div>
+                <div class="col-sm-3">
+                    <#button name="搜索" icon="fa-search" clickFun="Question.search()"/>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form id="questionScoreForm">
+                            <input type="hidden" class="form-group" id="scoreCountValidator" name="scoreCountValidator" />
+                            <#table id="SelectedQuestionTable"/>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<div id="UnSelectQuestionTableToolbar" role="group">
+    <div class="btn-group">
+        <button class="btn btn-default" onclick="PaperWizard.join();">
+            <i class="glyphicon glyphicon-plus"></i>
+        </button>
+
+        <button class="btn btn-default button-margin" onclick="PaperWizard.openPaperViewer();">
+            <i class="glyphicon glyphicon-shopping-cart"></i>
+            <span class="label label-success">0</span>
+        </button>
+
+    </div>
+</div>
+<div id="SelectedQuestionTableToolbar" role="group">
+    <div class="btn-group">
+        <button class="btn btn-default" onclick="PaperWizard.remove();">
+            <i class="glyphicon glyphicon-minus"></i>
+        </button>
+    </div>
+</div>
+<#script src="/static/js/plugins/steps/jquery.steps.min.js" />
+<#script src="/static/modular/examineMGR/paper/paper_wizard.js" />
+@}

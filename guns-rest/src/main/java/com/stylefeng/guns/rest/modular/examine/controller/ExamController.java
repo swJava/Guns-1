@@ -11,15 +11,14 @@ import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.rest.core.ApiController;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
-import com.stylefeng.guns.rest.modular.examine.requester.BeginExamineRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.ExamPaperSubmitRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.PaperQueryRequester;
-import com.stylefeng.guns.rest.modular.examine.requester.QuestionRequester;
+import com.stylefeng.guns.rest.modular.examine.requester.*;
 import com.stylefeng.guns.rest.modular.examine.responser.*;
+import com.stylefeng.guns.util.ToolUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +60,81 @@ public class ExamController extends ApiController {
     @Autowired
     private IAttachmentService attachmentService;
 
+    @ApiOperation(value="班级所需试卷", httpMethod = "POST", response = ExaminePaperDetailResponse.class)
+    @RequestMapping(value = "/paper/findone", method = RequestMethod.POST)
+    public Responser getPaper(
+            @RequestBody
+            @Valid
+            ClassPaperFinderRequester requester
+    ){
+        Member member = currMember();
+
+        Class classInfo = classService.get(requester.getClassCode());
+
+        if (null == classInfo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级信息"});
+
+        Student currStudent = null;
+        if (ToolUtil.isEmpty(requester.getStudent())){
+            List<Student> studentList = studentService.listStudents(member.getUserName());
+            for(Student student : studentList){
+                if (classInfo.getGrade().equals(student.getGrade())){
+                    currStudent = student;
+                    break;
+                }
+            }
+        }else{
+            currStudent = studentService.get(requester.getStudent());
+        }
+
+        if (null == currStudent)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员信息"});
+
+        // 查找符合当前学员和班级的试卷
+        Map<String, Object> queryParams = requester.toMap();
+        ExaminePaper examinePaper = examineService.findExaminePaper(queryParams);
+
+        return ExaminePaperDetailResponse.me(ExaminePaperDetail.me(examinePaper));
+
+    }
+
+    @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)
+    @RequestMapping(value = "/paper/list", method = RequestMethod.POST)
+    public Responser listPaper(
+            @RequestBody
+            @Valid
+            StudentPaperFinderRequester requester
+    ){
+        Member member = currMember();
+
+        Student student = studentService.get(requester.getStudent());
+
+        if (null == student || !(student.isValid()))
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        List<Student> studentList = studentService.listStudents(member.getUserName());
+        boolean isMemberStudent = false;
+        for(Student studentMember : studentList){
+            if (studentMember.getCode().equals(requester.getStudent())){
+                isMemberStudent = true;
+                break;
+            }
+        }
+
+        if (!isMemberStudent)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL, new String[]{"没有该学员信息"});
+
+        Set<ExamineAnswerPaperResponse> paperResponseList = new HashSet<>();
+        // 查找学员的试卷列表
+        Collection<Map<String, Object>> examineAnswerPaperList = examineService.findExamineAnswerPaperList(student.getCode());
+        for(Map<String, Object> examineAnswerPaper : examineAnswerPaperList){
+            Class classInfo = classService.get((String)examineAnswerPaper.get("classCode"));
+            paperResponseList.add(ExamineAnswerPaperResponse.me(examineAnswerPaper, classInfo));
+        }
+
+        return ExamineAnswerPaperListResponse.me(paperResponseList);
+    }
+
     @ApiOperation(value="开始测试", httpMethod = "POST", response = ExamineOutlineResponse.class)
     @RequestMapping("/begin")
     public Responser beginExamine(
@@ -78,33 +152,6 @@ public class ExamController extends ApiController {
         Map<String, Collection<Question>> beginResult = examineService.doBeginExamine(student, paper);
 
         return ExamineOutlineResponse.me(beginResult);
-    }
-
-    @ApiOperation(value="试卷列表", httpMethod = "POST", response = PaperListResponse.class)
-    @RequestMapping(value = "/paper/list", method = RequestMethod.POST)
-    public Responser listPaper(
-            @RequestBody @Valid
-            PaperQueryRequester requester
-    ){
-        Member member = currMember();
-        Set<PaperResponse> paperResponseList = new HashSet<>();
-
-        Student student = studentService.get(requester.getStudent().getCode());
-
-        if (null == student || !(student.isValid()))
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
-
-        // 查找之前没有做完的试卷
-        List<ExaminePaper> unCompletePaperList = examineService.findUnCompletePaper(student);
-        // 查找所有适合当前学员的试卷
-        List<ExaminePaper> examinePaperList = examineService.findExaminePaper(student);
-
-        for(ExaminePaper examinePaper : examinePaperList){
-            List<com.stylefeng.guns.modular.system.model.Class> classInfoList = classService.findClassUsingExaming(Arrays.asList(new String[]{examinePaper.getCode()}));
-            paperResponseList.add(PaperResponse.me(examinePaper, classInfoList));
-        }
-
-        return PaperListResponse.me(paperResponseList);
     }
 
     @ApiOperation(value="试题详情", response = QuestionDetailResponse.class)

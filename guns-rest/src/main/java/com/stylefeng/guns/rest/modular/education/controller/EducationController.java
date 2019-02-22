@@ -571,15 +571,29 @@ public class EducationController extends ApiController {
             @RequestBody
             @Valid
             QueryPlanListRequester requester){
+
+        Member member = currMember();
+
         Map<String, Object> queryMap = new HashMap<String, Object>();
         String studentCode = requester.getStudent();
         String classCode = requester.getClassCode();
 
-        if (null != studentCode && studentCode.length() > 0)
-            queryMap.put("student", studentCode);
+        List<String> studentCodeList = new ArrayList<>();
+        if (ToolUtil.isNotEmpty(studentCode)) {
+            studentCodeList.add(studentCode);
+        }else{
+            // 没有指定学员， 展示当前会员所有学员的课程表信息
+            List<Student> studentList = studentService.listStudents(member.getUserName()) ;
+            if (null != studentList){
+                for(Student student : studentList){
+                    studentCodeList.add(student.getCode());
+                }
+            }
+        }
+        queryMap.put("students", studentCodeList);
 
-        if (null != classCode && classCode.length() > 0)
-            queryMap.put("class", classCode);
+        if (ToolUtil.isNotEmpty(classCode))
+            queryMap.put("classCode", classCode);
 
         queryMap.put("status", GenericState.Valid.code);
 

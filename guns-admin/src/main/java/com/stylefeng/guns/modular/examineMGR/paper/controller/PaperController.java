@@ -1,6 +1,7 @@
 package com.stylefeng.guns.modular.examineMGR.paper.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -17,10 +18,13 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperWrapper;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperService;
+import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
 import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
+import com.stylefeng.guns.modular.system.model.Question;
+import com.stylefeng.guns.modular.system.model.QuestionItem;
 import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,6 +55,9 @@ public class PaperController extends BaseController {
 
     @Autowired
     private IQuestionService questionService;
+
+    @Autowired
+    private IQuestionItemService questionItemService;
 
     /**
      * 跳转到试卷首页
@@ -91,6 +98,34 @@ public class PaperController extends BaseController {
         model.addAttribute("questionScores", JSON.toJSONString(questionScores));
         LogObjectHolder.me().set(paper);
         return PREFIX + "paper_wizard.html";
+    }
+
+    @RequestMapping("/wizard/review")
+    public String wizardReview(String questionItemExp, Model model){
+        List<Map<String, Object>> viewList = new ArrayList<>();
+        try {
+            Iterator<Object> codeIter = JSON.parseArray(questionItemExp).iterator();
+            int index = 1;
+            while (codeIter.hasNext()) {
+                String code = codeIter.next().toString();
+
+                Question question = questionService.get(code);
+
+                if (null != question){
+                    List<QuestionItem> questionItemList = questionItemService.findAll(code);
+
+                    Map<String, Object> questionViewer = new HashMap<>();
+                    questionViewer.put("question", question.getQuestion());
+                    questionViewer.put("title", String.format("第 %s 题", index++));
+                    questionViewer.put("answerList", questionItemList);
+
+                    viewList.add(questionViewer);
+                }
+            }
+        }catch(Exception e){}
+
+        model.addAttribute("questionList", viewList);
+        return PREFIX + "paper_wizard_review.html";
     }
 
     /**

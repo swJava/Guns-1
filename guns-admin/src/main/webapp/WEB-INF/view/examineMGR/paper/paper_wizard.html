@@ -59,9 +59,6 @@
             </fieldset>
             <h1>设置分值</h1>
             <fieldset>
-                <form id="questionScoreForm" style="display: none;">
-
-                </form>
                 <div class="row">
                     <div class="col-sm-3">
                         <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
@@ -82,15 +79,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <#table id="SelectedQuestionTable"/>
-                    </div>
-                </div>
-            </fieldset>
-            <h1>结束</h1>
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-12">
-                        确定并提交
+                        <form id="questionScoreForm">
+                            <input type="hidden" class="form-group" id="scoreCountValidator" name="scoreCountValidator" />
+                            <#table id="SelectedQuestionTable"/>
+                        </form>
                     </div>
                 </div>
             </fieldset>

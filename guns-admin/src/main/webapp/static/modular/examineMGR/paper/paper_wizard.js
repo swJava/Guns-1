@@ -77,6 +77,22 @@ var PaperWizard = {
                     }
                 }
             }
+        },
+        {
+            id: 'questionScoreForm',
+            validateFields: {
+                feedbackIcons: false,
+                scoreCountValidator: {
+                    validators: {
+                        score_v: {
+                            message: '题目需设置分数',
+                            onError: function(e, data){
+                                Feng.error('题目需设置分数');
+                            }
+                        }
+                    }
+                }
+            }
         }
     ]
 };
@@ -215,7 +231,26 @@ PaperWizard.openPaperViewer = function () {
 };
 
 $(function () {
+    // 注册验证方法
+    $.fn.bootstrapValidator.validators.score_v = {
+        validate: function() {
+            console.log('<<< check score submit');
+            var questions = PaperWizard.SelectedQuestion.seCodes.slice(0);
+            var paperItems = new Array();
+            $.each(questions, function(idx, code){
+                var score = parseInt(PaperWizard.SelectedQuestion.seScores[code], 10);
 
+                if (isNaN(score))
+                    return true;
+
+                if (score <= 0)
+                    return true;
+
+                paperItems.push(code + '=' + score);
+            });
+            return paperItems.length == questions.length;
+        }
+    };
     // 初始化
     try {
         PaperWizard.SelectedQuestion.seCodes = JSON.parse($('#questionCodes').val());
@@ -256,8 +291,6 @@ $(function () {
             $('#' + PaperWizard.forms[step].id).data("bootstrapValidator").resetForm();
             $('#' + PaperWizard.forms[step].id).bootstrapValidator('validate');
             return $('#' + PaperWizard.forms[step].id).data('bootstrapValidator').isValid();
-
-            return true;
         },
         onStepChanged: function(event, step, prev){
             console.log('<<< step ' + step + ' change from ' + prev);
@@ -269,11 +302,20 @@ $(function () {
                 $('#UnSelectQuestionTableToolbar .label').html(PaperWizard.SelectedQuestion.seCodes.length);
             }
 
-            if (step == 3) {
+            if (step == 2) {
                 // 预览试卷， 数据加载
-
+                var currStep = form.steps('getStep', step+1);
+                console.log('<<< set review url parameter');
+                console.log(PaperWizard.SelectedQuestion.seCodes);
+                currStep.contentUrl = Feng.ctxPath + '/examine/paper/wizard/review?questionItemExp=' + JSON.stringify(PaperWizard.SelectedQuestion.seCodes);
             }
         }
+    });
+
+    form.steps('add', {
+        title: "确认",
+        contentMode: "iframe",
+        contentUrl: Feng.ctxPath + '/examine/paper/wizard/review?questionItemExp=' + JSON.stringify(PaperWizard.SelectedQuestion.seCodes)
     });
 
     var displayColumns = PaperWizard.UnSelectQuestion.initColumn();
@@ -299,33 +341,49 @@ $(function () {
         PaperWizard.editable = true
         var currValue = $element.html();
         $element.html('');
-        var input = $('<input type="input" size="3" maxlength="3" value="'+currValue+'" />');
+        var input = $('<input type="input" class="form-group" name="score" size="3" maxlength="3" value="'+currValue+'" />');
         $element.append(input);
         input.focus();
 
         $(document).bind('keydown', function(event){
+            console.log('>>> key code ' + event.keyCode);
+
             if (event.keyCode==13) {  //回车键的键值为13
-                var tdValue = input.val();
+                var tdvalue = input.val();
+                var pattern = new RegExp(/^[1-9]\d{0,1}$|^1[0]{2}$/);
+                var value = parseInt(input.val(), 10);
+
+                console.log(pattern.test(tdvalue));
+                console.log('value = ' + isNaN(value));
+                console.log('value = ' + value);
+                console.log('tdValue = ' + tdvalue);
+                if ( !(pattern.test(tdvalue)) || isNaN(value) ){
+                    Feng.error('请输入正确分值： 1 - 100');
+                    event.preventDefault();
+                    return false;
+                }
+
+                console.log('<<< continue set score');
                 input.remove();
                 var index = $element.parent().data('index');
                 PaperWizard.SelectedQuestion.seScores[row.code] = tdvalue;
 
-                PaperWizard.saveEditColumn(index, field, tdValue);
-                $(document).unbind('keydown');
+                PaperWizard.saveEditColumn(index, field, tdvalue);
+
+                $('#indeedScorecount').val(PaperWizard.SelectedQuestion.seScores.length);
                 PaperWizard.editable = false;
             }
         });
 
         input.blur(function(){
-            var tdValue = input.val();
             input.remove();
             var index = $element.parent().data('index');
-            PaperWizard.SelectedQuestion.seScores[row.code] = tdValue;
+            PaperWizard.SelectedQuestion.seScores[row.code] = currValue;
 
-            PaperWizard.saveEditColumn(index, field, tdValue);
-            $(document).unbind('keydown');
+            PaperWizard.saveEditColumn(index, field, currValue);
             PaperWizard.editable = false;
         });
+
     });
     PaperWizard.SelectedQuestion.table = table.init();
 });

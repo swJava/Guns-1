@@ -22,7 +22,7 @@ import java.util.List;
  * @Version 1.0
  */
 public class AdjustTask {
-    private static final Logger log = LoggerFactory.getLogger(SmsSender.class);
+    private static final Logger log = LoggerFactory.getLogger(AdjustTask.class);
 
     @Autowired
     private IAdjustStudentService adjustStudentService;

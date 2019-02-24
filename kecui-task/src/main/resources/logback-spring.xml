@@ -7,7 +7,7 @@
 	    </encoder>
   	</appender>
   	
-	<appender name="api-core" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="task-core" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>../logs/task-core.%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
@@ -16,15 +16,6 @@
       		<pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
     	</encoder>
   	</appender>
-    <appender name="api-task-sms" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/api-task.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
 
 	<logger name="org.hibernate" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
@@ -33,17 +24,17 @@
     <logger name="test" level="DEBUG"/>
 
     <logger name="com.stylefeng" additivity="false" level="DEBUG">
-        <appender-ref ref="api-core" />
+        <appender-ref ref="task-core" />
         <appender-ref ref="console" />
     </logger>
 
     <logger name="com.stylefeng.guns.modular" additivity="false" level="DEBUG">
-        <appender-ref ref="api-core" />
+        <appender-ref ref="task-core" />
         <appender-ref ref="console" />
     </logger>
 
     <logger name="com.stylefeng.guns.rest.task.sms" additivity="false" level="INFO">
-        <appender-ref ref="api-task-sms" />
+        <appender-ref ref="task-core" />
     </logger>
 
   	<root level="WARN" additivity="false">

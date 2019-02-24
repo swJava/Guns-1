@@ -452,12 +452,12 @@ public class EducationController extends ApiController {
             switch(cycle){
                 case 1:
                 case 2:
-                    hisClassIterator.remove();
-                    break;
-                default:
                     cycles.add(cycle);
                     grades.add(hisClassInfo.getGrade());
                     subjects.add(Integer.parseInt(hisCourseInfo.getSubject()));
+                    break;
+                default:
+                    hisClassIterator.remove();
                     break;
             }
         }

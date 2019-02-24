@@ -36,6 +36,8 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
     public ExamineAnswer generatePaper(Student student, ExaminePaper examinePaper) {
 
         ExamineAnswer answerPaper = new ExamineAnswer();
+        Date now = new Date();
+
         answerPaper.setCode(CodeKit.generateAnswerPaper());
         answerPaper.setPaperCode(examinePaper.getCode());
         answerPaper.setStudentCode(student.getCode());
@@ -43,7 +45,8 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
         answerPaper.setTotalScore(examinePaper.getTotalScore());
         answerPaper.setExamTime(examinePaper.getExamTime());
         answerPaper.setStatus(ExamineAnswerStateEnum.Create.code);
-        answerPaper.setCreateDate(new Date());
+        answerPaper.setBeginDate(now);
+        answerPaper.setCreateDate(now);
 
         insert(answerPaper);
 

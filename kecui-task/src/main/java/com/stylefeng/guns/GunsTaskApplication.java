@@ -1,9 +1,9 @@
 package com.stylefeng.guns;
 
-import com.stylefeng.guns.rest.task.sms.AdjustTask;
-import com.stylefeng.guns.rest.task.sms.ExamineCheckTask;
-import com.stylefeng.guns.rest.task.sms.PayMocker;
-import com.stylefeng.guns.rest.task.sms.SmsSender;
+import com.stylefeng.guns.task.education.AdjustTask;
+import com.stylefeng.guns.task.education.ExamineCheckTask;
+import com.stylefeng.guns.task.pay.PayMocker;
+import com.stylefeng.guns.task.sms.SmsSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,9 +14,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class GunsRestApplication {
+public class GunsTaskApplication {
 
-    private final static Logger logger = LoggerFactory.getLogger(GunsRestApplication.class);
+    private final static Logger logger = LoggerFactory.getLogger(GunsTaskApplication.class);
 
     @Bean
     public ExamineCheckTask createExamineAutoCheckWorker(){
@@ -42,7 +42,7 @@ public class GunsRestApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(GunsRestApplication.class, args);
-        logger.info("GunsRestApplication is success!");
+        SpringApplication.run(GunsTaskApplication.class, args);
+        logger.info("GunsTaskApplication is success!");
     }
 }

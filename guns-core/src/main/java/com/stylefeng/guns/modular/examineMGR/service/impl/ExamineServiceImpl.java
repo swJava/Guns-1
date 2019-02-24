@@ -8,7 +8,6 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.examineMGR.service.*;
-import com.stylefeng.guns.modular.system.dao.ExaminePaperMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +103,7 @@ public class ExamineServiceImpl implements IExamineService {
         examineAnswerDetailService.insertBatch(submitItems);
 
         Date now = new Date();
-        answerPaper.setStatus(ExamineAnswerStateEnum.Sumit.code);
+        answerPaper.setStatus(ExamineAnswerStateEnum.Submit.code);
         answerPaper.setEndDate(now);
 
         examineAnswerService.updateById(answerPaper);

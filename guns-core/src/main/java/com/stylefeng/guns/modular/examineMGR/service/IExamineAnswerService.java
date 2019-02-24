@@ -46,4 +46,11 @@ public interface IExamineAnswerService extends IService<ExamineAnswer> {
      * @return
      */
     Page<Map<String,Object>> selectMapsPage(Map<String, Object> conditionMap);
+
+    /**
+     * 自动阅卷
+     *
+     * @param examineAnswer
+     */
+    void doAutoCheckPaper(ExamineAnswer examineAnswer);
 }

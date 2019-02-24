@@ -254,7 +254,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public List<Map<String, Object>> queryForList(Map<String, Object> queryParams) {
-        return orderMapper.queryForList(queryParams);
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+        return orderMapper.queryForList(arguments);
     }
 
     @Override

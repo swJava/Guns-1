@@ -114,7 +114,7 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(value = "/class/list")
     @ResponseBody
-    public Object list(Map<String, Object> queryParmas) {
+    public Object list(@RequestParam  Map<String, Object> queryParmas) {
         //分页查詢
         Page<Map<String, Object>> pageMap = orderService.selectMapsPage(queryParmas);
         //包装数据

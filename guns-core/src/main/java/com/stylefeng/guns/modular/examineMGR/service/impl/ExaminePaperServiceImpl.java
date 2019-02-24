@@ -62,30 +62,16 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
         paper.setCreateDate(now);
         paper.setStatus(GenericState.Valid.code);
 
+        int totalScore = calcTotalScore(workingQuestionList);
 
-        int totalScore = 0;
-        int totalCount = 0;
-        for(ExaminePaperItem paperItem : workingQuestionList){
-            totalCount++;
-            int score = 0;
-            try{
-                score = Integer.parseInt(paperItem.getScore());
-            }catch(Exception e){}
-            totalScore += score;
-        }
+        if (totalScore <= 0)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL, new String[]{"分数必须为正整数，范围是 1 ～ 100"});
 
-        paper.setCount(totalCount);
+        paper.setCount(workingQuestionList.size());
         paper.setTotalScore(totalScore);
         insert(paper);
 
-        for(ExaminePaperItem paperItem : workingQuestionList){
-            try {
-                paperItem.setPaperCode(paper.getCode());
-                examinePaperItemService.create(paperItem);
-            }catch(Exception e){
-                throw new ServiceException();
-            }
-        }
+        refreshPaperQuestionItems(paper, workingQuestionList);
     }
 
     @Override
@@ -137,29 +123,17 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
         String[] ignoreProperties = new String[]{"id", "code", "createDate"};
         BeanUtils.copyProperties(paper, existPaper, ignoreProperties);
 
-        int totalScore = 0;
-        int totalCount = 0;
-        for(ExaminePaperItem paperItem : workingQuestionList){
-            totalCount++;
-            int score = 0;
-            try{
-                score = Integer.parseInt(paperItem.getScore());
-            }catch(Exception e){}
-            totalScore += score;
-        }
-        existPaper.setCount(totalCount);
+        int totalScore = calcTotalScore(workingQuestionList);
+
+        if (totalScore <= 0)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL, new String[]{"分数必须为正整数，范围是 1 ～ 100"});
+
+        existPaper.setCount(workingQuestionList.size());
         existPaper.setTotalScore(totalScore);
 
         updateById(existPaper);
 
-        for(ExaminePaperItem paperItem : workingQuestionList){
-            try {
-                paperItem.setPaperCode(existPaper.getCode());
-                examinePaperItemService.create(paperItem);
-            }catch(Exception e){
-                throw new ServiceException();
-            }
-        }
+        refreshPaperQuestionItems(existPaper, workingQuestionList);
     }
 
     @Override
@@ -195,7 +169,30 @@ public class ExaminePaperServiceImpl extends ServiceImpl<ExaminePaperMapper, Exa
             BeanUtils.copyProperties(paperItem, paperItemCopy, itemIgnoreProperties);
             paperItemCopy.setPaperCode(paperCopy.getCode());
 
-            examinePaperItemService.create(paperItem);
+            examinePaperItemService.create(paperItemCopy);
+        }
+    }
+
+    private int calcTotalScore(Set<ExaminePaperItem> workingQuestionList) {
+        int totalScore = 0;
+        for(ExaminePaperItem paperItem : workingQuestionList){
+            int score = 0;
+            try{
+                score = Integer.parseInt(paperItem.getScore());
+            }catch(Exception e){}
+            totalScore += score;
+        }
+        return totalScore;
+    }
+
+    private void refreshPaperQuestionItems(ExaminePaper paper, Set<ExaminePaperItem> workingQuestionList) {
+        for(ExaminePaperItem paperItem : workingQuestionList){
+            try {
+                paperItem.setPaperCode(paper.getCode());
+                examinePaperItemService.create(paperItem);
+            }catch(Exception e){
+                throw new ServiceException();
+            }
         }
     }
 }

@@ -234,7 +234,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         if (null == currClass)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
-        currClass.setSignable(ClassExaminableEnum.NO.code);
+        currClass.setExaminable(ClassExaminableEnum.NO.code);
 
         updateById(currClass);
     }
@@ -249,7 +249,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         if (null == currClass)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
 
-        currClass.setSignable(ClassExaminableEnum.YES.code);
+        currClass.setExaminable(ClassExaminableEnum.YES.code);
 
         updateById(currClass);
     }

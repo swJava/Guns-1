@@ -52,7 +52,7 @@ Paper.check = function () {
 Paper.openAddPaper = function () {
     var index = layer.open({
         type: 2,
-        title: '添加题目',
+        title: '新增试卷',
         area: ['640px', '480px'], //宽高
         fix: false, //不固定
         maxmin: true,
@@ -69,11 +69,11 @@ Paper.openPaperDetail = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
-            title: '试卷详情',
+            title: '编辑试卷',
             area: ['640px', '480px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/examine/paper/paper_update/' + Paper.seItem.code
+            content: Feng.ctxPath + '/examine/paper/wizard?code=' + Paper.seItem.code
         });
         layer.full(index);
         this.layerIndex = index;
@@ -116,6 +116,8 @@ Paper.delete = function () {
 Paper.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['status'] = $("#status").val();
     Paper.table.refresh({query: queryData});
 };
 

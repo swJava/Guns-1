@@ -114,7 +114,12 @@ Order.export = function () {
  */
 Order.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['orderNo'] = $("#condition").val();
+    queryData['teacher'] = $("#teacher").val();
+    queryData['student'] = $("#student").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['ability'] = $("#ability").val();
+    queryData['cycle'] = $("#cycle").val();
     Order.table.refresh({query: queryData});
 };
 

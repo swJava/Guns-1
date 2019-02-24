@@ -40,7 +40,7 @@ Question.openView = function(code){
     var index = layer.open({
         type: 2,
         title: '试题预览',
-        area: ['320px', '480px'], //宽高
+        area: ['400px', '600px'], //宽高
         fix: true, //不固定
         maxmin: false,
         content: Feng.ctxPath + '/question/question_view/' + code

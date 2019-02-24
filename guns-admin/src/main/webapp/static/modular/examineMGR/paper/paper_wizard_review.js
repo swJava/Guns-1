@@ -12,9 +12,10 @@ $(function () {
     var form = $('#' + PaperWizardReviewer.Wizard.id);
     form.steps({
         headerTag: "h1",
-        bodyTag: "fieldset",
+        bodyTag: "section",
         transitionEffect: "slideLeft",
         autoFocus: true,
+        enableFinishButton: false,
         labels: {
             finish: "关闭", // 修改按钮得文本
             next: "下一题", // 下一题按钮的文本

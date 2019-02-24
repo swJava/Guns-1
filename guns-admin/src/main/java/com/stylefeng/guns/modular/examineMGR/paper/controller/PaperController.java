@@ -26,6 +26,7 @@ import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
 import com.stylefeng.guns.modular.system.model.Question;
 import com.stylefeng.guns.modular.system.model.QuestionItem;
 import com.stylefeng.guns.util.ToolUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,11 +74,13 @@ public class PaperController extends BaseController {
     @RequestMapping("/wizard")
     public String wizard( String code, Model model ) {
         ExaminePaper paper = examinePaperService.get(code);
-        List<String> questionCodes = new ArrayList<String>();
+        Set<String> questionCodes = new HashSet<String>();
         Map<String, String> questionScores = new HashMap<String, String>();
 
-        if (null != paper) {
+        String operator = "add";
 
+        if (null != paper) {
+            operator = "update";
             Wrapper<ExaminePaperItem> questionItemQuery = new EntityWrapper<ExaminePaperItem>();
             questionItemQuery.eq("paper_code", code);
             questionItemQuery.eq("status", GenericState.Valid.code);
@@ -94,6 +97,7 @@ public class PaperController extends BaseController {
         }
 
         model.addAttribute("item", paper);
+        model.addAttribute("operator", operator);
         model.addAttribute("questionCodes", JSON.toJSONString(questionCodes));
         model.addAttribute("questionScores", JSON.toJSONString(questionScores));
         LogObjectHolder.me().set(paper);
@@ -129,59 +133,31 @@ public class PaperController extends BaseController {
     }
 
     /**
-     * 跳转到添加入学诊断
-     */
-    @RequestMapping("/paper_add")
-    public String questionAdd( Model model ) {
-        model.addAttribute("code", UUID.randomUUID().toString().replaceAll("-", ""));
-        return PREFIX + "paper_add.html";
-    }
-
-    /**
-     * 跳转到修改入学诊断
-     */
-    @RequestMapping("/paper_update/{code}")
-    public String questionUpdate(@PathVariable String code, Model model) {
-        ExaminePaper paper = examinePaperService.get(code);
-
-        if (null == paper)
-            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
-
-        model.addAttribute("item", paper);
-
-        Wrapper<ExaminePaperItem> questionItemQuery = new EntityWrapper<ExaminePaperItem>();
-        questionItemQuery.eq("paper_code", code);
-        questionItemQuery.eq("status", GenericState.Valid.code);
-
-        List<ExaminePaperItem> questionItemList = examinePaperItemService.selectList(questionItemQuery);
-        List<String> questionCodes = new ArrayList<String>();
-        Map<String, String> questionScores = new HashMap<String, String>();
-
-        for(ExaminePaperItem examinePaperItem : questionItemList){
-            String questionCode = examinePaperItem.getQuestionCode();
-            String questionScore = examinePaperItem.getScore();
-
-            questionCodes.add(questionCode);
-            questionScores.put(questionCode, questionScore);
-        }
-
-        model.addAttribute("questionCodes", JSON.toJSONString(questionCodes));
-        model.addAttribute("questionScores", JSON.toJSONString(questionScores));
-
-        LogObjectHolder.me().set(paper);
-        return PREFIX + "paper_edit.html";
-    }
-
-    /**
      * 获取入学诊断列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(@RequestParam Map<String, Object> queryMap) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         //分页查詢
         Page<ExaminePaper> page = new PageFactory<ExaminePaper>().defaultPage();
         Page<Map<String, Object>> pageMap = examinePaperService.selectMapsPage(page, new EntityWrapper<ExaminePaper>() {{
-
+            if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                eq("code", queryParams.get("condition"));
+            }
+            if (StringUtils.isNotEmpty(queryParams.get("status"))) {
+                try {
+                    int status = Integer.parseInt(queryParams.get("status"));
+                    eq("status", status);
+                } catch (Exception e) {
+                }
+            }
+            if (StringUtils.isNotEmpty(queryParams.get("subject"))) {
+                try {
+                    int subject = Integer.parseInt(queryParams.get("subject"));
+                    eq("subject", subject);
+                } catch (Exception e) {
+                }
+            }
         }});
         //包装数据
         new PaperWrapper(pageMap.getRecords()).warp();
@@ -226,6 +202,18 @@ public class PaperController extends BaseController {
         }
 
         //解析
+        Set<ExaminePaperItem> workingQuestionList = reassembleExaminePaperItemSet(paperItems);
+
+        Administrator currAdmin = ShiroKit.getUser();
+        paper.setTeacher(currAdmin.getName());
+
+        examinePaperService.create
+                (paper, workingQuestionList);
+
+        return SUCCESS_TIP;
+    }
+
+    private Set<ExaminePaperItem> reassembleExaminePaperItemSet(String paperItems) {
         Set<ExaminePaperItem> workingQuestionList = new HashSet<ExaminePaperItem>();
         if (ToolUtil.isNotEmpty(paperItems)){
             StringTokenizer codeIter = new StringTokenizer(paperItems, ";");
@@ -238,13 +226,7 @@ public class PaperController extends BaseController {
             }
         }
 
-        Administrator currAdmin = ShiroKit.getUser();
-        paper.setTeacher(currAdmin.getName());
-
-        examinePaperService.create
-                (paper, workingQuestionList);
-
-        return SUCCESS_TIP;
+        return workingQuestionList;
     }
 
     /**
@@ -294,17 +276,7 @@ public class PaperController extends BaseController {
         }
 
         //解析
-        Set<ExaminePaperItem> workingQuestionList = new HashSet<ExaminePaperItem>();
-        if (ToolUtil.isNotEmpty(paperItems)){
-            StringTokenizer codeIter = new StringTokenizer(paperItems, ";");
-            while(codeIter.hasMoreTokens()){
-                ExaminePaperItem paperItem = new ExaminePaperItem();
-                String[] itemMap = codeIter.nextToken().split("=");
-                paperItem.setQuestionCode(itemMap[0]);
-                paperItem.setScore(itemMap[1]);
-                workingQuestionList.add(paperItem);
-            }
-        }
+        Set<ExaminePaperItem> workingQuestionList = reassembleExaminePaperItemSet(paperItems);
 
         Administrator currAdmin = ShiroKit.getUser();
         paper.setTeacher(currAdmin.getName());

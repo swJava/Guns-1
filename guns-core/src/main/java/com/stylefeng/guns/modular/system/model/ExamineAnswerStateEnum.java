@@ -11,7 +11,7 @@ public enum ExamineAnswerStateEnum {
     Create(0, "新建"),
     Testing(1, "测试中"),
     Pause(2, "测试中"),
-    Sumit(3, "已交卷"),
+    Submit(3, "已交卷"),
     Finish(4, "已批改"),
 
     Null(99, "未知")

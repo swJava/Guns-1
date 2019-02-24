@@ -126,6 +126,10 @@ public final class MessageConstant {
          */
         public static final String ORDER_REQUEST_ORDERED = "040001";
         /**
+         * 需要入学测试
+         */
+        public static final String ORDER_NEED_EXAMINE = "040002";
+        /**
          * 您已有相同的调课申请
          */
         public static final String ADJUST_COURSE_DUPLICATE = "050001";

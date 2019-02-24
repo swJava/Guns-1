@@ -8,8 +8,8 @@ package com.stylefeng.guns.modular.system.model;
  */
 public enum ClassExaminableEnum {
 
-    YES ( 1, "开放报名"),
-    NO ( 0, "关闭报名"),
+    YES ( 1, "需要入学测试"),
+    NO ( 0, "不需要入学测试"),
     UNKNOWN (99, "未知")
     ;
 

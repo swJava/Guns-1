@@ -8,6 +8,8 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.education.CourseMethodEnum;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.system.dao.CourseCartMapper;
@@ -35,6 +37,12 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
     @Autowired
     private ICourseService courseService;
+
+    @Autowired
+    private IExamineService examineService;
+
+    @Autowired
+    private IExamineAnswerService examineAnswerService;
 
     private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
     private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
@@ -98,6 +106,24 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
         // 检查班级报名状态
         classService.checkJoinState(classInfo, member, student);
+
+        // 入学测试校验
+        if (ClassExaminableEnum.YES.equals(ClassExaminableEnum.instanceOf(classInfo.getExaminable()))){
+            Map<String, Object> queryParams = new HashMap<String, Object>();
+            queryParams.put("classCode", classInfo.getCode());
+            ExaminePaper examinePaper = examineService.findExaminePaper(queryParams);
+            if (null != examinePaper){
+                Wrapper<ExamineAnswer> queryWrapper = new EntityWrapper<>();
+                queryWrapper.eq("paper_code", examinePaper.getCode());
+                queryWrapper.eq("student_code", student.getCode());
+                queryWrapper.ge("score", examinePaper.getPassScore());
+                queryWrapper.eq("status", ExamineAnswerStateEnum.Finish.code);
+                int passCount = examineAnswerService.selectCount(queryWrapper);
+
+                if (0 >= passCount)
+                    throw new ServiceException(MessageConstant.MessageCode.ORDER_NEED_EXAMINE);
+            }
+        }
 
         // 加入选课单
         Map<String, Object> extraParams = new HashMap<String, Object>();

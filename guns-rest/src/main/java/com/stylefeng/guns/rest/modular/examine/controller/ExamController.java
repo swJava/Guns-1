@@ -94,6 +94,9 @@ public class ExamController extends ApiController {
         Map<String, Object> queryParams = requester.toMap();
         ExaminePaper examinePaper = examineService.findExaminePaper(queryParams);
 
+        if (null == examinePaper)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"试卷"});
+
         return ExaminePaperDetailResponse.me(ExaminePaperDetail.me(examinePaper));
 
     }

@@ -1,11 +1,15 @@
 @layout("/common/_container.html"){
 <link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
-<div class="ibox float-e-margins">
-    <div class="ibox-content">
+<style>
+    .wizard-big.wizard > .content{
+        height: auto !important;
+        min-height: 400px;
+    }
+</style>
         <div id="wizard" class="wizard-big">
             @for(question in questionList){
             <h1>${question.title}</h1>
-            <fieldset>
+            <section>
                 <div class="row">
                     <div class="col-sm-12">
                         ${question.question}
@@ -23,17 +27,9 @@
                     </div>
                 </div>
                 @}
-            </fieldset>
+            </section>
             @}
         </div>
-
-        <div class="row btn-group-m-t">
-            <div class="col-xs-10 col-xs-offset-4">
-                <#button btnCss="danger" name="关 闭" id="cancel" icon="fa-eraser" clickFun="QuestionViewDlg.close()"/>
-            </div>
-        </div>
-    </div>
-</div>
 <#script src="/static/js/plugins/steps/jquery.steps.min.js" />
 <#script src="/static/modular/examineMGR/paper/paper_wizard_review.js" />
 @}

@@ -4,7 +4,13 @@
 var PaperWizard = {
     Wizard: {
         id: 'wizard',
-        paper: $('#paper').val()
+        op: $('#operator').val(),
+        paper: $('#code').val(),
+        postData: {},
+        postUrl: {
+            'add': Feng.ctxPath + "/examine/paper/add",
+            'update': Feng.ctxPath + "/examine/paper/update"
+        }
     },
     UnSelectQuestion: {
         id: "UnSelectQuestionTable",	        //表格id
@@ -45,6 +51,10 @@ var PaperWizard = {
                     validators: {
                         notEmpty: {
                             message: '测试时间不能为空'
+                        },
+                        regexp: {
+                            regexp: '^[1-9][0-9]{0,1}$',
+                            message: '测试时间为正整数， 单位是： 分钟'
                         }
                     }
                 },
@@ -181,10 +191,13 @@ PaperWizard.join = function(){
 /**
  * 移除问题
  */
-PaperWizard.remove = function(){
-    if (this.SelectedQuestion.check()) {
-        console.log('begin remove');
-        $.each(this.SelectedQuestion.seItems, function(idx, eo){
+PaperWizard.remove = function(e){
+
+    var event = window.event || arguments.callee.caller.arguments[0];
+
+    if (PaperWizard.SelectedQuestion.check()) {
+        console.log('<<< begin remove');
+        $.each(PaperWizard.SelectedQuestion.seItems, function(idx, eo){
             $('#' + PaperWizard.SelectedQuestion.id).bootstrapTable('remove', {
                 field: 'code',
                 values: [eo.code]
@@ -195,10 +208,11 @@ PaperWizard.remove = function(){
                     PaperWizard.SelectedQuestion.seCodes.splice(idx, 1);
                 }
             });
-            delete PaperWizard.SelectedQuestion.seScores[row.code];
+            delete PaperWizard.SelectedQuestion.seScores[eo.code];
         });
     }
 
+    event.preventDefault();
     console.log('remove over');
 };
 
@@ -222,12 +236,79 @@ PaperWizard.openPaperViewer = function () {
     var index = layer.open({
         type: 2,
         title: '添加题目',
-        area: ['320px', '480px'], //宽高
+        area: ['400px', '600px'], //宽高
         fix: false, //不固定
         maxmin: true,
-        content: ''
+        content: Feng.ctxPath + '/examine/paper/wizard/review?questionItemExp=' + encodeURIComponent(JSON.stringify(PaperWizard.SelectedQuestion.seCodes))
     });
     this.layerIndex = index;
+};
+
+
+/**
+ * 设置对话框中的数据
+ *
+ * @param key 数据的名称
+ * @param val 数据的具体值
+ */
+PaperWizard.set = function(key, val) {
+    this.Wizard.postData[key] = (typeof val == "undefined") ? $("#" + key).val() : val;
+    return this;
+};
+
+/**
+ * 清除数据
+ */
+PaperWizard.clearData = function() {
+    this.Wizard.postData = {};
+};
+
+/**
+ * 收集数据
+ */
+PaperWizard.collectData = function() {
+    this
+        .set('code')
+        .set('id')
+        .set('grades')
+        .set('subject')
+        .set('ability')
+        .set('examTime');
+
+    var questions = PaperWizard.SelectedQuestion.seCodes.slice(0);
+    console.log(questions);
+    var paperItems = new Array();
+    $.each(questions, function(idx, code){
+        console.log('code = ' + code);
+        var score = parseInt(PaperWizard.SelectedQuestion.seScores[code], 10);
+
+        console.log('score = ' + score);
+        if (isNaN(score))
+            return true;
+
+        paperItems.push(code + '=' + score);
+    });
+    console.log('paperItems = ' + paperItems);
+    this.SelectedQuestion.seItems = paperItems;
+};
+
+/**
+ * 关闭此对话框
+ */
+PaperWizard.close = function() {
+    parent.layer.close(window.parent.Paper.layerIndex);
+};
+
+/**
+ * 题目筛选
+ */
+PaperWizard.unselectedQuestionSearch = function(){
+    var queryData = {};
+    queryData['condition'] = $("#condition").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['status'] = 1;
+    queryData['workingCodes'] = PaperWizard.SelectedQuestion.seCodes.join(',');
+    PaperWizard.UnSelectQuestion.table.refresh({query: queryData});
 };
 
 $(function () {
@@ -259,6 +340,8 @@ $(function () {
         $('#UnSelectQuestionTableToolbar .label').html(PaperWizard.SelectedQuestion.seCodes.length);
     }catch(error){}
 
+    console.log('<<< init result');
+    console.log('questionItemCount = ' + $('#questionItemCount').val());
     var form = $('#' + PaperWizard.Wizard.id);
     form.steps({
         headerTag: "h1",
@@ -284,9 +367,7 @@ $(function () {
                 return true;
             }
 
-            var id = PaperWizard.forms[step].id;
-            console.log(id);
-            console.log(PaperWizard.forms[step].validateFields);
+            console.log('questionItemCount = ' + $('#questionItemCount').val());
             Feng.initValidator(PaperWizard.forms[step].id, PaperWizard.forms[step].validateFields, {excludes: [":disabled"]});
             $('#' + PaperWizard.forms[step].id).data("bootstrapValidator").resetForm();
             $('#' + PaperWizard.forms[step].id).bootstrapValidator('validate');
@@ -295,8 +376,13 @@ $(function () {
         onStepChanged: function(event, step, prev){
             console.log('<<< step ' + step + ' change from ' + prev);
 
+            if (step == 1 && step > prev){
+                // 正向进入到"选择题目"步骤时
+                $('#questionItemCount').val(PaperWizard.SelectedQuestion.seCodes.length);
+            }
+
             if (step == 1 && step < prev){
-                // 正向进入到"设置分数"步骤时
+                // 返回进入到"选择题目"步骤时
                 PaperWizard.UnSelectQuestion.table.refresh();
                 $('#questionItemCount').val(PaperWizard.SelectedQuestion.seCodes.length);
                 $('#UnSelectQuestionTableToolbar .label').html(PaperWizard.SelectedQuestion.seCodes.length);
@@ -307,8 +393,28 @@ $(function () {
                 var currStep = form.steps('getStep', step+1);
                 console.log('<<< set review url parameter');
                 console.log(PaperWizard.SelectedQuestion.seCodes);
-                currStep.contentUrl = Feng.ctxPath + '/examine/paper/wizard/review?questionItemExp=' + JSON.stringify(PaperWizard.SelectedQuestion.seCodes);
+                currStep.contentUrl = Feng.ctxPath + '/examine/paper/wizard/review?questionItemExp=' + encodeURIComponent(JSON.stringify(PaperWizard.SelectedQuestion.seCodes));
             }
+        },
+        onFinished: function(){
+            PaperWizard.clearData();
+            PaperWizard.collectData();
+
+            console.log(PaperWizard.SelectedQuestion.seItems);
+
+            //提交信息
+            var ajax = new $ax(PaperWizard.Wizard.postUrl[PaperWizard.Wizard.op], function(data){
+                Feng.success("保存成功!");
+                window.parent.Paper.table.refresh();
+                PaperWizard.close();
+            },function(data){
+                Feng.error("保存失败!" + data.responseJSON.message + "!");
+            });
+            ajax.set(PaperWizard.Wizard.postData);
+
+            console.log(PaperWizard.SelectedQuestion.seItems);
+            ajax.set('paperItems', PaperWizard.SelectedQuestion.seItems.join(';'))
+            ajax.start();
         }
     });
 
@@ -319,8 +425,9 @@ $(function () {
     });
 
     var displayColumns = PaperWizard.UnSelectQuestion.initColumn();
-    var table = new BSTable(PaperWizard.UnSelectQuestion.id, "/examine/paper/question/list?excludePaper=" + $('#code').val(), displayColumns);
+    var table = new BSTable(PaperWizard.UnSelectQuestion.id, "/examine/paper/question/list?excludePaper=" + PaperWizard.Wizard.paper, displayColumns);
     table.setPaginationType("server");
+    console.log(PaperWizard.SelectedQuestion.seCodes);
     table.setQueryParamsGetter(function(){
         return {'workingCodes': PaperWizard.SelectedQuestion.seCodes.join(',')};
     });
@@ -328,7 +435,7 @@ $(function () {
     PaperWizard.UnSelectQuestion.table = table.init();
 
     displayColumns = PaperWizard.SelectedQuestion.initColumn();
-    var table = new BSTable(PaperWizard.SelectedQuestion.id, "/examine/paper/question/list?includePaper=" + $('#code').val(), displayColumns);
+    var table = new BSTable(PaperWizard.SelectedQuestion.id, "/examine/paper/question/list?includePaper=" + PaperWizard.Wizard.paper, displayColumns);
     table.setPaginationType("server");
     table.setShowColumns(false);
     table.setShowRefresh(true);
@@ -386,4 +493,9 @@ $(function () {
 
     });
     PaperWizard.SelectedQuestion.table = table.init();
+
+    //初始select选项
+    $("#grades").val($("#gradesValue").val());
+    $("#ability").val($("#abilityValue").val());
+    $("#subject").val($("#subjectValue").val());
 });

@@ -27,8 +27,18 @@
         <include refid="Base_Column_List" />
         from tb_question a
         <where>
+            <if test="null != subject">
+                and a.subject = #{subject}
+            </if>
             <if test="null != excludePaper">
-                and not exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{excludePaper} )
+                and not exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{excludePaper}
+                <if test="excludeList.size() > 0">
+                    and question_code in
+                    <foreach collection="excludeList" item="qcode" open="(" separator="," close=")">
+                        #{qcode}
+                    </foreach>
+                </if>
+                )
             </if>
             <if test="null != includePaper">
                 and exists ( select 1 from tb_examine_paper_item where question_code = a.code and paper_code = #{includePaper} )

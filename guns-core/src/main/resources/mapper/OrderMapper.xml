@@ -23,11 +23,47 @@
         o.id, o.accept_no, o.accept_date, o.status, o.amount, o.pay_status, o.pay_result, o.pay_date, o.pay_method, o.user_name, o.out_order_no, o.out_sequence
     </sql>
 
+    <sql id="Where_Statement">
+        <where>
+            <if test="null != orderNo">
+                and o.accept_no = #{orderNo}
+            </if>
+
+            <if test="null != teacher">
+                and cc.teacher like CONCAT('%',#{teacher},'%'))
+            </if>
+
+            <if test="null != student">
+                and (cc.student_code = #{student} or cc.student like CONCAT('%',#{student},'%'))
+            </if>
+
+        </where>
+    </sql>
 
     <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select
         <include refid="Base_Column_List" />
+        from
+        (
+        <if test="null != teacher || null != student">
+            (
+            (
+        </if>
+        tb_order o
+        <if test="null != teacher || null != student">
+            join tb_order_item oi on oi.order_no = o.accept_no )
+            join tb_course_cart cc on cc.code = oi.course_cart_code
+        </if>
+        )
+
+        <include refid="Where_Statement" />
+    </select>
+
+    <select id="selectPageList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+            <include refid="Base_Column_List" />
         from tb_order o
+        <include refid="Where_Statement" />
     </select>
 
 </mapper>

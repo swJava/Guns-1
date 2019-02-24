@@ -57,7 +57,7 @@ spring:
     filters: wall,mergeStat
 application:
   attachment:
-    visit-url: http://127.0.0.1:8080/attachment/download
+    visit-url: http://127.0.0.1:8080/admin/attachment/download
     store-path: /Users/huahua/Workbase/data/gs/upload
 
 ---

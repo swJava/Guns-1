@@ -114,17 +114,9 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(value = "/class/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(Map<String, Object> queryParmas) {
         //分页查詢
-        Page<Student> page = new PageFactory<Student>().defaultPage();
-        Page<Map<String, Object>> pageMap = orderService.selectMapsPage(page, new EntityWrapper<Order>() {
-            {
-                //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("acceptNo", condition);
-                }
-            }
-        });
+        Page<Map<String, Object>> pageMap = orderService.selectMapsPage(queryParmas);
         //包装数据
         new OrderWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);

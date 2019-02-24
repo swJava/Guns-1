@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.orderMGR.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.system.model.*;
@@ -89,4 +90,12 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     List<Map<String, Object>> queryForList(Map<String, Object> queryParams);
+
+    /**
+     * 查询订单
+     *
+     * @param queryParmas
+     * @return
+     */
+    Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParmas);
 }

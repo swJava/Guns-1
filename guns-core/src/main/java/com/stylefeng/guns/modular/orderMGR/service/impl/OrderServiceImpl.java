@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.orderMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -19,15 +21,13 @@ import com.stylefeng.guns.modular.system.dao.OrderMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMemberMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -255,6 +255,36 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Map<String, Object>> queryForList(Map<String, Object> queryParams) {
         return orderMapper.queryForList(queryParams);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryMap) {
+        Map<String, Object> arguments = buildQueryArguments(queryMap);
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+
+        List<Map<String, Object>> resultMap = orderMapper.selectPageList(page, arguments);
+        page.setRecords(resultMap);
+        return page;
+    }
+
+    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 
     /**

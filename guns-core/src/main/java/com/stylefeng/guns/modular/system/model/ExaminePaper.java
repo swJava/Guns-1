@@ -59,19 +59,26 @@ public class ExaminePaper extends Model<ExaminePaper> {
     /**
      * 测试时间， 单位： 分钟
      */
-    @ApiModelProperty(name = "code", value = "测试时间， 单位： 分钟", position = 5, example = "30")
+    @ApiModelProperty(name = "examTime", value = "测试时间， 单位： 分钟", position = 5, example = "30")
     @TableField("exam_time")
     private Integer examTime;
     /**
      * 总分数
      */
-    @ApiModelProperty(name = "code", value = "总分数", position = 6, example = "100")
+    @ApiModelProperty(name = "totalScore", value = "总分数", position = 6, example = "100")
     @TableField("total_score")
     private Integer totalScore;
+
+    /**
+     * 及格分数
+     */
+    @ApiModelProperty(name = "passScore", value = "总分数", position = 7, example = "60")
+    @TableField("pass_score")
+    private Integer passScore;
     /**
      * 出题人
      */
-    @ApiModelProperty(name = "teacher", value = "出题老师", position = 7, example = "LS000001")
+    @ApiModelProperty(name = "teacher", value = "出题老师", position = 8, example = "LS000001")
     private String teacher;
     /**
      * 出题时间
@@ -150,6 +157,14 @@ public class ExaminePaper extends Model<ExaminePaper> {
         this.totalScore = totalScore;
     }
 
+    public Integer getPassScore() {
+        return passScore;
+    }
+
+    public void setPassScore(Integer passScore) {
+        this.passScore = passScore;
+    }
+
     public String getTeacher() {
         return teacher;
     }
@@ -190,6 +205,7 @@ public class ExaminePaper extends Model<ExaminePaper> {
         ", count=" + count +
         ", examTime=" + examTime +
         ", totalScore=" + totalScore +
+        ", passScore=" + passScore +
         ", teacher=" + teacher +
         ", createDate=" + createDate +
         ", status=" + status +

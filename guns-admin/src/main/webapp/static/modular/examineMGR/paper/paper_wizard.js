@@ -58,6 +58,22 @@ var PaperWizard = {
                         }
                     }
                 },
+                passScore: {
+                    feedbackIcons: false,
+                    validators: {
+                        notEmpty: {
+                            message: '及格分数不能为空'
+                        },
+                        regexp: {
+                            regexp: '^[1-9][0-9]{0,5}$',
+                            message: '及格分数为正整数'
+                        },
+                        greaterThan: {
+                            value: 1,
+                            message: '及格分数不正确'
+                        }
+                    }
+                },
                 ability: {
                     feedbackIcons: false,
                     validators: {

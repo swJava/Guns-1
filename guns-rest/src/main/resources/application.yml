@@ -138,7 +138,7 @@ application:
   message:
     sms.sender.enable: true
   attachment:
-      visit-url: http://39.98.48.194/download
+      visit-url: http://www.kecui.com.cn/download
       store-path: /home/app/data/upload
 #启用shutdown
 management:

@@ -87,4 +87,14 @@ public interface CacheKey {
      * 授课方式
      */
     String COURSE_METHOD = "course_method_";
+
+    /**
+     * 菜单状态
+     */
+    String MENU_STATUS = "menu_status_";
+
+    /**
+     * 栏目动作类型
+     */
+    String COLUMN_TYPE = "column_type_";
 }

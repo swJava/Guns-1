@@ -104,8 +104,13 @@ Order.export = function () {
         });
 
         var queryData = {};
-        queryData['condition'] = $("#condition").val();
-        ajax.set('queryParams', queryData);
+        queryData['orderNo'] = $("#condition").val();
+        queryData['teacher'] = $("#teacher").val();
+        queryData['student'] = $("#student").val();
+        queryData['subject'] = $("#subject").val();
+        queryData['ability'] = $("#ability").val();
+        queryData['cycle'] = $("#cycle").val();
+        ajax.setData(queryData);
         ajax.start();
 };
 

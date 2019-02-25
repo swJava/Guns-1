@@ -101,7 +101,11 @@ AdjustStudent.close = function () {
  */
 AdjustStudent.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['student'] = $("#student").val();
+    queryData['classInfo'] = $("#classInfo").val();
+    queryData['beginDate'] = $("#beginDate").val();
+    queryData['endDate'] = $("#endDate").val();
+    queryData['status'] = '1';
     AdjustStudent.table.refresh({query: queryData});
 };
 
@@ -110,4 +114,9 @@ $(function () {
     var table = new BSTable(AdjustStudent.id, "/adjust/list", defaultColunms);
     table.setPaginationType("server");
     AdjustStudent.table = table.init();
+
+
+    // 日期条件初始化
+    laydate.render({elem: '#beginDate'});
+    laydate.render({elem: '#endDate'});
 });

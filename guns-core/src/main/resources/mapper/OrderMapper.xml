@@ -37,6 +37,18 @@
                 and (cc.student_code = #{student} or cc.student like CONCAT('%',#{student},'%'))
             </if>
 
+            <if test="null != subject">
+                and cr.subject = #{subject}
+            </if>
+
+            <if test="null != ability">
+                and c.ability = #{ability}
+            </if>
+
+            <if test="null != cycle">
+                and c.cycle = #{cycle}
+            </if>
+
         </where>
     </sql>
 
@@ -45,24 +57,58 @@
         <include refid="Base_Column_List" />
         from
         (
-        <if test="null != teacher || null != student">
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
             (
+            (
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            (
+        </if>
+        <if test="null != subject">
             (
         </if>
         tb_order o
-        <if test="null != teacher || null != student">
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
             join tb_order_item oi on oi.order_no = o.accept_no )
-            join tb_course_cart cc on cc.code = oi.course_cart_code
+            join tb_course_cart cc on cc.code = oi.course_cart_code )
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            join tb_class c on oi.item_object_code = c.code )
+        </if>
+        <if test="null != subject">
+            join tb_course cr on c.course_code = cr.code )
         </if>
         )
-
         <include refid="Where_Statement" />
     </select>
 
     <select id="selectPageList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select
             <include refid="Base_Column_List" />
-        from tb_order o
+        from
+        (
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            (
+            (
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            (
+        </if>
+        <if test="null != subject">
+            (
+        </if>
+        tb_order o
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            join tb_order_item oi on oi.order_no = o.accept_no )
+            join tb_course_cart cc on cc.code = oi.course_cart_code )
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            join tb_class c on oi.item_object_code = c.code )
+        </if>
+        <if test="null != subject">
+            join tb_course cr on c.course_code = cr.code )
+        </if>
+        )
         <include refid="Where_Statement" />
     </select>
 

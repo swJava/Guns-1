@@ -41,6 +41,14 @@
             <if test="null != classCode">
                 and ss.class_code = #{classCode}
             </if>
+            <!-- 开始时间 -->
+            <if test="null != beginDate">
+                and ss.study_date &gt;= #{beginDate}
+            </if>
+            <!-- 结束时间 -->
+            <if test="null != endDate">
+                and ss.study_date &lt; #{endDate}
+            </if>
             <!-- 状态 -->
             <if test="null != status">
                 and ss.status = #{status}

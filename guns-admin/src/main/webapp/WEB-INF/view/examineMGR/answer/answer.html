@@ -3,15 +3,47 @@
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>考卷管理</h5>
+                <h5>答卷管理</h5>
             </div>
             <div class="ibox-content">
                 <div class="row row-lg">
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="condition" name="名称" />
+                                <#dictSelectorCondition id="grade" name="年级" code="school_grade" placeholder="-- 选择年级 --" />
                             </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="ability" name="班次" code="ability" placeholder="-- 选择班次 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#SelectCon id="status" name="状态" >
+                                    <option value="">全部</option>
+                                    <option value="1">测试中</option>
+                                    <option value="3">已交卷</option>
+                                    <option value="4">已批改</option>
+                                </#SelectCon>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="student" name="学员关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group m-b-sm">
+                                    <span class="input-group-addon">最小得分</span>
+                                    <input type="text" class="form-control" id="beginScore" placeholder="起始分值" />
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="input-group m-b-sm">
+                                    <span class="input-group-addon">最大得分</span>
+                                    <input type="text" class="form-control" id="endScore" placeholder="终止分值" />
+                                </div>
+                            </div>
+
                             <div class="col-sm-3">
                                 <#button name="搜索" icon="fa-search" clickFun="Answer.search()"/>
                             </div>

@@ -595,6 +595,12 @@ public class EducationController extends ApiController {
         if (ToolUtil.isNotEmpty(classCode))
             queryMap.put("classCode", classCode);
 
+        if (ToolUtil.isNotEmpty(requester.getMonth())){
+            Date queryDate = DateUtil.parse(requester.getMonth(), "yyyyMM");
+            queryMap.put("beginDate", DateUtil.format(queryDate, "yyyy-MM-dd"));
+            queryMap.put("endDate", DateUtil.format(DateUtil.add(queryDate, Calendar.MONTH, 1), "yyyy-MM-dd"));
+        }
+
         queryMap.put("status", GenericState.Valid.code);
 
         List<StudentPlan> planList = scheduleStudentService.selectPlanList(queryMap);

@@ -23,7 +23,7 @@ Column.initColumn = function () {
             {title: '栏目编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
             {title: '父级栏目', field: 'pcode', visible: true, align: 'center', valign: 'middle'},
             {title: '祖先栏目', field: 'pcodes', visible: false, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle',
+            {title: '状态', field: 'status', visible: false, align: 'center', valign: 'middle',
                 formatter: function(value, row){
                     if (1 == value)
                         return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
@@ -176,6 +176,7 @@ $(function () {
     table.setRootCodeValue('LM000000');
     table.setLoadSuccessCallback(function(){
         // 初始化状态开关
+        console.log('<<< init switch');
         Column.initSwitcher('.js-switch', {
             pause: {
                 url: Feng.ctxPath + "/column/stop"

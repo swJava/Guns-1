@@ -16,8 +16,10 @@ import javax.validation.constraints.NotBlank;
 public class QueryPlanListRequester extends SimpleRequester {
     @ApiModelProperty(name = "studentCode", value = "学员编码", required = false, position = 0, example = "XY000001")
     private String student;
-    @ApiModelProperty(name = "classCode", value = "班级编码", required = false, position = 0, example = "XY000001")
+    @ApiModelProperty(name = "classCode", value = "班级编码", required = false, position = 1, example = "XY000001")
     private String classCode;
+    @ApiModelProperty(name = "month", value = "月份", required = false, position = 2, example = "201901")
+    private String month;
 
     public String getStudent() {
         return student;
@@ -33,6 +35,14 @@ public class QueryPlanListRequester extends SimpleRequester {
 
     public void setClassCode(String classCode) {
         this.classCode = classCode;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
     }
 
     @Override

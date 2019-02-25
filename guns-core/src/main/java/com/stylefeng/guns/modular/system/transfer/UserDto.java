@@ -18,8 +18,6 @@ public class UserDto{
 	private String salt;
 	private String name;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date birthday;
 	private Integer sex;
 	private String email;
 	private String phone;
@@ -69,14 +67,6 @@ public class UserDto{
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Date getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
 	}
 
 	public Integer getSex() {

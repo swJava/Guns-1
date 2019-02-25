@@ -10,7 +10,7 @@ application:
 
 spring:
   profiles:
-    active: @spring.active@
+    active: local
   messages:
     always-use-message-format: true
     basename: i18n/messages
@@ -65,7 +65,7 @@ application:
 server:
   port: 18001
   servlet:
-    context-path: /admin
+    context-path: /
   tomcat:
     max-connections: 1024
     uri-encoding: UTF-8
@@ -75,7 +75,7 @@ server:
 spring:
   profiles: produce
   datasource:
-    jdbcUrl: jdbc:mysql://172.26.140.96:33009/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
+    url: jdbc:mysql://172.26.140.96:33009/kcdb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false
     username: kcapp
     password: h,M)Hww0,.rz
     db-name: kcdb #用来搜集数据库的所有表

@@ -40,7 +40,7 @@ mybatis-plus:
 server:
   port: 8080
   servlet:
-    context-path: /admin
+    context-path: /
   tomcat:
     max-connections: 100
     uri-encoding: UTF-8

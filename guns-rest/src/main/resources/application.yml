@@ -101,7 +101,7 @@ application:
     sms.sender.enable: false
   attachment:
       visit-url: http://127.0.0.1:8081/api/attachment/download
-      store-path: H:/Datas/gs/upload
+      store-path: /Users/huahua/Workbase/data/gs/upload
 
 ---
 

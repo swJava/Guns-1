@@ -62,7 +62,13 @@ Answer.openDetail = function () {
  */
 Answer.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['grade'] = $("#grade").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['ability'] = $("#ability").val();
+    queryData['student'] = $("#student").val();
+    queryData['beginScore'] = $("#beginScore").val();
+    queryData['endScore'] = $("#endScore").val();
+    queryData['status'] = $("#status").val();
     Answer.table.refresh({query: queryData});
 };
 

@@ -89,6 +89,7 @@ MgrUser.roleAssign = function () {
             maxmin: true,
             content: Feng.ctxPath + '/mgr/role_assign/' + this.seItem.id
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };

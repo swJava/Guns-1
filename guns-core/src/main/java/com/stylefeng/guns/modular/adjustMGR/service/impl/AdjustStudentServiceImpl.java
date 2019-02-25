@@ -17,15 +17,13 @@ import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.system.dao.AdjustStudentMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -112,16 +110,35 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
     @Override
     public Page<Map<String, Object>> selectApplyMapsPage(AdjustStudentTypeEnum type, Map<String, Object> queryMap) {
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
-        if (null == queryMap){
-            queryMap = new HashMap<String, Object>();
-        }
-        if (null != type){
-            queryMap.put("type", type.code);
-        }
-        List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, queryMap);
+
+        Map<String, Object> arguments = buildQueryArguments(type, queryMap);
+
+        List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, arguments);
 
         page.setRecords(pageResult);
+
         return page;
+    }
+
+    private Map<String, Object> buildQueryArguments(AdjustStudentTypeEnum type, Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+        arguments.put("type", type.code);
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 
     @Override

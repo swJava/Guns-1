@@ -10,21 +10,32 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="condition" name="名称" />
+                                <#NameCon id="student" name="学员关键字" />
                             </div>
                             <div class="col-sm-3">
+                                <#NameCon id="classInfo" name="班级关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#TimeCon id="beginDate" name="开始日期" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#TimeCon id="endDate" name="结束日期" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-1 col-sm-offset-11">
                                 <#button name="搜索" icon="fa-search" clickFun="AdjustStudent.search()"/>
                             </div>
                         </div>
                         <div class="hidden-xs" id="AdjustStudentTableToolbar" role="group">
                             @if(shiro.hasPermission("/adjust/ok")){
-                                <#button name="审核通过" icon="fa-edit" clickFun="AdjustStudent.openApprove()" space="true"/>
+                                <!--<#button name="审核通过" icon="fa-edit" clickFun="AdjustStudent.openApprove()" space="true"/>-->
                             @}
                             @if(shiro.hasPermission("/adjust/reject")){
-                                <#button name="审核打回" icon="fa-edit" clickFun="AdjustStudent.openReject()" space="true"/>
+                                <!--<#button name="审核打回" icon="fa-edit" clickFun="AdjustStudent.openReject()" space="true"/>-->
                             @}
                             @if(shiro.hasPermission("/adjust/close")){
-                                <#button name="关闭申请" icon="fa-remove" clickFun="AdjustStudent.close()" space="true"/>
+                                <!--<#button name="关闭申请" icon="fa-remove" clickFun="AdjustStudent.close()" space="true"/>-->
                             @}
                         </div>
                         <#table id="AdjustStudentTable"/>

@@ -10,12 +10,11 @@ import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.system.dao.ExamineAnswerMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -74,7 +73,8 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
     public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap) {
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
 
-        List<Map<String, Object>> resultMap = examineAnswerMapper.selectPageMix(page, conditionMap);
+        Map<String, Object> arguments = buildQueryArguments(conditionMap);
+        List<Map<String, Object>> resultMap = examineAnswerMapper.selectPageMix(page, arguments);
         page.setRecords(resultMap);
         return page;
     }
@@ -110,5 +110,26 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
         existExamineAnswer.setScore(getScore);
 
         updateById(existExamineAnswer);
+    }
+
+
+    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 }

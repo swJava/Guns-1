@@ -56,6 +56,7 @@ Classroom.openAddClassroom = function () {
         maxmin: true,
         content: Feng.ctxPath + '/classroom/classroom_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 

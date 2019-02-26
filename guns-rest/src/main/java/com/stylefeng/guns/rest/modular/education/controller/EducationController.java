@@ -184,7 +184,7 @@ public class EducationController extends ApiController {
 
 
     @RequestMapping(value = "/class/signlist", method = RequestMethod.POST)
-    @ApiOperation(value="班级报班学员列表", httpMethod = "POST", response = ClassListResponse.class)
+    @ApiOperation(value="班级报班学员列表", httpMethod = "POST", response = ClassSignListResponse.class)
     public Responser listStudentSign(
             @ApiParam(required = true, value = "班级报班学员列表查询")
             @RequestBody

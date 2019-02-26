@@ -180,6 +180,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
             // 学员报班信息表
             StudentClass studentClass = new StudentClass();
+            studentClass.setOrderNo(order);
             studentClass.setStudentCode(courseCart.getStudentCode());
             studentClass.setClassCode(courseCart.getClassCode());
             studentClass.setClassName(courseCart.getClassName());

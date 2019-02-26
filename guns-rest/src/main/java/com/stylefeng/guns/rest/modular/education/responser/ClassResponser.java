@@ -153,7 +153,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date now = new Date();
 
         dto.setCanChange(false);
-        if (DateUtil.compareDate(now, beginDate, Calendar.DAY_OF_MONTH) > 0)
+        if (DateUtil.compareDate(now, beginDate, Calendar.DAY_OF_MONTH) < 0)
             dto.setCanChange(true);
     }
 
@@ -168,7 +168,7 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         Date now = new Date();
 
         dto.setCanAdjust(false);
-        if (DateUtil.compareDate(now, endDate, Calendar.DAY_OF_MONTH) > 0)
+        if (DateUtil.compareDate(now, endDate, Calendar.DAY_OF_MONTH) < 0)
             dto.setCanAdjust(true);
     }
 

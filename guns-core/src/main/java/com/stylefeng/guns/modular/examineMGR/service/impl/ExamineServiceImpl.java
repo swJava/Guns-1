@@ -122,12 +122,12 @@ public class ExamineServiceImpl implements IExamineService {
 
         Set<Map<String, Object>> examineAnswerPaperList = new HashSet<>();
         for(Map<String, Object> result : resultList){
-            Class classInfo = classService.get((String)result.get("classCode"));
-            if (null == classInfo)
-                continue;
-
-            result.put("className", classInfo.getName());
-            result.put("ability", classInfo.getAbility());
+//            Class classInfo = classService.get((String)result.get("classCode"));
+//            if (null == classInfo)
+//                continue;
+//
+//            result.put("className", classInfo.getName());
+//            result.put("ability", classInfo.getAbility());
             examineAnswerPaperList.add(result);
         }
         return examineAnswerPaperList;

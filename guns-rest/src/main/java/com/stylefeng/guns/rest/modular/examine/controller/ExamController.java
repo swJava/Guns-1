@@ -136,8 +136,7 @@ public class ExamController extends ApiController {
         // 查找学员的试卷列表
         Collection<Map<String, Object>> examineAnswerPaperList = examineService.findExamineAnswerPaperList(student.getCode());
         for(Map<String, Object> examineAnswerPaper : examineAnswerPaperList){
-            Class classInfo = classService.get((String)examineAnswerPaper.get("classCode"));
-            paperResponseList.add(ExamineAnswerPaperResponse.me(examineAnswerPaper, classInfo));
+            paperResponseList.add(ExamineAnswerPaperResponse.me(examineAnswerPaper));
         }
 
         return ExamineAnswerPaperListResponse.me(paperResponseList);

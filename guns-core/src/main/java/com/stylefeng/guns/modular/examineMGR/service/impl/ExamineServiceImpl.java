@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -122,12 +123,19 @@ public class ExamineServiceImpl implements IExamineService {
 
         Set<Map<String, Object>> examineAnswerPaperList = new HashSet<>();
         for(Map<String, Object> result : resultList){
+            ExaminePaper paper = examinePaperService.get((String)result.get("paperCode"));
+            StringBuffer classNameBuffer = new StringBuffer();
+            classNameBuffer.append(
+                ConstantFactory.me().getGradeName(Integer.parseInt(paper.getGrades()))
+            ).append(
+                ConstantFactory.me().getsubjectName(Integer.parseInt(paper.getSubject()))
+            );
 //            Class classInfo = classService.get((String)result.get("classCode"));
 //            if (null == classInfo)
 //                continue;
 //
-//            result.put("className", classInfo.getName());
-//            result.put("ability", classInfo.getAbility());
+            result.put("className", classNameBuffer.toString());
+            result.put("ability", ConstantFactory.me().getAbilityName(paper.getAbility()));
             examineAnswerPaperList.add(result);
         }
         return examineAnswerPaperList;

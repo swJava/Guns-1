@@ -13,7 +13,7 @@ application:
       app-secret: eae820aa9d2d01c79bd2432854417b3b
       device-id: kc00000001
       order-url: https://api.mch.weixin.qq.com/pay/unifiedorder
-      notify-url: http://www.kecui.com.cn/api/pay/weixin/notify
+      notify-url: http://api.kecui.com.cn/pay/weixin/notify
   message:
     captch.template: SMS_150742325
   education:
@@ -105,9 +105,9 @@ spring:
 logging:
   config: file:///home/app/config/logback-api.xml
 server:
-  port: 18002
+  port: 18003
   servlet:
-    context-path: /api
+    context-path: /
   tomcat:
     max-connections: 1024
     uri-encoding: UTF-8
@@ -117,15 +117,5 @@ application:
   message:
     sms.sender.enable: true
   attachment:
-      visit-url: http://39.98.48.194/download
+      visit-url: http://www.kecui.com.cn/download
       store-path: /home/app/data/upload
-#启用shutdown
-management:
-  server:
-    port: 18011
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    enabled-by-default: true
-    shutdown.enabled: true

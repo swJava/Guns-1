@@ -6,6 +6,7 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
@@ -175,12 +176,20 @@ public class ExamController extends ApiController {
     @RequestMapping("/paper/submit")
     public Responser submitPaper(@RequestBody ExamPaperSubmitRequester requester){
 
+        ExamineAnswer answerPaper = examineService.getAnswerPaper(requester.getCode());
+
+        if (null == answerPaper)
+            throw new ServiceException(MessageConstant.MessageCode.EXAMINE_SUBMIT_FAILED, new String[]{"请重试"});
+
         requester.parseSubmit();
 
         List<ExamineAnswerDetail> detailList = new ArrayList<>();
         for(QuestionRequester qr : requester.getSubmitItems()) {
             ExamineAnswerDetail answerDetail = new ExamineAnswerDetail();
-            answerDetail.setTotalScore(0);
+
+            int score = examineService.getQuestionScore(answerPaper.getPaperCode(), qr.getCode());
+
+            answerDetail.setTotalScore(score);
             answerDetail.setAnswerCode(requester.getCode());
             answerDetail.setQuestionCode(qr.getCode());
             answerDetail.setStudentAnswer(qr.getAnswer());

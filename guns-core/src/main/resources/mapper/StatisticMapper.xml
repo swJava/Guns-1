@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.StatisticMapper">
+
+    <resultMap id="StudentSignResultMap" type="java.util.HashMap">
+        <result column="student_code" property="studentCode" />
+        <result column="student_name" property="studentName" />
+        <result column="class_code" property="classCode" />
+        <result column="class_name" property="className" />
+        <result column="sign_date" property="signDate" />
+        <result column="member_mobile" property="memberMobile" />
+    </resultMap>
+
+    <select id="statisticStudentSign" resultMap="StudentSignResultMap" parameterType="java.util.HashMap">
+        select
+         s.code as student_code, s.name as student_name, c.code as class_code, c.name as class_name, o.accept_date as sign_date, m.mobile_number as member_mobile
+        from
+        (
+        (
+        (
+        (
+        (
+        (
+        tb_student_class sc
+        join tb_student s on sc.student_code = s.code)
+        join tb_member m on s.user_name = m.user_name)
+        join tb_class c on sc.class_code = c.code)
+        join tb_order o on sc.order_no = o.accept_no)
+        join tb_course co on c.course_code = co.code)
+        )
+        <where>
+            and sc.status = 1
+
+            <if test="null != student">
+                and ( s.code = #{student} or s.name LIKE CONCAT('%',#{student},'%') )
+            </if>
+            <!-- 老师 -->
+            <if test="null != teacher">
+                and
+                (c.teacher_code = #{teacher}
+                or c.teacher like CONCAT('%',#{teacher},'%')
+                or c.teacher_second_code = #{teacher}
+                or c.teacher_second like CONCAT('%',#{teacher},'%')
+                )
+            </if>
+            <!-- 学科 -->
+            <if test="null != subject">
+                and co.subject = #{subject}
+            </if>
+            <!-- 班次 -->
+            <if test="null != ability">
+                and c.ability = #{ability}
+            </if>
+            <!-- 学期 -->
+            <if test="null != cycle">
+                and c.cycle = #{cycle}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

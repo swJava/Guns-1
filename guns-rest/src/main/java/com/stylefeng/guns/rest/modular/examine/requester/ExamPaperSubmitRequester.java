@@ -16,7 +16,7 @@ import java.util.List;
 public class ExamPaperSubmitRequester extends SimpleRequester {
     private static final long serialVersionUID = -4015676963558662632L;
     /**
-     * 试卷编码
+     * 答卷编码
      */
     @ApiModelProperty(name = "code", value = "答卷编码", example = "DJ00000001")
     private String code;
@@ -24,7 +24,7 @@ public class ExamPaperSubmitRequester extends SimpleRequester {
     /**
      * 答案
      */
-    @ApiModelProperty(name = "code", value = "试卷编码", example = "[{}]")
+    @ApiModelProperty(name = "code", value = "答案", example = "[{}]")
     private String answer;
 
     @ApiModelProperty(hidden = true)

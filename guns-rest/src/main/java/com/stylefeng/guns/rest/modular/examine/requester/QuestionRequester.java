@@ -9,7 +9,9 @@ import com.stylefeng.guns.modular.system.model.Question;
  * @Version 1.0
  */
 public class QuestionRequester extends Question {
-
+    /**
+     * 学生答案
+     */
     private String answer;
 
     public String getAnswer() {

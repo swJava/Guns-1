@@ -154,5 +154,9 @@ public final class MessageConstant {
          * 不支持的试题类型
          */
         public static final String QUESTION_NO_SUPPORT = "060002";
+        /**
+         * 提交测试失败
+         */
+        public static final String EXAMINE_SUBMIT_FAILED = "060101";
     }
 }

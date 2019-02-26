@@ -1,12 +1,13 @@
 package com.stylefeng.guns.rest.modular.education.responser;
 
-import com.stylefeng.guns.modular.system.model.Student;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
+import com.stylefeng.guns.rest.modular.student.responser.StudentResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,17 +20,17 @@ import java.util.List;
 public class ClassSignListResponse extends SimpleResponser {
 
     @ApiModelProperty(name = "students", value = "学员集合")
-    private List<Student> students = new ArrayList<Student>();
+    private Collection<StudentResponse> students = new ArrayList<StudentResponse>();
 
-    public List<Student> getStudents() {
+    public Collection<StudentResponse> getStudents() {
         return students;
     }
 
-    public void setStudents(List<Student> students) {
+    public void setStudents(Collection<StudentResponse> students) {
         this.students = students;
     }
 
-    public static Responser me(List<Student> studentList) {
+    public static Responser me(Collection<StudentResponse> studentList) {
         ClassSignListResponse response = new ClassSignListResponse();
         response.setCode(SUCCEED);
         response.setMessage("查询成功");

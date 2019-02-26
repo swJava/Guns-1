@@ -10,6 +10,7 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.examineMGR.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,5 +131,41 @@ public class ExamineServiceImpl implements IExamineService {
             examineAnswerPaperList.add(result);
         }
         return examineAnswerPaperList;
+    }
+
+    @Override
+    public ExamineAnswer getAnswerPaper(String code) {
+        if (null == code)
+            return null;
+
+        return examineAnswerService.get(code);
+    }
+
+    @Override
+    public int getQuestionScore(String paperCode, String questionCode) {
+        if (ToolUtil.isAllEmpty(paperCode, questionCode))
+            return 0;
+
+        Wrapper<ExaminePaperItem> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("paper_code", paperCode);
+        queryWrapper.eq("question_code", questionCode);
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        List<ExaminePaperItem> scoreList = examinePaperItemService.selectList(queryWrapper);
+
+        if (null == scoreList || scoreList.isEmpty())
+            return 0;
+
+        ExaminePaperItem paperItem = scoreList.get(0);
+
+        if (null == paperItem || null == paperItem.getScore())
+            return 0;
+
+        int score = 0;
+        try {
+            score = Integer.parseInt(paperItem.getScore());
+        }catch(Exception e){}
+
+        return score;
     }
 }

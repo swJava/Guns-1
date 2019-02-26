@@ -53,7 +53,7 @@
     </sql>
 
     <sql id="Student_Column_List">
-        s.id, s.code, s.name, s.avatar, s.gender, s.grade, s.school, s.target_school, s.status
+        s.id, s.code, s.name, s.avatar, s.gender, s.grade, s.school, s.target_school as targetSchool, s.status, s.user_name as userName
     </sql>
 
     <!-- 班级查询结果列 -->
@@ -61,7 +61,7 @@
         c.id, c.code, c.name, c.grade, c.cycle, c.ability, c.begin_date, c.end_date, c.begin_time, c.end_time, c.duration, c.period, c.class_room_code, c.class_room, c.course_code, c.course_name, c.star, c.price, c.quato, c.sign_start_date, c.sign_end_date, c.status, c.teacher, c.teacher_code, c.teacher_second, c.teacher_second_code, c.study_time_desp, c.signable, c.examinable
     </sql>
 
-    <select id="listSignedStudent" resultType="com.stylefeng.guns.modular.system.model.Class" parameterType="java.util.HashMap">
+    <select id="listSignedStudent" resultType="com.stylefeng.guns.modular.system.model.Student" parameterType="java.util.HashMap">
         select
         <include refid="Student_Column_List" />
         from tb_student s join ( select ss.code from tb_student ss join tb_student_class sc on sc.student_code = ss.code

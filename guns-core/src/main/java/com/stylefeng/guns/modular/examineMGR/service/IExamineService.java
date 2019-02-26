@@ -1,9 +1,6 @@
 package com.stylefeng.guns.modular.examineMGR.service;
 
-import com.stylefeng.guns.modular.system.model.ExamineAnswerDetail;
-import com.stylefeng.guns.modular.system.model.ExaminePaper;
-import com.stylefeng.guns.modular.system.model.Question;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,4 +51,21 @@ public interface IExamineService {
      * @return
      */
     Collection<Map<String, Object>> findExamineAnswerPaperList(String student);
+
+    /**
+     * 获取答卷
+     *
+     * @param code
+     * @return
+     */
+    ExamineAnswer getAnswerPaper(String code);
+
+    /**
+     * 获取试题分值
+     *
+     * @param paperCode
+     * @param code
+     * @return
+     */
+    int getQuestionScore(String paperCode, String code);
 }

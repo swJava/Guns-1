@@ -72,7 +72,7 @@ public class ExaminePaper extends Model<ExaminePaper> {
     /**
      * 及格分数
      */
-    @ApiModelProperty(name = "passScore", value = "总分数", position = 7, example = "60")
+    @ApiModelProperty(name = "passScore", value = "及格分数", position = 7, example = "60")
     @TableField("pass_score")
     private Integer passScore;
     /**

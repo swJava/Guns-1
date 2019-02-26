@@ -289,7 +289,8 @@ PaperWizard.collectData = function() {
         .set('grades')
         .set('subject')
         .set('ability')
-        .set('examTime');
+        .set('examTime')
+        .set('passScore');
 
     var questions = PaperWizard.SelectedQuestion.seCodes.slice(0);
     console.log(questions);

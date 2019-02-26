@@ -3,11 +3,13 @@ package com.stylefeng.guns.modular.orderMGR.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.education.CourseMethodEnum;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
@@ -43,6 +45,9 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
     @Autowired
     private IExamineAnswerService examineAnswerService;
+
+    @Autowired
+    private IStudentClassService studentClassService;
 
     private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
     private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
@@ -181,6 +186,17 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     }
 
     private void select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
+
+        // 查询班级剩余报名额度
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("class_code", classInfo.getCode());
+        queryWrapper.eq("status", GenericState.Valid.code);
+        int existCount = studentClassService.selectCount(queryWrapper);
+
+        if (existCount >= classInfo.getQuato() - 2){
+            throw new ServiceException(MessageConstant.MessageCode.ORDER_NO_CAPACITY);
+        }
+
         CourseCart courseCart = new CourseCart();
         Date now = new Date();
 

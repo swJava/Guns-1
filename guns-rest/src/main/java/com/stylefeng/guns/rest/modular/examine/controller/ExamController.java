@@ -111,7 +111,11 @@ public class ExamController extends ApiController {
     ){
         Member member = currMember();
 
-        Student student = studentService.get(requester.getStudent());
+        if (ToolUtil.isEmpty(requester.getStudent()) || ToolUtil.isEmpty(requester.getStudent().getCode())){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"学员编码"});
+        }
+
+        Student student = studentService.get(requester.getStudent().getCode());
 
         if (null == student || !(student.isValid()))
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});

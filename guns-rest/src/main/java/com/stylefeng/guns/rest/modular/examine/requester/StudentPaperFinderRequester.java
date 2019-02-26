@@ -17,13 +17,13 @@ import javax.validation.constraints.NotNull;
 public class StudentPaperFinderRequester extends SimpleRequester {
     @ApiModelProperty(value = "student", name = "学员信息", required = true, example = "XY190201000001")
     @NotNull(message = "学员信息不能为空")
-    private String student;
+    private Student student;
 
-    public String getStudent() {
+    public Student getStudent() {
         return student;
     }
 
-    public void setStudent(String student) {
+    public void setStudent(Student student) {
         this.student = student;
     }
 

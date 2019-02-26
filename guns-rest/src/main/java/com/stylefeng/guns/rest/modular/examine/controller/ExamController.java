@@ -123,7 +123,7 @@ public class ExamController extends ApiController {
         List<Student> studentList = studentService.listStudents(member.getUserName());
         boolean isMemberStudent = false;
         for(Student studentMember : studentList){
-            if (studentMember.getCode().equals(requester.getStudent())){
+            if (studentMember.getCode().equals(requester.getStudent().getCode())){
                 isMemberStudent = true;
                 break;
             }

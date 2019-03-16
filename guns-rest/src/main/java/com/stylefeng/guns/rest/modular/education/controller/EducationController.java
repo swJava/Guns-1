@@ -24,6 +24,7 @@ import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.requester.*;
 import com.stylefeng.guns.rest.modular.education.responser.*;
+import com.stylefeng.guns.rest.modular.student.responser.StudentResponse;
 import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.ToolUtil;
 import io.swagger.annotations.Api;
@@ -33,6 +34,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -182,7 +184,7 @@ public class EducationController extends ApiController {
 
 
     @RequestMapping(value = "/class/signlist", method = RequestMethod.POST)
-    @ApiOperation(value="班级报班学员列表", httpMethod = "POST", response = ClassListResponse.class)
+    @ApiOperation(value="班级报班学员列表", httpMethod = "POST", response = ClassSignListResponse.class)
     public Responser listStudentSign(
             @ApiParam(required = true, value = "班级报班学员列表查询")
             @RequestBody
@@ -196,7 +198,24 @@ public class EducationController extends ApiController {
 
         List<Student> studentList = studentClassService.listSignedStudent(queryMap);
 
-        return ClassSignListResponse.me(studentList);
+        Set<StudentResponse> studentSet = new HashSet<>();
+        for(Student student : studentList){
+            StudentResponse studentResponse = new StudentResponse();
+            BeanUtils.copyProperties(student, studentResponse);
+
+            Member studentMember = memberService.get(student.getUserName());
+            if (null == studentMember){
+                studentSet.add(studentResponse);
+                continue;
+            }
+
+            studentResponse.setMemberName(studentMember.getName());
+            studentResponse.setMemberMobile(studentMember.getMobileNumber());
+
+            studentSet.add(studentResponse);
+        }
+
+        return ClassSignListResponse.me(studentSet);
     }
 
     @ApiOperation(value="班级详情", httpMethod = "POST", response = ClassDetailResponse.class)
@@ -409,6 +428,16 @@ public class EducationController extends ApiController {
 
         Set<Class> classSet = new HashSet<>();
         for (com.stylefeng.guns.modular.system.model.Class classInfo : classList){
+            // 查询班级剩余报名额度
+            Wrapper<StudentClass> queryWrapper = new EntityWrapper<>();
+            queryWrapper.eq("class_code", classInfo.getCode());
+            queryWrapper.eq("status", GenericState.Valid.code);
+            int existCount = studentClassService.selectCount(queryWrapper);
+
+            if (existCount >= classInfo.getQuato() - 2){
+                continue;
+            }
+
             if (null == classInfo){
                 continue;
             }

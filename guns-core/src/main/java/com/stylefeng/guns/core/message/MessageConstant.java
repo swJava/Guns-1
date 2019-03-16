@@ -130,6 +130,10 @@ public final class MessageConstant {
          */
         public static final String ORDER_NEED_EXAMINE = "040002";
         /**
+         * 班级已达到最大容量
+         */
+        public static final String ORDER_NO_CAPACITY = "040003";
+        /**
          * 您已有相同的调课申请
          */
         public static final String ADJUST_COURSE_DUPLICATE = "050001";
@@ -154,5 +158,9 @@ public final class MessageConstant {
          * 不支持的试题类型
          */
         public static final String QUESTION_NO_SUPPORT = "060002";
+        /**
+         * 提交测试失败
+         */
+        public static final String EXAMINE_SUBMIT_FAILED = "060101";
     }
 }

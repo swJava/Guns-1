@@ -6,6 +6,7 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
@@ -110,7 +111,11 @@ public class ExamController extends ApiController {
     ){
         Member member = currMember();
 
-        Student student = studentService.get(requester.getStudent());
+        if (ToolUtil.isEmpty(requester.getStudent()) || ToolUtil.isEmpty(requester.getStudent().getCode())){
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"学员编码"});
+        }
+
+        Student student = studentService.get(requester.getStudent().getCode());
 
         if (null == student || !(student.isValid()))
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
@@ -118,7 +123,7 @@ public class ExamController extends ApiController {
         List<Student> studentList = studentService.listStudents(member.getUserName());
         boolean isMemberStudent = false;
         for(Student studentMember : studentList){
-            if (studentMember.getCode().equals(requester.getStudent())){
+            if (studentMember.getCode().equals(requester.getStudent().getCode())){
                 isMemberStudent = true;
                 break;
             }
@@ -131,8 +136,7 @@ public class ExamController extends ApiController {
         // 查找学员的试卷列表
         Collection<Map<String, Object>> examineAnswerPaperList = examineService.findExamineAnswerPaperList(student.getCode());
         for(Map<String, Object> examineAnswerPaper : examineAnswerPaperList){
-            Class classInfo = classService.get((String)examineAnswerPaper.get("classCode"));
-            paperResponseList.add(ExamineAnswerPaperResponse.me(examineAnswerPaper, classInfo));
+            paperResponseList.add(ExamineAnswerPaperResponse.me(examineAnswerPaper));
         }
 
         return ExamineAnswerPaperListResponse.me(paperResponseList);
@@ -175,12 +179,20 @@ public class ExamController extends ApiController {
     @RequestMapping("/paper/submit")
     public Responser submitPaper(@RequestBody ExamPaperSubmitRequester requester){
 
+        ExamineAnswer answerPaper = examineService.getAnswerPaper(requester.getCode());
+
+        if (null == answerPaper)
+            throw new ServiceException(MessageConstant.MessageCode.EXAMINE_SUBMIT_FAILED, new String[]{"请重试"});
+
         requester.parseSubmit();
 
         List<ExamineAnswerDetail> detailList = new ArrayList<>();
         for(QuestionRequester qr : requester.getSubmitItems()) {
             ExamineAnswerDetail answerDetail = new ExamineAnswerDetail();
-            answerDetail.setTotalScore(0);
+
+            int score = examineService.getQuestionScore(answerPaper.getPaperCode(), qr.getCode());
+
+            answerDetail.setTotalScore(score);
             answerDetail.setAnswerCode(requester.getCode());
             answerDetail.setQuestionCode(qr.getCode());
             answerDetail.setStudentAnswer(qr.getAnswer());

@@ -139,7 +139,7 @@ public class OrderController extends BaseController {
 
 
     /**
-     * 关闭订单管理
+     * 导出订单管理
      */
     @RequestMapping(value = "/class/export")
     @ResponseBody

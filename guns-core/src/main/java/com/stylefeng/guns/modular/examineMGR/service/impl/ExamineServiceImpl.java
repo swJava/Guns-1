@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.examineMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -10,6 +11,7 @@ import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.examineMGR.service.*;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,14 +123,57 @@ public class ExamineServiceImpl implements IExamineService {
 
         Set<Map<String, Object>> examineAnswerPaperList = new HashSet<>();
         for(Map<String, Object> result : resultList){
-            Class classInfo = classService.get((String)result.get("classCode"));
-            if (null == classInfo)
-                continue;
-
-            result.put("className", classInfo.getName());
-            result.put("ability", classInfo.getAbility());
+            ExaminePaper paper = examinePaperService.get((String)result.get("paperCode"));
+            StringBuffer classNameBuffer = new StringBuffer();
+            classNameBuffer.append(
+                ConstantFactory.me().getGradeName(Integer.parseInt(paper.getGrades()))
+            ).append(
+                ConstantFactory.me().getsubjectName(Integer.parseInt(paper.getSubject()))
+            );
+//            Class classInfo = classService.get((String)result.get("classCode"));
+//            if (null == classInfo)
+//                continue;
+//
+            result.put("className", classNameBuffer.toString());
+            result.put("ability", ConstantFactory.me().getAbilityName(paper.getAbility()));
             examineAnswerPaperList.add(result);
         }
         return examineAnswerPaperList;
+    }
+
+    @Override
+    public ExamineAnswer getAnswerPaper(String code) {
+        if (null == code)
+            return null;
+
+        return examineAnswerService.get(code);
+    }
+
+    @Override
+    public int getQuestionScore(String paperCode, String questionCode) {
+        if (ToolUtil.isAllEmpty(paperCode, questionCode))
+            return 0;
+
+        Wrapper<ExaminePaperItem> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("paper_code", paperCode);
+        queryWrapper.eq("question_code", questionCode);
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        List<ExaminePaperItem> scoreList = examinePaperItemService.selectList(queryWrapper);
+
+        if (null == scoreList || scoreList.isEmpty())
+            return 0;
+
+        ExaminePaperItem paperItem = scoreList.get(0);
+
+        if (null == paperItem || null == paperItem.getScore())
+            return 0;
+
+        int score = 0;
+        try {
+            score = Integer.parseInt(paperItem.getScore());
+        }catch(Exception e){}
+
+        return score;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class ExamineAnswerPaperListResponse extends SimpleResponser {
 
-    private Collection<ExamineAnswerPaperResponse> datas = new ArrayList<ExamineAnswerPaperResponse>();
+    private Collection<ExamineAnswerPaperResponse> data = new ArrayList<ExamineAnswerPaperResponse>();
 
     public static ExamineAnswerPaperListResponse me(Set<ExamineAnswerPaperResponse> paperResponseList) {
         ExamineAnswerPaperListResponse responser = new ExamineAnswerPaperListResponse();
@@ -28,15 +28,15 @@ public class ExamineAnswerPaperListResponse extends SimpleResponser {
         return responser;
     }
 
-    public Collection<ExamineAnswerPaperResponse> getDatas() {
-        return datas;
+    public Collection<ExamineAnswerPaperResponse> getData() {
+        return data;
     }
 
     public void setDatas(Collection<ExamineAnswerPaperResponse> datas) {
-        this.datas = datas;
+        this.data = datas;
     }
 
     public void add(ExamineAnswerPaperResponse answerPaperResponse) {
-        this.datas.add(answerPaperResponse);
+        this.data.add(answerPaperResponse);
     }
 }

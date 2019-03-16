@@ -317,6 +317,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                         Integer.parseInt(subject);
                     }catch(Exception e){
                         subjectValue = String.valueOf(subjectMap.get(subject));
+                        try {
+                            Integer.parseInt(subjectValue);
+                        }catch(Exception ee){
+                            subjectValue = null;
+                        }
                     }
 
                     if (null != subjectValue)

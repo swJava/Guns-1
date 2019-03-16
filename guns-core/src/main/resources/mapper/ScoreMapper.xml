@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ScoreMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Score">
+        <id column="id" property="id" />
+        <result column="student" property="student" />
+        <result column="mobile_number" property="mobileNumber" />
+        <result column="examine_name" property="examineName" />
+        <result column="round" property="round" />
+        <result column="score" property="score" />
+        <result column="total_score" property="totalScore" />
+        <result column="rank" property="rank" />
+        <result column="remark" property="remark" />
+        <result column="import_date" property="importDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        s.id, s.student, s.mobile_number, s.examine_name, s.round, s.score, s.total_score, s.rank, s.remark, s.import_date
+    </sql>
+
+    <select id="selectPageList" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_score s
+        <where>
+            <!-- 学员 -->
+            <if test="studentList.size() > 0">
+                and ( (
+                <foreach collection="studentList" item="student" open="" separator=" or " close="">
+                    s.student_code = #{student}
+                </foreach>
+                ) or (
+                <foreach collection="studentList" item="student" open="" separator=" or " close="">
+                    s.student like CONCAT('%',#{student},'%')
+                </foreach>
+                ) )
+            </if>
+
+            <!-- 考试名称 -->
+            <if test="null != examine">
+                and s.examine_name like CONCAT('%',#{student},'%')
+            </if>
+
+            <!-- 考试场次 -->
+            <if test="null != round">
+                and s.round like CONCAT('%',#{round},'%')
+            </if>
+
+        </where>
+    </select>
+
+</mapper>

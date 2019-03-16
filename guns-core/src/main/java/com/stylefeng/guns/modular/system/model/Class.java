@@ -1,18 +1,16 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.enums.IdType;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -50,44 +48,51 @@ public class Class extends Model<Class> {
     @ApiModelProperty(name = "grade", value = "年级", position = 2, example="1")
     private Integer grade;
 
+    @TableField("academic_year")
+    @ApiModelProperty(name = "academicYear", value = "学年", position = 3, example = "2019")
+    private Integer academicYear;
+
     /**
      * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班；5 暑假班 99 活动类
      */
-    @ApiModelProperty(name = "cycle", value = "学期", position = 3, example="2")
+    @ApiModelProperty(name = "cycle", value = "学期", position = 4, example="2")
     private Integer cycle;
 
     /**
      * 班次 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
      */
-    @ApiModelProperty(name = "ability", value = "班次", position = 4, example="4")
+    @ApiModelProperty(name = "ability", value = "班次", position = 5, example="4")
     private Integer ability;
     /**
      * 开课起始日期
      */
     @TableField("begin_date")
-    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 5, example="2018-11-30")
+    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 6, example="2018-11-30")
     private Date beginDate;
     /**
      * 开课结束日期
      */
     @TableField("end_date")
-    @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 6, example="2018-12-30")
+    @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 7, example="2018-12-30")
     private Date endDate;
     /**
      * 开课时间描述
      */
     @TableField("study_time_desp")
+    @ApiModelProperty(name = "beginDate", value = "上课事件描述", position = 8, example="每周六 上午10：30 ～ 11：30")
     private String studyTimeDesp;
     /**
-     * 开始时间
+     * 跨报开始时间
      */
-    @TableField("begin_time")
-    private String beginTime;
+    @TableField("cross_start_date")
+    @ApiModelProperty(name = "crossStartDate", value = "跨报开始时间", position = 9, example="2019-02-01")
+    private Date crossStartDate;
     /**
-     * 结束时间
+     * 跨报结束时间
      */
-    @TableField("end_time")
-    private String endTime;
+    @TableField("cross_end_date")
+    @ApiModelProperty(name = "crossEndDate", value = "跨报结束时间", position = 10, example="2019-02-05")
+    private Date crossEndDate;
     /**
      * 单位：分钟
      */
@@ -179,6 +184,11 @@ public class Class extends Model<Class> {
      */
     private Integer examinable;
 
+    /**
+     * 是否允许跨报
+     */
+    private Integer crossable;
+
 
     public Long getId() {
         return id;
@@ -214,6 +224,14 @@ public class Class extends Model<Class> {
 
     public Integer getCycle() {
         return cycle;
+    }
+
+    public Integer getAcademicYear() {
+        return academicYear;
+    }
+
+    public void setAcademicYear(Integer academicYear) {
+        this.academicYear = academicYear;
     }
 
     public void setCycle(Integer cycle) {
@@ -252,20 +270,20 @@ public class Class extends Model<Class> {
         this.studyTimeDesp = studyTimeDesp;
     }
 
-    public String getBeginTime() {
-        return beginTime;
+    public Date getCrossStartDate() {
+        return crossStartDate;
     }
 
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
+    public void setCrossStartDate(Date crossStartDate) {
+        this.crossStartDate = crossStartDate;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public Date getCrossEndDate() {
+        return crossEndDate;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setCrossEndDate(Date crossEndDate) {
+        this.crossEndDate = crossEndDate;
     }
 
     public Integer getDuration() {
@@ -420,6 +438,14 @@ public class Class extends Model<Class> {
         this.examinable = examinable;
     }
 
+    public Integer getCrossable() {
+        return crossable;
+    }
+
+    public void setCrossable(Integer crossable) {
+        this.crossable = crossable;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -431,13 +457,15 @@ public class Class extends Model<Class> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
+        ", grade=" + grade +
+        ", academicYear=" + academicYear +
         ", cycle=" + cycle +
         ", ability=" + ability +
         ", beginDate=" + beginDate +
         ", endDate=" + endDate +
         ", studyTimeDesp=" + studyTimeDesp +
-        ", beginTime=" + beginTime +
-        ", endTime=" + endTime +
+        ", crossStartDate=" + crossStartDate +
+        ", crossEndDate=" + crossEndDate +
         ", duration=" + duration +
         ", period=" + period +
         ", classRoomCode=" + classRoomCode +
@@ -457,6 +485,7 @@ public class Class extends Model<Class> {
         ", examinePaper=" + examinePaper +
         ", signable=" + signable +
         ", examinable=" + examinable +
+        ", crossable=" + crossable +
         "}";
     }
 

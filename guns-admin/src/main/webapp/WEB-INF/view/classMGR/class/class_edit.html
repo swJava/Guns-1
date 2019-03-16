@@ -23,7 +23,6 @@
                                 <#input id="courseName" name="课程名称" value="${courseItem.name}" readonly="true" underline="true"/>
                                 <#input id="gradeName" name="授课年级" value="${courseItem.grade}" readonly="true" underline="true"/>
                                 <#input id="period" name="总学时" value="${courseItem.period}" readonly="true" underline="true"/>
-
                             </div>
 
                             <div class="col-sm-6">
@@ -32,8 +31,19 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6 b-r">
+                            <div class="col-sm-12">
                                 <#input id="name" name="班级名称" value="${classItem.name}" underline="true"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">学年</label>
+                                    <div class="col-sm-9">
+                                        <select id="academicYear" name="学年" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
                                 <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">讲师</label>

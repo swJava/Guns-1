@@ -39,6 +39,7 @@ StudentSign.export = function () {
     queryData['subject'] = $("#subject").val();
     queryData['ability'] = $("#ability").val();
     queryData['cycle'] = $("#cycle").val();
+    queryData['grade'] = $("#grade").val();
     ajax.setData(queryData);
     ajax.start();
 };
@@ -53,6 +54,7 @@ StudentSign.search = function () {
     queryData['subject'] = $("#subject").val();
     queryData['ability'] = $("#ability").val();
     queryData['cycle'] = $("#cycle").val();
+    queryData['grade'] = $("#grade").val();
     StudentSign.table.refresh({query: queryData});
 };
 

@@ -26,6 +26,10 @@ public class ClassWrapper extends BaseControllerWarpper{
     protected void warpTheMap(Map<String, Object> map) {
         map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt(map.get("status").toString())));
         map.put("gradeName", ConstantFactory.me().getDictsByCode("school_grade", map.get("grade").toString()));
+
+        int quato = Integer.parseInt(map.get("quato").toString());
+        int signQuato = Integer.parseInt(map.get("signQuato").toString());
+        map.put("remainderQuato", quato - signQuato);
         Optional.ofNullable(map.get("price")).ifPresent(Price->map.put("price", new BigDecimal(Price.toString()).divide(YUAN_FEN).setScale(2, BigDecimal.ROUND_DOWN).toString()));
     }
 }

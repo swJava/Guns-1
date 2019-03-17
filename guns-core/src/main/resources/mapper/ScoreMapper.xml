@@ -49,6 +49,16 @@
                 and s.round like CONCAT('%',#{round},'%')
             </if>
 
+            <!-- 关键字 -->
+            <if test="null != keyword">
+                and (
+                s.round like CONCAT('%',#{keyword},'%')
+                or s.examine_name like CONCAT('%',#{keyword},'%')
+                or s.student like CONCAT('%',#{keyword},'%')
+                or s.student_code = #{keyword}
+                )
+            </if>
+
         </where>
     </select>
 

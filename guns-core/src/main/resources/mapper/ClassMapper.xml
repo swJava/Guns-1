@@ -49,10 +49,10 @@
     <sql id="Where_Sql">
         <where>
             <if test="subjectList.size() > 0 || methodList.size() > 0">
-                tcr.code = tc.course_code
+                and tcr.code = tc.course_code
             </if>
             <if test="classPlanList.size() > 0">
-                tc.code = sc.class_code and sc.status = 1
+                and tc.code = sc.class_code and sc.status = 1
             </if>
             <!-- 班级名称 -->
             <if test="null != name">
@@ -197,18 +197,21 @@
 
     <!-- 分页查询 -->
     <select id="selectPageList" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select a.*, IFNULL(b.sign_quato, 0) AS signQuato from (
         select
-        <include refid="Column_List" />
+        <include refid="Column_List"/>
         from tb_class tc
         <choose>
-            <when test=" subjectList.size() > 0 || methodList.size() > 0">
+            <when test="subjectList.size() > 0 || methodList.size() > 0">
                 , tb_course tcr
             </when>
-            <when test=" classPlanList.size() > 0 ">
+            <when test="classPlanList.size() > 0 ">
                 , tb_schedule_class sc
             </when>
         </choose>
-        <include refid="Where_Sql" />
+        <include refid="Where_Sql"/>
+        ) a left join (select a.code as class_code, count(a.code) as sign_quato from tb_class a left join tb_student_class b on a.code = b.class_code where b.status = 1 group by a.code) b
+        on a.code = b.class_code
     </select>
     <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select

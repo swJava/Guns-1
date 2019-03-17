@@ -17,6 +17,8 @@
                         <input type="hidden" id="teacherCodeValue" value="${classItem.teacherCode}">
                         <input type="hidden" id="teacherSecondCodeValue" value="${classItem.teacherSecondCode}">
                         <input type="hidden" id="classRoomCodeValue" value="${classItem.classRoomCode}">
+                        <input type="hidden" id="academicYearsValue" value='${academicYears}' >
+                        <input type="hidden" id="academicYearValue" value='${classItem.academicYear}' >
 
                         <div class="row">
                             <div class="col-sm-6 b-r">
@@ -31,12 +33,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12">
-                                <#input id="name" name="班级名称" value="${classItem.name}" underline="true"/>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-sm-6 b-r">
+                                <#input id="name" name="班级名称" value="${classItem.name}" underline="true"/>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">学年</label>
                                     <div class="col-sm-9">
@@ -45,28 +43,7 @@
                                 </div>
                                 <div class="hr-line-dashed" ></div >
                                 <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">讲师</label>
-                                    <div class="col-sm-9">
-                                        <select id="teacherCode" name="讲师" class="form-control" style="width:75%px"></select>
-                                    </div>
-                                </div>
-                                <div class="hr-line-dashed" ></div >
-                                <#input id="signStartDate" name="开始报名" value="${classItem.signStartDate}" underline="true"/>
-                                <#input id="quato" name="学员数" value="${classItem.quato}" underline="true"/>
-                                <#input id="sutdyTimeDesp" name="上课时间" value="${classItem.studyTimeDesp}" underline="true"/>
-                            </div>
-                            <div class="col-sm-6">
-                                <#input id="price" name="价格(元)" value="${classItem.price}" underline="true"/>
                                 <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">辅导员</label>
-                                    <div class="col-sm-9">
-                                        <select id="teacherSecondCode" name="辅导员" class="form-control" style="width:75%px"></select>
-                                    </div>
-                                </div>
-                                <div class="hr-line-dashed" ></div >
-                                <#input id="signEndDate" name="截止报名" value="${classItem.signEndDate}" underline="true"/>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">教室</label>
                                     <div class="col-sm-9">
@@ -74,6 +51,45 @@
                                     </div>
                                 </div>
                                 <div class="hr-line-dashed" ></div >
+                                <#input id="quato" name="学员数" value="${classItem.quato}" underline="true"/>
+                                <#input id="sutdyTimeDesp" name="上课时间" value="${classItem.studyTimeDesp}" underline="true"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="price" name="价格(元)" value="${classItem.price}" underline="true"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">讲师</label>
+                                    <div class="col-sm-9">
+                                        <select id="teacherCode" name="讲师" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">辅导员</label>
+                                    <div class="col-sm-9">
+                                        <select id="teacherSecondCode" name="辅导员" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <#input id="signStartDate" name="开始报名" value="${classItem.signStartDate}" underline="true"/>
+                                <#input id="signEndDate" name="截止报名" value="${classItem.signEndDate}" underline="true"/>
+                                <div class="form-group" style="margin-bottom: 17px;">
+                                    <label class="col-sm-3 control-label">开放跨报</label>
+                                    <div class="col-sm-9">
+                                        <div class="radio radio-inline">
+                                            <label>
+                                                <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
+                                            </label>
+                                        </div>
+                                        <div class="radio radio-inline">
+                                            <label>
+                                                <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <#input id="crossStartDate" name="开始跨报" value="${classItem.crossStartDate}" underline="true"/>
+                                <#input id="crossEndDate" name="结束跨报" value="${classItem.crossEndDate}" underline="true"/>
                             </div>
                         </div>
                     </div>

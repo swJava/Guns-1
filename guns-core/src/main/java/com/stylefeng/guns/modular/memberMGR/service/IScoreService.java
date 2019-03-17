@@ -21,13 +21,14 @@ public interface IScoreService extends IService<Score> {
      * @param queryParams
      * @return
      */
-    Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParams);
+    Page<Score> selectPage(Map<String, Object> queryParams, Page<Score> page);
 
     /**
      * 分页查询
      *
-     * @param queryParams
+     * @param conditionMap
+     * @param pageInfo
      * @return
      */
-    Page<Score> selectPage(Map<String, Object> queryParams, Page<Score> page);
+    Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap, Page<Map<String, Object>> pageInfo);
 }

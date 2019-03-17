@@ -71,28 +71,15 @@ public class ClassController extends BaseController {
      * 跳转到添加课程管理
      */
     @RequestMapping("/class_add")
-    public String classAdd() {
+    public String classAdd(Model model) {
+        Date now = new Date();
+        List<String> academicYearList = new ArrayList<>();
+        for(int i = 0 ; i < 3; i++){
+            academicYearList.add(DateUtil.getYear(DateUtils.truncate(now, Calendar.YEAR)));
+            now = DateUtil.add(now, Calendar.YEAR,1);
+        }
+        model.addAttribute("academicYears", JSON.toJSON(academicYearList));
         return PREFIX + "class_add.html";
-    }
-
-    /**
-     * 跳转到添加课程大纲管理
-     */
-    @RequestMapping("/class_add_kcdg/{classCode}/{courseCode}")
-    public String classAddKCDG(@PathVariable String classCode,@PathVariable String courseCode, Model model) {
-
-        List<CourseOutline> courseOutlines = courseOutlineService.selectList(new EntityWrapper<CourseOutline>(){{
-            eq("class_code", classCode);
-            eq("code", courseCode);
-            orderAsc(new ArrayList<String>(1){{add("sort");}});
-        }});
-        model.addAttribute("item",new HashMap<String,String>(){{
-            put("classCode",classCode);
-            put("courseCode",courseCode);
-        }});
-        model.addAttribute("courseOutlines",courseOutlines);
-        LogObjectHolder.me().set(classCode);
-        return PREFIX + "class_add_kcdg.html";
     }
 
     /**
@@ -109,6 +96,14 @@ public class ClassController extends BaseController {
 
         model.addAttribute("classItem",classInstanceMap);
         model.addAttribute("courseItem",courseInstanceMap);
+
+        Date now = new Date();
+        List<String> academicYearList = new ArrayList<>();
+        for(int i = 0 ; i < 3; i++){
+            academicYearList.add(DateUtil.getYear(DateUtils.truncate(now, Calendar.YEAR)));
+            now = DateUtil.add(now, Calendar.YEAR,1);
+        }
+        model.addAttribute("academicYears", JSON.toJSON(academicYearList));
 
         LogObjectHolder.me().set(classInstanceMap);
         return PREFIX + "class_edit.html";

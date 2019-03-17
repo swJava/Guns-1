@@ -22,8 +22,7 @@
                             <input type="hidden" id="subject" >
                             <input type="hidden" id="teacher" >
                             <input type="hidden" id="teacherSecond" >
-                            <input type="hidden" id="studyTimeType" value="7" >
-                            <input type="hidden" id="studyTimeValue" value="" >
+                            <input type="hidden" id="academicYearsValue" value='${academicYears}' >
                             <input type="hidden" id="classRoom" >
 
                             <div class="row">
@@ -31,7 +30,6 @@
                                     <#input id="courseName" name="课程名称" readonly="true" underline="true"/>
                                     <#input id="gradeName" name="授课年级" readonly="true" underline="true"/>
                                     <#input id="period" name="总学时" readonly="true" underline="true"/>
-
                                 </div>
 
                                 <div class="col-sm-6">
@@ -80,7 +78,7 @@
                                     <div class="hr-line-dashed" ></div >
                                     <#input id="signStartDate" name="开始报名" underline="true"/>
                                     <#input id="signEndDate" name="截止报名" underline="true"/>
-                                    <div class="form-group">
+                                    <div class="form-group" style="margin-bottom: 17px;">
                                         <label class="col-sm-3 control-label">开放跨报</label>
                                         <div class="col-sm-9">
                                             <div class="radio radio-inline">
@@ -96,29 +94,8 @@
                                         </div>
                                     </div>
                                     <div class="hr-line-dashed" ></div >
-                                    <div class="form-group" data-toggle="crossable">
-                                        <label class="col-sm-3 control-label">跨报开始</label>
-                                        <div class="col-sm-9">
-                                            <div class="radio radio-inline">
-                                                <label>
-                                                    <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed" ></div >
-                                    <div class="form-group" data-toggle="crossable">
-                                        <label class="col-sm-3 control-label">跨报结束</label>
-                                        <div class="col-sm-9">
-                                            <div class="radio radio-inline">
-                                                <label>
-                                                    <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed" ></div >
-                                </div>
+                                    <#input id="crossStartDate" name="开始跨报" underline="true"/>
+                                    <#input id="crossEndDate" name="结束跨报" underline="true"/>
                             </div>
                         </div>
                     </div>

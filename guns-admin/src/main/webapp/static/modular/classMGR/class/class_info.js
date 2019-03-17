@@ -164,6 +164,8 @@ ClassInfoDlg.collectData = function() {
         .set('quato')
         .set('signStartDate')
         .set('signEndDate')
+        .set('crossStartDate')
+        .set('crossEndDate')
         .set('status')
         .set('teacherCode')
         .set('teacher')
@@ -174,6 +176,8 @@ ClassInfoDlg.collectData = function() {
         .set('studyTimeDesp');
 
     this.classInfoData['price'] = submitPrice;
+    console.log($(':radio[name="crossable"]:checked').val());
+    this.classInfoData['crossable'] = $(':radio[name="crossable"]:checked').val();
 }
 
 /**
@@ -511,9 +515,19 @@ $(function() {
     //日期控件初始化
     laydate.render({elem: '#signStartDate', min: today});
     laydate.render({elem: '#signEndDate', min: today});
+    laydate.render({elem: '#crossStartDate', min: today});
+    laydate.render({elem: '#crossEndDate', min: today});
 
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
+
+    /*  学年 */
+    var html = "";
+    var academicYears = JSON.parse($('#academicYearsValue').val());
+    academicYears.forEach(function (item) {
+        html +="<option value="+item+">"+item+"学年</option>";
+    });
+    $("#academicYear").append(html);
     /* 教室 */
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
@@ -544,5 +558,6 @@ $(function() {
     $('#ability').val($('#abilityValue').val());
     $("#teacherCode").val($("#teacherCodeValue").val());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
+    $("#academicYear").val($("#academicYearValue").val());
 
 });

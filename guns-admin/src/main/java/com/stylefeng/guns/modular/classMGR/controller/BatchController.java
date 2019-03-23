@@ -20,8 +20,6 @@ import java.io.IOException;
  * @Date 2019/3/14 23:10
  * @Version 1.0
  */
-@Controller
-@RequestMapping("/class/batch")
 public class BatchController {
 
     @RequestMapping("/template")

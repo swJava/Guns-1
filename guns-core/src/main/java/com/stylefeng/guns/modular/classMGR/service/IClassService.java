@@ -65,14 +65,6 @@ public interface IClassService extends IService<Class> {
     void checkJoinState(Class classInfo, Member member, Student student);
 
     /**
-     * 查找哪些班级需要进行测试的
-     *
-     * @param code
-     * @return
-     */
-    List<Class> findClassUsingExaming(Collection<String> paperCodes);
-
-    /**
      * 创建班级
      *
      * @param classInstance

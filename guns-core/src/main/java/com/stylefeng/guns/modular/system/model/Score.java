@@ -66,7 +66,7 @@ public class Score extends Model<Score> {
     private String studentCode;
 
     @TableField("class_code")
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(name = "classCode", value = "可报班级编码，多个以逗号分割", position = 7, example="BJ000001,BJ000002")
     private String classCode;
 
     public Long getId() {

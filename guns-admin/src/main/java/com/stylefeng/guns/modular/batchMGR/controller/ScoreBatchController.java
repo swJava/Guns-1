@@ -37,8 +37,6 @@ import java.util.*;
 public class ScoreBatchController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(ScoreBatchController.class);
 
-    private Map<String, MultipartFile> fileCache = new WeakHashMap<String, MultipartFile>();
-
     @Autowired
     private IScoreService scoreService;
 

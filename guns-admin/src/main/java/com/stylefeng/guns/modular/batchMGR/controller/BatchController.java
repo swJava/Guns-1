@@ -94,7 +94,7 @@ public class BatchController extends BaseController {
     }
 
     /**
-     * 获取课程管理列表
+     * 获取批量任务列表
      */
     @RequestMapping(value = "/list")
     @ResponseBody

@@ -101,18 +101,6 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public List<Class> findClassUsingExaming(Collection<String> paperCodes) {
-        if (null == paperCodes || paperCodes.isEmpty())
-            return new ArrayList<Class>();
-
-        Wrapper<Class> queryWrapper = new EntityWrapper<Class>();
-        queryWrapper.in("examine_paper", paperCodes.toArray());
-        queryWrapper.eq("status", GenericState.Valid.code);
-
-        return selectList(queryWrapper);
-    }
-
-    @Override
     public void createClass(Class classInstance, List<ClassPlan> classPlanList) {
 
         if (classInstance.getPeriod() != classPlanList.size()){

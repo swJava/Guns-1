@@ -170,12 +170,6 @@ public class Class extends Model<Class> {
     private String teacherSecond;
 
     /**
-     * 测试试卷编码
-     */
-    @TableField("examine_paper")
-    private String examinePaper;
-
-    /**
      * 是否开放报名
      */
     private Integer signable;
@@ -414,14 +408,6 @@ public class Class extends Model<Class> {
         this.teacherSecond = teacherSecond;
     }
 
-    public String getExaminePaper() {
-        return examinePaper;
-    }
-
-    public void setExaminePaper(String examinePaper) {
-        this.examinePaper = examinePaper;
-    }
-
     public Integer getSignable() {
         return signable;
     }
@@ -482,7 +468,6 @@ public class Class extends Model<Class> {
         ", teacher=" + teacher +
         ", teacherSecondCode=" + teacherSecondCode +
         ", teacherSecond=" + teacherSecond +
-        ", examinePaper=" + examinePaper +
         ", signable=" + signable +
         ", examinable=" + examinable +
         ", crossable=" + crossable +

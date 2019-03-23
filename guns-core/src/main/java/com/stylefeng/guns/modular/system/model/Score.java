@@ -65,9 +65,13 @@ public class Score extends Model<Score> {
     @ApiModelProperty(hidden = true)
     private String studentCode;
 
-    @TableField("class_code")
-    @ApiModelProperty(name = "classCode", value = "可报班级编码，多个以逗号分割", position = 7, example="BJ000001,BJ000002")
-    private String classCode;
+    @TableField("class_codes")
+    @ApiModelProperty(hidden = true)
+    private String classCodes;
+
+    @TableField("class_names")
+    @ApiModelProperty(hidden = true)
+    private String classNames;
 
     public Long getId() {
         return id;
@@ -169,12 +173,20 @@ public class Score extends Model<Score> {
         this.studentCode = studentCode;
     }
 
-    public String getClassCode() {
-        return classCode;
+    public String getClassCodes() {
+        return classCodes;
     }
 
-    public void setClassCode(String classCode) {
-        this.classCode = classCode;
+    public void setClassCodes(String classCodes) {
+        this.classCodes = classCodes;
+    }
+
+    public String getClassNames() {
+        return classNames;
+    }
+
+    public void setClassNames(String classNames) {
+        this.classNames = classNames;
     }
 
     @Override
@@ -195,7 +207,8 @@ public class Score extends Model<Score> {
                 ", rank=" + rank +
                 ", remark=" + remark +
                 ", studentCode=" + studentCode +
-                ", classCode=" + classCode +
+                ", classCodes=" + classCodes +
+                ", classNames=" + classNames +
                 "}";
     }
 }

@@ -14,11 +14,13 @@
         <result column="rank" property="rank" />
         <result column="remark" property="remark" />
         <result column="import_date" property="importDate" />
+        <result column="class_codes" property="classCodes" />
+        <result column="class_names" property="classNames" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        s.id, s.student, s.mobile_number, s.examine_name, s.round, s.score, s.total_score, s.rank, s.remark, s.import_date
+        s.id, s.student, s.mobile_number, s.examine_name, s.round, s.score, s.total_score, s.rank, s.remark, s.import_date, s.class_codes, s.class_names
     </sql>
 
     <select id="selectPageList" parameterType="java.util.HashMap" resultMap="BaseResultMap">

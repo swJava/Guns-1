@@ -25,8 +25,6 @@
         <result column="ability" property="ability" />
         <result column="begin_date" property="beginDate" />
         <result column="end_date" property="endDate" />
-        <result column="begin_time" property="beginTime" />
-        <result column="end_time" property="endTime" />
         <result column="duration" property="duration" />
         <result column="period" property="period" />
         <result column="class_room_code" property="classRoomCode" />
@@ -58,7 +56,7 @@
 
     <!-- 班级查询结果列 -->
     <sql id="Class_Column_List">
-        c.id, c.code, c.name, c.grade, c.cycle, c.ability, c.begin_date, c.end_date, c.begin_time, c.end_time, c.duration, c.period, c.class_room_code, c.class_room, c.course_code, c.course_name, c.star, c.price, c.quato, c.sign_start_date, c.sign_end_date, c.status, c.teacher, c.teacher_code, c.teacher_second, c.teacher_second_code, c.study_time_desp, c.signable, c.examinable
+        c.id, c.code, c.name, c.grade, c.cycle, c.ability, c.begin_date, c.end_date, c.duration, c.period, c.class_room_code, c.class_room, c.course_code, c.course_name, c.star, c.price, c.quato, c.sign_start_date, c.sign_end_date, c.status, c.teacher, c.teacher_code, c.teacher_second, c.teacher_second_code, c.study_time_desp, c.signable, c.examinable
     </sql>
 
     <select id="listSignedStudent" resultType="com.stylefeng.guns.modular.system.model.Student" parameterType="java.util.HashMap">

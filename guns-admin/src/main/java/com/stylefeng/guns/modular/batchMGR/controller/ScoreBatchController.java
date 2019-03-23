@@ -119,7 +119,6 @@ public class ScoreBatchController extends BaseController {
         score.setTotalScore(lineData.get(6));
         score.setRank(lineData.get(7));
         score.setRemark(lineData.get(8));
-        score.setClassCode(lineData.get(9));
         return score;
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Score;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +32,10 @@ public interface IScoreService extends IService<Score> {
      * @return
      */
     Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap, Page<Map<String, Object>> pageInfo);
+
+    /**
+     * 保存
+     * @param importScore
+     */
+    void doCreate(Score importScore);
 }

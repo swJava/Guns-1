@@ -32,7 +32,7 @@ public class BatchProcess extends Model<BatchProcess> {
 
     private String code;
 
-    private String service;
+    private Integer service;
 
     private String description;
 
@@ -71,11 +71,11 @@ public class BatchProcess extends Model<BatchProcess> {
         this.code = code;
     }
 
-    public String getService() {
+    public Integer getService() {
         return service;
     }
 
-    public void setService(String service) {
+    public void setService(Integer service) {
         this.service = service;
     }
 

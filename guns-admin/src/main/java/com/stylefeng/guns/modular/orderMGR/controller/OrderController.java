@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.orderMGR.controller;
 
+import static com.stylefeng.guns.util.ExcelUtil.*;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
@@ -330,29 +332,4 @@ public class OrderController extends BaseController {
         return workbook;
     }
 
-    private void addCells(Row header, List<String> headers, XSSFCellStyle headerStyle) {
-        for(String headerText : headers){
-            addCell(header, headerText, headerStyle);
-        }
-    }
-
-    private void addCell(Row row, Object value, XSSFCellStyle cellStyle) {
-        Cell cell = null;
-        int currColumnNum = row.getLastCellNum();
-
-        if (currColumnNum < 0)
-            currColumnNum = 0;
-
-        if (value instanceof Integer
-                || value instanceof Long
-                || value instanceof Double){
-            cell = row.createCell(currColumnNum, Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(Double.parseDouble(String.valueOf(value)));
-        }else if (value instanceof String){
-            cell = row.createCell(currColumnNum, Cell.CELL_TYPE_STRING);
-            cell.setCellValue((String)value);
-        }
-        if (null != cell)
-            cell.setCellStyle(cellStyle);
-    }
 }

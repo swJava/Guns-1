@@ -3,10 +3,13 @@ package com.stylefeng.guns.modular.memberMGR.service.impl;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.modular.batchMGR.service.impl.BatchProcessDetailServiceImpl;
 import com.stylefeng.guns.modular.memberMGR.service.IScoreService;
 import com.stylefeng.guns.modular.system.dao.ScoreMapper;
 import com.stylefeng.guns.modular.system.model.Score;
 import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ import java.util.Map;
  */
 @Service
 public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements IScoreService {
+    private static final Logger log = LoggerFactory.getLogger(ScoreServiceImpl.class);
 
     @Autowired
     private ScoreMapper scoreMapper;
@@ -65,5 +69,10 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Score> implements
         pageInfo.setCurrent(queryPageInfo.getCurrent());
         pageInfo.setSize(queryPageInfo.getSize());
         return pageInfo;
+    }
+
+    @Override
+    public void doCreate(Score importScore) {
+        insert(importScore);
     }
 }

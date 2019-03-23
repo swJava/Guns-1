@@ -61,6 +61,14 @@ public class Score extends Model<Score> {
     @ApiModelProperty(hidden = true)
     private Date importDate;
 
+    @TableField("student_code")
+    @ApiModelProperty(hidden = true)
+    private String studentCode;
+
+    @TableField("class_code")
+    @ApiModelProperty(hidden = true)
+    private String classCode;
+
     public Long getId() {
         return id;
     }
@@ -109,6 +117,10 @@ public class Score extends Model<Score> {
         this.score = score;
     }
 
+    public void setScore(String score){
+        this.score = Double.parseDouble(score);
+    }
+
     public Double getTotalScore() {
         return totalScore;
     }
@@ -117,12 +129,20 @@ public class Score extends Model<Score> {
         this.totalScore = totalScore;
     }
 
+    public void setTotalScore(String totalScore){
+        this.totalScore = Double.parseDouble(totalScore);
+    }
+
     public Integer getRank() {
         return rank;
     }
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = Integer.parseInt(rank);
     }
 
     public String getRemark() {
@@ -139,6 +159,22 @@ public class Score extends Model<Score> {
 
     public void setImportDate(Date importDate) {
         this.importDate = importDate;
+    }
+
+    public String getStudentCode() {
+        return studentCode;
+    }
+
+    public void setStudentCode(String studentCode) {
+        this.studentCode = studentCode;
+    }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
     }
 
     @Override
@@ -158,6 +194,8 @@ public class Score extends Model<Score> {
                 ", totalScore=" + totalScore +
                 ", rank=" + rank +
                 ", remark=" + remark +
+                ", studentCode=" + studentCode +
+                ", classCode=" + classCode +
                 "}";
     }
 }

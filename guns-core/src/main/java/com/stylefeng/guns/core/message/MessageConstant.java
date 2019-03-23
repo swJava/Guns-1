@@ -162,5 +162,10 @@ public final class MessageConstant {
          * 提交测试失败
          */
         public static final String EXAMINE_SUBMIT_FAILED = "060101";
+
+        /**
+         * 批量导入失败
+         */
+        public static final String BATCH_IMPORT_FAILED = "070001";
     }
 }

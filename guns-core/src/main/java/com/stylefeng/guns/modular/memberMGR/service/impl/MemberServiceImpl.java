@@ -234,7 +234,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
              studentList.addAll(studentService.listStudents(userName));
         }else{
             Student existStudent = studentService.get(student);
-            if (null != existStudent || existStudent.isValid()){
+            if (null != existStudent && existStudent.isValid()){
                 studentList.add(existStudent);
             }
         }

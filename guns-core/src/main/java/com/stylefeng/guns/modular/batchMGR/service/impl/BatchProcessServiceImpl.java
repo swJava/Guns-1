@@ -59,6 +59,24 @@ public class BatchProcessServiceImpl extends ServiceImpl<BatchProcessMapper, Bat
         updateById(existProcess);
     }
 
+    @Override
+    public void delete(String batchCode) {
+
+        if (null == batchCode)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"批次号"});
+
+        BatchProcess process = get(batchCode);
+
+        if (null == process)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"批处理任务"});
+
+        if (process.isProcessing())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"任务正在进行"});
+
+        process.setStatus(GenericState.Invalid.code);
+        updateById(process);
+    }
+
     private BatchProcess get(String code) {
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"批次好"});

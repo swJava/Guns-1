@@ -1,20 +1,25 @@
 package com.stylefeng.guns.modular.batchMGR.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.base.tips.Tip;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessDetailService;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessService;
+import com.stylefeng.guns.modular.batchMGR.warpper.BatchProcessDetailWrapper;
 import com.stylefeng.guns.modular.batchMGR.warpper.BatchProcessWrapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -50,11 +55,11 @@ import static com.stylefeng.guns.util.ExcelUtil.addCells;
  * @Version 1.0
  */
 @Controller
-@RequestMapping("/batch/process")
+@RequestMapping("/batch")
 public class BatchController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(BatchController.class);
 
-    private String PREFIX = "/batchMGR/process/";
+    private String PREFIX = "/batchMGR/";
 
     @Value("${application.attachment.visit-url}")
     private String viewPath = "/";
@@ -86,27 +91,89 @@ public class BatchController extends BaseController {
     /**
      * 跳转到批量成绩管理首页
      */
-    @RequestMapping("/{service}")
+    @RequestMapping("/process/{service}")
     public String index(@PathVariable("service") String serviceName, Model model) {
         BatchServiceEnum service = BatchServiceEnum.valueOf(StringUtils.capitalize(serviceName));
         model.addAttribute("service", service.name());
-        return PREFIX + "index.html";
+        model.addAttribute("serviceCode", service.code);
+        return PREFIX + "process.html";
+    }
+
+
+    /**
+     * 跳转到添加批处理任务
+     */
+    @RequestMapping("/process/add")
+    public String processAdd(String service, Model model) {
+        BatchServiceEnum serviceInstance = BatchServiceEnum.valueOf(StringUtils.capitalize(service));
+
+        model.addAttribute("service", serviceInstance.name());
+        model.addAttribute("serviceCode", serviceInstance.code);
+        return PREFIX + "process_"+service.toLowerCase()+"_wizard.html";
+    }
+
+
+    /**
+     * 跳转到批量处理详情
+     */
+    @RequestMapping("/detail/{code}")
+    public String detail(@PathVariable("code") String batchCode, Model model) {
+        model.addAttribute("batchCode", batchCode);
+        return PREFIX + "process_detail.html";
+    }
+
+    /**
+     * 获取批量任务明细列表
+     */
+    @RequestMapping(value = "/detail/list")
+    @ResponseBody
+    public Object detailList(@RequestParam Map<String, String> queryParams){
+        //分页查詢
+        Page<BatchProcessDetail> page = new PageFactory<BatchProcessDetail>().defaultPage();
+        Page<Map<String, Object>> pageMap = batchProcessDetailService.selectMapsPage(page, new EntityWrapper<BatchProcessDetail>(){
+            {
+                eq("status", GenericState.Valid.code);
+                if (StringUtils.isNotEmpty(queryParams.get("batchCode"))){
+                    eq("batch_code", queryParams.get("batchCode"));
+                }
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        switch(status){
+                            case 1:
+                                in("work_status", new Integer[]{0, 1});
+                                break;
+                            default:
+                                eq("work_status", status);
+                                break;
+                        }
+                    }catch(Exception e){}
+                }
+            }
+        });
+        //包装数据
+        new BatchProcessDetailWrapper(pageMap.getRecords()).warp();
+        return super.packForBT(pageMap);
     }
 
     /**
      * 获取批量任务列表
      */
-    @RequestMapping(value = "/list")
+    @RequestMapping(value = "/process/list")
     @ResponseBody
     public Object list(@RequestParam Map<String, String> queryParams) {
         //分页查詢
         Page<BatchProcess> page = new PageFactory<BatchProcess>().defaultPage();
         Page<Map<String, Object>> pageMap = batchProcessService.selectMapsPage(page, new EntityWrapper<BatchProcess>(){
             {
+                eq("status", GenericState.Valid.code);
+                if (StringUtils.isNotEmpty(queryParams.get("service"))){
+                    BatchServiceEnum serviceEnum = BatchServiceEnum.valueOf(queryParams.get("service"));
+                    eq("service", serviceEnum.code);
+                }
                 if (StringUtils.isNotEmpty(queryParams.get("status"))){
                     try{
                         int status = Integer.parseInt(queryParams.get("status"));
-                        eq("status", GenericState.Valid);
                         eq("work_status", status);
                     }catch(Exception e){}
                 }
@@ -129,11 +196,22 @@ public class BatchController extends BaseController {
         return super.packForBT(pageMap);
     }
 
+    /**
+     * 删除批处理任务（逻辑删）
+     */
+    @RequestMapping(value = "/process/delete")
+    @ResponseBody
+    public Object delete(@RequestParam String batchCode) {
+
+        batchProcessService.delete(batchCode);
+
+        return SUCCESS_TIP;
+    }
 
     /**
      * 导出批处理详情
      */
-    @RequestMapping(value = "/detail/export/{batchCode}")
+    @RequestMapping(value = "/export/{batchCode}")
     @ResponseBody
     public Object export(@PathVariable("batchCode") String batchCode) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -233,35 +311,35 @@ public class BatchController extends BaseController {
         valueStyle.setIndention((short) 1);
         valueStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
 
-        List<Map<String, Object>> resultList = (List<Map<String, Object>>) result.get("dataResult");
+        List<BatchProcessDetail> resultList = (List<BatchProcessDetail>) result.get("dataResult");
 
-        for(Map<String, Object> order : resultList){
+        for(BatchProcessDetail order : resultList){
             Row valueRow = sheet.createRow(valueStartRow++);
 
             String workStatus = "";
             try {
-                workStatus = BatchProcessStatusEnum.instanceOf((Integer) order.get("workStatus")).text;
+                workStatus = BatchProcessStatusEnum.instanceOf(order.getWorkStatus()).text;
             }catch(Exception e){}
 
             String importDate = "";
             try{
-                importDate = DateUtil.format((Date)order.get("importDate"), "yyyy-MM-dd HH:mm:ss");
+                importDate = DateUtil.format(order.getImportDate(), "yyyy-MM-dd HH:mm:ss");
             }catch(Exception e){}
 
             String completeDate = "";
             try{
-                completeDate = DateUtil.format((Date)order.get("completeDate"), "yyyy-MM-dd HH:mm:ss");
+                completeDate = DateUtil.format(order.getCompleteDate(), "yyyy-MM-dd HH:mm:ss");
             }catch(Exception e){}
 
             addCell(valueRow, valueIndex++, valueStyle);
-            addCell(valueRow, order.get("batchCode"), valueStyle);
-            addCell(valueRow, order.get("line"), valueStyle);
-            addCell(valueRow, order.get("data"), valueStyle);
+            addCell(valueRow, order.getBatchCode(), valueStyle);
+            addCell(valueRow, order.getLine(), valueStyle);
+            addCell(valueRow, order.getData(), valueStyle);
             addCell(valueRow, workStatus, valueStyle);
-            addCell(valueRow, order.get("duration"), valueStyle);
+            addCell(valueRow, order.getDuration(), valueStyle);
             addCell(valueRow, importDate, valueStyle);
             addCell(valueRow, completeDate, valueStyle);
-            addCell(valueRow, order.get("remark"), valueStyle);
+            addCell(valueRow, order.getRemark(), valueStyle);
         }
 
         //

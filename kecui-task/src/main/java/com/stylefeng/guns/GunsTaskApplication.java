@@ -1,5 +1,6 @@
 package com.stylefeng.guns;
 
+import com.stylefeng.guns.task.batch.ScoreImportTask;
 import com.stylefeng.guns.task.education.AdjustTask;
 import com.stylefeng.guns.task.education.ExamineCheckTask;
 import com.stylefeng.guns.task.pay.PayMocker;
@@ -17,6 +18,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class GunsTaskApplication {
 
     private final static Logger logger = LoggerFactory.getLogger(GunsTaskApplication.class);
+
+    @Bean
+    public ScoreImportTask createScoreImportWorker(){
+        return new ScoreImportTask();
+    }
+/*
 
     @Bean
     public ExamineCheckTask createExamineAutoCheckWorker(){
@@ -40,6 +47,7 @@ public class GunsTaskApplication {
     public PayMocker createPayMocker(){
         return new PayMocker();
     }
+*/
 
     public static void main(String[] args) {
         SpringApplication.run(GunsTaskApplication.class, args);

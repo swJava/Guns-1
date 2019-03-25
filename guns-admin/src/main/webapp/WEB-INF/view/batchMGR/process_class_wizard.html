@@ -1,0 +1,62 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<style>
+    .wizard-big.wizard > .content{
+        height: auto !important;
+        min-height: 600px;
+    }
+</style>
+<input type="hidden" id="service" value="${service}" />
+<input type="hidden" id="serviceCode" value="${serviceCode}" />
+<div class="ibox float-e-margins" style="heigth: 100%;">
+    <div class="ibox-content">
+        <div id="wizard" class="wizard-big" style="height: auto !important; min-height: 600px;">
+            <h1>操作说明</h1>
+            <fieldset>
+                <form id="basePaperForm" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="col-sm-8">
+                                操作说明
+                                <a href="">下载模板</a>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="text-center">
+                                    <div style="margin-top: 20px">
+                                        <i class="fa fa-sign-in" style="font-size: 180px;color: #e5e5e5 "></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>数据导入</h1>
+            <fieldset>
+                <form id="scoreImportForm" class="form-horizontal">
+                    <input type="hidden" id="masterCode" value=""/>
+                    <input type="hidden" id="masterName" value=""/>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">班级附件</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="file-info"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="upload-btn" id="picker">
+                                <i class="fa fa-upload"></i>&nbsp;上传
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<div class="progress progress-striped" id="progressTipArea" style="margin-top: 20px;">
+    <div id="progressBar" style="width: 0%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" role="progressbar" class="progress-bar progress-bar-info">
+    </div>
+</div>
+<#script src="/static/js/plugins/steps/jquery.steps.min.js" />
+<#script src="/static/modular/batchMGR/process_wizard.js" />
+@}

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -77,6 +78,16 @@ public class BatchProcess extends Model<BatchProcess> {
 
     public void setService(Integer service) {
         this.service = service;
+    }
+
+    public void setService(String service){
+        BatchServiceEnum serviceEnum = null;
+        try {
+            serviceEnum = BatchServiceEnum.valueOf(service);
+        }catch(Exception e){}
+
+        if (null != serviceEnum)
+            this.service = serviceEnum.code;
     }
 
     public String getDescription() {
@@ -163,5 +174,12 @@ public class BatchProcess extends Model<BatchProcess> {
                 ", completeDate=" + completeDate +
                 ", remark=" + remark +
                 "}";
+    }
+
+    public boolean isProcessing() {
+        if (null == this.status)
+            return false;
+
+        return BatchProcessStatusEnum.Working.code == this.status;
     }
 }

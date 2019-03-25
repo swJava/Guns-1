@@ -1,0 +1,45 @@
+@layout("/common/_container.html"){
+<input type="hidden" id="service" value="${service}"/>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>批处理任务管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+
+                    <div class="col-sm-3">
+                        <#TimeCon id="studyDate" name="导入开始日期" />
+                    </div>
+                    <div class="col-sm-3">
+                        <#TimeCon id="signDate" name="导入结束日期" />
+                    </div>
+                    <div class="col-sm-2" style="float: right;">
+                        <#button name="搜 索" icon="fa-search" clickFun="Process.search()"/>
+                        <#button name="重 置" icon="fa-search" clickFun="Process.search()"/>
+                    </div>
+                </div>
+                <div class="hidden-xs" id="ProcessTableToolbar" role="group">
+                    @if(shiro.hasPermission("/batch/add")){
+                    <#button name="添加任务" icon="fa-plus" clickFun="Process.openAddProcess()"/>
+                    @}
+                    @if(shiro.hasPermission("/batch/delete")){
+                    <#button name="删除" icon="fa-remove" clickFun="Process.deleteProcess()" space="true"/>
+                    @}
+                    @if(shiro.hasPermission("/batch/detail")){
+                    <#button name="查看处理详情" icon="fa-edit" clickFun="Process.openProcessDetail()" space="true"/>
+                    @}
+                    @if(shiro.hasPermission("/batch/export")){
+                    <#button name="导出处理详情" icon="fa-edit" clickFun="Process.exportProcess()" space="true"/>
+                    @}
+                </div>
+                <#table id="ProcessTable"/>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<#script src="/static/modular/batchMGR/process.js" />
+@}

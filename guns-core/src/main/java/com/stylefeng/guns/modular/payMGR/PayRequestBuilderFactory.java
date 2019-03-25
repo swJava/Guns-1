@@ -2,10 +2,8 @@ package com.stylefeng.guns.modular.payMGR;
 
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
-import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.model.PayMethodEnum;
 
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -39,13 +37,17 @@ public class PayRequestBuilderFactory {
                 builder = createWeixinPayRequestBuilder();
                 break;
             case unionpay:
-                builder = new UnionPayRequestBuilder();
+                builder = createUnionPayRequestBuilder();
                 break;
             default:
                 break;
         }
 
         return builder;
+    }
+
+    private PayRequestBuilder createUnionPayRequestBuilder() {
+        return new UnionPayRequestBuilder(unionProperties);
     }
 
     private PayRequestBuilder createWeixinPayRequestBuilder() {

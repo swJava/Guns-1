@@ -48,7 +48,7 @@ public class PayServiceImpl implements IPayService {
     @Autowired
     private IDictService dictService;
     @Autowired(required = false)
-    private PayRequestBuilderFactory builderFactory;
+    private PayRequestBuilderFactory requestFactory;
     @Value("${application.pay.mock.enable:false}")
     private boolean mockEnable;
     @Autowired
@@ -57,7 +57,7 @@ public class PayServiceImpl implements IPayService {
     @Override
     public String createPayOrder(Order order) {
 
-        if (null == builderFactory) {
+        if (null == requestFactory) {
             if (mockEnable) {
                 log.warn("no PayRequestBuilderFactory found, use test mode");
                 return UUID.randomUUID().toString().replaceAll("-", "");
@@ -76,7 +76,7 @@ public class PayServiceImpl implements IPayService {
         String prepayid = null;
 
         Map<String, String> postResult = new HashMap<String, String>();
-        builderFactory.select(payChannel).order(order).post(new ResponseHandler<String>() {
+        requestFactory.select(payChannel).order(order).post(new ResponseHandler<String>() {
             @Override
             public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
 

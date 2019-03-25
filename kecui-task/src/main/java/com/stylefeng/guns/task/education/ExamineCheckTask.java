@@ -14,6 +14,8 @@ import java.util.List;
 
 
 /**
+ * 号卷
+ *
  * @Description //TODO
  * @Author 罗华
  * @Date 2019/2/24 16:47
@@ -28,6 +30,7 @@ public class ExamineCheckTask {
     @Scheduled(fixedDelay = 5000)
     public void handleExamineCheck(){
         log.info("<<< Examine check begin ");
+        //
         Wrapper<ExamineAnswer> queryWrapper = new EntityWrapper<ExamineAnswer>();
         queryWrapper.eq("status", ExamineAnswerStateEnum.Submit.code);
 

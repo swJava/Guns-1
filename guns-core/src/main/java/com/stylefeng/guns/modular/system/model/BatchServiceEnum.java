@@ -10,7 +10,9 @@ public enum BatchServiceEnum {
 
     Score(1, "批量成绩"),
     Class(2, "批量开班"),
-    Sign(3, "批量报名")
+    Sign(3, "批量报名"),
+
+    NULL(99, "未知业务")
     ;
 
     public int code;
@@ -19,5 +21,17 @@ public enum BatchServiceEnum {
     BatchServiceEnum(int code, String text){
         this.code = code;
         this.text = text;
+    }
+
+    public static BatchServiceEnum instanceOf(Integer value) {
+        BatchServiceEnum resultService = NULL;
+
+        for(BatchServiceEnum service : values()){
+            if (service.code == value){
+                resultService = service;
+                break;
+            }
+        }
+        return resultService;
     }
 }

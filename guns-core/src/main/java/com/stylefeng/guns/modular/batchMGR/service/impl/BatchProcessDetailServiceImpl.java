@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.batchMGR.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessDetailService;
 import com.stylefeng.guns.modular.system.dao.BatchProcessDetailMapper;
@@ -9,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Description //TODO
@@ -23,7 +24,11 @@ public class BatchProcessDetailServiceImpl extends ServiceImpl<BatchProcessDetai
 
     @Override
     public List<BatchProcessDetail> selectList(String batchCode) {
-        return null;
+        Wrapper<BatchProcessDetail> queryWrapper = new EntityWrapper<BatchProcessDetail>();
+
+        queryWrapper.eq("batch_code", batchCode);
+
+        return selectList(queryWrapper);
     }
 
     @Override

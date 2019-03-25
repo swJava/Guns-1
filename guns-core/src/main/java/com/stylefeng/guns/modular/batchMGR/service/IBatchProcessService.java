@@ -21,4 +21,10 @@ public interface IBatchProcessService extends IService<BatchProcess> {
      * @param batchProcess
      */
     void doUpdate(BatchProcess batchProcess);
+
+    /**
+     * 删除批处理任务（逻辑删）
+     * @param batchCode
+     */
+    void delete(String batchCode);
 }

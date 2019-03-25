@@ -41,7 +41,7 @@ public class BatchProcessDetail extends Model<BatchProcessDetail> {
     @TableField("work_status")
     private Integer workStatus;
 
-    private Integer duration;
+    private Long duration;
 
     @TableField("import_date")
     private Date importDate;
@@ -99,11 +99,11 @@ public class BatchProcessDetail extends Model<BatchProcessDetail> {
         this.workStatus = workStatus;
     }
 
-    public Integer getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 

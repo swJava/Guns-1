@@ -10,6 +10,7 @@ import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessDetailService;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessService;
 import com.stylefeng.guns.modular.memberMGR.service.IScoreService;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.util.ExcelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +19,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.ServerEndpoint;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -32,8 +36,7 @@ import java.util.*;
  * @Version 1.0
  */
 @Controller
-@RequestMapping("/batch/process")
-@ServerEndpoint("/batch/process/score/websocket")
+@RequestMapping("/batch")
 public class ScoreBatchController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(ScoreBatchController.class);
 
@@ -46,14 +49,24 @@ public class ScoreBatchController extends BaseController {
     @Autowired
     private IBatchProcessDetailService batchProcessDetailService;
 
+    @Autowired
+    private IAttachmentService attachmentService;
+
     @RequestMapping(value = "/import/score", method = RequestMethod.POST)
     @ResponseBody
-    public Object importData(MultipartFile file, BatchProcess batchProcess){
-        checkImportFile(file);
+    public Object importData(BatchProcess batchProcess, String masterName, String masterCode){
+        Attachment importAttachment = null;
+        File importFile = null;
+        List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
+        if (null != attachmentList || attachmentList.size() > 0) {
+            importAttachment = attachmentList.get(0);
+            importFile = new File(importAttachment.getPath());
+        }
+        checkImportFile(importFile);
 
         Map<Integer, List<String>> importDataMap = null;
         try {
-            importDataMap = ExcelUtil.readData(file.getInputStream());
+            importDataMap = ExcelUtil.readData(new FileInputStream(importFile));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new ServiceException(MessageConstant.MessageCode.BATCH_IMPORT_FAILED, new String[]{"文件解析失败"});
@@ -64,7 +77,8 @@ public class ScoreBatchController extends BaseController {
 
         batchProcess.setService(BatchServiceEnum.Score.code);
         batchProcess.setImportCount(importDataMap.size());
-        batchProcess.setStatus(BatchProcessStatusEnum.Create.code);
+        batchProcess.setStatus(GenericState.Valid.code);
+        batchProcess.setWorkStatus(BatchProcessStatusEnum.Create.code);
         batchProcessService.doCreate(batchProcess);
 
         List<BatchProcessDetail> processDetailList = new ArrayList<>();
@@ -80,13 +94,13 @@ public class ScoreBatchController extends BaseController {
             batchProcessDetailService.doBatchCreate(processDetailList);
         }catch(Exception e){
             String message = e.getMessage();
-            batchProcess.setStatus(BatchProcessStatusEnum.Reject.code);
+            batchProcess.setWorkStatus(BatchProcessStatusEnum.Reject.code);
             batchProcess.setRemark(message);
             batchProcessService.doUpdate(batchProcess);
             throw new ServiceException(MessageConstant.MessageCode.BATCH_IMPORT_FAILED, new String[]{message});
         }
 
-        batchProcess.setStatus(BatchProcessStatusEnum.Prepare.code);
+        batchProcess.setWorkStatus(BatchProcessStatusEnum.Prepare.code);
         batchProcessService.doUpdate(batchProcess);
 
         Tip result = SUCCESS_TIP;
@@ -99,10 +113,28 @@ public class ScoreBatchController extends BaseController {
         BatchProcessDetail processDetail = new BatchProcessDetail();
         processDetail.setBatchCode(batchCode);
         processDetail.setLine(line);
-        processDetail.setData(String.join(",", lineData));
+
+        StringBuffer buff = new StringBuffer();
+        buff.append(String.join(",", lineData.subList(0, 9))).append("@_@");
+        int index = 1;
+        for(String data : lineData.subList(9, lineData.size())){
+            buff.append(data);
+            if (index % 2 == 0){
+                buff.append(",");
+            }else{
+                buff.append("=");
+            }
+            index++;
+        }
+        // 1,2,3,4,5,6,7,8,9@_@10=11,12=13
+        int lastCharIndex = buff.length() - 1;
+        if ( buff.lastIndexOf(",") == lastCharIndex || buff.lastIndexOf("=") == lastCharIndex )
+            processDetail.setData(buff.substring(0, buff.length() - 1));
+        else
+            processDetail.setData(buff.toString());
         processDetail.setStatus(GenericState.Valid.code);
         processDetail.setWorkStatus(BatchProcessDetailStatusEnum.Create.code);
-        processDetail.setDuration(0);
+        processDetail.setDuration(0L);
         processDetail.setImportDate(new Date());
 
         return processDetail;
@@ -122,15 +154,15 @@ public class ScoreBatchController extends BaseController {
         return score;
     }
 
-    private void checkImportFile(MultipartFile file) {
+    private void checkImportFile(File file) {
         if (null == file) {
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"导入数据"});
         }
 
-        InputStream fileStream = null;
+        BufferedInputStream fileStream = null;
 
         try {
-            fileStream = file.getInputStream();
+            fileStream = new BufferedInputStream(new FileInputStream(file));
         }catch(Exception e){}
 
         if (null == fileStream)

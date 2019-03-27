@@ -3,33 +3,35 @@ package com.stylefeng.guns.task.batch;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessDetailService;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessService;
-import com.stylefeng.guns.modular.memberMGR.service.IScoreService;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.*;
-import com.stylefeng.guns.task.education.ExamineCheckTask;
+import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * @Description //TODO
  * @Author 罗华
- * @Date 2019/3/25 22:00
+ * @Date 2019/3/28 01:08
  * @Version 1.0
  */
 @Component
-public class ScoreImportTask extends ImportTaskSupport {
-    private static final Logger log = LoggerFactory.getLogger(ScoreImportTask.class);
-    private static final int MIN_COLUMN_SIZE = 8;
+public class ClassImportTask extends ImportTaskSupport{
+    private static final Logger log = LoggerFactory.getLogger(ClassImportTask.class);
+    private static final int MIN_COLUMN_SIZE = 17;
     @Autowired
     private IBatchProcessService batchProcessService;
 
@@ -37,7 +39,7 @@ public class ScoreImportTask extends ImportTaskSupport {
     private IBatchProcessDetailService batchProcessDetailService;
 
     @Autowired
-    private IScoreService scoreService;
+    private IClassService classService;
 
     @Scheduled(fixedDelay = 6000)
     public void handleExamineCheck(){
@@ -76,9 +78,14 @@ public class ScoreImportTask extends ImportTaskSupport {
             processDetail.setWorkStatus(BatchProcessDetailStatusEnum.Working.code);
             batchProcessDetailService.updateById(processDetail);
 
-            Score score = assembleScoreData(processDetail.getData());
+            Map<String, Object> classMap = assembleClassData(processDetail.getData());
+
+            List<ClassPlan> classPlanList = (List<ClassPlan>)classMap.get("planList");
+            if (null == classPlanList || classPlanList.isEmpty())
+                throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
+
             try {
-                scoreService.insert(score);
+                classService.createClass((Class)classMap.get("classInfo"), classPlanList);
                 processDetail.setWorkStatus(BatchProcessDetailStatusEnum.Pass.code);
                 processDetail.setRemark(BatchProcessDetailStatusEnum.Pass.text);
                 successCompleteCount++;
@@ -97,10 +104,10 @@ public class ScoreImportTask extends ImportTaskSupport {
         preparedProcess.setCompleteCount(successCompleteCount);
         preparedProcess.setCompleteDate(new Date());
         batchProcessService.updateById(preparedProcess);
-        log.info(">>> Import score task complete!");
+        log.info(">>> Import class task complete!");
     }
 
-    private Score assembleScoreData(String data) {
+    private Map<String, Object> assembleClassData(String data) {
         if (null == data || StringUtils.isEmpty(data))
             throw new RuntimeException("没有导入数据");
 
@@ -113,45 +120,81 @@ public class ScoreImportTask extends ImportTaskSupport {
         if (MIN_COLUMN_SIZE > requiredCols.length)
             throw new RuntimeException("缺少必要的导入数据");
 
-        Score score = new Score();
-        score.setStudentCode(getString(requiredCols, 0));
-        score.setStudent(getString(requiredCols, 1));
-        score.setMobileNumber(getString(requiredCols, 2));
-        score.setExamineName(getString(requiredCols, 3));
-        score.setRound(getString(requiredCols, 4));
-        score.setScore(getDouble(requiredCols, 5));
-        score.setTotalScore(getDouble(requiredCols, 6));
-        score.setRank(getInteger(requiredCols, 7));
-        score.setRemark(getString(requiredCols, 8));
-        score.setImportDate(new Date());
+        Map<String , Object> resultMap = new HashMap<String, Object>();
+
+        Class classInfo = new Class();
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+        classInfo.setName(getString(requiredCols, 0));
+
+        resultMap.put("classInfo", classInfo);
 
         if (datas.length > 1 && StringUtils.isNotEmpty(datas[1])){
-            String[] classInfo = assembleClassInfo(datas[1]);
-            score.setClassCodes(classInfo[0]);
-            score.setClassNames(classInfo[1]);
+            List<ClassPlan> classPlanList = assembleClassPlanInfo(datas[1]);
+            resultMap.put("planList", classPlanList);
         }
 
-        return score;
+        return resultMap;
     }
 
-    private String[] assembleClassInfo(String classInfoStr) {
-        StringTokenizer classInfoToken = new StringTokenizer(classInfoStr, ",");
+    private List<ClassPlan> assembleClassPlanInfo(String classPlanStr) {
+        StringTokenizer classPlanToken = new StringTokenizer(classPlanStr, ",");
 
         StringBuffer codeBuff = new StringBuffer();
         StringBuffer nameBuff = new StringBuffer();
 
-        while(classInfoToken.hasMoreTokens()){
-            String classInfo = classInfoToken.nextToken();
-            if (classInfo.indexOf("=") != -1){
-                String[] infos = classInfo.split("=");
-                codeBuff.append(infos[0]).append(",");
-                nameBuff.append(infos[1]).append(",");
+        List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
+        while(classPlanToken.hasMoreTokens()){
+            ClassPlan classPlan = new ClassPlan();
+
+            String classPlanInfo = classPlanToken.nextToken();
+            if (StringUtils.isNotEmpty(classPlanInfo)){
+                if (classPlanInfo.indexOf("~") == -1)
+                    continue;
+
+                String[] classPlans = classPlanInfo.split("~");
+
+                Date beginTime = null;
+                Date endTime = null;
+                try {
+                    beginTime = DateUtil.parse(classPlans[0], "yyyy-MM-dd HH:mm:ss");
+                    endTime = DateUtil.parse(classPlans[1], "yyyy-MM-dd HH:mm:ss");
+                }catch(Exception e){}
+
+                if (null != beginTime)
+                    classPlan.setClassTime(DateUtil.format(beginTime, "HHmm"));
+                if (null != endTime)
+                    classPlan.setEndTime(DateUtil.format(endTime, "HHmm"));
+
+                classPlan.setStudyDate(DateUtils.truncate(beginTime, Calendar.DAY_OF_MONTH));
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(classPlan.getStudyDate());
+                classPlan.setWeek(calendar.get(Calendar.DAY_OF_WEEK) - 1);
             }
+
+            classPlanList.add(classPlan);
         }
 
-        return new String[]{
-                codeBuff.substring(0, codeBuff.length() - 1),
-                nameBuff.substring(0, nameBuff.length() - 1)
-        };
+        return classPlanList;
     }
 }

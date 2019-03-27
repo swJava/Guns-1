@@ -57,6 +57,18 @@ ProcessWizard.close = function() {
     parent.layer.close(window.parent.Process.layerIndex);
 };
 
+ProcessWizard.downloadTemplate = function(template){
+    var ajax = new $ax(Feng.ctxPath + "/batch/template/" + ProcessWizard.Service.toLowerCase(), function(result){
+        // var url = 'http://www.kecui.com.cn/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+        var url = 'http://localhost:8080/admin/attachment/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+
+        window.location.href = url;
+    },function(data){
+        Feng.error("模板下载失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+}
+
 ProcessWizard.Uploader.bindEvent = function(bindedObj){
     var me =  this;
     bindedObj.on('fileQueued', function(file) {

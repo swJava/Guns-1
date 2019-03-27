@@ -2,29 +2,47 @@ package com.stylefeng.guns.modular.batchMGR.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.common.exception.ServiceException;
+import com.stylefeng.guns.core.base.tips.ErrorTip;
+import com.stylefeng.guns.core.base.tips.SuccessTip;
+import com.stylefeng.guns.core.base.tips.Tip;
+import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classRoomMGR.service.IClassroomService;
 import com.stylefeng.guns.modular.system.model.Classroom;
 import com.stylefeng.guns.modular.system.model.Course;
 import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.model.Teacher;
+import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.system.service.IDictService;
+import com.stylefeng.guns.modular.system.transfer.AttachmentInfo;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
 import com.stylefeng.guns.util.DateUtil;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.net.URL;
+import java.util.*;
 import java.util.List;
+
+import static com.stylefeng.guns.util.ExcelUtil.addCells;
 
 /**
  * @Description //TODO
@@ -35,6 +53,36 @@ import java.util.List;
 @Controller
 @RequestMapping("/batch/template")
 public class BatchTemplateController {
+    private static final String TEMP_MASTER_NAME = "_TEMPLATE_DOWNLOAD_";
+
+    private static final List<String> TEMPLATE_HEADER_DEFINE = new ArrayList<String>(){
+        private static final long serialVersionUID = -5456067913018841267L;
+        {
+            add("课程");
+            add("班级名称");
+            add("学年");
+            add("学期");
+            add("班次");
+            add("讲师");
+            add("辅导员");
+            add("学员数");
+            add("教室");
+            add("开始报名日期");
+            add("截止报名日期");
+            add("允许跨报");
+            add("跨报开始日期");
+            add("跨报结束日期");
+            add("是否需要测试");
+            add("课程计划描述");
+            add("报名费");
+        }
+    };
+
+
+
+
+    @Autowired
+    private IAttachmentService attachmentService;
 
     @Autowired
     private ICourseService courseService;
@@ -49,84 +97,168 @@ public class BatchTemplateController {
     private IDictService dictService;
 
     @RequestMapping("/class")
-    public void downloadClassTemplate(HttpServletResponse response){
+    @ResponseBody
+    public Tip downloadClassTemplate(){
 
+//        XSSFWorkbook workbook = null;
+//        try {
+////            workbook = new XSSFWorkbook(OPCPackage.open(this.getClass().getClassLoader().getResourceAsStream("template/batch-class.template.2.xlsx")));
+//            workbook = new XSSFWorkbook(OPCPackage.open(this.getClass().getClassLoader().getResourceAsStream("template/score-import-2.xlsx")));
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("字典页");
+        XSSFSheet sheet = workbook.createSheet("开班信息");
+
+        CellStyle css = workbook.createCellStyle();
+        DataFormat format = workbook.createDataFormat();
+        css.setDataFormat(format.getFormat("@"));
+        for(int i = 0; i < 16; i++) {
+            sheet.setDefaultColumnStyle(i, css);
+        }
+        Row header = sheet.createRow(0);
+        header.setHeight((short) (35 * 20));
+        Font headerFont = workbook.createFont();
+        headerFont.setFontHeightInPoints((short) 14);
+        headerFont.setFontName("黑体");
+        headerFont.setColor(HSSFColor.BLACK.index);
+        XSSFCellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillBackgroundColor(HSSFColor.GREEN.index);
+        headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        // 添加头部
+        addCells(header, TEMPLATE_HEADER_DEFINE, headerStyle);
+
         // 课程
-        String[][] courseCodeList = generateCourseDictionary();
+        String[] courseDictList = generateCourseDictionary();
         // 教师辅导员
-        String[][] teacherList = generateTeacherDictionary();
+        String[] teacherDictList = generateTeacherDictionary();
         // 教室
-        String[][] roomList = generateClassroomDictionary();
+        String[] roomList = generateClassroomDictionary();
         // 学年
         String[] academicYearList = generateAcademicYearDictionary();
         // 学期
-        String[][] cycleList = generateCycleDictionary();
+        String[] cycleList = generateCycleDictionary();
         // 班次
-        String[][] abilityList = generateAbilityDictionary();
+        String[] abilityList = generateAbilityDictionary();
         // YesOrNo
         String[] yesOrNo = {"是", "否"};
 
+        sheet = setHSSFValidation(sheet, courseDictList, 1, 100, 0, 0);//  .
+        sheet = setHSSFValidation(sheet, academicYearList, 1, 100, 2, 2);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, cycleList, 1, 100, 3, 3);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, abilityList, 1, 100, 4, 4);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, teacherDictList, 1, 100, 5, 5);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, teacherDictList, 1, 100, 6, 6);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, roomList, 1, 100, 8, 8);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 11, 11);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 14, 14);// 前101行都设置为选择列表形式.
 
-        String[] textlist = { "列表1", "列表2", "列表3", "列表4", "列表5" };
-        String[] valuelist = { "1", "2", "3", "4", "5" };
+        for (int i = 0; i < TEMPLATE_HEADER_DEFINE.size(); i++) {
+            sheet.autoSizeColumn(i);
+            switch(i){
+                case 0:
+                    sheet.setColumnWidth(i,calcWidth(courseDictList));
+                    break;
+                case 2:
+                    sheet.setColumnWidth(i,calcWidth(academicYearList));
+                    break;
+                case 3:
+                    sheet.setColumnWidth(i,calcWidth(cycleList));
+                    break;
+                case 4:
+                    sheet.setColumnWidth(i,calcWidth(abilityList));
+                    break;
+                case 5:
+                case 6:
+                    sheet.setColumnWidth(i,calcWidth(teacherDictList));
+                    break;
+                case 8:
+                    sheet.setColumnWidth(i,calcWidth(roomList));
+                    break;
+                default:
+                    sheet.setColumnWidth(i,sheet.getColumnWidth(i)*13/10);
+                    break;
+            }
 
-        sheet = setHSSFValidation(sheet, valuelist, 0, 1, 0, 0);// 第一列的前501行都设置为选择列表形式.
-        sheet = setHSSFValidation(sheet, textlist, 0, 1, 0, 1);// 第一列的前501行都设置为选择列表形式.
-        // sheetlist = setHSSFPrompt(sheetlist, "promt Title", "prompt Content",
-        // 0, 500, 1, 1);// 第二列的前501行都设置提示.
+        }
 
-        sheet.setColumnHidden(0, true);
+        AttachmentInfo attachmentInfo = new AttachmentInfo();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            workbook.write(new FileOutputStream(new File("/Users/huahua/text.xlsx")));
+
+            workbook.write(bos);
+
+            byte[] content = bos.toByteArray();
+            attachmentInfo.addContent(content);
+            attachmentInfo.parseType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            attachmentInfo.addOrgNames("batch-class.template.xlsx");
+            attachmentInfo.addSize(Long.valueOf(content.length));
+            attachmentInfo.addDescription("batch-class.template.xlsx");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        String code = UUID.randomUUID().toString();
+        attachmentService.saveAttachment(attachmentInfo, TEMP_MASTER_NAME, code);
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("name", TEMP_MASTER_NAME);
+        result.put("code", code);
+
+        SuccessTip tip = new SuccessTip();
+        tip.setData(result);
+        return tip;
     }
 
-    private String[][] generateAbilityDictionary() {
+    private int calcWidth(String[] courseDictList) {
+        int max = 0;
+        for(String courseInfo : courseDictList){
+            int length = courseInfo.length() * 550;
+            if (max < length)
+                max = length;
+        }
+
+        System.out.println("<<<" + max);
+        return max;
+    }
+
+    private String[] generateAbilityDictionary() {
 
         List<Dict> dictList = dictService.selectByParentCode("ability");
 
         if (null == dictList || dictList.isEmpty()){
-            return new String[0][0];
+            return new String[0];
         }
 
-        List<String> codeList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
+        List<String> abilityDictList = new ArrayList<>();
 
         for(Dict dict : dictList){
-            codeList.add(dict.getCode());
-            nameList.add(dict.getName());
+            abilityDictList.add("(" + dict.getCode() + ")" + dict.getName());
         }
 
-        return new String[][] {
-                (String[]) codeList.toArray(),
-                (String[]) nameList.toArray(),
-        };
+        String[] dictionary = new String[abilityDictList.size()];
+        return abilityDictList.toArray(dictionary);
     }
 
-    private String[][] generateCycleDictionary() {
+    private String[] generateCycleDictionary() {
 
         List<Dict> dictList = dictService.selectByParentCode("cycle");
 
         if (null == dictList || dictList.isEmpty()){
-            return new String[0][0];
+            return new String[0];
         }
 
-        List<String> codeList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
+        List<String> cycleDictList = new ArrayList<>();
 
         for(Dict dict : dictList){
-            codeList.add(dict.getCode());
-            nameList.add(dict.getName());
+            cycleDictList.add("(" + dict.getCode() + ")" + dict.getName());
         }
 
-        return new String[][] {
-                (String[]) codeList.toArray(),
-                (String[]) nameList.toArray(),
-        };
+        String[] dictionary = new String[cycleDictList.size()];
+        return cycleDictList.toArray(dictionary);
     }
 
     private String[] generateAcademicYearDictionary() {
@@ -138,7 +270,7 @@ public class BatchTemplateController {
         };
     }
 
-    private String[][] generateClassroomDictionary() {
+    private String[] generateClassroomDictionary() {
         List<Classroom> rootmList = classroomService.selectList(new EntityWrapper<Classroom>(){
             {
                 eq("status", GenericState.Valid.code);
@@ -146,24 +278,20 @@ public class BatchTemplateController {
         });
 
         if (null == rootmList || rootmList.isEmpty()){
-            return new String[0][0];
+            return new String[0];
         }
 
-        List<String> codeList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
+        List<String> classrootDictList = new ArrayList<>();
 
         for(Classroom room : rootmList){
-            codeList.add(room.getCode());
-            nameList.add(room.getName());
+            classrootDictList.add("(" + room.getCode() + ")" + room.getName());
         }
 
-        return new String[][] {
-                (String[]) codeList.toArray(),
-                (String[]) nameList.toArray(),
-        };
+        String[] dictionary = new String[classrootDictList.size()];
+        return classrootDictList.toArray(dictionary);
     }
 
-    private String[][] generateTeacherDictionary() {
+    private String[] generateTeacherDictionary() {
         List<Teacher> teacherList = teacherService.selectList(new EntityWrapper<Teacher>(){
             {
                 eq("status", GenericState.Valid.code);
@@ -171,24 +299,20 @@ public class BatchTemplateController {
         });
 
         if (null == teacherList || teacherList.isEmpty()){
-            return new String[0][0];
+            return new String[0];
         }
 
-        List<String> codeList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
+        List<String> teacherDictList = new ArrayList<>();
 
         for(Teacher teacher : teacherList){
-            codeList.add(teacher.getCode());
-            nameList.add(teacher.getName());
+            teacherDictList.add("(" + teacher.getCode() + ")" + teacher.getName());
         }
 
-        return new String[][] {
-                (String[]) codeList.toArray(),
-                (String[]) nameList.toArray(),
-        };
+        String[] dictionary = new String[teacherDictList.size()];
+        return teacherDictList.toArray(dictionary);
     }
 
-    private String[][] generateCourseDictionary() {
+    private String[] generateCourseDictionary() {
         List<Course> courseList = courseService.selectList(new EntityWrapper<Course>(){
             {
                 eq("status", GenericState.Valid.code);
@@ -196,21 +320,16 @@ public class BatchTemplateController {
         });
 
         if (null == courseList || courseList.isEmpty()){
-            return new String[0][0];
+            return new String[0];
         }
 
-        List<String> codeList = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
+        List<String> courseDictList = new ArrayList<>();
 
         for(Course course : courseList){
-            codeList.add(course.getCode());
-            nameList.add(course.getName());
+            courseDictList.add("(" + course.getCode() + ")" + course.getName());
         }
-
-        return new String[][] {
-                (String[]) codeList.toArray(),
-                (String[]) nameList.toArray(),
-        };
+        String[] dictionary = new String[courseDictList.size()];
+        return courseDictList.toArray(dictionary);
     }
 
     /**
@@ -233,20 +352,6 @@ public class BatchTemplateController {
     public static XSSFSheet setHSSFValidation(XSSFSheet sheet,
                                               String[] textlist, int firstRow, int endRow, int firstCol,
                                               int endCol) {
-//        // 加载下拉列表内容
-//        DVConstraint constraint = DVConstraint
-//                .createExplicitListConstraint(textlist);
-//        // 设置数据有效性加载在哪个单元格上,四个参数分别是：起始行、终止行、起始列、终止列
-//        CellRangeAddressList regions = new CellRangeAddressList(firstRow,
-//                endRow, firstCol, endCol);
-//        // 数据有效性对象
-//        HSSFDataValidation data_validation_list = new HSSFDataValidation(
-//                regions, constraint);
-//
-//        XSSFDataValidation data_validation_list = new XSSFDataValidation(constraint,
-//                regions, constraint);
-//        sheet.addValidationData(data_validation_list);
-//        return sheet;
 
         XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
         XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper
@@ -256,7 +361,6 @@ public class BatchTemplateController {
         validation.setSuppressDropDownArrow(true);
         validation.setShowErrorBox(true);
         sheet.addValidationData(validation);
-
         return sheet;
     }
 }

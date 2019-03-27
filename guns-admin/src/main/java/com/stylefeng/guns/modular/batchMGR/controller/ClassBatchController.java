@@ -48,7 +48,7 @@ public class ClassBatchController  extends BaseController {
     @Autowired
     private IAttachmentService attachmentService;
 
-    @RequestMapping(value = "/import/score", method = RequestMethod.POST)
+    @RequestMapping(value = "/import/class", method = RequestMethod.POST)
     @ResponseBody
     public Object importData(BatchProcess batchProcess, String masterName, String masterCode){
         Attachment importAttachment = null;
@@ -111,8 +111,8 @@ public class ClassBatchController  extends BaseController {
         processDetail.setLine(line);
 
         StringBuffer buff = new StringBuffer();
-        buff.append(String.join(",", lineData.subList(0, 16))).append("@_@");
-        for(String data : lineData.subList(16, lineData.size())){
+        buff.append(String.join(",", lineData.subList(0, 17))).append("@_@");
+        for(String data : lineData.subList(17, lineData.size())){
             buff.append(data).append(",");
         }
         // 1,2,3,4,5,6,7,8,9@_@10,11,12

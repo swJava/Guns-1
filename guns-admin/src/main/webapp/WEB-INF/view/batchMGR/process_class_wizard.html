@@ -18,7 +18,7 @@
                         <div class="col-sm-8">
                             <div class="col-sm-8">
                                 操作说明
-                                <a href="">下载模板</a>
+                                <a href="javascript: void(0);" onclick="ProcessWizard.downloadTemplate();">下载模板</a>
                             </div>
                             <div class="col-sm-4">
                                 <div class="text-center">
@@ -34,6 +34,7 @@
             <h1>数据导入</h1>
             <fieldset>
                 <form id="scoreImportForm" class="form-horizontal">
+                    <#input id="description" name="业务名称" value=""/>
                     <input type="hidden" id="masterCode" value=""/>
                     <input type="hidden" id="masterName" value=""/>
                     <div class="form-group">

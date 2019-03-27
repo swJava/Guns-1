@@ -250,7 +250,7 @@ public class OrderController extends BaseController {
         topFont.setColor(HSSFColor.BLACK.index);
         XSSFCellStyle topStyle = workbook.createCellStyle();
         topStyle.setFont(topFont);
-        topStyle.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+        topStyle.setAlignment(CellStyle.ALIGN_LEFT);
         topStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         topStyle.setIndention((short) 2);
         // 添加统计信息

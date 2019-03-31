@@ -79,6 +79,24 @@ Paper.openPaperDetail = function () {
         this.layerIndex = index;
     }
 };
+
+/**
+ * 打开查看试卷应用
+ */
+Paper.openPaperUse = function () {
+    if (this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '应用试卷',
+            area: ['640px', '480px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/examine/paper/open_use?code=' + Paper.seItem.code
+        });
+        layer.full(index);
+        this.layerIndex = index;
+    }
+};
 /**
  * 复制试卷
  */

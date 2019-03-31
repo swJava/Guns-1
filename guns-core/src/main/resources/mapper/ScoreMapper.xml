@@ -41,9 +41,14 @@
                 ) )
             </if>
 
+            <!-- 联系电话 -->
+            <if test="null != mobileNumber">
+                and s.mobile_number = #{mobileNumber}
+            </if>
+
             <!-- 考试名称 -->
             <if test="null != examine">
-                and s.examine_name like CONCAT('%',#{student},'%')
+                and s.examine_name like CONCAT('%',#{examine},'%')
             </if>
 
             <!-- 考试场次 -->
@@ -59,6 +64,14 @@
                 or s.student like CONCAT('%',#{keyword},'%')
                 or s.student_code = #{keyword}
                 )
+            </if>
+
+            <!-- 分数 -->
+            <if test="null != beginScore">
+                and s.score &gt;= #{beginScore}
+            </if>
+            <if test="null != endScore">
+                and s.score &lt; #{endScore}
             </if>
 
         </where>

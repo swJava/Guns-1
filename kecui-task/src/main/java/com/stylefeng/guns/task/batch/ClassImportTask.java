@@ -47,6 +47,7 @@ public class ClassImportTask extends ImportTaskSupport{
         //
         Wrapper<BatchProcess> queryWrapper = new EntityWrapper<BatchProcess>();
         queryWrapper.eq("status", GenericState.Valid.code);
+        queryWrapper.eq("service", BatchServiceEnum.Class.code);
         queryWrapper.eq("work_status", BatchProcessStatusEnum.Prepare.code);
 
         BatchProcess preparedProcess = batchProcessService.selectOne(queryWrapper);
@@ -123,29 +124,36 @@ public class ClassImportTask extends ImportTaskSupport{
         Map<String , Object> resultMap = new HashMap<String, Object>();
 
         Class classInfo = new Class();
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
-        classInfo.setName(getString(requiredCols, 0));
+        String[] courseInfo = getMapping(requiredCols, 0);
+        classInfo.setCourseCode(courseInfo[0]);
+        classInfo.setCourseName(courseInfo[1]);
+
+        classInfo.setName(getString(requiredCols, 1));
+        classInfo.setAcademicYear(getInteger(requiredCols, 2));
+        classInfo.setCycle(getMappingCode(requiredCols, 3));
+        classInfo.setAbility(getMappingCode(requiredCols, 4));
+
+        String[] teacherInfo = getMapping(requiredCols, 5);
+        classInfo.setTeacherCode(teacherInfo[0]);
+        classInfo.setTeacher(teacherInfo[1]);
+
+        String[] assisterInfo = getMapping(requiredCols, 6);
+        classInfo.setTeacherSecondCode(assisterInfo[0]);
+        classInfo.setTeacherSecond(assisterInfo[1]);
+
+        classInfo.setQuato(getInteger(requiredCols, 7));
+
+        String[] classroomInfo = getMapping(requiredCols, 8);
+        classInfo.setClassRoomCode(classroomInfo[0]);
+        classInfo.setClassRoom(classroomInfo[1]);
+
+        classInfo.setSignable(GenericState.Valid.code);
+        classInfo.setSignStartDate(getDate(requiredCols, 9));
+        classInfo.setSignStartDate(getDate(requiredCols, 10));
+        classInfo.setCrossable(getInteger(requiredCols, 11));
+        classInfo.setCrossStartDate(getDate(requiredCols, 12));
+        classInfo.setCrossEndDate(getDate(requiredCols, 13));
+        classInfo.setStudyTimeDesp(getString(requiredCols, 14));
 
         resultMap.put("classInfo", classInfo);
 

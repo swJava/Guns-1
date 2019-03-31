@@ -57,9 +57,9 @@ Sign.check = function () {
 };
 
 /**
- * 点击添加订单管理
+ * 点击添加订单
  */
-Sign.openImportDlg = function () {
+Sign.openSignDlg = function () {
     if (this.check()) {
         var index = layer.open({
             type: 2,
@@ -67,8 +67,9 @@ Sign.openImportDlg = function () {
             area: ['480px', '200px'], //宽高
             fix: false, //不固定
             maxmin: true,
-            content: Feng.ctxPath + '/order/sign/sign_import/' + Sign.seItem.code
+            content: Feng.ctxPath + '/order/sign/sign_wizard/' + Sign.seItem.code
         });
+        layer.full(index);
         this.layerIndex = index;
     }
 };
@@ -78,13 +79,31 @@ Sign.openImportDlg = function () {
  */
 Sign.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['grades'] = $("#grade").val();
+    queryData['subjects'] = $("#subject").val();
+    queryData['abilities'] = $("#ability").val();
+    queryData['classCycles'] = $("#cycle").val();
+    queryData['classPlans'] = $("#studyDate").val();
+    queryData['signState'] = $("#signState").val();
+    queryData['examinable'] = $("#examState").val();
+    queryData['teacherQueryString'] = $("#teacherQueryString").val();
+
+    var minPrice = parseFloat($('#minPrice').val(), 10);
+    var maxPrice = parseFloat($('#maxPrice').val(), 10);
+    if (!(isNaN(minPrice))) {
+        queryData['minPrice'] = Math.floor(100 * minPrice);;
+    }
+    if (!(isNaN(maxPrice))) {
+        queryData['maxPrice'] = Math.floor(100 * maxPrice);;
+    }
+    queryData['studyDate'] = $("#studyDate").val();
+    queryData['signDate'] = $("#signDate").val();
     Sign.table.refresh({query: queryData});
 };
 
 $(function () {
     var defaultColunms = Sign.initColumn();
-    var table = new BSTable(Sign.id, "/order/sign/classlist", defaultColunms);
+    var table = new BSTable(Sign.id, "/class/list", defaultColunms);
     table.setPaginationType("server");
     Sign.table = table.init();
 });

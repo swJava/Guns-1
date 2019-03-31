@@ -15,11 +15,9 @@ import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.log.LogObjectHolder;
+import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperUseWrapper;
 import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperWrapper;
-import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperItemService;
-import com.stylefeng.guns.modular.examineMGR.service.IExaminePaperService;
-import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
-import com.stylefeng.guns.modular.examineMGR.service.IQuestionService;
+import com.stylefeng.guns.modular.examineMGR.service.*;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.ExaminePaper;
 import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
@@ -59,6 +57,9 @@ public class PaperController extends BaseController {
 
     @Autowired
     private IQuestionItemService questionItemService;
+
+    @Autowired
+    private IExamineApplyService examineApplyService;
 
     /**
      * 跳转到试卷首页
@@ -131,6 +132,24 @@ public class PaperController extends BaseController {
         model.addAttribute("questionList", viewList);
         return PREFIX + "paper_wizard_review.html";
     }
+
+
+    @RequestMapping("/open_use")
+    public String openUse(String code, Model model){
+
+        ExaminePaper paper = examinePaperService.get(code);
+
+
+        List<Map<String, Object>> paperUseList = examineApplyService.listPaperUse(code);
+
+        model.addAttribute("paper", paper);
+
+        new PaperUseWrapper(paperUseList).warp();
+
+        model.addAttribute("itemList", paperUseList);
+        return PREFIX + "paper_use.html";
+    }
+
 
     /**
      * 获取入学诊断列表

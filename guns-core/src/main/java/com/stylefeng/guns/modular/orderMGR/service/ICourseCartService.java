@@ -20,7 +20,7 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @param student
      * @param classInfo
      */
-    void join(Member member, Student student, Class classInfo);
+    String join(Member member, Student student, Class classInfo, boolean skipTest);
 
     /**
      * 从选课单移除

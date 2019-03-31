@@ -55,7 +55,26 @@ import static com.stylefeng.guns.util.ExcelUtil.addCells;
 public class BatchTemplateController {
     private static final String TEMP_MASTER_NAME = "_TEMPLATE_DOWNLOAD_";
 
-    private static final List<String> TEMPLATE_HEADER_DEFINE = new ArrayList<String>(){
+
+    private static final List<String> TEMPLATE_SIGN_HEADER_DEFINE = new ArrayList<String>(){
+        private static final long serialVersionUID = -5456067913018841267L;
+        {
+            add("班级编码");
+            add("家长手机");
+            add("家长名称");
+            add("学员编码");
+            add("学员名称");
+            add("学员性别");
+            add("学员年龄");
+            add("所读年级");
+            add("所读学校");
+            add("目标学校");
+            add("支付类型");
+        }
+    };
+
+
+    private static final List<String> TEMPLATE_CLASS_HEADER_DEFINE = new ArrayList<String>(){
         private static final long serialVersionUID = -5456067913018841267L;
         {
             add("课程");
@@ -96,17 +115,82 @@ public class BatchTemplateController {
     @Autowired
     private IDictService dictService;
 
+    @RequestMapping("/sign")
+    @ResponseBody
+    public Tip downloadSignTemplate(){
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("报名信息");
+
+        CellStyle css = workbook.createCellStyle();
+        DataFormat format = workbook.createDataFormat();
+        css.setDataFormat(format.getFormat("@"));
+        for(int i = 0; i < 16; i++) {
+            sheet.setDefaultColumnStyle(i, css);
+        }
+        Row header = sheet.createRow(0);
+        header.setHeight((short) (35 * 20));
+        Font headerFont = workbook.createFont();
+        headerFont.setFontHeightInPoints((short) 14);
+        headerFont.setFontName("黑体");
+        headerFont.setColor(HSSFColor.BLACK.index);
+        XSSFCellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillBackgroundColor(HSSFColor.GREEN.index);
+        headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        // 添加头部
+        addCells(header, TEMPLATE_SIGN_HEADER_DEFINE, headerStyle);
+
+        // 性别
+        String[] gendarList = generateGendarDictionary();
+        // 年级
+        String[] gradeList = generateGradeDictionary();
+        // 支付类型
+        String[] payTypeList = generatePaytypeDictionary();
+        // YesOrNo
+        String[] yesOrNo = {"是", "否"};
+
+        sheet = setHSSFValidation(sheet, gendarList, 1, 100, 5, 5);//  .
+        sheet = setHSSFValidation(sheet, gradeList, 1, 100, 7, 7);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, payTypeList, 1, 100, 10, 10);// 前101行都设置为选择列表形式.
+
+        for (int i = 0; i < TEMPLATE_SIGN_HEADER_DEFINE.size(); i++) {
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i,sheet.getColumnWidth(i)*13/10);
+        }
+
+        AttachmentInfo attachmentInfo = new AttachmentInfo();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+
+            workbook.write(bos);
+
+            byte[] content = bos.toByteArray();
+            attachmentInfo.addContent(content);
+            attachmentInfo.parseType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            attachmentInfo.addOrgNames("batch-sign.template.xlsx");
+            attachmentInfo.addSize(Long.valueOf(content.length));
+            attachmentInfo.addDescription("batch-sign.template.xlsx");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        String code = UUID.randomUUID().toString();
+        attachmentService.saveAttachment(attachmentInfo, TEMP_MASTER_NAME, code);
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("name", TEMP_MASTER_NAME);
+        result.put("code", code);
+
+        SuccessTip tip = new SuccessTip();
+        tip.setData(result);
+        return tip;
+    }
+
     @RequestMapping("/class")
     @ResponseBody
     public Tip downloadClassTemplate(){
-
-//        XSSFWorkbook workbook = null;
-//        try {
-////            workbook = new XSSFWorkbook(OPCPackage.open(this.getClass().getClassLoader().getResourceAsStream("template/batch-class.template.2.xlsx")));
-//            workbook = new XSSFWorkbook(OPCPackage.open(this.getClass().getClassLoader().getResourceAsStream("template/score-import-2.xlsx")));
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("开班信息");
 
@@ -128,7 +212,7 @@ public class BatchTemplateController {
         headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         headerStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
         // 添加头部
-        addCells(header, TEMPLATE_HEADER_DEFINE, headerStyle);
+        addCells(header, TEMPLATE_CLASS_HEADER_DEFINE, headerStyle);
 
         // 课程
         String[] courseDictList = generateCourseDictionary();
@@ -155,7 +239,7 @@ public class BatchTemplateController {
         sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 11, 11);// 前101行都设置为选择列表形式.
         sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 14, 14);// 前101行都设置为选择列表形式.
 
-        for (int i = 0; i < TEMPLATE_HEADER_DEFINE.size(); i++) {
+        for (int i = 0; i < TEMPLATE_CLASS_HEADER_DEFINE.size(); i++) {
             sheet.autoSizeColumn(i);
             switch(i){
                 case 0:
@@ -330,6 +414,61 @@ public class BatchTemplateController {
         }
         String[] dictionary = new String[courseDictList.size()];
         return courseDictList.toArray(dictionary);
+    }
+
+
+    private String[] generatePaytypeDictionary() {
+
+        List<Dict> dictList = dictService.selectByParentCode("pay_type");
+
+        if (null == dictList || dictList.isEmpty()){
+            return new String[0];
+        }
+
+        List<String> cycleDictList = new ArrayList<>();
+
+        for(Dict dict : dictList){
+            cycleDictList.add("(" + dict.getCode() + ")" + dict.getName());
+        }
+
+        String[] dictionary = new String[cycleDictList.size()];
+        return cycleDictList.toArray(dictionary);
+    }
+
+    private String[] generateGradeDictionary() {
+
+        List<Dict> dictList = dictService.selectByParentCode("school_grade");
+
+        if (null == dictList || dictList.isEmpty()){
+            return new String[0];
+        }
+
+        List<String> cycleDictList = new ArrayList<>();
+
+        for(Dict dict : dictList){
+            cycleDictList.add("(" + dict.getCode() + ")" + dict.getName());
+        }
+
+        String[] dictionary = new String[cycleDictList.size()];
+        return cycleDictList.toArray(dictionary);
+    }
+
+    private String[] generateGendarDictionary() {
+
+        List<Dict> dictList = dictService.selectByParentCode("sys_sex");
+
+        if (null == dictList || dictList.isEmpty()){
+            return new String[0];
+        }
+
+        List<String> cycleDictList = new ArrayList<>();
+
+        for(Dict dict : dictList){
+            cycleDictList.add("(" + dict.getCode() + ")" + dict.getName());
+        }
+
+        String[] dictionary = new String[cycleDictList.size()];
+        return cycleDictList.toArray(dictionary);
     }
 
     /**

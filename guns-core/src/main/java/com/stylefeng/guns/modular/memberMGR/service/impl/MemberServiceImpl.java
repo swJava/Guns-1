@@ -298,6 +298,17 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         return true;
     }
 
+    @Override
+    public Member getByMobile(String number) {
+        if (null == number)
+            return null;
+
+        Wrapper<Member> queryWrapper = new EntityWrapper<Member>();
+        queryWrapper.eq("mobile_number", number);
+        queryWrapper.eq("status", GenericState.Valid.code);
+        return selectOne(queryWrapper);
+    }
+
     private MemberAuth buildMemberAuthInfo(Member member) {
         MemberAuth memberAuth = new MemberAuth();
         Date now = new Date();

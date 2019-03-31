@@ -45,6 +45,7 @@ public class ScoreImportTask extends ImportTaskSupport {
         //
         Wrapper<BatchProcess> queryWrapper = new EntityWrapper<BatchProcess>();
         queryWrapper.eq("status", GenericState.Valid.code);
+        queryWrapper.eq("service", BatchServiceEnum.Score.code);
         queryWrapper.eq("work_status", BatchProcessStatusEnum.Prepare.code);
 
         BatchProcess preparedProcess = batchProcessService.selectOne(queryWrapper);

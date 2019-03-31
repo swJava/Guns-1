@@ -1,0 +1,51 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>学生成绩单</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="student" name="学员关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="mobileNumber" name="电话号码" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="examine" name="考试关键字" />
+                            </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-3">
+                            <div class="input-group m-b-sm">
+                                <span class="input-group-addon">最小得分</span>
+                                <input type="text" class="form-control" id="beginScore" placeholder="起始分值" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group m-b-sm">
+                                <span class="input-group-addon">最大得分</span>
+                                <input type="text" class="form-control" id="endScore" placeholder="终止分值" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <#button name="搜索" icon="fa-search" clickFun="Score.search()"/>
+                        </div>
+                    </div>
+                    <div class="hidden-xs" id="ScoreTableToolbar" role="group">
+                    </div>
+                    <#table id="ScoreTable"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<#script src="/static/modular/examineMGR/achievement/score.js" />
+@}

@@ -48,6 +48,19 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     }
 
     @Override
+    public Student addStudent(String userName, Student student) {
+        if (null == userName)
+            throw new ServiceException (MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        student.setCode(CodeKit.generateStudent());
+        student.setUserName(userName);
+        student.setStatus(GenericState.Valid.code);
+        insert(student);
+
+        return student;
+    }
+
+    @Override
     public Student addStudent(String userName, Map<String, Object> studentInfo) {
 
         if (null == userName)

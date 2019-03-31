@@ -232,6 +232,15 @@ public class Class extends Model<Class> {
         this.cycle = cycle;
     }
 
+    public void setCycle(String cycle) {
+        if (null == cycle)
+            return;
+
+        try{
+            this.cycle = Integer.parseInt(cycle);
+        }catch(Exception e){}
+    }
+
     public Integer getAbility() {
         return ability;
     }
@@ -240,6 +249,14 @@ public class Class extends Model<Class> {
         this.ability = ability;
     }
 
+    public void setAbility(String ability) {
+        if (null == ability)
+            return;
+
+        try{
+            this.ability = Integer.parseInt(ability);
+        }catch(Exception e){}
+    }
     public Date getBeginDate() {
         return beginDate;
     }

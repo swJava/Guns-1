@@ -140,20 +140,6 @@ public class ScoreBatchController extends BaseController {
         return processDetail;
     }
 
-    private Score assembleScore(List<String> lineData) {
-        Score score = new Score();
-        score.setStudentCode(lineData.get(0));
-        score.setStudent(lineData.get(1));
-        score.setMobileNumber(lineData.get(2));
-        score.setExamineName(lineData.get(3));
-        score.setRound(lineData.get(4));
-        score.setScore(lineData.get(5));
-        score.setTotalScore(lineData.get(6));
-        score.setRank(lineData.get(7));
-        score.setRemark(lineData.get(8));
-        return score;
-    }
-
     private void checkImportFile(File file) {
         if (null == file) {
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"导入数据"});

@@ -30,6 +30,14 @@ public interface IStudentService extends IService<Student> {
      * 为会员添加学员
      *
      * @param userName
+     * @param student
+     * @return
+     */
+    Student addStudent(String userName, Student student);
+    /**
+     * 为会员添加学员
+     *
+     * @param userName
      * @param stringObjectMap
      * @return
      */

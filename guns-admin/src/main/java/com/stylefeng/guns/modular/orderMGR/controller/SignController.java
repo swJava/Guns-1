@@ -8,28 +8,34 @@ import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
+import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
+import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
-import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.model.Class;
-import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.*;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * 订单管理控制器
@@ -57,6 +63,13 @@ public class SignController extends BaseController {
 
     @Autowired
     private IStudentService studentService;
+
+    @Autowired
+    private IScheduleClassService scheduleClassService;
+
+    @Autowired
+    private IOrderService orderService;
+
     /**
      * 跳转到报名首页
      */
@@ -80,8 +93,72 @@ public class SignController extends BaseController {
         return PREFIX + "sign_import.html";
     }
 
+
+    @RequestMapping("/sign_wizard/{classCode}")
+    public String openSignDlg(@PathVariable("classCode") String code, Model model){
+
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"班级信息"});
+
+        Class classInfo = classService.get(code);
+
+        if (null == classInfo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"班级信息"});
+
+        Map<String, Object> resultMap = toMap(classInfo);
+
+        new ClassWrapper(resultMap).warp();
+        model.addAttribute("classInfo", resultMap);
+        return PREFIX + "sign_wizard.html";
+    }
+
+
+    @RequestMapping("/plan/list")
+    @ResponseBody
+    public Object planList(String classCode){
+
+        Map<String, Object> classPlanInfo = new HashMap<String, Object>();
+
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("classCode", classCode);
+        queryMap.put("status", GenericState.Valid.code);
+
+        List<ClassPlan> planList = scheduleClassService.selectPlanList(queryMap);
+
+        //包装数据
+        Page<ClassPlan> page = new PageFactory<ClassPlan>().defaultPage();
+        page.setSize(100);
+        page.setRecords(planList);
+        return super.packForBT(page);
+    }
+
+    private Map<String, Object> toMap(Class classInfo) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(classInfo.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor property : propertyDescriptors) {
+                String key = property.getName();
+
+                // 过滤class属性
+                if (!key.equals("class")) {
+                    // 得到property对应的getter方法
+                    Method getter = property.getReadMethod();
+                    Object value = getter.invoke(classInfo);
+
+                    map.put(key, value);
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("transBean2Map Error " + e);
+        }
+
+        return map;
+    }
+
     /**
-     * 获取需要预报名的班级列表
+     * 获取可以报名的班级列表
      */
     @RequestMapping(value = "/classlist")
     @ResponseBody
@@ -106,6 +183,71 @@ public class SignController extends BaseController {
         return super.packForBT(pageMap);
     }
 
+    /**
+     * 获取需要预报名的班级列表
+     */
+    @RequestMapping(value = "/doSign")
+    @ResponseBody
+    public Object sign( @RequestBody SignRequest request) {
+
+        Class classInfo = classService.get(request.getClassInfo().getCode());
+
+        if (null == classInfo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"班级信息"});
+
+        Member member = request.getMember();
+        Map<String, Object> memberRegistMap = new HashMap<>();
+        memberRegistMap.put("number", member.getMobileNumber());
+        memberRegistMap.put("name", member.getName());
+
+        Member currMember = null;
+        try {
+            currMember = memberService.createMember(member.getMobileNumber(), memberRegistMap);
+        }catch(ServiceException sere){
+            if (!MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE.equals(sere.getMessageCode()))
+                throw sere;
+            else
+                currMember = memberService.getByMobile(member.getMobileNumber());
+        }
+
+        if (null == currMember)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"用户信息"});
+
+        Student student = request.getStudent();
+        Student currStudent = null;
+        currStudent = studentService.get(student.getCode());
+        if (null == currStudent)
+            currStudent = studentService.addStudent(currMember.getUserName(), student);
+
+        if (null == currMember)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"学员信息"});
+
+        // 下订单
+        String courseCartCode = courseCartService.join(currMember, currStudent, classInfo, true);
+
+        PayTypeEnum paytype = PayTypeEnum.AppPay;
+
+        try {
+            paytype = PayTypeEnum.instanceOf(request.getPayType());
+        }catch(Exception e){}
+
+        if (PayTypeEnum.ClassicPay.equals(paytype)){
+            OrderItem orderItem = new OrderItem();
+            orderItem.setCourseCartCode(courseCartCode);
+            orderItem.setItemObject(OrderItemTypeEnum.Course.code);
+            orderItem.setItemObjectCode(classInfo.getCode());
+            orderItem.setItemAmount(classInfo.getPrice());
+            OrderAddList orderAddList = new OrderAddList();
+            orderAddList.add(orderItem);
+
+            Map<String, Object> extendInfo = new HashMap<>();
+            Order signOrder = orderService.order(currMember, orderAddList, PayMethodEnum.classic, extendInfo);
+            orderService.completePay(signOrder.getAcceptNo());
+        }
+
+        return SUCCESS_TIP;
+    }
+
 
     /**
      * 获取需要预报名的班级列表
@@ -113,7 +255,7 @@ public class SignController extends BaseController {
     @RequestMapping(value = "/import/student")
     @ResponseBody
     public Object importStudents(String classCode, String masterName, String masterCode) {
-
+/*
         Attachment file = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
         if (null != attachmentList && attachmentList.size() > 0){
@@ -172,6 +314,8 @@ public class SignController extends BaseController {
                     e.printStackTrace();
                 }
         }
+        */
         return SUCCESS_TIP;
+
     }
 }

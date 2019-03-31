@@ -62,7 +62,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     }
 
     @Override
-    public void join(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo) {
+    public String join(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo, boolean skipTest) {
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
@@ -113,7 +113,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         classService.checkJoinState(classInfo, member, student);
 
         // 入学测试校验
-        if (ClassExaminableEnum.YES.equals(ClassExaminableEnum.instanceOf(classInfo.getExaminable()))){
+        if (!skipTest && ClassExaminableEnum.YES.equals(ClassExaminableEnum.instanceOf(classInfo.getExaminable()))){
             Map<String, Object> queryParams = new HashMap<String, Object>();
             queryParams.put("classCode", classInfo.getCode());
             ExaminePaper examinePaper = examineService.findExaminePaper(queryParams);
@@ -132,7 +132,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
         // 加入选课单
         Map<String, Object> extraParams = new HashMap<String, Object>();
-        select(member, student, classInfo, extraParams);
+        return select(member, student, classInfo, extraParams);
     }
 
     @Override
@@ -185,7 +185,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         updateById(existSelected);
     }
 
-    private void select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
+    private String select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
 
         // 查询班级剩余报名额度
         Wrapper<StudentClass> queryWrapper = new EntityWrapper<>();
@@ -200,7 +200,8 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         CourseCart courseCart = new CourseCart();
         Date now = new Date();
 
-        courseCart.setCode(CodeKit.generateCourseCart());
+        String courseCartCode = CodeKit.generateCourseCart();
+        courseCart.setCode(courseCartCode);
         courseCart.setUserName(member.getUserName());
         courseCart.setStudentCode(student.getCode());
         courseCart.setStudent(student.getName());
@@ -221,6 +222,8 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         courseCart.setStatus(CourseCartStateEnum.Valid.code);
         courseCart.setAmount(classInfo.getPrice());
         insert(courseCart);
+
+        return courseCartCode;
     }
 
 }

@@ -36,6 +36,9 @@
                             @if(shiro.hasPermission("/examine/paper/copy")){
                             <#button name="复制" icon="fa-clone" clickFun="Paper.copy();" space="true"/>
                             @}
+                            @if(shiro.hasPermission("/examine/paper/use")){
+                            <#button name="对应班级" icon="fa-clone" clickFun="Paper.openPaperUse();" space="true"/>
+                            @}
                         </div>
                         <#table id="PaperTable"/>
                     </div>

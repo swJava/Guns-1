@@ -97,4 +97,12 @@ public interface IMemberService extends IService<Member> {
      * @return
      */
     boolean doResume(String userName);
+
+    /**
+     * 根据电话号码查找用户
+     *
+     * @param mobileNumber
+     * @return
+     */
+    Member getByMobile(String mobileNumber);
 }

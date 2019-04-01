@@ -34,7 +34,7 @@ Class.initColumn = function () {
             {title: '关注度', field: 'star', visible: false, align: 'center', valign: 'middle'},
             {title: '价格(元)', field: 'price', visible: true, align: 'center', valign: 'middle'},
             {title: '学员人数', field: 'quato', visible: true, align: 'center', valign: 'middle'},
-            {title: '剩余人数', field: 'remainderQuato', visible: false, align: 'center', valign: 'middle'},
+            {title: '剩余人数', field: 'remainderQuato', visible: true, align: 'center', valign: 'middle'},
             {title: '报名开始日期', field: 'signStartDate', visible: true, align: 'center', valign: 'middle',
                 formatter: function(value){
                     return value.substring(0, 10);

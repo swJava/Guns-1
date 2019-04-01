@@ -13,6 +13,16 @@ var ClassInfoDlg = {
     calendar: null,
     classInfoData : {},
     validateFields: {
+        crossable: {
+            validators: {
+                cross_v: {
+                    message: ' ',
+                    onError: function(e, data){
+                        Feng.error('请设置跨报时间');
+                    }
+                }
+            }
+        },
         code: {
             validators: {
                 notEmpty: {
@@ -139,7 +149,7 @@ ClassInfoDlg.get = function(key) {
  */
 ClassInfoDlg.close = function() {
     parent.layer.close(window.parent.Class.layerIndex);
-}
+};
 
 /**
  * 收集数据
@@ -435,7 +445,17 @@ ClassInfoDlg.initCalendar = function(options){
     });
 };
 
+
 $(function() {
+    // 注册验证方法
+    $.fn.bootstrapValidator.validators.cross_v = {
+        validate: function() {
+            var crossable = $(':radio[name="crossable"]:checked').val();
+            var crossBeginDate = $('#crossStartDate').val();
+            var crossEndDate = $('#crossEndDate').val();
+            return 1 == crossable ? (crossBeginDate.length > 0 && crossEndDate.length > 0): true;
+        }
+    };
 
     var now = new Date();
     var year = now.getFullYear();
@@ -497,6 +517,7 @@ $(function() {
     if ($('#' + ClassInfoDlg.courseTable.id)) {
         var courseDisplaColumns = ClassInfoDlg.courseTable.initColumn();
         var table = new BSTable(ClassInfoDlg.courseTable.id, "/course/list", courseDisplaColumns);
+        table.setPageSize(6);
         table.setItemSelectCallback(function (row) {
             console.log(row);
             $('#courseCode').val(row.code);

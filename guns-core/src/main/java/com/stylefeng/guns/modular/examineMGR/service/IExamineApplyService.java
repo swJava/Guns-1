@@ -16,8 +16,8 @@ public interface IExamineApplyService extends IService<ExamineApply> {
 
     /**
      *
-     * @param code
+     * @param paperCode
      * @return
      */
-    List<Map<String, Object>> listPaperUse(String code);
+    List<Map<String, Object>> listPaperUse(String paperCode);
 }

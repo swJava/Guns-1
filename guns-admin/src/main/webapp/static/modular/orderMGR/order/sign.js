@@ -20,8 +20,11 @@ Sign.initColumn = function () {
         {title: '年级', field: 'gradeName', visible: false, align: 'center', valign: 'middle'},
         {title: '学期', field: 'cycle', visible: false, align: 'center', valign: 'middle'},
         {title: '班次', field: 'ability', visible: false, align: 'center', valign: 'middle'},
-        {title: '开课起始日期', field: 'beginDate', visible: true, align: 'center', valign: 'middle'},
-        {title: '开课结束日期', field: 'endDate', visible: false, align: 'center', valign: 'middle'},
+        {title: '开课日期', field: 'beginDate', visible: true, align: 'center', valign: 'middle',
+            formatter: function(value){
+                return value.substring(0, 10);
+            }
+        },
         {title: '单节时长(分钟)', field: 'duration', visible: false, align: 'center', valign: 'middle'},
         {title: '总课时数', field: 'period', visible: false, align: 'center', valign: 'middle'},
         {title: '教室编码', field: 'classRoomCode', visible: false, align: 'center', valign: 'middle'},
@@ -31,8 +34,17 @@ Sign.initColumn = function () {
         {title: '关注度', field: 'star', visible: false, align: 'center', valign: 'middle'},
         {title: '价格(元)', field: 'price', visible: true, align: 'center', valign: 'middle'},
         {title: '学员人数', field: 'quato', visible: true, align: 'center', valign: 'middle'},
-        {title: '报名截止时间', field: 'signStartDate', visible: true, align: 'center', valign: 'middle'},
-        {title: '报名截止时间', field: 'signEndDate', visible: true, align: 'center', valign: 'middle'},
+        {title: '剩余人数', field: 'remainderQuato', visible: true, align: 'center', valign: 'middle'},
+        {title: '报名截止时间', field: 'signStartDate', visible: true, align: 'center', valign: 'middle',
+            formatter: function(value){
+                return value.substring(0, 10);
+            }
+        },
+        {title: '报名截止时间', field: 'signEndDate', visible: true, align: 'center', valign: 'middle',
+            formatter: function(value){
+                return value.substring(0, 10);
+            }
+        },
         {title: '状态', field: 'statusName', visible: false, align: 'center', valign: 'middle'},
         {title: '主讲教师编码', field: 'teacherCode', visible: false, align: 'center', valign: 'middle'},
         {title: '主讲教师名称', field: 'teacher', visible: true, align: 'center', valign: 'middle'},
@@ -56,21 +68,41 @@ Sign.check = function () {
     }
 };
 
+Sign.signable = function(succeed, failed){
+    //提交信息
+    var ajax = new $ax(Feng.ctxPath + "/order/sign/signable/" + Sign.seItem.code, function(result){
+        if ("YES" == result)
+            succeed();
+        else
+            failed();
+    },function(data){
+        Feng.error("添加失败!" + data.responseJSON.message + "!");
+    });
+    ajax.start();
+}
+
 /**
  * 点击添加订单
  */
 Sign.openSignDlg = function () {
     if (this.check()) {
-        var index = layer.open({
-            type: 2,
-            title: '导入学员',
-            area: ['480px', '200px'], //宽高
-            fix: false, //不固定
-            maxmin: true,
-            content: Feng.ctxPath + '/order/sign/sign_wizard/' + Sign.seItem.code
-        });
-        layer.full(index);
-        this.layerIndex = index;
+        this.signable( function(){
+
+            var index = layer.open({
+                type: 2,
+                title: '导入学员',
+                area: ['480px', '200px'], //宽高
+                fix: false, //不固定
+                maxmin: true,
+                content: Feng.ctxPath + '/order/sign/sign_wizard/' + Sign.seItem.code
+            });
+            layer.full(index);
+            this.layerIndex = index;
+
+        }, function() {
+                Feng.alert('班级不能报名');
+            }
+        );
     }
 };
 

@@ -79,11 +79,11 @@ public class BatchController extends BaseController {
             add("序号");
             add("批次号");
             add("行号");
-            add("批数据");
             add("处理状态");
             add("处理时间（秒）");
             add("导入时间");
             add("完成时间");
+            add("导入数据");
             add("备注");
         }
     };
@@ -334,11 +334,11 @@ public class BatchController extends BaseController {
             addCell(valueRow, valueIndex++, valueStyle);
             addCell(valueRow, order.getBatchCode(), valueStyle);
             addCell(valueRow, order.getLine(), valueStyle);
-            addCell(valueRow, order.getData(), valueStyle);
             addCell(valueRow, workStatus, valueStyle);
             addCell(valueRow, order.getDuration(), valueStyle);
             addCell(valueRow, importDate, valueStyle);
             addCell(valueRow, completeDate, valueStyle);
+            addCell(valueRow, order.getData(), valueStyle);
             addCell(valueRow, order.getRemark(), valueStyle);
         }
 

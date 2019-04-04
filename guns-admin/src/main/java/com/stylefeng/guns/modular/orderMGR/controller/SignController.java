@@ -23,10 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -248,6 +245,29 @@ public class SignController extends BaseController {
         return SUCCESS_TIP;
     }
 
+    @RequestMapping(value = "/signable/{classCode}", method = RequestMethod.POST)
+    @ResponseBody
+    public Object precheck(@PathVariable("classCode") String classCode) {
+        if (null == classCode)
+            return "NO";
+
+        Class classInfo = classService.get(classCode);
+
+        if (null == classInfo)
+            return "NO";
+
+        if (GenericState.Invalid.code == classInfo.getStatus())
+            return "NO";
+
+        if (ClassSignableEnum.YES.code != classInfo.getSignable())
+            return "NO";
+
+        Date now = new Date();
+        if ( now.before(classInfo.getSignStartDate()) || now.after(classInfo.getSignEndDate()))
+            return "NO";
+
+        return "YES";
+    }
 
     /**
      * 获取需要预报名的班级列表

@@ -227,7 +227,7 @@ public class BatchTemplateController {
         // 班次
         String[] abilityList = generateAbilityDictionary();
         // YesOrNo
-        String[] yesOrNo = {"是", "否"};
+        String[] yesOrNo = {"(1)是", "(0)否"};
 
         sheet = setHSSFValidation(sheet, courseDictList, 1, 100, 0, 0);//  .
         sheet = setHSSFValidation(sheet, academicYearList, 1, 100, 2, 2);// 前101行都设置为选择列表形式.

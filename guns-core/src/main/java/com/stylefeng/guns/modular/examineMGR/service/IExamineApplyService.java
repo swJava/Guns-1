@@ -20,4 +20,11 @@ public interface IExamineApplyService extends IService<ExamineApply> {
      * @return
      */
     List<Map<String, Object>> listPaperUse(String paperCode);
+
+    /**
+     *
+     * @param paperCode
+     * @param examineApplyList
+     */
+    void doUse(String paperCode, List<ExamineApply> examineApplyList);
 }

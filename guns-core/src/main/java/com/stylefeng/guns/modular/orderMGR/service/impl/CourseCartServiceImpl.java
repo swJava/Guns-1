@@ -90,7 +90,10 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         if (existSelected.size() > 0){
             // 包含有已失效、过期的订单不纳入已订购的范围
             for(CourseCart courseCart : existSelected){
-                if (CourseCartStateEnum.Ordered.code == courseCart.getStatus()){
+                if (CourseCartStateEnum.Valid.code == courseCart.getStatus()){
+                    // 有效的购课单项目
+                    existSelectedCount++;
+                }else if (CourseCartStateEnum.Ordered.code == courseCart.getStatus()){
                     Order order = orderService.get(courseCart);
                     if (null == order)
                         continue;

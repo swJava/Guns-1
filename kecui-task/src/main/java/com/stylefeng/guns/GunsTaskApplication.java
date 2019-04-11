@@ -1,6 +1,8 @@
 package com.stylefeng.guns;
 
+import com.stylefeng.guns.task.batch.ClassImportTask;
 import com.stylefeng.guns.task.batch.ScoreImportTask;
+import com.stylefeng.guns.task.batch.SignImportTask;
 import com.stylefeng.guns.task.education.AdjustTask;
 import com.stylefeng.guns.task.education.ExamineCheckTask;
 import com.stylefeng.guns.task.pay.PayMocker;
@@ -23,7 +25,16 @@ public class GunsTaskApplication {
     public ScoreImportTask createScoreImportWorker(){
         return new ScoreImportTask();
     }
-/*
+
+    @Bean
+    public ClassImportTask createClassImportWorker(){
+        return new ClassImportTask();
+    }
+
+    @Bean
+    public SignImportTask createSignImportWorker(){
+        return new SignImportTask();
+    }
 
     @Bean
     public ExamineCheckTask createExamineAutoCheckWorker(){
@@ -41,7 +52,7 @@ public class GunsTaskApplication {
     public SmsSender createSmsSender(){
         return new SmsSender();
     }
-
+/*
     @Bean
     @ConditionalOnProperty(prefix = "application.pay.mock", name = "enable", havingValue = "true")
     public PayMocker createPayMocker(){

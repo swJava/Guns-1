@@ -79,7 +79,8 @@ public class ClassController extends BaseController {
             now = DateUtil.add(now, Calendar.YEAR,1);
         }
         model.addAttribute("academicYears", JSON.toJSON(academicYearList));
-        return PREFIX + "class_add.html";
+        model.addAttribute("operate", "add");
+        return PREFIX + "class_wizard.html";
     }
 
     /**
@@ -104,6 +105,7 @@ public class ClassController extends BaseController {
             now = DateUtil.add(now, Calendar.YEAR,1);
         }
         model.addAttribute("academicYears", JSON.toJSON(academicYearList));
+        model.addAttribute("operate", "update");
 
         LogObjectHolder.me().set(classInstanceMap);
         return PREFIX + "class_edit.html";

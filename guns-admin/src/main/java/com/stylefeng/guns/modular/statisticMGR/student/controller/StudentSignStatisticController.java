@@ -235,24 +235,4 @@ public class StudentSignStatisticController extends BaseController {
 
         return arguments;
     }
-
-    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
-        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
-        Map<String, Object> arguments = new HashMap<String, Object>();
-
-        while(queryKeyIter.hasNext()){
-            String key = queryKeyIter.next();
-            Object value = queryParams.get(key);
-
-            if (null == value)
-                continue;
-
-            if (String.class.equals(value.getClass())){
-                if (StringUtils.isEmpty((String) value))
-                    continue;
-            }
-            arguments.put(key, queryParams.get(key));
-        }
-        return arguments;
-    }
 }

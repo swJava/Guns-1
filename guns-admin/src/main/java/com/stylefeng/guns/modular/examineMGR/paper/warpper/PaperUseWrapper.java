@@ -19,7 +19,7 @@ public class PaperUseWrapper extends BaseControllerWarpper {
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("gradeName", ConstantFactory.me().getDictsByCode("school_grade", map.get("grade").toString()));
+        map.put("abilityName", ConstantFactory.me().getAbilityName((Integer)map.get("ability")));
         map.put("cycleName", ConstantFactory.me().getDictsByCode("cycle", map.get("cycle").toString()));
     }
 }

@@ -35,7 +35,7 @@ Sign.initColumn = function () {
         {title: '价格(元)', field: 'price', visible: true, align: 'center', valign: 'middle'},
         {title: '学员人数', field: 'quato', visible: true, align: 'center', valign: 'middle'},
         {title: '剩余人数', field: 'remainderQuato', visible: true, align: 'center', valign: 'middle'},
-        {title: '报名截止时间', field: 'signStartDate', visible: true, align: 'center', valign: 'middle',
+        {title: '报名开始时间', field: 'signStartDate', visible: true, align: 'center', valign: 'middle',
             formatter: function(value){
                 return value.substring(0, 10);
             }
@@ -85,9 +85,9 @@ Sign.signable = function(succeed, failed){
  * 点击添加订单
  */
 Sign.openSignDlg = function () {
+    var me = this;
     if (this.check()) {
         this.signable( function(){
-
             var index = layer.open({
                 type: 2,
                 title: '导入学员',
@@ -97,7 +97,7 @@ Sign.openSignDlg = function () {
                 content: Feng.ctxPath + '/order/sign/sign_wizard/' + Sign.seItem.code
             });
             layer.full(index);
-            this.layerIndex = index;
+            me.layerIndex = index;
 
         }, function() {
                 Feng.alert('班级不能报名');

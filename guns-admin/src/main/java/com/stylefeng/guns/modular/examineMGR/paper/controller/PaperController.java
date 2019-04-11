@@ -5,6 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.common.annotion.BussinessLog;
+import com.stylefeng.guns.common.annotion.Permission;
+import com.stylefeng.guns.common.constant.Const;
+import com.stylefeng.guns.common.constant.dictmap.DictMap;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
@@ -19,10 +24,7 @@ import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperUseWrapper;
 import com.stylefeng.guns.modular.examineMGR.paper.warpper.PaperWrapper;
 import com.stylefeng.guns.modular.examineMGR.service.*;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
-import com.stylefeng.guns.modular.system.model.ExaminePaper;
-import com.stylefeng.guns.modular.system.model.ExaminePaperItem;
-import com.stylefeng.guns.modular.system.model.Question;
-import com.stylefeng.guns.modular.system.model.QuestionItem;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.ToolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,11 +140,19 @@ public class PaperController extends BaseController {
     public String openUse(String code, Model model){
 
         ExaminePaper paper = examinePaperService.get(code);
-
+        Map<String, Object> paperMap = new HashMap<String, Object>();
+        paperMap.put("code", paper.getCode());
+        paperMap.put("grades", paper.getGrades());
+        paperMap.put("gradeName", (new ConstantFactory()).getGradeName(Integer.parseInt(paper.getGrades())));
+        paperMap.put("subject", paper.getSubject());
+        paperMap.put("subjectName", (new ConstantFactory()).getsubjectName(Integer.parseInt(paper.getSubject())));
+        paperMap.put("totalScore", paper.getTotalScore());
+        paperMap.put("teacher", paper.getTeacher());
+        paperMap.put("count", paper.getCount());
 
         List<Map<String, Object>> paperUseList = examineApplyService.listPaperUse(code);
 
-        model.addAttribute("paper", paper);
+        model.addAttribute("paper", paperMap);
 
         new PaperUseWrapper(paperUseList).warp();
 
@@ -302,6 +312,30 @@ public class PaperController extends BaseController {
 
         examinePaperService.update(paper, workingQuestionList);
 
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 新增字典
+     *
+     * @param
+     */
+    @RequestMapping(value = "/use")
+    @ResponseBody
+    public Object use(String paperCode,String applyItems) {
+        if (ToolUtil.isOneEmpty(paperCode,applyItems)) {
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+        }
+
+        List<ExamineApply> examineApplyList = new ArrayList<ExamineApply>();
+        try {
+            examineApplyList = JSON.parseArray(applyItems, ExamineApply.class);
+        }catch(Exception e){}
+
+        if (examineApplyList.isEmpty())
+            throw new GunsException(BizExceptionEnum.REQUEST_NULL);
+
+        examineApplyService.doUse(paperCode, examineApplyList);
         return SUCCESS_TIP;
     }
 }

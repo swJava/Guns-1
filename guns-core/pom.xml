@@ -153,6 +153,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>bcprov</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.54</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/bcprov-jdk15on-1.54.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

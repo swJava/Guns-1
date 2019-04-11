@@ -3,16 +3,8 @@ package com.stylefeng.guns.modular.examineMGR.achievement.controller;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.base.controller.BaseController;
-import com.stylefeng.guns.modular.classMGR.warpper.ClassWrapper;
-import com.stylefeng.guns.modular.examineMGR.achievement.warpper.ScoreWrapper;
-import com.stylefeng.guns.modular.examineMGR.answer.warpper.AnswerPaperWrapper;
 import com.stylefeng.guns.modular.memberMGR.service.IScoreService;
-import com.stylefeng.guns.modular.system.model.ExamineAnswerStateEnum;
 import com.stylefeng.guns.modular.system.model.Score;
-import com.stylefeng.guns.util.ToolUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -57,7 +48,7 @@ public class ScoreController extends BaseController {
     @ResponseBody
     public Object list(@RequestParam Map<String, Object> conditionMap) {
         //分页查詢
-        Map<String, Object> queryParams = buildQueryArguments(conditionMap);
+        Map<String, Object> queryParams = buildOurQueryArguments(conditionMap);
         Page<Score> page = new PageFactory<Score>().defaultPage();
 
         Page<Score> scorePage = scoreService.selectPage(queryParams, page);
@@ -72,9 +63,11 @@ public class ScoreController extends BaseController {
     }
 
 
-    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+    private Map<String, Object> buildOurQueryArguments(Map<String, Object> queryParams) {
+
+        Map<String, Object> arguments = super.buildQueryArguments(queryParams);
+
         Iterator<String> queryKeyIter = queryParams.keySet().iterator();
-        Map<String, Object> arguments = new HashMap<String, Object>();
 
         List<String> studentList = new ArrayList<>();
         arguments.put("studentList", studentList);
@@ -83,23 +76,11 @@ public class ScoreController extends BaseController {
             String key = queryKeyIter.next();
             Object value = queryParams.get(key);
 
-            if (null == value) {
-                continue;
-            }
-
-            if (String.class.equals(value.getClass())){
-                if (StringUtils.isEmpty((String) value)) {
-                    continue;
-                }
-            }
-
             if ("student".equals(key)){
                 studentList.add((String) value);
 
                 arguments.remove("student");
             }
-
-            arguments.put(key, queryParams.get(key));
         }
         return arguments;
     }

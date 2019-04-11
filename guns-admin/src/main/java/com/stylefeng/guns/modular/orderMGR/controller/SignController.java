@@ -125,6 +125,7 @@ public class SignController extends BaseController {
         //包装数据
         Page<ClassPlan> page = new PageFactory<ClassPlan>().defaultPage();
         page.setSize(100);
+        page.setTotal(planList.size());
         page.setRecords(planList);
         return super.packForBT(page);
     }

@@ -55,6 +55,7 @@ public class DictSelectorConditionTag extends Tag {
         String id = ToolUtil.isNotEmpty(attrs.get("id"))?attrs.get("id").toString():"";
         //name
         String name = ToolUtil.isNotEmpty(attrs.get("name"))?attrs.get("name").toString():"";
+        String elid = ToolUtil.isNotEmpty(attrs.get("elid"))?attrs.get("elid").toString():"id";
         //分割线
         String underline = ToolUtil.isNotEmpty(attrs.get("underline"))?attrs.get("underline").toString():"";
         //searchnum 下拉选项数量达到多少启用搜索,默认10
@@ -73,7 +74,7 @@ public class DictSelectorConditionTag extends Tag {
         html.append(name);
         html.append("</button>\r\n");
         html.append("</div>\r\n");
-        html.append("<select class=\"form-control\" id=\""+id+"\">\r\n");
+        html.append("<select class=\"form-control\" "+elid+"=\""+id+"\">\r\n");
 
         if(ToolUtil.isNotEmpty(placeholder)){
             html.append("<option value=\"\">"+placeholder+"</option>\r\n");

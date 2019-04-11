@@ -15,7 +15,7 @@ Class.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
             {title: 'ID', field: 'id', visible: false, align: 'center', valign: 'middle'},
-            {title: '班级编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
+            {title: '班级编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
             {title: '班级名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '年级', field: 'gradeName', visible: false, align: 'center', valign: 'middle'},
             {title: '学期', field: 'cycle', visible: false, align: 'center', valign: 'middle'},

@@ -19,8 +19,8 @@ import java.util.Date;
  * @author stylefeng
  * @since 2018-12-22
  */
-@TableName("tb_examine_paper")
-@ApiModel(value = "ExaminePaper", description = "试卷")
+@TableName("tb_examine_apply")
+@ApiModel(value = "ExamineApply", description = "试卷应用")
 public class ExamineApply extends Model<ExamineApply> {
 
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,8 @@ public class ExamineApply extends Model<ExamineApply> {
     /**
      * 试卷编码： SJ + 8位序列码
      */
-    @ApiModelProperty(name = "code", value = "编码", position = 0, example = "SJ00000001")
+    @ApiModelProperty(name = "paper_code", value = "试卷编码", position = 0, example = "SJ00000001")
+    @TableField("paper_code")
     private String paperCode;
     /**
      * 班次

@@ -1,0 +1,146 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<link href="${ctxPath}/static/css/plugins/fullcalendar/calendar.css?v=3.10.0" rel="stylesheet">
+<link href="${ctxPath}/static/css/plugins/fullcalendar/calendar.min.css?v=3.10.0" rel="stylesheet">
+<style>
+    .wizard-big.wizard > .content{
+        height: auto !important;
+        min-height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .pagination ul > li
+    {
+        display: inline !important;
+        padding: 0;
+    }
+</style>
+<input type="hidden" id="operator" value="${operator!'add'}" />
+<input type="hidden" id="code" value="${classItem.code!}" />
+<input type="hidden" id="academicYearsValue" value='${academicYears}' >
+<div class="ibox float-e-margins" style="heigth: 100%;">
+    <div class="ibox-content">
+        <div id="wizard" class="wizard-big" style="height: auto !important; min-height: 600px;">
+            <h1>选择课程</h1>
+            <fieldset>
+                <form id="courseForm" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="hidden" class="form-group" id="courseCode" name="courseCode" />
+                            <#table id="courseTable"/>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>开班信息</h1>
+            <fieldset>
+                <form id="classForm" class="form-horizontal">
+                    <input type="hidden" class="form-group" id="grade" />
+                    <input type="hidden" class="form-group" id="subject" />
+                    <input type="hidden" class="form-group" id="method" />
+                    <input type="hidden" id="teacher" >
+                    <input type="hidden" id="teacherSecond" >
+                    <input type="hidden" id="classRoom" >
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+                            <#input id="courseName" name="课程名称" readonly="true" underline="true"/>
+                            <#input id="gradeName" name="授课年级" readonly="true" underline="true"/>
+                            <#input id="period" name="总学时" readonly="true" underline="true"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <#input id="subjectName" name="学科" readonly="true" underline="true"/>
+                            <#input id="methodName" name="授课方式" readonly="true" underline="true" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+                            <#input id="name" name="班级名称" underline="true"/>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">学年</label>
+                                <div class="col-sm-9">
+                                    <select id="academicYear" name="学年" class="form-control" style="width:75%;"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">教室</label>
+                                <div class="col-sm-9">
+                                    <select id="classRoomCode" name="教室" class="form-control" style="width:75%;"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#input id="quato" name="学员数" underline="true"/>
+                            <#input id="studyTimeDesp" name="上课时间" underline="true"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <#input id="price" name="价格(元)" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">讲师</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherCode" name="讲师" class="form-control" style="width:75%;"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">辅导员</label>
+                                <div class="col-sm-9">
+                                    <select id="teacherSecondCode" name="辅导员" class="form-control" style="width:75%;"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#input id="signStartDate" name="开始报名" underline="true"/>
+                            <#input id="signEndDate" name="截止报名" underline="true"/>
+                            <div class="form-group" style="margin-bottom: 17px;">
+                                <label class="col-sm-3 control-label">开放跨报</label>
+                                <div class="col-sm-9">
+                                    <div class="radio radio-inline">
+                                        <label>
+                                            <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
+                                        </label>
+                                    </div>
+                                    <div class="radio radio-inline">
+                                        <label>
+                                            <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#input id="crossStartDate" name="开始跨报" underline="true"/>
+                            <#input id="crossEndDate" name="结束跨报" underline="false"/>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>排课计划</h1>
+            <fieldset>
+                <form id="planListForm" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="hidden" name="planListSetting" />
+                            <#table id="planListTable"/>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>课程表</h1>
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id='calendar'></div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<#script src="/static/js/plugins/fullcalendar/jquery-ui.custom.min.js" />
+<#script src="/static/js/plugins/fullcalendar/moment.js" />
+<#script src="/static/js/plugins/fullcalendar/calendar.js" />
+<#script src="/static/js/plugins/steps/jquery.steps.min.js" />
+<#script src="/static/modular/classMGR/class/class_wizard.js" />
+@}

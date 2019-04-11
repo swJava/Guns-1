@@ -29,6 +29,14 @@ var SignWizard = {
                         }
                     }
                 },
+                age: {
+                    feedbackIcons: false,
+                    validators: {
+                        notEmpty: { message: '年龄不能为空'},
+                        numeric: { message: '无效的年龄数据'},
+                        between: { min: 0, max: 100, message: '无效的年龄数据'}
+                    }
+                },
                 grade: {
                     feedbackIcons: false,
                     validators: {
@@ -62,6 +70,14 @@ var SignWizard = {
                     validators: {
                         notEmpty: {
                             message: '家长名字不能为空'
+                        }
+                    }
+                },
+                targetSchool: {
+                    feedbackIcons: false,
+                    validators: {
+                        notEmpty: {
+                            message: '目标学校不能为空'
                         }
                     }
                 }
@@ -276,7 +292,7 @@ $(function () {
             SignWizard.collectData();
 
             //提交信息
-            var ajax = new $ax(SignWizard.Wizard.postUrl['order'], function(data){
+            /*var ajax = new $ax(SignWizard.Wizard.postUrl['order'], function(data){
                 Feng.success("保存成功!");
                 SignWizard.close();
             },function(data){
@@ -284,7 +300,9 @@ $(function () {
             });
             ajax.setContentType("application/json");
             ajax.setData(JSON.stringify(SignWizard.Wizard.postData));
-            ajax.start();
+            ajax.start();*/
+            Feng.success("保存成功!");
+            SignWizard.close();
         }
     });
 

@@ -2,7 +2,7 @@
  * 初始化试卷应用详情对话框
  */
 var PaperUseDlg = {
-
+    itemTemplate: $("#itemTemplate").html()
 };
 
 /**
@@ -27,6 +27,8 @@ PaperUseDlg.close = function () {
  * 添加条目
  */
 PaperUseDlg.addItem = function () {
+    console.log('<<< begin add item');
+
     $("#itemsArea").append(this.itemTemplate);
     $("#dictItem").attr("id", this.newId());
 };
@@ -45,11 +47,19 @@ PaperUseDlg.deleteItem = function (event) {
  */
 PaperUseDlg.clearNullDom = function(){
     $("[name='dictItem']").each(function(){
+        var ability = $(this).find("[name='ability']").val();
+        var cycle = $(this).find("[name='cycle']").val();
         var examTime = $(this).find("[name='examTime']").val();
         var passScore = $(this).find("[name='passScore']").val();
-        if(num == '' || name == ''){
+        if(ability == '' || cycle == ''){
             $(this).remove();
         }
+
+        var examTimeValue = parseInt(examTime, 10);
+        var passScoreValue = parseInt(passScore, 10);
+        if (isNaN(examTimeValue) || isNaN(passScoreValue))
+            $(this).remove();
+
     });
 };
 
@@ -58,17 +68,22 @@ PaperUseDlg.clearNullDom = function(){
  */
 PaperUseDlg.collectData = function () {
     this.clearNullDom();
-    var mutiString = "";
+    var applyDatas = new Array();
     $("[name='dictItem']").each(function(){
-        var code = $(this).find("[name='itemCode']").val();
-        var name = $(this).find("[name='itemName']").val();
-        var num = $(this).find("[name='itemNum']").val();
-        mutiString = mutiString + (code + ":" + name + ":"+ num+";");
+        var ability = $(this).find("[name='ability']").val();
+        var cycle = $(this).find("[name='cycle']").val();
+        var examTime = $(this).find("[name='examTime']").val();
+        var passScore = $(this).find("[name='passScore']").val();
+
+        applyDatas.push({
+            ability: ability,
+            cycle: cycle,
+            examTime: examTime,
+            passScore: passScore
+        });
     });
-    this.dictName = $("#dictName").val();
-    this.dictCode = $("#dictCode").val();
-    this.dictTips = $("#dictTips").val();
-    this.mutiString = mutiString;
+    this.paperCode = $("#paperCode").val();
+    this.mutiString = JSON.stringify(applyDatas);
 };
 
 /**
@@ -83,5 +98,7 @@ PaperUseDlg.doSubmit = function () {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
 
+    ajax.set('paperCode',this.paperCode);
+    ajax.set('applyItems',this.mutiString);
     ajax.start();
 };

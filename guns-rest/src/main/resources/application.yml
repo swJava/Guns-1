@@ -18,8 +18,8 @@ application:
       notify-url: http://api.kecui.com.cn/pay/weixin/notify
     unionpay:
       certId: 1
-      merId: 2
-      order-url: https://api.mch.weixin.qq.com/pay/unifiedorder
+      merId: 777290058166500
+      order-url: https://gateway.test.95516.com/gateway/api/appTransReq.do
       notify-url: http://api.kecui.com.cn/pay/weixin/notify
   message:
     captch.template: SMS_150742325

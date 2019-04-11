@@ -8,6 +8,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessDetailService;
 import com.stylefeng.guns.modular.batchMGR.service.IBatchProcessService;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.modular.system.model.Class;
@@ -41,8 +42,11 @@ public class ClassImportTask extends ImportTaskSupport{
     @Autowired
     private IClassService classService;
 
-    @Scheduled(fixedDelay = 6000)
-    public void handleExamineCheck(){
+    @Autowired
+    private ICourseService courseService;
+
+    @Scheduled(fixedDelay = 60000)
+    public void handleClassImport(){
         log.info("<<< Examine check begin ");
         //
         Wrapper<BatchProcess> queryWrapper = new EntityWrapper<BatchProcess>();
@@ -81,16 +85,38 @@ public class ClassImportTask extends ImportTaskSupport{
 
             Map<String, Object> classMap = assembleClassData(processDetail.getData());
 
-            List<ClassPlan> classPlanList = (List<ClassPlan>)classMap.get("planList");
-            if (null == classPlanList || classPlanList.isEmpty())
-                throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
+            try{
+                if (!classMap.containsKey("classInfo"))
+                    throw new Exception("数据导入失败: 班级信息解析失败");
 
-            try {
-                classService.createClass((Class)classMap.get("classInfo"), classPlanList);
+                Class classInfo = (Class) classMap.get("classInfo");
+                if (null == classInfo)
+                    throw new Exception("数据导入失败: 班级信息解析失败");
+
+                if (!classMap.containsKey("planList"))
+                    throw new Exception("数据导入失败: 排班计划解析失败");
+
+                List<ClassPlan> classPlanList = (List<ClassPlan>)classMap.get("planList");
+                if (null == classPlanList || classPlanList.isEmpty())
+                    throw new Exception("数据导入失败: 排班计划解析失败");
+
+                Course courseInfo = courseService.get(classInfo.getCourseCode());
+                if (null == courseInfo)
+                    throw new Exception ("数据导入失败: 课程信息解析失败");
+
+                if (!(courseInfo.getPeriod().equals(classPlanList.size())))
+                    throw new Exception("数据导入失败: 排班计划数量与总课时数不符合");
+
+                classInfo.setPeriod(courseInfo.getPeriod());
+                classInfo.setGrade(courseInfo.getGrade());
+                classInfo.setStar(1);
+                classService.createClass(classInfo, classPlanList);
                 processDetail.setWorkStatus(BatchProcessDetailStatusEnum.Pass.code);
                 processDetail.setRemark(BatchProcessDetailStatusEnum.Pass.text);
                 successCompleteCount++;
+
             }catch(Exception e){
+                log.error(e.getMessage(), e);
                 processDetail.setWorkStatus(BatchProcessDetailStatusEnum.Reject.code);
                 processDetail.setRemark(e.getMessage());
             }finally{
@@ -98,12 +124,15 @@ public class ClassImportTask extends ImportTaskSupport{
                 processDetail.setDuration(handleEndDate.getTime() - handleBeginDate.getTime());
                 processDetail.setCompleteDate(handleEndDate);
             }
+
+            log.info("update batch process detail");
             batchProcessDetailService.updateById(processDetail);
         }
 
         preparedProcess.setWorkStatus(BatchProcessStatusEnum.Pass.code);
         preparedProcess.setCompleteCount(successCompleteCount);
         preparedProcess.setCompleteDate(new Date());
+        log.info("update batch process with succeed");
         batchProcessService.updateById(preparedProcess);
         log.info(">>> Import class task complete!");
     }
@@ -149,11 +178,14 @@ public class ClassImportTask extends ImportTaskSupport{
 
         classInfo.setSignable(GenericState.Valid.code);
         classInfo.setSignStartDate(getDate(requiredCols, 9));
-        classInfo.setSignStartDate(getDate(requiredCols, 10));
-        classInfo.setCrossable(getInteger(requiredCols, 11));
+        classInfo.setSignEndDate(getDate(requiredCols, 10));
+
+        classInfo.setCrossable(Integer.parseInt(getMappingCode(requiredCols, 11)));
         classInfo.setCrossStartDate(getDate(requiredCols, 12));
         classInfo.setCrossEndDate(getDate(requiredCols, 13));
-        classInfo.setStudyTimeDesp(getString(requiredCols, 14));
+        classInfo.setExaminable(Integer.parseInt(getMappingCode(requiredCols, 14)));
+        classInfo.setStudyTimeDesp(getString(requiredCols, 15));
+        classInfo.setPrice(getMoney(requiredCols, 16));
 
         resultMap.put("classInfo", classInfo);
 
@@ -168,37 +200,41 @@ public class ClassImportTask extends ImportTaskSupport{
     private List<ClassPlan> assembleClassPlanInfo(String classPlanStr) {
         StringTokenizer classPlanToken = new StringTokenizer(classPlanStr, ",");
 
-        StringBuffer codeBuff = new StringBuffer();
-        StringBuffer nameBuff = new StringBuffer();
-
         List<ClassPlan> classPlanList = new ArrayList<ClassPlan>();
         while(classPlanToken.hasMoreTokens()){
             ClassPlan classPlan = new ClassPlan();
 
             String classPlanInfo = classPlanToken.nextToken();
-            if (StringUtils.isNotEmpty(classPlanInfo)){
-                if (classPlanInfo.indexOf("~") == -1)
-                    continue;
 
-                String[] classPlans = classPlanInfo.split("~");
+            if(StringUtils.isEmpty(classPlanInfo))
+                continue; // 没有排班信息，异常
 
-                Date beginTime = null;
-                Date endTime = null;
-                try {
-                    beginTime = DateUtil.parse(classPlans[0], "yyyy-MM-dd HH:mm:ss");
-                    endTime = DateUtil.parse(classPlans[1], "yyyy-MM-dd HH:mm:ss");
-                }catch(Exception e){}
+            if (classPlanInfo.indexOf("~") == -1)
+                continue; // 没有正确设置排班时间
 
-                if (null != beginTime)
-                    classPlan.setClassTime(DateUtil.format(beginTime, "HHmm"));
-                if (null != endTime)
-                    classPlan.setEndTime(DateUtil.format(endTime, "HHmm"));
+            String[] classPlans = classPlanInfo.split("~");
 
-                classPlan.setStudyDate(DateUtils.truncate(beginTime, Calendar.DAY_OF_MONTH));
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(classPlan.getStudyDate());
-                classPlan.setWeek(calendar.get(Calendar.DAY_OF_WEEK) - 1);
-            }
+            Date beginTime = null;
+            Date endTime = null;
+            try {
+                beginTime = DateUtils.parseDate(classPlans[0], new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss"});
+            }catch(Exception e){}
+            try {
+                endTime = DateUtils.parseDate(classPlans[1], new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss"});
+            }catch(Exception e){}
+
+            if (null == beginTime || null == endTime)
+                continue; // 这里不抛出异常，在后面通过检查排班记录数量
+
+            if (null != beginTime)
+                classPlan.setClassTime(DateUtil.format(beginTime, "HHmm"));
+            if (null != endTime)
+                classPlan.setEndTime(DateUtil.format(endTime, "HHmm"));
+
+            classPlan.setStudyDate(DateUtils.truncate(beginTime, Calendar.DAY_OF_MONTH));
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(classPlan.getStudyDate());
+            classPlan.setWeek(calendar.get(Calendar.DAY_OF_WEEK) - 1);
 
             classPlanList.add(classPlan);
         }

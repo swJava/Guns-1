@@ -39,7 +39,7 @@ public class ScoreImportTask extends ImportTaskSupport {
     @Autowired
     private IScoreService scoreService;
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(fixedDelay = 60000)
     public void handleExamineCheck(){
         log.info("<<< Examine check begin ");
         //

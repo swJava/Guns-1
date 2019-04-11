@@ -71,7 +71,7 @@ public class ClassBatchController  extends BaseController {
         if (null == importDataMap || importDataMap.isEmpty())
             throw new ServiceException(MessageConstant.MessageCode.BATCH_IMPORT_FAILED, new String[]{"没有导入数据"});
 
-        batchProcess.setService(BatchServiceEnum.Score.code);
+        batchProcess.setService(BatchServiceEnum.Class.code);
         batchProcess.setImportCount(importDataMap.size());
         batchProcess.setStatus(GenericState.Valid.code);
         batchProcess.setWorkStatus(BatchProcessStatusEnum.Create.code);

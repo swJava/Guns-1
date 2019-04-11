@@ -59,7 +59,7 @@ public class SignImportTask extends ImportTaskSupport {
     @Autowired
     private ICourseCartService courseCartService;
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(fixedDelay = 60000)
     public void handleSignImport(){
         log.info("<<< Import sign begin ");
         //
@@ -208,7 +208,7 @@ public class SignImportTask extends ImportTaskSupport {
         signStudent.setTargetSchool(getString(requiredCols, 9));
         request.setStudent(signStudent);
 
-        Integer payType = getInteger(requiredCols, 10);
+        Integer payType = Integer.parseInt(getMappingCode(requiredCols, 10));
         request.setPayType(payType);
 
         return request;

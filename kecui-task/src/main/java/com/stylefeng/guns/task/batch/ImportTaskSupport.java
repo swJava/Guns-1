@@ -2,8 +2,10 @@ package com.stylefeng.guns.task.batch;
 
 import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.RegexUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +33,10 @@ public abstract class ImportTaskSupport {
             return new String[]{"", ""};
 
         String data = getString(datas, index);
+
+        if (StringUtils.isEmpty(data))
+            return new String[]{"", ""};
+
         Pattern pattern = Pattern.compile("^.*(\\(.*\\)).*$");
         Matcher m = pattern.matcher(data);
         String code = "";
@@ -72,10 +78,25 @@ public abstract class ImportTaskSupport {
         String dateStr = getString(datas, index);
         Date result = null;
         try {
-            result = DateUtils.parseDate(dateStr, new String[]{"yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm"});
+            result = DateUtils.parseDate(dateStr, new String[]{"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm"});
         }catch(Exception e){}
 
         return result;
+    }
+
+    protected Long getMoney(String[] datas, int index) {
+        if (0 > index || index >= datas.length)
+            return null;
+
+        String dataStr = getString(datas, index);
+        Long price = 0L;
+        try {
+            BigDecimal money = new BigDecimal(dataStr);
+            money = money.multiply(new BigDecimal(100));
+            price = money.longValue();
+        }catch(Exception e){}
+
+        return price;
     }
 
 }

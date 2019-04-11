@@ -6,11 +6,15 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.dao.StudentMapper;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleStudent;
 import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.StudentClass;
 import com.stylefeng.guns.util.CodeKit;
 import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.PathUtil;
@@ -36,6 +40,12 @@ import java.util.Date;
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements IStudentService {
     @Resource
     private StudentMapper studentMapper;
+
+    @Autowired
+    private IStudentClassService studentClassService;
+
+    @Autowired
+    private IClassService classService;
 
     @Value("${application.attachment.visit-url}")
     private String attachmentVisitURL;
@@ -91,6 +101,30 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
+
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+        queryWrapper.eq("student_code", code);
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        List<StudentClass> studentClassList = studentClassService.selectList(queryWrapper);
+        Date now = new Date();
+        boolean updatable = true;
+
+        for(StudentClass studentClassInfo : studentClassList){
+            Class classInfo = classService.get(studentClassInfo.getClassCode());
+            if (null == classInfo)
+                continue;
+
+            Date beginDate = classInfo.getBeginDate();
+            Date endDate = classInfo.getEndDate();
+            if (now.compareTo(beginDate) < 0 || now.compareTo(endDate) >= 0 ){
+                updatable = false;
+                break;
+            }
+        }
+
+        if (!updatable)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"学员已报班"});
 
         String[] ignoreProperties = new String[]{"id", "code", "userName"};
         BeanUtils.copyProperties(newStudent, existStudent, ignoreProperties);

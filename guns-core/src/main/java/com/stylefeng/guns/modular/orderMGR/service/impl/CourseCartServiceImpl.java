@@ -119,12 +119,12 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         if (!skipTest && ClassExaminableEnum.YES.equals(ClassExaminableEnum.instanceOf(classInfo.getExaminable()))){
             Map<String, Object> queryParams = new HashMap<String, Object>();
             queryParams.put("classCode", classInfo.getCode());
-            ExaminePaper examinePaper = examineService.findExaminePaper(queryParams);
-            if (null != examinePaper){
+            ExamineApply examineApply = examineService.findExamineApply(queryParams);
+            if (null != examineApply){
                 Wrapper<ExamineAnswer> queryWrapper = new EntityWrapper<>();
-                queryWrapper.eq("paper_code", examinePaper.getCode());
+                queryWrapper.eq("paper_code", examineApply.getPaperCode());
                 queryWrapper.eq("student_code", student.getCode());
-                queryWrapper.ge("score", examinePaper.getPassScore());
+                queryWrapper.ge("score", examineApply.getPassScore());
                 queryWrapper.eq("status", ExamineAnswerStateEnum.Finish.code);
                 int passCount = examineAnswerService.selectCount(queryWrapper);
 

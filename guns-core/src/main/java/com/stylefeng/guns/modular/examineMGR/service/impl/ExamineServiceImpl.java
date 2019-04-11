@@ -47,19 +47,58 @@ public class ExamineServiceImpl implements IExamineService {
     @Autowired
     private ICourseService courseService;
 
+    @Autowired
+    private IExamineApplyService examineApplyService;
+
     @Override
     public ExaminePaper findExaminePaper(Map<String, Object> queryParams) {
 
         Class classInfo = classService.get((String)queryParams.get("classCode"));
 
         Course courseInfo = courseService.get(classInfo.getCourseCode());
+
+        Wrapper<ExamineApply> examinePaperQueryWrapper = new EntityWrapper<ExamineApply>();
+        examinePaperQueryWrapper.eq("ability", classInfo.getAbility());
+        examinePaperQueryWrapper.eq("cycle", classInfo.getCycle());
+        examinePaperQueryWrapper.eq("status", GenericState.Valid.code);
+
+        List<ExamineApply> examineApplyList = examineApplyService.selectList(examinePaperQueryWrapper);
+
+        ExaminePaper paper = null;
+        for(ExamineApply examineApply : examineApplyList){
+            paper = examinePaperService.get(examineApply.getPaperCode());
+
+            if (null == paper)
+                continue;
+
+            if (GenericState.Valid.code == paper.getStatus()) {
+                // 试卷失效
+                continue;
+            }
+
+            if (!(courseInfo.getGrade().equals(Integer.parseInt(paper.getGrades())))) {
+                // 年级不匹配
+                continue;
+            }
+
+            if(!(courseInfo.getSubject().equals(Integer.parseInt(paper.getSubject())))) {
+                // 科目不匹配
+                continue;
+            }
+
+            // 匹配到第一个
+            break;
+        }
+
+        return paper;
+/*
         Wrapper<ExaminePaper> examinePaperQueryWrapper = new EntityWrapper<>();
         examinePaperQueryWrapper.eq("ability", classInfo.getAbility());
         examinePaperQueryWrapper.eq("grades", classInfo.getGrade());
         examinePaperQueryWrapper.eq("subject", courseInfo.getSubject());
         examinePaperQueryWrapper.eq("status", GenericState.Valid.code);
 
-        return examinePaperService.selectOne(examinePaperQueryWrapper);
+        return examinePaperService.selectOne(examinePaperQueryWrapper);*/
     }
 
     @Override
@@ -175,5 +214,49 @@ public class ExamineServiceImpl implements IExamineService {
         }catch(Exception e){}
 
         return score;
+    }
+
+    @Override
+    public ExamineApply findExamineApply(Map<String, Object> queryParams) {
+
+        Class classInfo = classService.get((String)queryParams.get("classCode"));
+
+        Course courseInfo = courseService.get(classInfo.getCourseCode());
+
+        Wrapper<ExamineApply> examinePaperQueryWrapper = new EntityWrapper<ExamineApply>();
+        examinePaperQueryWrapper.eq("ability", classInfo.getAbility());
+        examinePaperQueryWrapper.eq("cycle", classInfo.getCycle());
+        examinePaperQueryWrapper.eq("status", GenericState.Valid.code);
+
+        List<ExamineApply> examineApplyList = examineApplyService.selectList(examinePaperQueryWrapper);
+
+        ExamineApply apply = null;
+        for(ExamineApply examineApply : examineApplyList){
+            ExaminePaper paper = examinePaperService.get(examineApply.getPaperCode());
+
+            if (null == paper)
+                continue;
+
+            if (GenericState.Valid.code == paper.getStatus()) {
+                // 试卷失效
+                continue;
+            }
+
+            if (!(courseInfo.getGrade().equals(Integer.parseInt(paper.getGrades())))) {
+                // 年级不匹配
+                continue;
+            }
+
+            if(!(courseInfo.getSubject().equals(Integer.parseInt(paper.getSubject())))) {
+                // 科目不匹配
+                continue;
+            }
+
+            // 匹配到第一个
+            apply = examineApply;
+            break;
+        }
+
+        return apply;
     }
 }

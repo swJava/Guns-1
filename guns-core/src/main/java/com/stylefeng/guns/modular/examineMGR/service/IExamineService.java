@@ -68,4 +68,12 @@ public interface IExamineService {
      * @return
      */
     int getQuestionScore(String paperCode, String code);
+
+    /**
+     * 查找试卷应用列表
+     *
+     * @param queryParams
+     * @return
+     */
+    ExamineApply findExamineApply(Map<String, Object> queryParams);
 }

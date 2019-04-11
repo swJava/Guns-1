@@ -87,18 +87,21 @@ public class EducationController extends ApiController {
 
     @RequestMapping(value = "/class/list", method = RequestMethod.POST)
     @ApiOperation(value="可报名班级列表", httpMethod = "POST", response = ClassListResponse.class)
-    public Responser listClass(ClassQueryRequester requester, HttpServletRequest request){
+    public Responser listClass(ClassQueryRequester requester){
 
         Member member = currMember();
 
         Map<String, Object> queryMap = requester.toMap();
-        Date now = new Date();
 
         // 当前开放报名的班级
-        queryMap.put("signDate", DateUtil.format(DateUtils.truncate(now, Calendar.DAY_OF_MONTH), "yyyy-MM-dd"));
+//        queryMap.put("signDate", DateUtil.format(DateUtils.truncate(now, Calendar.DAY_OF_MONTH), "yyyy-MM-dd"));
         queryMap.put("signable", ClassSignableEnum.YES.code);
         List<com.stylefeng.guns.modular.system.model.Class> classList = classService.queryListForSign(queryMap);
 
+        return assembleClassList(classList);
+        /*************************************************************************
+         * 原来针对跨报的错误理解代码，暂时不用
+         * -----------------------------------------------------------------------
         // 用户历史报班列表
         Map<String, Object> historyQueryMap = new HashMap<>();
         historyQueryMap.put("studyFinished", true);
@@ -161,6 +164,7 @@ public class EducationController extends ApiController {
         classList.addAll( classService.queryListForSign(queryMap) );
 
         return assembleClassList(classList);
+         **/
     }
 
     @RequestMapping(value = "/class/list4teacher", method = RequestMethod.POST)

@@ -155,7 +155,7 @@ public class SignImportTask extends ImportTaskSupport {
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"学员信息"});
 
         // 下订单
-        String courseCartCode = courseCartService.join(currMember, currStudent, classInfo, true);
+        String courseCartCode = courseCartService.doJoin(currMember, currStudent, classInfo, true);
 
         PayTypeEnum paytype = PayTypeEnum.AppPay;
 

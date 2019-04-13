@@ -221,7 +221,7 @@ public class SignController extends BaseController {
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"学员信息"});
 
         // 下订单
-        String courseCartCode = courseCartService.join(currMember, currStudent, classInfo, true);
+        String courseCartCode = courseCartService.doJoin(currMember, currStudent, classInfo, true);
 
         PayTypeEnum paytype = PayTypeEnum.AppPay;
 
@@ -317,7 +317,7 @@ public class SignController extends BaseController {
                     continue;
 
                 try {
-                    courseCartService.join(member, student, classInfo);
+                    courseCartService.doJoin(member, student, classInfo);
                 }catch(Exception e){
                     e.printStackTrace();
                 }

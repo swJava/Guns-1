@@ -95,7 +95,7 @@ public class OrderController extends ApiController {
         if (null == classInfo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级 <" + classCode + ">"});
 
-        courseCartService.join(member, existStudent, classInfo, false);
+        courseCartService.doJoin(member, existStudent, classInfo, false);
 
         return SimpleResponser.success();
     }

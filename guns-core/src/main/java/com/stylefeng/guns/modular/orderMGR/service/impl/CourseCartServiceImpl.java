@@ -62,7 +62,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     }
 
     @Override
-    public String join(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo, boolean skipTest) {
+    public String doJoin(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo, boolean skipTest) {
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 

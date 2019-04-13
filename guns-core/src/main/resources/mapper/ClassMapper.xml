@@ -36,16 +36,17 @@
         <result column="crossable" property="crossable" />
         <result column="presign_start_date" property="presignStartDate" />
         <result column="presign_end_date" property="presignEndDate" />
+        <result column="presign_status" property="presignStatus" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        tc.id, tc.code, tc.name, tc.grade, tc.academic_year, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.cross_start_date, tc.cross_end_date, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable, tc.crossable, tc.presign_begin_date, tc.presign_end_date
+        tc.id, tc.code, tc.name, tc.grade, tc.academic_year, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.cross_start_date, tc.cross_end_date, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable, tc.crossable, tc.presign_begin_date, tc.presign_end_date, tc.presign_status
     </sql>
 
     <!-- 查询结果列 -->
     <sql id="Column_List">
-        tc.id, tc.code, tc.name, tc.grade, tc.academic_year as academicYear, tc.cycle, tc.ability, tc.begin_date as beginDate, tc.end_date as endDate, tc.cross_start_date as crossStartDate, tc.cross_end_date as crossEndDate, tc.duration, tc.period, tc.class_room_code as classRoomCode, tc.class_room as classRoom, tc.course_code as courseCode, tc.course_name as courseName, tc.star, tc.price, tc.quato, tc.sign_start_date as signStartDate, tc.sign_end_date as signEndDate, tc.status, tc.teacher, tc.teacher_code as teacherCode, tc.teacher_second as teacherSecond, tc.teacher_second_code as teacherSecondCode, tc.study_time_desp as studyTimeDesp, tc.signable, tc.examinable, tc.crossable, tc.presign_start_date as presignStartDate, tc.presign_end_date as presignEndDate
+        tc.id, tc.code, tc.name, tc.grade, tc.academic_year as academicYear, tc.cycle, tc.ability, tc.begin_date as beginDate, tc.end_date as endDate, tc.cross_start_date as crossStartDate, tc.cross_end_date as crossEndDate, tc.duration, tc.period, tc.class_room_code as classRoomCode, tc.class_room as classRoom, tc.course_code as courseCode, tc.course_name as courseName, tc.star, tc.price, tc.quato, tc.sign_start_date as signStartDate, tc.sign_end_date as signEndDate, tc.status, tc.teacher, tc.teacher_code as teacherCode, tc.teacher_second as teacherSecond, tc.teacher_second_code as teacherSecondCode, tc.study_time_desp as studyTimeDesp, tc.signable, tc.examinable, tc.crossable, tc.presign_start_date as presignStartDate, tc.presign_end_date as presignEndDate, tc.presign_status as presignStatus
     </sql>
 
     <sql id="Where_Sql">

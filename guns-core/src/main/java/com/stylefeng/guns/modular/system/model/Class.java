@@ -196,6 +196,14 @@ public class Class extends Model<Class> {
     @ApiModelProperty(name = "presignEndDate", value = "预报结束时间", position = 10, example="2019-02-05")
     private Date presignEndDate;
 
+    /**
+     * 预报状态
+     * 0 未预报
+     * 1 已预报
+     */
+    @TableField("presign_status")
+    private Integer presignStatus = 0;
+
     public Long getId() {
         return id;
     }
@@ -477,6 +485,14 @@ public class Class extends Model<Class> {
         this.presignEndDate = presignEndDate;
     }
 
+    public Integer getPresignStatus() {
+        return presignStatus;
+    }
+
+    public void setPresignStatus(Integer presignStatus) {
+        this.presignStatus = presignStatus;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -518,6 +534,7 @@ public class Class extends Model<Class> {
         ", crossable=" + crossable +
         ", presignStartDate=" + presignStartDate +
         ", presignEndDate=" + presignEndDate +
+        ", presignStatus=" + presignStatus +
         "}";
     }
 

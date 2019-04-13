@@ -191,6 +191,30 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     @Override
     public void doAutoPreSign(Class classInfo) {
 
+        Integer classAbility = classInfo.getAbility();
+        Integer classCycle = classInfo.getCycle();
+        String courseCode = classInfo.getCourseCode();
+        Integer classAcademicYear = classInfo.getAcademicYear();
+
+        int lastClassCycle = classCycle - 1;
+        Integer lastClassAcademicYear = classAcademicYear;
+        if (0 == lastClassCycle){
+            lastClassAcademicYear = classAcademicYear - 1;
+            lastClassCycle = 4;
+        }
+
+        Course course = courseService.get(courseCode);
+
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        classService.queryListForSign(queryMap);
+
+
+
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+        List<StudentClass> signedList = studentClassService.selectList(queryWrapper);
+
+
+
     }
 
     private String select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {

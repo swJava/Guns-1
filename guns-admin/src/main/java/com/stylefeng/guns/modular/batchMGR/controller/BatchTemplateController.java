@@ -81,19 +81,22 @@ public class BatchTemplateController {
             add("班级名称");
             add("学年");
             add("学期");
-            add("班次");
+            add("班型");
             add("讲师");
             add("辅导员");
-            add("学员数");
+            add("限额人数");
             add("教室");
-            add("开始报名日期");
-            add("截止报名日期");
+            add("开始续保日期");
+            add("结束续保日期");
             add("允许跨报");
             add("跨报开始日期");
             add("跨报结束日期");
+            add("开始报名日期");
+            add("截止报名日期");
             add("是否需要测试");
             add("课程计划描述");
-            add("报名费");
+            add("报名费(元)");
+            add("排班计划");
         }
     };
 
@@ -148,7 +151,7 @@ public class BatchTemplateController {
         // 支付类型
         String[] payTypeList = generatePaytypeDictionary();
         // YesOrNo
-        String[] yesOrNo = {"是", "否"};
+        String[] yesOrNo = {"(1)是", "(0)否"};
 
         sheet = setHSSFValidation(sheet, gendarList, 1, 100, 5, 5);//  .
         sheet = setHSSFValidation(sheet, gradeList, 1, 100, 7, 7);// 前101行都设置为选择列表形式.

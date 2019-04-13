@@ -47,4 +47,11 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @param itemObjectCode
      */
     void generateOrder(String userName, String student, String itemObjectCode);
+
+    /**
+     * 自动预报
+     *
+     * @param classInfo
+     */
+    void doAutoPreSign(Class classInfo);
 }

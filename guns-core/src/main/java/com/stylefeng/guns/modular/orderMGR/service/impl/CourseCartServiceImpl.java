@@ -188,6 +188,11 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         updateById(existSelected);
     }
 
+    @Override
+    public void doAutoPreSign(Class classInfo) {
+
+    }
+
     private String select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
 
         // 查询班级剩余报名额度

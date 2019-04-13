@@ -41,7 +41,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        tc.id, tc.code, tc.name, tc.grade, tc.academic_year, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.cross_start_date, tc.cross_end_date, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable, tc.crossable, tc.presign_begin_date, tc.presign_end_date, tc.presign_status
+        tc.id, tc.code, tc.name, tc.grade, tc.academic_year, tc.cycle, tc.ability, tc.begin_date, tc.end_date, tc.cross_start_date, tc.cross_end_date, tc.duration, tc.period, tc.class_room_code, tc.class_room, tc.course_code, tc.course_name, tc.star, tc.price, tc.quato, tc.sign_start_date, tc.sign_end_date, tc.status, tc.teacher, tc.teacher_code, tc.teacher_second, tc.teacher_second_code, tc.study_time_desp, tc.signable, tc.examinable, tc.crossable, tc.presign_start_date, tc.presign_end_date, tc.presign_status
     </sql>
 
     <!-- 查询结果列 -->

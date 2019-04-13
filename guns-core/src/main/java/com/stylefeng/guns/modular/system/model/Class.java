@@ -183,6 +183,18 @@ public class Class extends Model<Class> {
      */
     private Integer crossable;
 
+    /**
+     * 预报开始时间
+     */
+    @TableField("presign_start_date")
+    @ApiModelProperty(name = "presignStartDate", value = "预报开始时间", position = 9, example="2019-02-01")
+    private Date presignStartDate;
+    /**
+     * 预报结束时间
+     */
+    @TableField("presign_end_date")
+    @ApiModelProperty(name = "presignEndDate", value = "预报结束时间", position = 10, example="2019-02-05")
+    private Date presignEndDate;
 
     public Long getId() {
         return id;
@@ -449,6 +461,22 @@ public class Class extends Model<Class> {
         this.crossable = crossable;
     }
 
+    public Date getPresignStartDate() {
+        return presignStartDate;
+    }
+
+    public void setPresignStartDate(Date presignStartDate) {
+        this.presignStartDate = presignStartDate;
+    }
+
+    public Date getPresignEndDate() {
+        return presignEndDate;
+    }
+
+    public void setPresignEndDate(Date presignEndDate) {
+        this.presignEndDate = presignEndDate;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -488,6 +516,8 @@ public class Class extends Model<Class> {
         ", signable=" + signable +
         ", examinable=" + examinable +
         ", crossable=" + crossable +
+        ", presignStartDate=" + presignStartDate +
+        ", presignEndDate=" + presignEndDate +
         "}";
     }
 

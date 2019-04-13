@@ -272,8 +272,11 @@ ClassWizard.collectData = function() {
 
     var crossable = $(':radio[name="crossable"]:checked').val();
     if (1 == crossable ){
-        this.set('crossStartDate')
-            .set('crossEndDate');
+        this.set('presignStartDate')
+            .set('crossStartDate')
+            .set('presignEndDate')
+            .set('crossEndDate')
+        ;
     }
 
     this.Wizard.postData['price'] = submitPrice;
@@ -391,13 +394,14 @@ $(function () {
 
     var today = year + '-' + month + '-' + day;
     // 注册验证方法
-    // 注册验证方法
     $.fn.bootstrapValidator.validators.cross_v = {
         validate: function() {
             var crossable = $(':radio[name="crossable"]:checked').val();
+            var presignBeginDate = $('#presignStartDate').val();
             var crossBeginDate = $('#crossStartDate').val();
+            var presignEndDate = $('#presignEndDate').val();
             var crossEndDate = $('#crossEndDate').val();
-            return 1 == crossable ? (crossBeginDate.length > 0 && crossEndDate.length > 0): true;
+            return 1 == crossable ? (presignBeginDate.length > 0 && presignEndDate.length > 0) && (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
         }
     };
 
@@ -475,8 +479,28 @@ $(function () {
                 //日期控件初始化
                 laydate.render({elem: '#signStartDate', min: today});
                 laydate.render({elem: '#signEndDate', min: today});
+                laydate.render({elem: '#presignStartDate', min: today});
                 laydate.render({elem: '#crossStartDate', min: today});
+                laydate.render({elem: '#presignEndDate', min: today});
                 laydate.render({elem: '#crossEndDate', min: today});
+
+                //$(':radio[name="crossable"]').unbindAll();
+                $(':radio[name="crossable"]').bind('click', function(){
+                   console.log($(this).val());
+                   var switchValue = $(this).val();
+
+                   if (1 == switchValue){
+                       $('#presignStartDate').parents('.form-group').show();
+                       $('#presignEndDate').parents('.form-group').show();
+                       $('#crossStartDate').parents('.form-group').show();
+                       $('#crossEndDate').parents('.form-group').show();
+                   }else{
+                       $('#presignStartDate').parents('.form-group').hide();
+                       $('#presignEndDate').parents('.form-group').hide();
+                       $('#crossStartDate').parents('.form-group').hide();
+                       $('#crossEndDate').parents('.form-group').hide();
+                   }
+                });
                 /*  学年 */
                 var html = "";
                 var academicYears = JSON.parse($('#academicYearsValue').val());
@@ -568,6 +592,8 @@ $(function () {
                 console.log(tableDatas);
                 // 排课日历
                 var initEvents = new Array();
+                ClassWizard.Wizard.planList = new Array();
+
                 $.each(tableDatas, function(idx, eo){
                     initEvents.push({
                         id: eo.code,

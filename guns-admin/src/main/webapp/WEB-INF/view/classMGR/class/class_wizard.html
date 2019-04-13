@@ -51,6 +51,12 @@
                         <div class="col-sm-6">
                             <#input id="subjectName" name="学科" readonly="true" underline="true"/>
                             <#input id="methodName" name="授课方式" readonly="true" underline="true" />
+                            <div class="form-group" style="height: 34px;">
+                                <div class="col-sm-9">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                         </div>
                     </div>
                     <div class="row">
@@ -74,7 +80,24 @@
                             </div>
                             <div class="hr-line-dashed" ></div >
                             <#input id="quato" name="学员数" underline="true"/>
-                            <#input id="studyTimeDesp" name="上课时间" underline="true"/>
+                            <div class="form-group" style="height: 34px;">
+                                <label class="col-sm-3 control-label">开放跨报</label>
+                                <div class="col-sm-9">
+                                    <div class="radio radio-inline">
+                                        <label>
+                                            <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
+                                        </label>
+                                    </div>
+                                    <div class="radio radio-inline">
+                                        <label>
+                                            <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div>
+                            <#input id="presignStartDate" name="开始预报" underline="true" display="false"/>
+                            <#input id="crossStartDate" name="开始跨报" underline="true" display="false"/>
                         </div>
                         <div class="col-sm-6">
                             <#input id="price" name="价格(元)" underline="true"/>
@@ -94,24 +117,15 @@
                             <div class="hr-line-dashed" ></div >
                             <#input id="signStartDate" name="开始报名" underline="true"/>
                             <#input id="signEndDate" name="截止报名" underline="true"/>
-                            <div class="form-group" style="margin-bottom: 17px;">
-                                <label class="col-sm-3 control-label">开放跨报</label>
+                            <#input id="studyTimeDesp" name="上课时间" underline="true"/>
+                            <div class="form-group" style="height: 34px;">
                                 <div class="col-sm-9">
-                                    <div class="radio radio-inline">
-                                        <label>
-                                            <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
-                                        </label>
-                                    </div>
-                                    <div class="radio radio-inline">
-                                        <label>
-                                            <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
-                                        </label>
-                                    </div>
+                                    &nbsp;
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
-                            <#input id="crossStartDate" name="开始跨报" underline="true"/>
-                            <#input id="crossEndDate" name="结束跨报" underline="false"/>
+                            <#input id="presignEndDate" name="结束预报" underline="false" display="false"/>
+                            <#input id="crossEndDate" name="结束跨报" underline="false" display="false"/>
                         </div>
                     </div>
                 </form>

@@ -114,6 +114,11 @@ public final class MessageConstant {
         public static final String GRADE_NOT_MATCH = "020003";
 
         /**
+         * 报名还未开始
+         */
+        public static final String COURSE_SELECT_NOTIME = "020004";
+
+        /**
          * 支付方式不支持
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";

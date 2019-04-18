@@ -59,7 +59,7 @@ public class SignImportTask extends ImportTaskSupport {
     @Autowired
     private ICourseCartService courseCartService;
 
-    @Scheduled(fixedDelay = 60000)
+//    @Scheduled(fixedDelay = 60000)
     public void handleSignImport(){
         log.info("<<< Import sign begin ");
         //
@@ -163,18 +163,21 @@ public class SignImportTask extends ImportTaskSupport {
             paytype = PayTypeEnum.instanceOf(request.getPayType());
         }catch(Exception e){}
 
-        if (PayTypeEnum.ClassicPay.equals(paytype)){
-            OrderItem orderItem = new OrderItem();
-            orderItem.setCourseCartCode(courseCartCode);
-            orderItem.setItemObject(OrderItemTypeEnum.Course.code);
-            orderItem.setItemObjectCode(classInfo.getCode());
-            orderItem.setItemAmount(classInfo.getPrice());
-            OrderAddList orderAddList = new OrderAddList();
-            orderAddList.add(orderItem);
+        OrderItem orderItem = new OrderItem();
+        orderItem.setCourseCartCode(courseCartCode);
+        orderItem.setItemObject(OrderItemTypeEnum.Course.code);
+        orderItem.setItemObjectCode(classInfo.getCode());
+        orderItem.setItemAmount(classInfo.getPrice());
+        OrderAddList orderAddList = new OrderAddList();
+        orderAddList.add(orderItem);
 
-            Map<String, Object> extendInfo = new HashMap<>();
+        Map<String, Object> extendInfo = new HashMap<>();
+
+        if (PayTypeEnum.ClassicPay.equals(paytype)){
             Order signOrder = orderService.order(currMember, orderAddList, PayMethodEnum.classic, extendInfo);
             orderService.completePay(signOrder.getAcceptNo());
+        }else{
+            orderService.order(currMember, orderAddList, PayMethodEnum.weixin, extendInfo);
         }
     }
 

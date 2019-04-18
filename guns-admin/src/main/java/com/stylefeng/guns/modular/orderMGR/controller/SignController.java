@@ -263,9 +263,9 @@ public class SignController extends BaseController {
         if (ClassSignableEnum.YES.code != classInfo.getSignable())
             return "NO";
 
-        Date now = new Date();
+/*        Date now = new Date();
         if ( now.before(classInfo.getSignStartDate()) || now.after(classInfo.getSignEndDate()))
-            return "NO";
+            return "NO";*/
 
         return "YES";
     }

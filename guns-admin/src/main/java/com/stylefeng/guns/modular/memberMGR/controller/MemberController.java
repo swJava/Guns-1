@@ -161,4 +161,13 @@ public class MemberController extends BaseController {
     public Object detail(@PathVariable("memberId") Integer memberId) {
         return memberService.selectById(memberId);
     }
+
+    /**
+     * 会员管理详情
+     */
+    @RequestMapping(value = "/get/{userName}")
+    @ResponseBody
+    public Object get(@PathVariable("userName") String userName) {
+        return memberService.get(userName);
+    }
 }

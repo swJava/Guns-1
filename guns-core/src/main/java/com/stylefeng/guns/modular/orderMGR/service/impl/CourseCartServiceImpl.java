@@ -12,12 +12,17 @@ import com.stylefeng.guns.modular.education.CourseMethodEnum;
 import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
+import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.dao.CourseCartMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +36,8 @@ import java.util.*;
  */
 @Service
 public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseCart> implements ICourseCartService {
+    private final static Logger log = LoggerFactory.getLogger(CourseCartServiceImpl.class);
+
     @Autowired
     private IOrderService orderService;
 
@@ -48,6 +55,12 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
     @Autowired
     private IStudentClassService studentClassService;
+
+    @Autowired
+    private IStudentService studentService;
+
+    @Autowired
+    private IMemberService memberService;
 
     private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
     private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
@@ -74,10 +87,10 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
         int studentGrade = student.getGrade();
         int classGrade = classInfo.getGrade();
-
-        if (studentGrade != classGrade){
-            throw new ServiceException(MessageConstant.MessageCode.GRADE_NOT_MATCH);
-        }
+//
+//        if (studentGrade != classGrade){
+//            throw new ServiceException(MessageConstant.MessageCode.GRADE_NOT_MATCH);
+//        }
 
         List<CourseCart> existSelected = selectList(new EntityWrapper<CourseCart>()
                 .eq("user_name", member.getUserName())
@@ -191,30 +204,38 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     @Override
     public void doAutoPreSign(Class classInfo) {
 
-        Integer classAbility = classInfo.getAbility();
-        Integer classCycle = classInfo.getCycle();
-        String courseCode = classInfo.getCourseCode();
-        Integer classAcademicYear = classInfo.getAcademicYear();
+        Class sourceClass = classService.get(classInfo.getPresignSourceClassCode());
 
-        int lastClassCycle = classCycle - 1;
-        Integer lastClassAcademicYear = classAcademicYear;
-        if (0 == lastClassCycle){
-            lastClassAcademicYear = classAcademicYear - 1;
-            lastClassCycle = 4;
-        }
-
-        Course course = courseService.get(courseCode);
-
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        classService.queryListForSign(queryMap);
-
-
+        if (null == sourceClass)
+            return;
 
         Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+        queryWrapper.eq("class_code", sourceClass.getCode());
+        queryWrapper.eq("status", GenericState.Valid.code);
+
         List<StudentClass> signedList = studentClassService.selectList(queryWrapper);
 
+        for(StudentClass studentClass : signedList){
+            Student student = studentService.get(studentClass.getStudentCode());
+            Member member = memberService.get(student.getUserName());
 
+            try {
+                String courseCartCode = doJoin(member, student, classInfo, true);
+                OrderItem orderItem = new OrderItem();
+                orderItem.setCourseCartCode(courseCartCode);
+                orderItem.setItemObject(OrderItemTypeEnum.Course.code);
+                orderItem.setItemObjectCode(classInfo.getCode());
+                orderItem.setItemAmount(classInfo.getPrice());
+                OrderAddList orderAddList = new OrderAddList();
+                orderAddList.add(orderItem);
 
+                Map<String, Object> extendInfo = new HashMap<>();
+                orderService.order(member, orderAddList, PayMethodEnum.weixin, extendInfo);
+            }catch(Exception e){
+                log.error("报名失败, 学员-{}, 班级-{}, 用户-{} ", student.getCode(), classInfo.getCode(), member.getUserName());
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 
     private String select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {

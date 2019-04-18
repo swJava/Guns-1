@@ -183,17 +183,20 @@ public class Class extends Model<Class> {
      */
     private Integer crossable;
 
+    @TableField("presign_source_class_code")
+    @ApiModelProperty(name = "presignSourceClassCode", value = "续报班级编码", position = 11, example="BJ000001")
+    private String presignSourceClassCode;
     /**
      * 预报开始时间
      */
     @TableField("presign_start_date")
-    @ApiModelProperty(name = "presignStartDate", value = "预报开始时间", position = 9, example="2019-02-01")
+    @ApiModelProperty(name = "presignStartDate", value = "预报开始时间", position = 12, example="2019-02-01")
     private Date presignStartDate;
     /**
      * 预报结束时间
      */
     @TableField("presign_end_date")
-    @ApiModelProperty(name = "presignEndDate", value = "预报结束时间", position = 10, example="2019-02-05")
+    @ApiModelProperty(name = "presignEndDate", value = "预报结束时间", position = 13, example="2019-02-05")
     private Date presignEndDate;
 
     /**
@@ -469,6 +472,14 @@ public class Class extends Model<Class> {
         this.crossable = crossable;
     }
 
+    public String getPresignSourceClassCode() {
+        return presignSourceClassCode;
+    }
+
+    public void setPresignSourceClassCode(String presignSourceClassCode) {
+        this.presignSourceClassCode = presignSourceClassCode;
+    }
+
     public Date getPresignStartDate() {
         return presignStartDate;
     }
@@ -532,6 +543,7 @@ public class Class extends Model<Class> {
         ", signable=" + signable +
         ", examinable=" + examinable +
         ", crossable=" + crossable +
+        ", presignSourceClassCode=" + presignSourceClassCode +
         ", presignStartDate=" + presignStartDate +
         ", presignEndDate=" + presignEndDate +
         ", presignStatus=" + presignStatus +

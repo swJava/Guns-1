@@ -111,11 +111,11 @@ public class ClassBatchController  extends BaseController {
         processDetail.setLine(line);
 
         StringBuffer buff = new StringBuffer();
-        buff.append(String.join(",", lineData.subList(0, 17))).append("@_@");
-        for(String data : lineData.subList(17, lineData.size())){
-            buff.append(data).append(",");
+        buff.append(String.join(",", lineData.subList(0, 20))).append("@_@");
+        for(String planData : lineData.subList(20, lineData.size())){
+            buff.append(planData);
         }
-        // 1,2,3,4,5,6,7,8,9@_@10,11,12
+
         int lastCharIndex = buff.length() - 1;
         if ( buff.lastIndexOf(",") == lastCharIndex )
             processDetail.setData(buff.substring(0, buff.length() - 1));

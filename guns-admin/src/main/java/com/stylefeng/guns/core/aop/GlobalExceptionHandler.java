@@ -125,6 +125,7 @@ public class GlobalExceptionHandler {
 
         String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), Locale.CHINA);
         Object result = null;
+        e.printStackTrace();
         if (isAjaxRequest(request)){
             ErrorTip errorTip = new ErrorTip(Integer.parseInt(e.getMessageCode()), "系统异常");
             errorTip.setMessage(message);

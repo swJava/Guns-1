@@ -50,6 +50,16 @@ var ClassWizard = {
                         }
                     }
                 },
+                presignClassCode: {
+                    validators: {
+                        presign_v: {
+                            message: ' ',
+                            onError: function(e, data){
+                                Feng.error('请设置预报时间');
+                            }
+                        }
+                    }
+                },
                 code: {
                     validators: {
                         notEmpty: {
@@ -270,11 +280,16 @@ ClassWizard.collectData = function() {
         .set('classRoom')
         .set('studyTimeDesp');
 
+    var presignClassCode = $('#presignClassCode').val();
+    if (presignClassCode.length > 0){
+        this.set('presignStartDate')
+            .set('presignEndDate')
+        ;
+    }
     var crossable = $(':radio[name="crossable"]:checked').val();
     if (1 == crossable ){
-        this.set('presignStartDate')
+        this
             .set('crossStartDate')
-            .set('presignEndDate')
             .set('crossEndDate')
         ;
     }
@@ -380,7 +395,44 @@ ClassWizard.iniCalendar = function(options) {
 
         me.Wizard.scheduleView = true;
     }
-}
+};
+
+ClassWizard.loadPresignClass = function() {
+    var cycle = parseInt($('#cycle').val(), 10);
+    var ability = parseInt($('#ability').val(), 10);
+    var academicYear = parseInt($('#academicYear').val(), 10);
+
+    $("#presignClassCode").html('<option value=""> -- 选择班级 -- </option>');
+
+    if (isNaN(cycle) || isNaN(ability))
+        return;
+
+    /* 续报来源班级 */
+    var html = "";
+    var ajax = new $ax(Feng.ctxPath + "/class/list", function (data) {
+        data.rows.forEach(function (item) {
+            html +="<option value="+item.code+">("+item.code+")"+item.name+"-"+item.teacher+"</option>";
+        })
+    }, function (data) {
+        Feng.error("修改失败!" + data.responseJSON.message + "!");
+    });
+
+    var lastCycle = cycle - 1;
+    if (0 == lastCycle){
+        academicYear = academicYear - 1;
+        lastCycle = lastCycle + 4; // 春 - 夏 - 秋 - 冬
+    }
+
+    ajax.set("academicYear", academicYear);
+    ajax.set("classCycles", lastCycle);
+    ajax.set("abilities", ability);
+    ajax.set('subjects', $('#subject').val());
+    ajax.set('methods', $('#method').val());
+    ajax.set('grades', $('#grade').val());
+
+    ajax.start();
+    $("#presignClassCode").append(html);
+};
 
 $(function () {
     var now = new Date();
@@ -397,11 +449,22 @@ $(function () {
     $.fn.bootstrapValidator.validators.cross_v = {
         validate: function() {
             var crossable = $(':radio[name="crossable"]:checked').val();
-            var presignBeginDate = $('#presignStartDate').val();
+            // var presignBeginDate = $('#presignStartDate').val();
             var crossBeginDate = $('#crossStartDate').val();
-            var presignEndDate = $('#presignEndDate').val();
+            // var presignEndDate = $('#presignEndDate').val();
             var crossEndDate = $('#crossEndDate').val();
-            return 1 == crossable ? (presignBeginDate.length > 0 && presignEndDate.length > 0) && (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
+            // return 1 == crossable ? (presignBeginDate.length > 0 && presignEndDate.length > 0) && (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
+            return 1 == crossable ? (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
+        }
+    };
+    // 注册验证方法
+    $.fn.bootstrapValidator.validators.presign_v = {
+        validate: function() {
+            var presignClassCode = $('#presignClassCode').val();
+
+            var presignBeginDate = $('#presignStartDate').val();
+            var presignEndDate = $('#presignEndDate').val();
+            return presignClassCode.length > 0 ? (presignBeginDate.length > 0 && presignEndDate.length > 0) : true;
         }
     };
 
@@ -490,16 +553,27 @@ $(function () {
                    var switchValue = $(this).val();
 
                    if (1 == switchValue){
-                       $('#presignStartDate').parents('.form-group').show();
-                       $('#presignEndDate').parents('.form-group').show();
                        $('#crossStartDate').parents('.form-group').show();
                        $('#crossEndDate').parents('.form-group').show();
                    }else{
-                       $('#presignStartDate').parents('.form-group').hide();
-                       $('#presignEndDate').parents('.form-group').hide();
+                       // $('#presignStartDate').parents('.form-group').hide();
+                       // $('#presignEndDate').parents('.form-group').hide();
                        $('#crossStartDate').parents('.form-group').hide();
                        $('#crossEndDate').parents('.form-group').hide();
                    }
+                });
+
+                $('#presignClassCode').bind('change', function() {
+                    console.log($(this).val());
+                    var switchValue = $(this).val();
+
+                    if (switchValue.length > 0){
+                        $('#presignStartDate').parents('.form-group').show();
+                        $('#presignEndDate').parents('.form-group').show();
+                    }else{
+                        $('#crossStartDate').parents('.form-group').hide();
+                        $('#crossEndDate').parents('.form-group').hide();
+                    }
                 });
                 /*  学年 */
                 var html = "";
@@ -511,6 +585,7 @@ $(function () {
                 /* 教室 */
                 var html = "";
                 var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
+                    html += '<option value=""> -- 选择教室 -- </option>';
                     data.forEach(function (item) {
                         html +="<option value="+item.code+">"+item.name+"</option>";
                     })
@@ -522,6 +597,7 @@ $(function () {
                 /* 老师*/
                 var html = "";
                 var ajax = new $ax(Feng.ctxPath + "/teacher/listAll", function (data) {
+                    html += '<option value=""> -- 选择任课老师 -- </option>';
                     data.forEach(function (item) {
                         html +="<option value="+item.code+">"+item.name+"</option>";
                     })

@@ -66,20 +66,30 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">学年</label>
                                 <div class="col-sm-9">
-                                    <select id="academicYear" name="学年" class="form-control" style="width:75%;"></select>
+                                    <select id="academicYear" name="学年" class="form-control"></select>
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
-                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
-                            <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%" placeholder="-- 选择学期 --" onchange="ClassWizard.loadPresignClass(this);"/>
+                            <#dictSelector id="ability" name="班型" code="ability" label="班型"  underline="true" width="75%" placeholder=" -- 选择班型 --" onchange="ClassWizard.loadPresignClass(this);"/>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">教室</label>
                                 <div class="col-sm-9">
-                                    <select id="classRoomCode" name="教室" class="form-control" style="width:75%;"></select>
+                                    <select id="classRoomCode" name="教室" class="form-control"></select>
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
                             <#input id="quato" name="学员数" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">预报来源班级</label>
+                                <div class="col-sm-9">
+                                    <select id="presignClassCode" name="presignClassCode" class="form-control">
+                                        <option value=""> -- 选择班级 -- </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#input id="presignStartDate" name="开始预报" underline="true" underline="true" display="false"/>
                             <div class="form-group" style="height: 34px;">
                                 <label class="col-sm-3 control-label">开放跨报</label>
                                 <div class="col-sm-9">
@@ -96,7 +106,6 @@
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div>
-                            <#input id="presignStartDate" name="开始预报" underline="true" display="false"/>
                             <#input id="crossStartDate" name="开始跨报" underline="true" display="false"/>
                         </div>
                         <div class="col-sm-6">
@@ -104,14 +113,14 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">讲师</label>
                                 <div class="col-sm-9">
-                                    <select id="teacherCode" name="讲师" class="form-control" style="width:75%;"></select>
+                                    <select id="teacherCode" name="讲师" class="form-control"></select>
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">辅导员</label>
                                 <div class="col-sm-9">
-                                    <select id="teacherSecondCode" name="辅导员" class="form-control" style="width:75%;"></select>
+                                    <select id="teacherSecondCode" name="辅导员" class="form-control"></select>
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
@@ -124,7 +133,13 @@
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
-                            <#input id="presignEndDate" name="结束预报" underline="false" display="false"/>
+                            <#input id="presignEndDate" name="结束预报" underline="true" display="false"/>
+                            <div class="form-group" style="height: 34px;">
+                                <div class="col-sm-9">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
                             <#input id="crossEndDate" name="结束跨报" underline="false" display="false"/>
                         </div>
                     </div>

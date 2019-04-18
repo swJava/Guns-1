@@ -86,6 +86,7 @@ public class BatchTemplateController {
             add("辅导员");
             add("限额人数");
             add("教室");
+            add("续报来源班级");
             add("开始续保日期");
             add("结束续保日期");
             add("允许跨报");
@@ -239,8 +240,8 @@ public class BatchTemplateController {
         sheet = setHSSFValidation(sheet, teacherDictList, 1, 100, 5, 5);// 前101行都设置为选择列表形式.
         sheet = setHSSFValidation(sheet, teacherDictList, 1, 100, 6, 6);// 前101行都设置为选择列表形式.
         sheet = setHSSFValidation(sheet, roomList, 1, 100, 8, 8);// 前101行都设置为选择列表形式.
-        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 11, 11);// 前101行都设置为选择列表形式.
-        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 14, 14);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 12, 12);// 前101行都设置为选择列表形式.
+        sheet = setHSSFValidation(sheet, yesOrNo, 1, 100, 17, 17);// 前101行都设置为选择列表形式.
 
         for (int i = 0; i < TEMPLATE_CLASS_HEADER_DEFINE.size(); i++) {
             sheet.autoSizeColumn(i);

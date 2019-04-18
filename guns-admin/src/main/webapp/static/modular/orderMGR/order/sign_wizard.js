@@ -292,7 +292,7 @@ $(function () {
             SignWizard.collectData();
 
             //提交信息
-            /*var ajax = new $ax(SignWizard.Wizard.postUrl['order'], function(data){
+            var ajax = new $ax(SignWizard.Wizard.postUrl['order'], function(data){
                 Feng.success("保存成功!");
                 SignWizard.close();
             },function(data){
@@ -300,7 +300,7 @@ $(function () {
             });
             ajax.setContentType("application/json");
             ajax.setData(JSON.stringify(SignWizard.Wizard.postData));
-            ajax.start();*/
+            ajax.start();
             Feng.success("保存成功!");
             SignWizard.close();
         }
@@ -309,6 +309,7 @@ $(function () {
     var displayColumns = SignWizard.ClassPlan.initColumn();
     var table = new BSTable(SignWizard.ClassPlan.id, "/order/sign/plan/list?classCode=" + SignWizard.Wizard.classCode, displayColumns);
     table.setPaginationType("server");
+    table.setPaginational(false);
 
     SignWizard.ClassPlan.table = table.init();
 
@@ -316,4 +317,49 @@ $(function () {
     $("#grades").val($("#gradesValue").val());
     $("#ability").val($("#abilityValue").val());
     $("#subject").val($("#subjectValue").val());
+
+
+    $('#studentCode').bind('change', function(){
+        var val = $(this).val();
+        console.log(val);
+        if (val.length == 0){
+            $('#student').val('');
+            $('#student').removeAttr('readOnly');
+            $('#age').val(1);
+            $('#age').removeAttr('readOnly');
+            $('#school').val('');
+            $('#school').removeAttr('readOnly');
+            $('#targetSchool').val('');
+            $('#targetSchool').removeAttr('readOnly', true);
+            $('#mobileNumber').val('');
+            $('#mobileNumber').removeAttr('readOnly');
+            $('#memberName').val('');
+            $('#memberName').removeAttr('readOnly', true);
+        }else{
+            var ajax = new $ax(Feng.ctxPath + '/student/get/' + val, function (data) {
+                $('#student').val(data.name);
+                $('#student').attr('readOnly', true);
+                $('#age').val(data.age);
+                $('#age').attr('readOnly', true);
+                $('#school').val(data.school);
+                $('#school').attr('readOnly', true);
+                $('#targetSchool').val(data.targetSchool);
+                $('#targetSchool').attr('readOnly', true);
+
+                var memberReq = new $ax(Feng.ctxPath + '/member/get/' + data.userName, function (data) {
+                    $('#mobileNumber').val(data.mobileNumber);
+                    $('#mobileNumber').attr('readOnly', true);
+                    $('#memberName').val(data.name);
+                    $('#memberName').attr('readOnly', true);
+                }, function (data) {
+                    Feng.error("操作失败!" + data.responseJSON.message + "!");
+                });
+                memberReq.start();
+            }, function (data) {
+                Feng.error("操作失败!" + data.responseJSON.message + "!");
+            });
+
+            ajax.start();
+        }
+    });
 });

@@ -182,4 +182,14 @@ public class StudentController extends BaseController {
     public Object detail(@PathVariable("studentId") Integer studentId) {
         return studentService.selectById(studentId);
     }
+
+    /**
+     * 学生管理详情
+     */
+    @RequestMapping(value = "/get/{code}")
+    @ResponseBody
+    public Object get(@PathVariable("code") String studentCode) {
+        return studentService.get(studentCode);
+    }
+
 }

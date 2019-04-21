@@ -13,12 +13,14 @@ var ClassWizard = {
             'update': Feng.ctxPath + "/class/update"
         },
         courseTable : {
-            id : 'courseTable'
+            id : 'courseTable',
+            table: null
         },
         planListTable : {
             id : 'planListTable',
+            table: null,
             planList : new Array()
-        },
+        }
     },
     forms: [
         {
@@ -40,26 +42,6 @@ var ClassWizard = {
         {
             id: 'classForm',
             validateFields: {
-                crossable: {
-                    validators: {
-                        cross_v: {
-                            message: ' ',
-                            onError: function(e, data){
-                                Feng.error('请设置跨报时间');
-                            }
-                        }
-                    }
-                },
-                presignClassCode: {
-                    validators: {
-                        presign_v: {
-                            message: ' ',
-                            onError: function(e, data){
-                                Feng.error('请设置预报时间');
-                            }
-                        }
-                    }
-                },
                 code: {
                     validators: {
                         notEmpty: {
@@ -205,6 +187,7 @@ ClassWizard.Wizard.courseTable.check = function () {
         return true;
     }
 };
+
 ClassWizard.Wizard.planListTable.check = function () {
     var selected = $('#' + this.id).bootstrapTable('getSelections');
     if(selected.length == 0){
@@ -280,22 +263,7 @@ ClassWizard.collectData = function() {
         .set('classRoom')
         .set('studyTimeDesp');
 
-    var presignClassCode = $('#presignClassCode').val();
-    if (presignClassCode.length > 0){
-        this.set('presignStartDate')
-            .set('presignEndDate')
-        ;
-    }
-    var crossable = $(':radio[name="crossable"]:checked').val();
-    if (1 == crossable ){
-        this
-            .set('crossStartDate')
-            .set('crossEndDate')
-        ;
-    }
-
     this.Wizard.postData['price'] = submitPrice;
-    this.Wizard.postData['crossable'] = crossable;
 };
 
 ClassWizard.padLeft = function(val, len, chr){
@@ -319,6 +287,20 @@ ClassWizard.padLeft = function(val, len, chr){
  */
 ClassWizard.close = function() {
     parent.layer.close(window.parent.Class.layerIndex);
+};
+
+/**
+ * 查询课程管理列表
+ */
+ClassWizard.courseSearch = function () {
+    $('#courseCode').val(''); // 需要重新选择
+
+    var queryData = {};
+    queryData['condition'] = $("#condition").val();
+    queryData['grade'] = $("#grade").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['status'] = 1;
+    ClassWizard.Wizard.courseTable.table.refresh({query: queryData});
 };
 
 ClassWizard.initPlanListTable = function(code){
@@ -397,43 +379,6 @@ ClassWizard.iniCalendar = function(options) {
     }
 };
 
-ClassWizard.loadPresignClass = function() {
-    var cycle = parseInt($('#cycle').val(), 10);
-    var ability = parseInt($('#ability').val(), 10);
-    var academicYear = parseInt($('#academicYear').val(), 10);
-
-    $("#presignClassCode").html('<option value=""> -- 选择班级 -- </option>');
-
-    if (isNaN(cycle) || isNaN(ability))
-        return;
-
-    /* 续报来源班级 */
-    var html = "";
-    var ajax = new $ax(Feng.ctxPath + "/class/list", function (data) {
-        data.rows.forEach(function (item) {
-            html +="<option value="+item.code+">("+item.code+")"+item.name+"-"+item.teacher+"</option>";
-        })
-    }, function (data) {
-        Feng.error("修改失败!" + data.responseJSON.message + "!");
-    });
-
-    var lastCycle = cycle - 1;
-    if (0 == lastCycle){
-        academicYear = academicYear - 1;
-        lastCycle = lastCycle + 4; // 春 - 夏 - 秋 - 冬
-    }
-
-    ajax.set("academicYear", academicYear);
-    ajax.set("classCycles", lastCycle);
-    ajax.set("abilities", ability);
-    ajax.set('subjects', $('#subject').val());
-    ajax.set('methods', $('#method').val());
-    ajax.set('grades', $('#grade').val());
-
-    ajax.start();
-    $("#presignClassCode").append(html);
-};
-
 $(function () {
     var now = new Date();
     var year = now.getFullYear();
@@ -445,28 +390,6 @@ $(function () {
         day = '0' + day;
 
     var today = year + '-' + month + '-' + day;
-    // 注册验证方法
-    $.fn.bootstrapValidator.validators.cross_v = {
-        validate: function() {
-            var crossable = $(':radio[name="crossable"]:checked').val();
-            // var presignBeginDate = $('#presignStartDate').val();
-            var crossBeginDate = $('#crossStartDate').val();
-            // var presignEndDate = $('#presignEndDate').val();
-            var crossEndDate = $('#crossEndDate').val();
-            // return 1 == crossable ? (presignBeginDate.length > 0 && presignEndDate.length > 0) && (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
-            return 1 == crossable ? (crossBeginDate.length > 0 && crossEndDate.length > 0) : true;
-        }
-    };
-    // 注册验证方法
-    $.fn.bootstrapValidator.validators.presign_v = {
-        validate: function() {
-            var presignClassCode = $('#presignClassCode').val();
-
-            var presignBeginDate = $('#presignStartDate').val();
-            var presignEndDate = $('#presignEndDate').val();
-            return presignClassCode.length > 0 ? (presignBeginDate.length > 0 && presignEndDate.length > 0) : true;
-        }
-    };
 
     $.fn.bootstrapValidator.validators.planlist_v = {
         validate: function() {
@@ -542,39 +465,7 @@ $(function () {
                 //日期控件初始化
                 laydate.render({elem: '#signStartDate', min: today});
                 laydate.render({elem: '#signEndDate', min: today});
-                laydate.render({elem: '#presignStartDate', min: today});
-                laydate.render({elem: '#crossStartDate', min: today});
-                laydate.render({elem: '#presignEndDate', min: today});
-                laydate.render({elem: '#crossEndDate', min: today});
 
-                //$(':radio[name="crossable"]').unbindAll();
-                $(':radio[name="crossable"]').bind('click', function(){
-                   console.log($(this).val());
-                   var switchValue = $(this).val();
-
-                   if (1 == switchValue){
-                       $('#crossStartDate').parents('.form-group').show();
-                       $('#crossEndDate').parents('.form-group').show();
-                   }else{
-                       // $('#presignStartDate').parents('.form-group').hide();
-                       // $('#presignEndDate').parents('.form-group').hide();
-                       $('#crossStartDate').parents('.form-group').hide();
-                       $('#crossEndDate').parents('.form-group').hide();
-                   }
-                });
-
-                $('#presignClassCode').bind('change', function() {
-                    console.log($(this).val());
-                    var switchValue = $(this).val();
-
-                    if (switchValue.length > 0){
-                        $('#presignStartDate').parents('.form-group').show();
-                        $('#presignEndDate').parents('.form-group').show();
-                    }else{
-                        $('#crossStartDate').parents('.form-group').hide();
-                        $('#crossEndDate').parents('.form-group').hide();
-                    }
-                });
                 /*  学年 */
                 var html = "";
                 var academicYears = JSON.parse($('#academicYearsValue').val());
@@ -663,7 +554,7 @@ $(function () {
                 });
             }
 
-            if (step == 3) {
+            if ( 3 == step) {
                 var tableDatas = $('#' + ClassWizard.Wizard.planListTable.id).bootstrapTable('getData');
                 console.log(tableDatas);
                 // 排课日历

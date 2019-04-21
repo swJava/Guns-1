@@ -130,6 +130,7 @@ Sign.search = function () {
     }
     queryData['studyDate'] = $("#studyDate").val();
     queryData['signDate'] = $("#signDate").val();
+    queryData['offset'] = 0;
     Sign.table.refresh({query: queryData});
 };
 
@@ -137,5 +138,8 @@ $(function () {
     var defaultColunms = Sign.initColumn();
     var table = new BSTable(Sign.id, "/class/list", defaultColunms);
     table.setPaginationType("server");
+    table.setQueryParams({
+        status: 1 // 查有效的班级
+    });
     Sign.table = table.init();
 });

@@ -1,0 +1,55 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="row row-lg">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="form-horizontal" id="classInfoForm">
+                        <input type="hidden" id="id" value="${classItem.id}">
+                        <input type="hidden" id="code" value="${classItem.code}">
+                        <input type="hidden" id="crossableValue" value="${classItem.crossable}" />
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <div class="form-group" style="height: 34px;">
+                                    <label class="col-sm-3 control-label">开放跨报</label>
+                                    <div class="col-sm-9">
+                                        <div class="radio radio-inline">
+                                            <label>
+                                                <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
+                                            </label>
+                                        </div>
+                                        <div class="radio radio-inline">
+                                            <label>
+                                                <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div>
+                                <#input id="crossStartDate" name="开始跨报" underline="true" value="${classItem.crossStartDate!}" display="false"/>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group" style="height: 34px;">
+                                    <div class="col-sm-9">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <#input id="crossEndDate" name="结束跨报" underline="false" value="${classItem.crossEndDate!}" display="false"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row btn-group-m-t">
+                    <div class="col-sm-10 col-sm-offset-5">
+                        <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ClassCrosssignSetting.doSubmit()"/>
+                        <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ClassCrosssignSetting.close()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/classMGR/class/class_crosssign_setting.js" />
+@}

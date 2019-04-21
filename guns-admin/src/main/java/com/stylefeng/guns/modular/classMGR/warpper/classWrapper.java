@@ -27,7 +27,18 @@ public class ClassWrapper extends BaseControllerWarpper{
         map.put("statusName", ConstantFactory.me().getStatusName(Integer.parseInt(map.get("status").toString())));
         map.put("gradeName", ConstantFactory.me().getDictsByCode("school_grade", map.get("grade").toString()));
         map.put("cycleName", ConstantFactory.me().getDictsByCode("cycle", map.get("cycle").toString()));
-
+        if (map.containsKey("subject")) {
+            try {
+                map.put("subjectName", ConstantFactory.me().getDictsByCode("subject_type", map.get("subject").toString()));
+            }catch(Exception e){}
+        }
+        try {
+            int ability = (Integer) map.get("ability");
+            map.put("abilityName", ConstantFactory.me().getAbilityName(ability));
+        }catch(Exception e){
+            int ability = Integer.parseInt((String) map.get("ability"));
+            map.put("abilityName", ConstantFactory.me().getAbilityName(ability));
+        }
         int quato = Integer.parseInt(map.get("quato").toString());
         if (map.containsKey("signQuato")) {
             int signQuato = Integer.parseInt(map.get("signQuato").toString());

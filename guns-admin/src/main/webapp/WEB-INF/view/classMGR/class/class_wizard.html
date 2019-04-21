@@ -25,6 +25,20 @@
             <fieldset>
                 <form id="courseForm" class="form-horizontal">
                     <div class="row">
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="grade" name="年级" code="school_grade" placeholder="-- 选择年级 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#NameCon id="condition" name="关键字" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#button name="搜索" icon="fa-search" clickFun="ClassWizard.courseSearch()"/>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-12">
                             <input type="hidden" class="form-group" id="courseCode" name="courseCode" />
                             <#table id="courseTable"/>
@@ -70,8 +84,8 @@
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
-                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%" placeholder="-- 选择学期 --" onchange="ClassWizard.loadPresignClass(this);"/>
-                            <#dictSelector id="ability" name="班型" code="ability" label="班型"  underline="true" width="75%" placeholder=" -- 选择班型 --" onchange="ClassWizard.loadPresignClass(this);"/>
+                            <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%" placeholder="-- 选择学期 --"/>
+                            <#dictSelector id="ability" name="班型" code="ability" label="班型"  underline="true" width="75%" placeholder=" -- 选择班型 --"/>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">教室</label>
                                 <div class="col-sm-9">
@@ -80,33 +94,7 @@
                             </div>
                             <div class="hr-line-dashed" ></div >
                             <#input id="quato" name="学员数" underline="true"/>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">预报来源班级</label>
-                                <div class="col-sm-9">
-                                    <select id="presignClassCode" name="presignClassCode" class="form-control">
-                                        <option value=""> -- 选择班级 -- </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div >
-                            <#input id="presignStartDate" name="开始预报" underline="true" underline="true" display="false"/>
-                            <div class="form-group" style="height: 34px;">
-                                <label class="col-sm-3 control-label">开放跨报</label>
-                                <div class="col-sm-9">
-                                    <div class="radio radio-inline">
-                                        <label>
-                                            <input type="radio" name="crossable" value="1" checked="" style="margin-top: 3px;">开放
-                                        </label>
-                                    </div>
-                                    <div class="radio radio-inline">
-                                        <label>
-                                            <input type="radio" name="crossable" value="0" checked="true" style="margin-top: 3px;">禁止
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div>
-                            <#input id="crossStartDate" name="开始跨报" underline="true" display="false"/>
+                            <#input id="studyTimeDesp" name="排课计划描述" underline="false"/>
                         </div>
                         <div class="col-sm-6">
                             <#input id="price" name="价格(元)" underline="true"/>
@@ -126,21 +114,12 @@
                             <div class="hr-line-dashed" ></div >
                             <#input id="signStartDate" name="开始报名" underline="true"/>
                             <#input id="signEndDate" name="截止报名" underline="true"/>
-                            <#input id="studyTimeDesp" name="上课时间" underline="true"/>
                             <div class="form-group" style="height: 34px;">
                                 <div class="col-sm-9">
                                     &nbsp;
                                 </div>
                             </div>
                             <div class="hr-line-dashed" ></div >
-                            <#input id="presignEndDate" name="结束预报" underline="true" display="false"/>
-                            <div class="form-group" style="height: 34px;">
-                                <div class="col-sm-9">
-                                    &nbsp;
-                                </div>
-                            </div>
-                            <div class="hr-line-dashed" ></div >
-                            <#input id="crossEndDate" name="结束跨报" underline="false" display="false"/>
                         </div>
                     </div>
                 </form>

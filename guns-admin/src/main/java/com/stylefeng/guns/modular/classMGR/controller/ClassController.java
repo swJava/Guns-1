@@ -111,13 +111,50 @@ public class ClassController extends BaseController {
         return PREFIX + "class_edit.html";
     }
 
+    /**
+     * 跳转到修改课程管理
+     */
+    @RequestMapping("/presign_setting/{classCode}")
+    public String openClassPresignSetting(@PathVariable("classCode") String code, Model model) {
+        Map<String, Object> currClassInfo = classService.getMap(code);
+
+        if (null == currClassInfo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"班级"});
+
+        new ClassWrapper(currClassInfo).warp();
+        model.addAttribute("classItem",currClassInfo);
+
+        Map<String, Object> currCourseInfo = courseService.getMap((String)currClassInfo.get("courseCode"));
+        new CourseWrapper(currCourseInfo).warp();
+        model.addAttribute("courseItem", currCourseInfo);
+
+        String presignClassCode = (String) currClassInfo.get("presignSourceClassCode");
+        if (StringUtils.isNotEmpty(presignClassCode)){
+            Map<String, Object> sourceClassInfo = classService.getMap(presignClassCode);
+            new ClassWrapper(sourceClassInfo).warp();
+            model.addAttribute("sourceClass", sourceClassInfo);
+
+            Map<String, Object> sourceCourseInfo = courseService.getMap((String)sourceClassInfo.get("courseCode"));
+            new CourseWrapper(sourceCourseInfo).warp();
+            model.addAttribute("sourceCourse", sourceCourseInfo);
+        }
+
+        LogObjectHolder.me().set(currClassInfo);
+        return PREFIX + "class_presign_setting.html";
+    }
+
 
     /**
      * 跳转到修改课程管理
      */
-    @RequestMapping("/class_schedule/add")
-    public String classSchedule(Model model) {
-        return PREFIX + "class_schedule.html";
+    @RequestMapping("/crosssign_setting/{classCode}")
+    public String openClassCrosssignSetting(@PathVariable("classCode") String code, Model model) {
+        Map<String, Object> classInstanceMap = classService.getMap(code);
+        new ClassWrapper(classInstanceMap).warp();
+
+        model.addAttribute("classItem",classInstanceMap);
+        LogObjectHolder.me().set(classInstanceMap);
+        return PREFIX + "class_crosssign_setting.html";
     }
 
     /**
@@ -286,6 +323,74 @@ public class ClassController extends BaseController {
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"开班计划"});
 
         classService.updateClass(classInstance, classPlanList);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 修改班级跨报设置
+     */
+    @RequestMapping("/crosssign_setting/save")
+    @ResponseBody
+    public Object saveClassCrosssignSetting(Class classSetting, Model model) {
+
+        Class classInstance = classService.get(classSetting.getCode());
+
+        if (null == classInstance)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级"});
+
+        Date crossStartDate = null;
+        Date crossEndDate = null;
+        if (GenericState.Valid.code == classSetting.getCrossable()){
+            crossStartDate = classSetting.getCrossStartDate();
+            crossEndDate = classSetting.getCrossEndDate();
+
+            if (null == crossStartDate || null == crossEndDate)
+                throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"时间设置"});
+        }
+
+        classInstance.setCrossable(classSetting.getCrossable());
+        classInstance.setCrossStartDate(crossStartDate);
+        classInstance.setCrossEndDate(crossEndDate);
+
+        classService.updateById(classInstance);
+
+        LogObjectHolder.me().set(classInstance);
+        return SUCCESS_TIP;
+    }
+
+
+    /**
+     * 修改班级续报设置
+     */
+    @RequestMapping("/presign_setting/save")
+    @ResponseBody
+    public Object saveClassPresignSetting( Class classSetting, Model model) {
+
+        Class classInstance = classService.get(classSetting.getCode());
+
+        if (null == classInstance)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级"});
+
+        Date presignStartDate = null;
+        Date presignEndDate = null;
+        if (StringUtils.isNotEmpty(classSetting.getPresignSourceClassCode())){
+            presignStartDate = classSetting.getPresignStartDate();
+            presignEndDate = classSetting.getPresignEndDate();
+
+            if (null == presignStartDate || null == presignEndDate)
+                throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"时间设置"});
+
+            if (presignStartDate.after(presignEndDate))
+                throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_OVERTOP, new String[]{"开始时间不能小于结束时间"});
+        }
+
+        classInstance.setPresignSourceClassCode(classSetting.getPresignSourceClassCode());
+        classInstance.setPresignStartDate(presignStartDate);
+        classInstance.setPresignEndDate(presignEndDate);
+
+        classService.updateById(classInstance);
+
+        LogObjectHolder.me().set(classInstance);
         return SUCCESS_TIP;
     }
 

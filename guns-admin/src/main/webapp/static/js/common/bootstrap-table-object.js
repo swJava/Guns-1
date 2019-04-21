@@ -149,6 +149,9 @@
          */
         refresh: function (parms) {
             if (typeof parms != "undefined") {
+                console.log('<--- query param');
+                console.log(parms);
+                parms['pageNumber'] = 1;
                 this.btInstance.bootstrapTable('refresh', parms);
             } else {
                 this.btInstance.bootstrapTable('refresh');

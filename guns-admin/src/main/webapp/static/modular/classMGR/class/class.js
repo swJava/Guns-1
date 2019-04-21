@@ -5,6 +5,7 @@ var Class = {
     id: "ClassTable",	//表格id
     seItem: null,		//选中的条目
     table: null,
+    queryParams: {status : 1},
     layerIndex: -1
 };
 
@@ -19,7 +20,7 @@ Class.initColumn = function () {
             {title: '班级名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '年级', field: 'gradeName', visible: false, align: 'center', valign: 'middle'},
             {title: '学期', field: 'cycle', visible: false, align: 'center', valign: 'middle'},
-            {title: '班次', field: 'ability', visible: false, align: 'center', valign: 'middle'},
+            {title: '班型', field: 'abilityName', visible: false, align: 'center', valign: 'middle'},
             {title: '开课日期', field: 'beginDate', visible: true, align: 'center', valign: 'middle',
                 formatter: function(value){
                     return value.substring(0, 10);
@@ -117,6 +118,44 @@ Class.openClassDetail = function () {
     }
 };
 
+
+/**
+ * 打开续报设置
+ */
+Class.openPresignSetting = function () {
+    if (this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '班级续报设置',
+            area: ['640px', '480px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/class/presign_setting/' + Class.seItem.code
+        });
+        layer.full(index);
+        this.layerIndex = index;
+    }
+};
+
+
+/**
+ * 打开跨报设置
+ */
+Class.openCrosssignSetting = function () {
+    if (this.check()) {
+        var index = layer.open({
+            type: 2,
+            title: '班级跨报设置',
+            area: ['640px', '480px'], //宽高
+            fix: false, //不固定
+            maxmin: true,
+            content: Feng.ctxPath + '/class/crosssign_setting/' + Class.seItem.code
+        });
+        layer.full(index);
+        this.layerIndex = index;
+    }
+};
+
 /**
  * 删除课程管理
  */
@@ -157,8 +196,15 @@ Class.search = function () {
     }
     queryData['studyDate'] = $("#studyDate").val();
     queryData['signDate'] = $("#signDate").val();
+    queryData['offset'] = 0;
+    // queryData['pageNumber'] = 1;
+    Class.queryParams = queryData;
     Class.table.refresh({query: queryData});
 };
+
+Class.getQueryParams = function(){
+    return Class.queryParams;
+}
 
 Class.doUpdate = function(reqUrl, data){
     var ajax = new $ax(reqUrl, function (data) {
@@ -223,6 +269,7 @@ $(function () {
         });
 
     });
+    table.setQueryParams(Class.getQueryParams());
     Class.table = table.init();
 
     // 日期条件初始化

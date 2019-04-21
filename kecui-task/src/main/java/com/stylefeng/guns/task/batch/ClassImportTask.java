@@ -47,7 +47,7 @@ public class ClassImportTask extends ImportTaskSupport{
     @Autowired
     private ICourseService courseService;
 
-//    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void handleClassImport(){
         log.info("<<< Examine check begin ");
         //

@@ -13,16 +13,6 @@ var ClassInfoDlg = {
     calendar: null,
     classInfoData : {},
     validateFields: {
-        crossable: {
-            validators: {
-                cross_v: {
-                    message: ' ',
-                    onError: function(e, data){
-                        Feng.error('请设置跨报时间');
-                    }
-                }
-            }
-        },
         code: {
             validators: {
                 notEmpty: {
@@ -174,8 +164,6 @@ ClassInfoDlg.collectData = function() {
         .set('quato')
         .set('signStartDate')
         .set('signEndDate')
-        .set('crossStartDate')
-        .set('crossEndDate')
         .set('status')
         .set('teacherCode')
         .set('teacher')
@@ -186,8 +174,6 @@ ClassInfoDlg.collectData = function() {
         .set('studyTimeDesp');
 
     this.classInfoData['price'] = submitPrice;
-    console.log($(':radio[name="crossable"]:checked').val());
-    this.classInfoData['crossable'] = $(':radio[name="crossable"]:checked').val();
 }
 
 /**
@@ -447,15 +433,6 @@ ClassInfoDlg.initCalendar = function(options){
 
 
 $(function() {
-    // 注册验证方法
-    $.fn.bootstrapValidator.validators.cross_v = {
-        validate: function() {
-            var crossable = $(':radio[name="crossable"]:checked').val();
-            var crossBeginDate = $('#crossStartDate').val();
-            var crossEndDate = $('#crossEndDate').val();
-            return 1 == crossable ? (crossBeginDate.length > 0 && crossEndDate.length > 0): true;
-        }
-    };
 
     var now = new Date();
     var year = now.getFullYear();
@@ -536,8 +513,6 @@ $(function() {
     //日期控件初始化
     laydate.render({elem: '#signStartDate', min: today});
     laydate.render({elem: '#signEndDate', min: today});
-    laydate.render({elem: '#crossStartDate', min: today});
-    laydate.render({elem: '#crossEndDate', min: today});
 
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);

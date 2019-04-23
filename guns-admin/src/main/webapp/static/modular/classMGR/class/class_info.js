@@ -460,7 +460,7 @@ $(function() {
             ClassInfoDlg.minePlanList = ClassInfoDlg.minePlanList.concat(response.classPlanList);
 
             console.log(ClassInfoDlg.minePlanList);
-
+/*
             $(response.allClassPlanList).each(function(idx, eo) {
                 initEvents.push({
                     id: eo.classCode + '_' + eo.id,
@@ -472,6 +472,8 @@ $(function() {
                     backgroundColor: '#a0a0a0'
                 });
             });
+            */
+            var newToday = null;
             $(response.classPlanList).each(function(idx, eo) {
                 initEvents.push({
                     id: eo.classCode + '_' + eo.id,
@@ -481,10 +483,16 @@ $(function() {
                     color: '#ffffff',
                     backgroundColor: '#82af6f'
                 });
+                if (null == newToday)
+                    newToday = eo.classBeginTime;
             });
 
+            if (null == newToday)
+                newToday = today;
+
+            console.log(newToday);
             ClassInfoDlg.initCalendar({
-                today: today,
+                today: newToday,
                 calEvents: initEvents
             });
         }

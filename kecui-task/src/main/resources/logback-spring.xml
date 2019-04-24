@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+	    <encoder>
+			<pattern>%yellow(%date{yyyy-MM-dd HH:mm:ss:SSS}) %highlight(%-5level) [%thread] %boldMagenta(%logger{40}:%L) - %boldWhite(%msg%n)</pattern>
+	    </encoder>
+  	</appender>
+  	
+	<appender name="task-core" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>../logs/task-core.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+      		<pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
+    	</encoder>
+  	</appender>
+
+	<logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.opensymphony" level="DEBUG"/>
+    <logger name="org.apache" level="INFO"/>
+    <logger name="test" level="DEBUG"/>
+
+    <logger name="com.stylefeng" additivity="false" level="DEBUG">
+        <appender-ref ref="task-core" />
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="com.stylefeng.guns.modular" additivity="false" level="DEBUG">
+        <appender-ref ref="task-core" />
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="com.stylefeng.guns.rest.task.sms" additivity="false" level="INFO">
+        <appender-ref ref="task-core" />
+    </logger>
+
+  	<root level="WARN" additivity="false">
+    	<appender-ref ref="console" />
+  	</root>
+</configuration>

@@ -1,18 +1,28 @@
 package com.stylefeng.guns.modular.orderMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.classMGR.service.ICourseService;
 import com.stylefeng.guns.modular.education.CourseMethodEnum;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineService;
+import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
+import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.orderMGR.service.ICourseCartService;
 import com.stylefeng.guns.modular.orderMGR.service.IOrderService;
+import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.dao.CourseCartMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +36,8 @@ import java.util.*;
  */
 @Service
 public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseCart> implements ICourseCartService {
+    private final static Logger log = LoggerFactory.getLogger(CourseCartServiceImpl.class);
+
     @Autowired
     private IOrderService orderService;
 
@@ -34,6 +46,21 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
 
     @Autowired
     private ICourseService courseService;
+
+    @Autowired
+    private IExamineService examineService;
+
+    @Autowired
+    private IExamineAnswerService examineAnswerService;
+
+    @Autowired
+    private IStudentClassService studentClassService;
+
+    @Autowired
+    private IStudentService studentService;
+
+    @Autowired
+    private IMemberService memberService;
 
     private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
     private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
@@ -48,7 +75,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
     }
 
     @Override
-    public void join(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo) {
+    public String doJoin(Member member, Student student, com.stylefeng.guns.modular.system.model.Class classInfo, boolean skipTest) {
         if (null == member)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
@@ -58,6 +85,13 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         if (null == classInfo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
+        int studentGrade = student.getGrade();
+        int classGrade = classInfo.getGrade();
+//
+//        if (studentGrade != classGrade){
+//            throw new ServiceException(MessageConstant.MessageCode.GRADE_NOT_MATCH);
+//        }
+
         List<CourseCart> existSelected = selectList(new EntityWrapper<CourseCart>()
                 .eq("user_name", member.getUserName())
                 .eq("student_code", student.getCode())
@@ -65,15 +99,56 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
                 .ne("status", CourseCartStateEnum.Invalid.code)
         );
 
-        if (existSelected.size() > 0)
+        int existSelectedCount = 0;
+        if (existSelected.size() > 0){
+            // 包含有已失效、过期的订单不纳入已订购的范围
+            for(CourseCart courseCart : existSelected){
+                if (CourseCartStateEnum.Valid.code == courseCart.getStatus()){
+                    // 有效的购课单项目
+                    existSelectedCount++;
+                }else if (CourseCartStateEnum.Ordered.code == courseCart.getStatus()){
+                    Order order = orderService.get(courseCart);
+                    if (null == order)
+                        continue;
+
+                    int orderState = order.getStatus();
+                    if (OrderStateEnum.InValid.code == orderState
+                            || OrderStateEnum.Expire.code == orderState){
+                        continue;
+                    }
+
+                    existSelectedCount++;
+                }
+            }
+        }
+
+        if (existSelectedCount > 0)
             throw new ServiceException(MessageConstant.MessageCode.COURSE_SELECTED);
 
         // 检查班级报名状态
         classService.checkJoinState(classInfo, member, student);
 
+        // 入学测试校验
+        if (!skipTest && ClassExaminableEnum.YES.equals(ClassExaminableEnum.instanceOf(classInfo.getExaminable()))){
+            Map<String, Object> queryParams = new HashMap<String, Object>();
+            queryParams.put("classCode", classInfo.getCode());
+            ExamineApply examineApply = examineService.findExamineApply(queryParams);
+            if (null != examineApply){
+                Wrapper<ExamineAnswer> queryWrapper = new EntityWrapper<>();
+                queryWrapper.eq("paper_code", examineApply.getPaperCode());
+                queryWrapper.eq("student_code", student.getCode());
+                queryWrapper.ge("score", examineApply.getPassScore());
+                queryWrapper.eq("status", ExamineAnswerStateEnum.Finish.code);
+                int passCount = examineAnswerService.selectCount(queryWrapper);
+
+                if (0 >= passCount)
+                    throw new ServiceException(MessageConstant.MessageCode.ORDER_NEED_EXAMINE);
+            }
+        }
+
         // 加入选课单
         Map<String, Object> extraParams = new HashMap<String, Object>();
-        select(member, student, classInfo, extraParams);
+        return select(member, student, classInfo, extraParams);
     }
 
     @Override
@@ -126,11 +201,60 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         updateById(existSelected);
     }
 
-    private void select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
+    @Override
+    public void doAutoPreSign(Class classInfo) {
+
+        Class sourceClass = classService.get(classInfo.getPresignSourceClassCode());
+
+        if (null == sourceClass)
+            return;
+
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+        queryWrapper.eq("class_code", sourceClass.getCode());
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        List<StudentClass> signedList = studentClassService.selectList(queryWrapper);
+
+        for(StudentClass studentClass : signedList){
+            Student student = studentService.get(studentClass.getStudentCode());
+            Member member = memberService.get(student.getUserName());
+
+            try {
+                String courseCartCode = doJoin(member, student, classInfo, true);
+                OrderItem orderItem = new OrderItem();
+                orderItem.setCourseCartCode(courseCartCode);
+                orderItem.setItemObject(OrderItemTypeEnum.Course.code);
+                orderItem.setItemObjectCode(classInfo.getCode());
+                orderItem.setItemAmount(classInfo.getPrice());
+                OrderAddList orderAddList = new OrderAddList();
+                orderAddList.add(orderItem);
+
+                Map<String, Object> extendInfo = new HashMap<>();
+                orderService.order(member, orderAddList, PayMethodEnum.weixin, extendInfo);
+            }catch(Exception e){
+                log.error("报名失败, 学员-{}, 班级-{}, 用户-{} ", student.getCode(), classInfo.getCode(), member.getUserName());
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private String select(Member member, Student student, Class classInfo, Map<String, Object> extraParams) {
+
+        // 查询班级剩余报名额度
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("class_code", classInfo.getCode());
+        queryWrapper.eq("status", GenericState.Valid.code);
+        int existCount = studentClassService.selectCount(queryWrapper);
+
+        if (existCount >= classInfo.getQuato() - 2){
+            throw new ServiceException(MessageConstant.MessageCode.ORDER_NO_CAPACITY);
+        }
+
         CourseCart courseCart = new CourseCart();
         Date now = new Date();
 
-        courseCart.setCode(CodeKit.generateCourseCart());
+        String courseCartCode = CodeKit.generateCourseCart();
+        courseCart.setCode(courseCartCode);
         courseCart.setUserName(member.getUserName());
         courseCart.setStudentCode(student.getCode());
         courseCart.setStudent(student.getName());
@@ -142,7 +266,7 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         Course course = courseService.get(classInfo.getCourseCode());
         courseCart.setClassMethod(CourseMethodEnum.instanceOf(course.getMethod()).text);
 
-        courseCart.setClassTime(generateTimeDescription(classInfo));
+        courseCart.setClassTime(classInfo.getStudyTimeDesp());
         courseCart.setClassroom(classInfo.getClassRoom());
 
         courseCart.setTeacher(classInfo.getTeacher());
@@ -151,33 +275,8 @@ public class CourseCartServiceImpl extends ServiceImpl<CourseCartMapper, CourseC
         courseCart.setStatus(CourseCartStateEnum.Valid.code);
         courseCart.setAmount(classInfo.getPrice());
         insert(courseCart);
+
+        return courseCartCode;
     }
 
-    private String generateTimeDescription(Class classInfo) {
-        int scheduleType = classInfo.getStudyTimeType();
-        StringTokenizer studyTimeTokens = new StringTokenizer(classInfo.getStudyTimeValue(), ",");
-
-        StringBuffer despBuffer = new StringBuffer();
-        despBuffer.append("每");
-
-        while(studyTimeTokens.hasMoreTokens()){
-            int scheduleDay = Integer.parseInt(studyTimeTokens.nextToken());
-
-            switch(scheduleType){
-                case Calendar.DAY_OF_WEEK:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-                case Calendar.DAY_OF_MONTH:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-            }
-        }
-
-        despBuffer.append(classInfo.getBeginTime().substring(0, 2)).append(":").append(classInfo.getBeginTime().substring(2));
-        despBuffer.append(" ~ ");
-        despBuffer.append(classInfo.getEndTime().substring(0, 2)).append(":").append(classInfo.getEndTime().substring(2));
-
-
-        return despBuffer.toString();
-    }
 }

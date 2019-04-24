@@ -25,6 +25,10 @@ public class PaperResponse {
     private String classAbility;
     @ApiModelProperty(name = "examTime", value = "诊断时长，分钟", example = "40")
     private Integer examTime;
+    @ApiModelProperty(name = "status", value = "状态： 0 从未测试； 1 正在答题； 2 暂停答题  3 已交卷  4 已批改", example = "1")
+    private Integer status;
+    @ApiModelProperty(name = "answerResponse", value = "历史答卷信息")
+    private AnswerResponse answerResponse;
     @ApiModelProperty(name = "canTest", value = "能否开始诊断", example = "true")
     private boolean canTest;
 
@@ -58,6 +62,22 @@ public class PaperResponse {
 
     public void setExamTime(Integer examTime) {
         this.examTime = examTime;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public AnswerResponse getAnswerResponse() {
+        return answerResponse;
+    }
+
+    public void setAnswerResponse(AnswerResponse answerResponse) {
+        this.answerResponse = answerResponse;
     }
 
     public boolean isCanTest() {

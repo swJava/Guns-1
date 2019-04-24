@@ -2,7 +2,9 @@ package com.stylefeng.guns.modular.orderMGR.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
@@ -19,13 +21,13 @@ import com.stylefeng.guns.modular.system.dao.OrderMapper;
 import com.stylefeng.guns.modular.system.dao.OrderMemberMapper;
 import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -37,7 +39,10 @@ import java.util.Map;
  */
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
+    @Autowired
+    private OrderMapper orderMapper;
     @Autowired
     private OrderItemMapper orderItemMapper;
 
@@ -116,8 +121,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
+    public Order get(CourseCart courseCart) {
+        if (null == courseCart || null == courseCart.getCode())
+            return null;
+
+        Wrapper<OrderItem> orderItemWrapper = new EntityWrapper<OrderItem>();
+        orderItemWrapper.eq("course_cart_code", courseCart.getCode());
+        orderItemWrapper.eq("item_object", OrderItemTypeEnum.Course.code);
+
+        List<OrderItem> orderItemList = orderItemMapper.selectList(orderItemWrapper);
+
+        if (null == orderItemList || orderItemList.isEmpty())
+            return null;
+
+        OrderItem courseItem = orderItemList.get(0);
+
+        if (null == courseItem)
+            return null;
+
+        String orderNo = courseItem.getOrderNo();
+
+        if (null == orderNo)
+            return null;
+
+        return get(orderNo);
+    }
+
+    @Override
     public void completePay(String order) {
         Order currOrder = get(order);
+
+        if (PayStateEnum.NoPay.code != currOrder.getPayStatus()){
+            log.info(" order({}) is handled! ", currOrder.getAcceptNo());
+            return;
+        }
 
         currOrder.setPayStatus(PayStateEnum.PayOk.code);
         currOrder.setPayResult(PayStateEnum.PayOk.text);
@@ -137,11 +174,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
             Wrapper<ScheduleClass> scheduleClassWrapper = new EntityWrapper<ScheduleClass>();
             scheduleClassWrapper.eq("class_code", courseCart.getClassCode());
+            scheduleClassWrapper.eq("status", GenericState.Valid.code);
 
             List<ScheduleClass> classScheduleList = scheduleClassService.selectList(scheduleClassWrapper);
 
             // 学员报班信息表
             StudentClass studentClass = new StudentClass();
+            studentClass.setOrderNo(order);
             studentClass.setStudentCode(courseCart.getStudentCode());
             studentClass.setClassCode(courseCart.getClassCode());
             studentClass.setClassName(courseCart.getClassName());
@@ -159,7 +198,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 scheduleStudent.setClassName(courseCart.getClassName());
                 scheduleStudent.setOutlineCode(classSchedule.getOutlineCode());
                 scheduleStudent.setOutline(classSchedule.getOutline());
-                scheduleStudent.setStudyDate(classSchedule.getClassDate());
+                scheduleStudent.setStudyDate(classSchedule.getStudyDate());
                 scheduleStudent.setStatus(GenericState.Valid.code);
 
                 scheduleStudentService.insert(scheduleStudent);
@@ -187,6 +226,67 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return null;
 
         return memberService.get(existOrderMember.getUsername());
+    }
+
+    @Override
+    public void cancel(String orderNo) {
+        if (null == orderNo)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"订单号"});
+
+        Order order = get(orderNo);
+
+        if (null == order)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"订单"});
+
+        order.setStatus(OrderStateEnum.InValid.code);
+        updateById(order);
+    }
+
+    @Override
+    public void failedPay(String order, String message) {
+        Order currOrder = get(order);
+
+        currOrder.setPayStatus(PayStateEnum.Failed.code);
+        currOrder.setPayResult(message);
+        currOrder.setPayDate(new Date());
+
+        updateById(currOrder);
+    }
+
+    @Override
+    public List<Map<String, Object>> queryForList(Map<String, Object> queryParams) {
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+        return orderMapper.queryForList(arguments);
+    }
+
+    @Override
+    public Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryMap) {
+        Map<String, Object> arguments = buildQueryArguments(queryMap);
+        Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
+
+        List<Map<String, Object>> resultMap = orderMapper.selectPageList(page, arguments);
+        page.setRecords(resultMap);
+        return page;
+    }
+
+    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 
     /**

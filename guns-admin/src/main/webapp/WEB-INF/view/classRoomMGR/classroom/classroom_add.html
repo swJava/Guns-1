@@ -2,22 +2,21 @@
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal" id="classRoomInfoForm">
-
+            <input type="hidden" id="status" value="1" />
             <div class="row">
                 <div class="col-sm-6 b-r">
                             <#input id="name" name="教室名称" underline="true"/>
                             <#dictSelector id="type" name ="类型" code="classroom_type" label="类型"  underline="true"  width="75%"/>
-                            <#input id="address" name="教室地址" underline="true"/>
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="maxCount" name="座位数" underline="true"/>
-                            <#dictSelector id="status" name ="状态" code="sys_state" label="状态"  underline="true"  width="75%"/>
+                    <#input id="maxCount" name="座位数" underline="true"/>
+                    <#input id="address" name="教室地址" underline="true"/>
                 </div>
             </div>
 
             <div class="row btn-group-m-t">
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-sm-offset-5">
                     <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ClassroomInfoDlg.addSubmit()"/>
                     <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ClassroomInfoDlg.close()"/>
                 </div>

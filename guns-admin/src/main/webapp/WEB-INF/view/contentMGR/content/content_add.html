@@ -4,31 +4,31 @@
         <div class="form-horizontal" id="contentInfoForm">
 
             <div class="row">
-                <div class="col-sm-6 b-r">
+                <div class="col-sm-5 col-sm-offset-1 b-r">
                     <#avatar id="0" name="timage" label="标题图片" underline="true"/>
                     <#dictSelector id="type" name ="类型" code="content_type" label="类型"  underline="true"  width="75%" endNum="10"/>
                     <#input id="title" name="标题" underline="true"/>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <#input id="introduce" name="一句话简介" underline="true" />
                     <#input id="author" name="作者" underline="true"/>
-                    <#dictSelector id="publishType" name ="发布类型" code="content_type" label="发布类型" startNum="10" endNum="20"  underline="true"  width="75%"/>
+                    <#dictSelector id="publishType" name ="发布类型" code="publish_type" label="发布类型" startNum="10" endNum="20"  underline="true"  width="75%"/>
                     <#input id="deadDate" name="下架时间" underline="true" type="text"/>
                 </div>
-                <div class="row">
-                    <div class="form-group">
-                        <label class="col-sm-1 control-label">发布内容</label>
-                        <div class="col-sm-11">
-                            <div id="editor" class="editorHeight">
-                            </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <div id="editor" style="height: 330px;">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row btn-group-m-t">
-                <div class="col-sm-10">
+            <div class="row" style="margin-top: 40px;">
+                <div class="col-sm-10 col-sm-offset-5">
                     <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ContentInfoDlg.addSubmit()"/>
                     <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ContentInfoDlg.close()"/>
                 </div>

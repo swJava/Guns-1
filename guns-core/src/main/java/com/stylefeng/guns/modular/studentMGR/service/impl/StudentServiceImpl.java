@@ -6,11 +6,15 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
+import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.studentMGR.service.IStudentService;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.dao.StudentMapper;
+import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleStudent;
 import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.StudentClass;
 import com.stylefeng.guns.util.CodeKit;
 import com.stylefeng.guns.util.DateUtil;
 import com.stylefeng.guns.util.PathUtil;
@@ -37,6 +41,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Resource
     private StudentMapper studentMapper;
 
+    @Autowired
+    private IStudentClassService studentClassService;
+
+    @Autowired
+    private IClassService classService;
+
     @Value("${application.attachment.visit-url}")
     private String attachmentVisitURL;
 
@@ -45,6 +55,19 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     public Student getOne(Student student){
         return studentMapper.selectOne(student);
+    }
+
+    @Override
+    public Student addStudent(String userName, Student student) {
+        if (null == userName)
+            throw new ServiceException (MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+
+        student.setCode(CodeKit.generateStudent());
+        student.setUserName(userName);
+        student.setStatus(GenericState.Valid.code);
+        insert(student);
+
+        return student;
     }
 
     @Override
@@ -74,14 +97,36 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        Wrapper<Student> queryWrapper = new EntityWrapper<Student>();
-        queryWrapper.eq("code", code);
-        Student existStudent = selectOne(queryWrapper);
+        Student existStudent = get(code);
 
         if (null == existStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        String[] ignoreProperties = new String[]{"id", "code"};
+        Wrapper<StudentClass> queryWrapper = new EntityWrapper<StudentClass>();
+        queryWrapper.eq("student_code", code);
+        queryWrapper.eq("status", GenericState.Valid.code);
+
+        List<StudentClass> studentClassList = studentClassService.selectList(queryWrapper);
+        Date now = new Date();
+        boolean updatable = true;
+
+        for(StudentClass studentClassInfo : studentClassList){
+            Class classInfo = classService.get(studentClassInfo.getClassCode());
+            if (null == classInfo)
+                continue;
+
+            Date beginDate = classInfo.getBeginDate();
+            Date endDate = classInfo.getEndDate();
+            if (now.compareTo(beginDate) < 0 || now.compareTo(endDate) >= 0 ){
+                updatable = false;
+                break;
+            }
+        }
+
+        if (!updatable)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"学员已报班"});
+
+        String[] ignoreProperties = new String[]{"id", "code", "userName"};
         BeanUtils.copyProperties(newStudent, existStudent, ignoreProperties);
 
         updateById(existStudent);
@@ -128,6 +173,38 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         queryWrapper.in("status", states);
 
         return scheduleStudentMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public boolean doPause(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        Student student = get(code);
+
+        if (null == student)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        student.setStatus(GenericState.Invalid.code);
+        updateStudent(code, student);
+
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        Student student = get(code);
+
+        if (null == student)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"学员"});
+
+        student.setStatus(GenericState.Valid.code);
+        updateStudent(code, student);
+
+        return true;
     }
 
     private Student buildStudent(Map<String, Object> studentInfo) {

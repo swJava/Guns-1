@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Attachment;
 import com.stylefeng.guns.modular.system.transfer.AttachmentInfo;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -45,4 +46,18 @@ public interface IAttachmentService extends IService<Attachment> {
      * @param icon
      */
     void updateAndRemoveOther(Attachment icon);
+
+    /**
+     * 附件路径
+     *
+     * @return
+     */
+    File getStoreFolder();
+
+    /**
+     * 附件文件名
+     *
+     * @return
+     */
+    String getFilename();
 }

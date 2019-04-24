@@ -1,4 +1,5 @@
 @layout("/common/_container.html"){
+
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
@@ -10,10 +11,51 @@
                     <div class="col-sm-12">
                         <div class="row">
                             <div class="col-sm-3">
-                                <#NameCon id="condition" name="名称" />
+                                <#dictSelectorCondition id="grade" name="年级" code="school_grade" placeholder="-- 选择年级 --" />
                             </div>
                             <div class="col-sm-3">
-                                <#button name="搜索" icon="fa-search" clickFun="Class.search()"/>
+                                <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="ability" name="班次" code="ability" placeholder="-- 选择班次 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="cycle" name="学期" code="cycle" placeholder="-- 选择学期 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#SelectCon id="signState" name="报名状态" >
+                                    <option value="">全部</option>
+                                    <option value="1">可以报名</option>
+                                    <option value="2">即将报名</option>
+                                    <option value="3">报名已结束</option>
+                                    <option value="4">报名已禁止</option>
+                                </#SelectCon>
+                            </div>
+                            <div class="col-sm-3">
+                                <#SelectCon id="examState" name="是否测试" >
+                                    <option value="">全部</option>
+                                    <option value="1">需要测试</option>
+                                    <option value="0">不需要测试</option>
+                                </#SelectCon>
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="teacherQueryString" name="授课老师" />
+                            </div>
+                            <div class="col-sm-6">
+                                <#MoneyCon id="minPrice" placeholder="最小金额" />
+                            </div>
+                            <div class="col-sm-6">
+                                <#MoneyCon id="maxPrice" placeholder="最大金额" />
+                            </div>
+                            <div class="col-sm-6">
+                                <#TimeCon id="studyDate" name="上课日期" />
+                            </div>
+                            <div class="col-sm-6">
+                                <#TimeCon id="signDate" name="报名日期" />
+                            </div>
+                            <div class="col-sm-2" style="float: right;">
+                                <#button name="搜 索" icon="fa-search" clickFun="Class.search()"/>
+                                <#button name="重 置" icon="fa-search" clickFun="Class.search()"/>
                             </div>
                         </div>
                         <div class="hidden-xs" id="ClassTableToolbar" role="group">
@@ -23,11 +65,14 @@
                             @if(shiro.hasPermission("/class/update")){
                                 <#button name="修改" icon="fa-edit" clickFun="Class.openClassDetail()" space="true"/>
                             @}
+                            @if(shiro.hasPermission("/class/presign_setting")){
+                            <#button name="续报设置" icon="fa-edit" clickFun="Class.openPresignSetting()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/class/crosssign_setting")){
+                            <#button name="跨报设置" icon="fa-edit" clickFun="Class.openCrosssignSetting()" space="true"/>
+                            @}
                             @if(shiro.hasPermission("/class/delete")){
                                 <#button name="删除" icon="fa-remove" clickFun="Class.delete()" space="true"/>
-                            @}
-                            @if(shiro.hasPermission("/class/setting/test")){
-                            <!--<#button name="设置入学测试" icon="fa-remove" clickFun="Class.test()" space="true"/>-->
                             @}
                         </div>
                         <#table id="ClassTable"/>

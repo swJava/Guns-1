@@ -7,6 +7,7 @@ import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.system.dao.ScheduleClassMapper;
 import com.stylefeng.guns.modular.system.model.Class;
@@ -16,10 +17,7 @@ import com.stylefeng.guns.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -32,22 +30,8 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
     @Autowired
     private ICourseOutlineService courseOutlineService;
 
-    @Override
-    public void scheduleClass(com.stylefeng.guns.modular.system.model.Class classInstance, Integer studyTimeType, List<Integer> valueList) {
-
-        Wrapper<CourseOutline> outlineQueryWrapper = new EntityWrapper<>();
-        outlineQueryWrapper.eq("course_code", classInstance.getCourseCode());
-        outlineQueryWrapper.eq("status", GenericState.Valid.code);
-        outlineQueryWrapper.orderBy("sort, id");
-
-        List<CourseOutline> outlineList = courseOutlineService.selectList(outlineQueryWrapper);
-        switch(studyTimeType){
-            case Calendar.DAY_OF_WEEK:
-                // 按周处理
-                scheduleClassWeek(classInstance, outlineList, valueList);
-                break;
-        }
-    }
+    @Autowired
+    private ScheduleClassMapper scheduleClassMapper;
 
     @Override
     public void deleteClassSchedule(String code) {
@@ -58,47 +42,43 @@ public class ScheduleClassServiceImpl extends ServiceImpl<ScheduleClassMapper, S
         delete(classScheduleWrapper);
     }
 
-    private void scheduleClassWeek(Class classInstance, List<CourseOutline> outlineList, List<Integer> valueList) {
-        Date beginDate = classInstance.getBeginDate();
-        Date endDate = classInstance.getEndDate();
-        Date now = new Date();
+    @Override
+    public List<ClassPlan> selectPlanList(Map<String, Object> queryMap) {
+        return scheduleClassMapper.selectPlanList(queryMap);
+    }
 
-        if (null == beginDate || null == endDate)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+    @Override
+    public void scheduleClass(Class classInstance, List<ClassPlan> classPlanList) {
+        Wrapper<CourseOutline> outlineQueryWrapper = new EntityWrapper<>();
+        outlineQueryWrapper.eq("course_code", classInstance.getCourseCode());
+        outlineQueryWrapper.eq("status", GenericState.Valid.code);
+        outlineQueryWrapper.orderBy("sort, id");
 
-        if (beginDate.before(now) || endDate.before(now)){
-            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL);
-        }
-
-        Date calDate = beginDate;
+        List<CourseOutline> outlineList = courseOutlineService.selectList(outlineQueryWrapper);
+        Collections.sort(outlineList, new Comparator<CourseOutline>() {
+            @Override
+            public int compare(CourseOutline co1, CourseOutline co2) {
+                return co1.getSort().compareTo(co2.getSort());
+            }
+        });
 
         List<ScheduleClass> scheduleClassList = new ArrayList<>();
+        int planIndex = 0;
         for(CourseOutline outline : outlineList){
-
             ScheduleClass scheduleClass = new ScheduleClass();
+            ClassPlan classPlan = classPlanList.get(planIndex++);
+
             scheduleClass.setClassCode(classInstance.getCode());
-            scheduleClass.setClassTime(classInstance.getBeginTime());
-            scheduleClass.setEndTime(classInstance.getEndTime());
+            scheduleClass.setClassTime(classPlan.getClassTime());
+            scheduleClass.setEndTime(classPlan.getEndTime());
             scheduleClass.setOutline(outline.getOutline());
             scheduleClass.setOutlineCode(outline.getCode());
             scheduleClass.setStatus(GenericState.Valid.code);
             scheduleClass.setSort(outline.getSort());
+            scheduleClass.setStudyDate(classPlan.getStudyDate());
+            scheduleClass.setWeek(classPlan.getWeek());
 
-            while(valueList.size() > 0 && true) {
-                Calendar c = Calendar.getInstance();
-                c.setTime(calDate);
-                int week = c.get(Calendar.DAY_OF_WEEK);
-                if (valueList.contains(week)){
-                    scheduleClass.setClassDate(calDate);
-                    scheduleClass.setWeek(week);
-
-                    scheduleClassList.add(scheduleClass);
-                    calDate = DateUtil.add(calDate, Calendar.DAY_OF_MONTH, 1);
-                    break;
-                }
-
-                calDate = DateUtil.add(calDate, Calendar.DAY_OF_MONTH, 1);
-            }
+            scheduleClassList.add(scheduleClass);
         }
 
         insertBatch(scheduleClassList);

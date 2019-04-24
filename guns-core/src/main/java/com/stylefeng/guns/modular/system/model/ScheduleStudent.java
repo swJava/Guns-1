@@ -1,12 +1,17 @@
 package com.stylefeng.guns.modular.system.model;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.util.Calendar;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.stylefeng.guns.common.constant.state.GenericState;
+import com.stylefeng.guns.util.DateUtil;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
@@ -19,6 +24,7 @@ import java.io.Serializable;
  * @since 2018-12-17
  */
 @TableName("tb_schedule_student")
+@ApiModel(value = "ScheduleStudent", description = "学员排课信息")
 public class ScheduleStudent extends Model<ScheduleStudent> {
 
     private static final long serialVersionUID = 1L;
@@ -27,64 +33,78 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
      * 标示
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(hidden = true)
     private Long id;
     /**
      * 编码
      */
+    @ApiModelProperty()
     private String code;
     /**
      * 学员编码
      */
     @TableField("student_code")
+    @ApiModelProperty(name = "studentCode", value = "学员号", example = "XY181201000001")
     private String studentCode;
     /**
      * 学员名称
      */
     @TableField("student_name")
+    @ApiModelProperty(name = "studentName", value = "学员名称", example = "小明")
     private String studentName;
     /**
      * 班级编码
      */
     @TableField("class_code")
+    @ApiModelProperty(name = "classCode", value = "班级编码", example = "BJ000001")
     private String classCode;
     /**
      * 班级名称
      */
     @TableField("class_name")
+    @ApiModelProperty(name = "className", value = "班级名称", example = "寒假班小学一年级语文启航班")
     private String className;
     /**
      * 课时编码
      */
     @TableField("outline_code")
+    @ApiModelProperty(name = "outlineCode", value = "课时编码", example = "KS000001")
     private String outlineCode;
     /**
      * 课时名称
      */
+    @ApiModelProperty(name = "outline", value = "课时名称", example = "第一课")
     private String outline;
     /**
      * 上课日期
      */
     @TableField("study_date")
+    @ApiModelProperty(name = "studyDate", value = "上课日期", example = "2018-12-30")
     private Date studyDate;
     /**
      * 上一次排课标示
      */
+    @ApiModelProperty(hidden = true)
     private String pcode;
     /**
      * 首次排课标示
      */
+    @ApiModelProperty(hidden = true)
     private String fcode;
     /**
      * 历史排课标示
      */
+    @ApiModelProperty(hidden = true)
     private String pcodes;
     /**
      * 状态： 0 失效  1  有效
      */
+    @ApiModelProperty(hidden = true)
     private Integer status;
     /**
      * 备注
      */
+    @ApiModelProperty(name = "remark", value = "备注", example = "备注")
     private String remark;
 
 
@@ -235,6 +255,8 @@ public class ScheduleStudent extends Model<ScheduleStudent> {
         if (null == this.studyDate)
             return true;
 
-        return this.studyDate.before(now);
+        int cmpResult = DateUtil.compareDate(this.studyDate, now, Calendar.DAY_OF_MONTH);
+
+        return cmpResult < 0 ;
     }
 }

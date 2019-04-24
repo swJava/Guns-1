@@ -62,6 +62,10 @@ public final class MessageConstant {
          */
         public static final String SYS_CREDENTIAL_EXPIRED = "000102";
         /**
+         * 数据超过限制
+         */
+        public static final String SYS_DATA_OVERTOP = "000103";
+        /**
          * 签名验证失败
          */
         public static final String SYS_TOKEN_ERROR = "000111";
@@ -105,6 +109,16 @@ public final class MessageConstant {
         public static final String COURSE_SELECT_OUTTIME = "020002";
 
         /**
+         * 所报班级年级不符合
+         */
+        public static final String GRADE_NOT_MATCH = "020003";
+
+        /**
+         * 报名还未开始
+         */
+        public static final String COURSE_SELECT_NOTIME = "020004";
+
+        /**
          * 支付方式不支持
          */
         public static final String PAY_METHOD_NOT_FOUND = "030001";
@@ -116,6 +130,14 @@ public final class MessageConstant {
          * 已生成订单
          */
         public static final String ORDER_REQUEST_ORDERED = "040001";
+        /**
+         * 需要入学测试
+         */
+        public static final String ORDER_NEED_EXAMINE = "040002";
+        /**
+         * 班级已达到最大容量
+         */
+        public static final String ORDER_NO_CAPACITY = "040003";
         /**
          * 您已有相同的调课申请
          */
@@ -132,5 +154,23 @@ public final class MessageConstant {
          * 调课失败： 调入班级不满足调课条件
          */
         public static final String ADJUST_TARGET_FAILED = "050004";
+
+        /**
+         * 没有设置期望答案
+         */
+        public static final String QUESTION_NO_EXPECT_ANSWER = "060001";
+        /**
+         * 不支持的试题类型
+         */
+        public static final String QUESTION_NO_SUPPORT = "060002";
+        /**
+         * 提交测试失败
+         */
+        public static final String EXAMINE_SUBMIT_FAILED = "060101";
+
+        /**
+         * 批量导入失败
+         */
+        public static final String BATCH_IMPORT_FAILED = "070001";
     }
 }

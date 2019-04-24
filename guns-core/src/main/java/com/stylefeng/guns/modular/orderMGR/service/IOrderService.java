@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.orderMGR.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.orderMGR.OrderAddList;
 import com.stylefeng.guns.modular.system.model.*;
@@ -45,6 +46,14 @@ public interface IOrderService extends IService<Order> {
     Order get(String orderNo);
 
     /**
+     * 获取订单
+     *
+     * @param courseCart
+     * @return
+     */
+    Order get(CourseCart courseCart);
+
+    /**
      *
      * @param paySequence
      * @param order
@@ -57,4 +66,36 @@ public interface IOrderService extends IService<Order> {
      * @return
      */
     Member getMemberInfo(String orderNo);
+
+    /**
+     * 取消订单
+     *
+     * @param member
+     * @param orderNo
+     */
+    void cancel(String orderNo);
+
+    /**
+     * 支付失败
+     *
+     * @param order
+     * @param message
+     */
+    void failedPay(String order, String message);
+
+    /**
+     * 查询订单
+     *
+     * @param queryParams
+     * @return
+     */
+    List<Map<String, Object>> queryForList(Map<String, Object> queryParams);
+
+    /**
+     * 查询订单
+     *
+     * @param queryParmas
+     * @return
+     */
+    Page<Map<String, Object>> selectMapsPage(Map<String, Object> queryParmas);
 }

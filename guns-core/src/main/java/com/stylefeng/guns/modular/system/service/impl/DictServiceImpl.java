@@ -3,12 +3,15 @@ package com.stylefeng.guns.modular.system.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.stylefeng.guns.common.constant.cache.Cache;
+import com.stylefeng.guns.common.constant.cache.CacheKey;
 import com.stylefeng.guns.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.modular.system.dao.DictMapper;
 import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,6 +99,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
     }
 
     @Override
+    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.DICT_LIST + "'+#code")
     public List<Dict> selectByParentCodeAndLimit(@Param("code") String code, @Param("startNum") String startNum, @Param("endNum")String endNum) {
         return this.baseMapper.selectByParentCodeAndLimit(code, startNum, endNum);
     }

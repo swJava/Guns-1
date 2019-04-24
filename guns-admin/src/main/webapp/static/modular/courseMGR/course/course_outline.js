@@ -87,11 +87,11 @@ CourseOutlineInfoDlg.saveSubmit = function () {
     this.collectData();
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/course/outline/save?course=" + this.course, function (data) {
-        Feng.success("添加成功!");
+        Feng.success("保存成功!");
         //window.parent.Dict.table.refresh();
         //DictInfoDlg.close();
     }, function (data) {
-        Feng.error("添加失败!" + data.responseJSON.message + "!");
+        Feng.error("保存失败!" + data.responseJSON.message + "!");
     });
     ajax.setData(JSON.stringify(this.outlines));
     ajax.setContentType('application/json');

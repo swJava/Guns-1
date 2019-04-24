@@ -19,6 +19,7 @@
         this.showColumnsSwitch = true;
         this.showRefreshSwitch = true;
         this.paginational = true;
+        this.onlyInfoPagination = false;
         this.pageSize = 10;
         this.itemSelect = function(){};
         this.loadSuccess = function(){};
@@ -50,7 +51,7 @@
                     sortable: true,      		//是否启用排序
                     sortOrder: "desc",     		//排序方式
                     pageNumber: 1,      			//初始化加载第一页，默认第一页
-                    pageSize: this.pageSize,      			//每页的记录行数（*）
+                    pageSize: me.pageSize,      			//每页的记录行数（*）
                     pageList: [10, 50, 100],  	//可供选择的每页的行数（*）
                     queryParamsType: 'limit', 	//默认值为 'limit' ,在默认情况下 传给服务端的参数为：offset,limit,sort
                     queryParams: function (param) {
@@ -64,8 +65,9 @@
                     minimumCountColumns: 2,    	//最少允许的列数
                     clickToSelect: true,    	//是否启用点击选中行
                     searchOnEnterKey: true,		//设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
-                    columns: this.columns,		//列数组
-                    pagination: this.paginational,			//是否显示分页条
+                    columns: me.columns,		//列数组
+                    pagination: me.paginational,			//是否显示分页条
+                    onlyInfoPagination: me.onlyInfoPagination,  //
                     icons: {
                         refresh: 'glyphicon-repeat',
                         toggle: 'glyphicon-list-alt',
@@ -81,6 +83,12 @@
             return this;
         },
         /**
+         * 设置分页大小
+         */
+        setPageSize: function(size) {
+            this.pageSize = size;
+        },
+        /**
          * 向后台传递的自定义参数
          * @param param
          */
@@ -92,6 +100,12 @@
          */
         setPaginationType: function (type) {
             this.paginationType = type;
+        },
+        /**
+         *
+         */
+        setOnlyInfoPagination: function( tag ) {
+            this.onlyInfoPagination = tag;
         },
 
         /**
@@ -135,6 +149,9 @@
          */
         refresh: function (parms) {
             if (typeof parms != "undefined") {
+                console.log('<--- query param');
+                console.log(parms);
+                parms['pageNumber'] = 1;
                 this.btInstance.bootstrapTable('refresh', parms);
             } else {
                 this.btInstance.bootstrapTable('refresh');

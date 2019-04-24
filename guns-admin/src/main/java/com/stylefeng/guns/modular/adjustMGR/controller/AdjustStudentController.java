@@ -68,13 +68,10 @@ public class AdjustStudentController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, Object> queryParams) {
 
         //分页查詢
-        Map<String, Object> queryMap = new HashMap<String, Object>();
-        queryMap.put("status", GenericState.Valid.code);
-
-        Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Adjust, queryMap);
+        Page<Map<String, Object>> pageMap = adjustStudentService.selectApplyMapsPage(AdjustStudentTypeEnum.Adjust, queryParams);
         //包装数据
         new AdjustStudentWrapper(pageMap.getRecords()).warp();
         return super.packForBT(pageMap);

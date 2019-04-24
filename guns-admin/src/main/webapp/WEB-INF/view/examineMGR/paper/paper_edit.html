@@ -6,15 +6,17 @@
             <input type="hidden" id="code" value="${item.code}" />
             <input type="hidden" id="gradesValue" value="${item.grades}" />
             <input type="hidden" id="subjectValue" value="${item.subject}" />
+            <input type="hidden" id="abilityValue" value="${item.ability}" />
             <input type="hidden" id="questionCodes" value='${questionCodes}' />
             <input type="hidden" id="questionScores" value='${questionScores}' />
             <div class="row">
                 <div class="col-sm-6 b-r">
-                    <#dictSelector id="grades" name ="适应年级" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
-                    <#input id="examTime" name="测试时间" value="${item.examTime}"/>
+                    <#dictSelector id="grades" name ="grades" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
+                    <#dictSelector id="ability" name ="ability" code="ability" label="适应班次"  underline="true"  width="75%"/>
                 </div>
                 <div class="col-sm-6">
-                    <#dictSelector id="subject" name ="适应学科" code="subject_type" label="适应学科"  underline="true"  width="75%"/>
+                    <#dictSelector id="subject" name ="subject" code="subject_type" label="适应学科"  underline="true"  width="75%"/>
+                    <#input id="examTime" name="测试时间" value="${item.examTime}"/>
                 </div>
             </div>
 
@@ -46,7 +48,7 @@
             <div class="hr-line-dashed"></div >
 
             <div class="row btn-group-m-t">
-                <div class="col-sm-10">
+                <div class="col-sm-10 col-sm-offset-5">
                     <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PaperDlg.editSubmit()"/>
                     <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PaperDlg.close()"/>
                 </div>

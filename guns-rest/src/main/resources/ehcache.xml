@@ -30,6 +30,22 @@
            transactionalMode="off">
     </cache>
 
+    <!-- 字典变量：一小时过期-->
+    <cache name="DICT_CONSTANT"
+           maxElementsInMemory="10000"
+           eternal="false"
+           timeToLiveSeconds="3600"
+           timeToIdleSeconds="1800"
+           clearOnFlush="false"
+           overflowToDisk="true"
+           diskSpoolBufferSizeMB="256"
+           maxElementsOnDisk="100000"
+           diskPersistent="false"
+           diskExpiryThreadIntervalSeconds="120"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
+    </cache>
+
 </ehcache>
 
     <!--

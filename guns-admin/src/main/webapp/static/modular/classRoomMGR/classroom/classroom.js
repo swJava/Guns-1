@@ -19,7 +19,14 @@ Classroom.initColumn = function () {
             {title: '类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
             {title: '教室地址', field: 'address', visible: true, align: 'center', valign: 'middle'},
             {title: '座位数', field: 'maxCount', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',
+                formatter: function(value, row){
+                    if (1 == value)
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
+                    else
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" />';
+                }
+            }
     ];
 };
 
@@ -49,6 +56,7 @@ Classroom.openAddClassroom = function () {
         maxmin: true,
         content: Feng.ctxPath + '/classroom/classroom_add'
     });
+    layer.full(index);
     this.layerIndex = index;
 };
 
@@ -91,12 +99,52 @@ Classroom.delete = function () {
 Classroom.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['status'] = $("#status").val();
     Classroom.table.refresh({query: queryData});
 };
+
+Classroom.doUpdate = function(reqUrl, data){
+    var ajax = new $ax(reqUrl, function (data) {
+    }, function (data) {
+        Feng.error("操作失败!" + data.responseJSON.message + "!");
+        switchery.setPosition(true);
+        switchery.handleOnchange(true);
+    });
+
+    ajax.setData(data);
+    ajax.start();
+}
 
 $(function () {
     var defaultColunms = Classroom.initColumn();
     var table = new BSTable(Classroom.id, "/classroom/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        var switchers = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+        switchers.forEach(function(switcher) {
+            var switchery = new Switchery(switcher, {
+                size: 'small'
+            });
+            switcher.onchange = function(){
+                var state = switcher.checked;
+                console.log('<<< change classroom state' + $(switcher).attr('data-code') + ' : ' + state);
+
+                var reqUrl = '';
+                var postData = {
+                    code : $(switcher).attr('data-code')
+                };
+
+                if (state){
+                    // true 启用
+                    reqUrl = Feng.ctxPath + "/classroom/resume";
+                }else{
+                    // false 停用
+                    reqUrl = Feng.ctxPath + "/classroom/pause";
+                }
+                Classroom.doUpdate(reqUrl, postData);
+            }
+        });
+    });
     Classroom.table = table.init();
 });

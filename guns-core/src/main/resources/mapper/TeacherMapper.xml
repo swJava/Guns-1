@@ -10,6 +10,7 @@
         <result column="avatar" property="avatar"/>
         <result column="type" property="type"/>
         <result column="gender" property="gender"/>
+        <result column="mobile" property="mobile"/>
         <result column="graduate" property="graduate"/>
         <result column="grade" property="grade"/>
         <result column="havest" property="havest"/>
@@ -20,7 +21,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, name, avatar, type, gender, graduate, grade, havest, experience, feature, status
+        id, code, name, avatar, type, gender, mobile, graduate, grade, havest, experience, feature, status
     </sql>
 
     <select id="selectTeachers" resultMap="BaseResultMap">

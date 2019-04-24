@@ -93,11 +93,38 @@ Order.close = function () {
 };
 
 /**
+ * 导出订单
+ */
+Order.export = function () {
+        var ajax = new $ax(Feng.ctxPath + "/order/class/export", function (data) {
+            //Feng.success("导出成功!");
+            window.location.href = encodeURI(data.message);
+        }, function (data) {
+            Feng.error("导出失败!" + data.responseJSON.message + "!");
+        });
+
+        var queryData = {};
+        queryData['orderNo'] = $("#condition").val();
+        queryData['teacher'] = $("#teacher").val();
+        queryData['student'] = $("#student").val();
+        queryData['subject'] = $("#subject").val();
+        queryData['ability'] = $("#ability").val();
+        queryData['cycle'] = $("#cycle").val();
+        ajax.setData(queryData);
+        ajax.start();
+};
+
+/**
  * 查询订单管理列表
  */
 Order.search = function () {
     var queryData = {};
-    queryData['condition'] = $("#condition").val();
+    queryData['orderNo'] = $("#condition").val();
+    queryData['teacher'] = $("#teacher").val();
+    queryData['student'] = $("#student").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['ability'] = $("#ability").val();
+    queryData['cycle'] = $("#cycle").val();
     Order.table.refresh({query: queryData});
 };
 

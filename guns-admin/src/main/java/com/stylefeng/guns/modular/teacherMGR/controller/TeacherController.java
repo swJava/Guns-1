@@ -7,8 +7,9 @@ import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.log.LogObjectHolder;
-import com.stylefeng.guns.modular.contentMGR.controller.ColumnController;
+import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.system.model.Attachment;
+import com.stylefeng.guns.modular.system.model.Member;
 import com.stylefeng.guns.modular.system.model.Teacher;
 import com.stylefeng.guns.modular.system.service.IAttachmentService;
 import com.stylefeng.guns.modular.teacherMGR.service.TeacherService;
@@ -47,6 +48,9 @@ public class TeacherController extends BaseController {
     @Autowired
     private IAttachmentService attachmentService;
 
+    @Autowired
+    private IMemberService memberService;
+
     /**
      * 跳转到教师管理首页
      */
@@ -73,7 +77,7 @@ public class TeacherController extends BaseController {
         if (null == teacher)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND);
 
-        List<Attachment> avatarList = attachmentService.listAttachment(Teacher.class.getSimpleName(), String.valueOf(teacherId));
+        List<Attachment> avatarList = attachmentService.listAttachment(Teacher.class.getSimpleName(), teacher.getCode());
         if (null != avatarList && avatarList.size() > 0)
             teacher.setAvatar(String.valueOf(avatarList.get(0).getId()));
 
@@ -87,18 +91,31 @@ public class TeacherController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryParams) {
         Page<Teacher> page = new PageFactory<Teacher>().defaultPage();
         Page<Map<String, Object>> mapPage = teacherService.selectMapsPage(page, new EntityWrapper<Teacher>() {
             {
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                //condition条件分页
+                if (queryParams.containsKey("condition") && StringUtils.isNotEmpty(queryParams.get("condition"))) {
+                    like("name", queryParams.get("condition"));
+                    or();
+                    eq("code", queryParams.get("condition"));
+                    or();
+                    eq("mobile", queryParams.get("condition"));
+                }
+
+                if (StringUtils.isNotEmpty(queryParams.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryParams.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
                 }
             }
         });
         new TeacherWrapper(mapPage.getRecords()).warp();
         return super.packForBT(page);
     }
+
     /**
      * 获取教师管理列表
      */
@@ -117,7 +134,7 @@ public class TeacherController extends BaseController {
 
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList && attachmentList.size() > 0){
+        if (null != attachmentList && attachmentList.size() > 0) {
             icon = attachmentList.get(0);
             teacher.setAvatar(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }
@@ -131,9 +148,27 @@ public class TeacherController extends BaseController {
                 icon.setMasterCode(String.valueOf(teacher.getId()));
 
                 attachmentService.updateById(icon);
-            }catch(Exception e){
+            } catch (Exception e) {
                 log.warn("更新图标失败");
             }
+
+        // 添加老师用户信息
+        // 如果老师信息没有电话号码则不添加
+        if (StringUtils.isNotEmpty(teacher.getMobile())){
+            Member teacherMember = new Member();
+            teacherMember.setName(teacher.getName());
+            teacherMember.setUserName(teacher.getCode());
+            teacherMember.setGender(teacher.getGender());
+            teacherMember.setStar(99);
+            teacherMember.setNickname(teacher.getName());
+            teacherMember.setMobileNumber(teacher.getMobile());
+
+            try {
+                memberService.createMember(teacherMember);
+            }catch(Exception e){
+                log.warn("老师用户创建失败", e.getMessage());
+            }
+        }
 
         return SUCCESS_TIP;
     }
@@ -141,10 +176,20 @@ public class TeacherController extends BaseController {
     /**
      * 删除教师管理
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam Integer teacherId) {
-        teacherService.deleteById(teacherId);
+    public Object pause(@RequestParam String code) {
+        teacherService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 删除教师管理
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        teacherService.doResume(code);
         return SUCCESS_TIP;
     }
 
@@ -157,23 +202,48 @@ public class TeacherController extends BaseController {
 
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList && attachmentList.size() > 0){
+        if (null != attachmentList && attachmentList.size() > 0) {
             icon = attachmentList.get(0);
             teacher.setAvatar(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }
 
+        Teacher existTeacher = teacherService.selectById(teacher.getId());
+
+        if (null == existTeacher)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"教师"});
+
         teacherService.updateById(teacher);
+
+        existTeacher = teacherService.selectById(teacher.getId());
 
         // 更新ICON资源
         if (null != icon && null != icon.getId())
             try {
                 icon.setMasterName(Teacher.class.getSimpleName());
-                icon.setMasterCode(String.valueOf(teacher.getId()));
+                icon.setMasterCode(existTeacher.getCode());
 
                 attachmentService.updateAndRemoveOther(icon);
-            }catch(Exception e){
+            } catch (Exception e) {
                 log.warn("更新图标失败");
             }
+
+        // 添加老师用户信息
+        // 如果老师信息没有电话号码则不添加
+        if (StringUtils.isNotEmpty(existTeacher.getMobile())){
+            Member teacherMember = new Member();
+            teacherMember.setName(existTeacher.getName());
+            teacherMember.setUserName(existTeacher.getCode());
+            teacherMember.setGender(existTeacher.getGender());
+            teacherMember.setStar(99);
+            teacherMember.setNickname(existTeacher.getName());
+            teacherMember.setMobileNumber(existTeacher.getMobile());
+
+            try {
+                memberService.createMember(teacherMember);
+            }catch(Exception e){
+                log.warn("老师用户创建失败", e.getMessage());
+            }
+        }
         return SUCCESS_TIP;
     }
 

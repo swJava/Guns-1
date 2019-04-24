@@ -9,6 +9,7 @@ import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
+import com.stylefeng.guns.modular.education.transfer.StudentPlan;
 import com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.modular.system.model.ScheduleClass;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description //TODO
@@ -32,6 +34,9 @@ import java.util.List;
 @Service
 public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMapper, ScheduleStudent> implements IScheduleStudentService {
     private static final Logger log = LoggerFactory.getLogger(ScheduleStudentServiceImpl.class);
+
+    @Autowired
+    private ScheduleStudentMapper scheduleStudentMapper;
 
     @Autowired
     private IScheduleClassService scheduleClassService;
@@ -89,7 +94,7 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
         newPlan.setCode(CodeKit.generateStudentSchedule());
         newPlan.setClassCode(targetClass);
         newPlan.setClassName(classInfo.getName());
-        newPlan.setStudyDate(targetScheduleClass.getClassDate());
+        newPlan.setStudyDate(targetScheduleClass.getStudyDate());
         newPlan.setPcode(currPlan.getCode());
         newPlan.setFcode(null == currPlan.getFcode() ? currPlan.getCode() : currPlan.getFcode());
         newPlan.setPcodes(null == currPlan.getPcodes() ? currPlan.getCode() : currPlan.getPcodes() + "," + currPlan.getCode());
@@ -142,11 +147,16 @@ public class ScheduleStudentServiceImpl extends ServiceImpl<ScheduleStudentMappe
             newPlan.setClassName(classInfo.getName());
             newPlan.setOutlineCode(scheduleClass.getOutlineCode());
             newPlan.setOutline(scheduleClass.getOutline());
-            newPlan.setStudyDate(scheduleClass.getClassDate());
+            newPlan.setStudyDate(scheduleClass.getStudyDate());
             newPlan.setStatus(GenericState.Valid.code);
 
             planList.add(newPlan);
         }
         insertBatch(planList);
+    }
+
+    @Override
+    public List<StudentPlan> selectPlanList(Map<String, Object> queryMap) {
+        return scheduleStudentMapper.selectPlanList(queryMap);
     }
 }

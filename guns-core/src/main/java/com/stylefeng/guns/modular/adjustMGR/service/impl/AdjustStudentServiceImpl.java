@@ -10,20 +10,20 @@ import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.message.MessageConstant;
 import com.stylefeng.guns.modular.adjustMGR.service.IAdjustStudentService;
+import com.stylefeng.guns.modular.classMGR.service.IClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleClassService;
 import com.stylefeng.guns.modular.education.service.IScheduleStudentService;
 import com.stylefeng.guns.modular.education.service.IStudentClassService;
 import com.stylefeng.guns.modular.system.dao.AdjustStudentMapper;
 import com.stylefeng.guns.modular.system.model.*;
+import com.stylefeng.guns.modular.system.model.Class;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -36,6 +36,9 @@ import java.util.Map;
 @Service
 public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, AdjustStudent> implements IAdjustStudentService {
     private static final Logger log = LoggerFactory.getLogger(AdjustStudentServiceImpl.class);
+
+    @Autowired
+    private IClassService classService;
 
     @Autowired
     private AdjustStudentMapper adjustStudentMapper;
@@ -107,16 +110,35 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
     @Override
     public Page<Map<String, Object>> selectApplyMapsPage(AdjustStudentTypeEnum type, Map<String, Object> queryMap) {
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
-        if (null == queryMap){
-            queryMap = new HashMap<String, Object>();
-        }
-        if (null != type){
-            queryMap.put("type", type.code);
-        }
-        List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, queryMap);
+
+        Map<String, Object> arguments = buildQueryArguments(type, queryMap);
+
+        List<Map<String, Object>> pageResult = adjustStudentMapper.selectApplyMapsPage(page, arguments);
 
         page.setRecords(pageResult);
+
         return page;
+    }
+
+    private Map<String, Object> buildQueryArguments(AdjustStudentTypeEnum type, Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+        arguments.put("type", type.code);
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 
     @Override
@@ -160,10 +182,8 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         if (null == adjustStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
 
-
-        adjustStudent.setWorkStatus(approveState.code);
         adjustStudent.setRemark(remark);
-        doApprove(adjustStudent);
+        doApprove(adjustStudent, approveState);
 
         // 调课
         if (AdjustStudentApproveStateEnum.Appove.code == approveState.code)
@@ -182,10 +202,8 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         if (null == adjustStudent)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"申请没找到"});
 
-
-        adjustStudent.setWorkStatus(approveState.code);
         adjustStudent.setRemark(remark);
-        doApprove(adjustStudent);
+        doApprove(adjustStudent, approveState);
 
         // 转班
         if (AdjustStudentApproveStateEnum.Appove.code == approveState.code) {
@@ -193,6 +211,24 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
             studentClassService.doChange(adjustStudent.getStudentCode(), adjustStudent.getSourceClass(), adjustStudent.getTargetClass());
         }
         return adjustStudent;
+    }
+
+    private void doApprove(AdjustStudent adjustStudent, AdjustStudentApproveStateEnum approveState) {
+
+        if (GenericState.Invalid.code == adjustStudent.getStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
+        if (AdjustStudentApproveStateEnum.Create.code != adjustStudent.getWorkStatus())
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"申请单状态异常"});
+
+        if (null != administrator) {
+            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
+            adjustStudent.setOperator(administrator.getName());
+        }
+        adjustStudent.setWorkStatus(approveState.code);
+        adjustStudent.setUpdateTime(new Date());
+        updateById(adjustStudent);
     }
 
     @Override
@@ -206,6 +242,31 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         queryWrapper.eq("status", GenericState.Valid.code);
 
         return selectCount(queryWrapper);
+    }
+
+    @Override
+    public boolean canAdjust(AdjustStudent adjustApply) {
+        String targetClassCode = adjustApply.getTargetClass();
+        if (null == targetClassCode)
+            return false;
+        Class classInfo = classService.get(targetClassCode);
+        if (null == classInfo)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public boolean canChange(AdjustStudent adjustApply) {
+
+        String targetClassCode = adjustApply.getTargetClass();
+        if (null == targetClassCode)
+            return false;
+        Class classInfo = classService.get(targetClassCode);
+        if (null == classInfo)
+            return false;
+
+        return true;
     }
 
     private boolean hasApproving(String student, String sourceClass, String targetClass, String outlineCode, AdjustStudentTypeEnum type) {
@@ -222,23 +283,6 @@ public class AdjustStudentServiceImpl extends ServiceImpl<AdjustStudentMapper, A
         queryWrapper.ne("work_status", AdjustStudentApproveStateEnum.Refuse.code);
 
         return 0 < selectCount(queryWrapper);
-    }
-
-    private void doApprove(AdjustStudent adjustStudent) {
-
-        if (GenericState.Invalid.code == adjustStudent.getStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已失效的申请不能再进行关闭操作"});
-        if (AdjustStudentApproveStateEnum.Close.code == adjustStudent.getWorkStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"已关闭的申请不能再进行关闭操作"});
-        if (AdjustStudentApproveStateEnum.Create.code != adjustStudent.getWorkStatus())
-            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_STATE, new String[]{"申请单状态异常"});
-
-        if (null != administrator) {
-            adjustStudent.setOpId(Long.parseLong(String.valueOf(administrator.getId())));
-            adjustStudent.setOperator(administrator.getName());
-        }
-        adjustStudent.setUpdateTime(new Date());
-        updateById(adjustStudent);
     }
 
     @Override

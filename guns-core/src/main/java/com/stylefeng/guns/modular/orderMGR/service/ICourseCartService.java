@@ -20,7 +20,7 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @param student
      * @param classInfo
      */
-    void join(Member member, Student student, Class classInfo);
+    String doJoin(Member member, Student student, Class classInfo, boolean skipTest);
 
     /**
      * 从选课单移除
@@ -47,4 +47,11 @@ public interface ICourseCartService extends IService<CourseCart> {
      * @param itemObjectCode
      */
     void generateOrder(String userName, String student, String itemObjectCode);
+
+    /**
+     * 自动预报
+     *
+     * @param classInfo
+     */
+    void doAutoPreSign(Class classInfo);
 }

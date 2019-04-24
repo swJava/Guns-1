@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.modular.examineMGR.QuestionTypeEnum;
 import com.stylefeng.guns.modular.examineMGR.service.IQuestionItemService;
 import com.stylefeng.guns.modular.system.dao.QuestionItemMapper;
 import com.stylefeng.guns.modular.system.model.Question;
@@ -43,6 +44,19 @@ public class QuestionItemServiceImpl extends ServiceImpl<QuestionItemMapper, Que
         if (null == question)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
 
+        QuestionTypeEnum questionType = QuestionTypeEnum.instanceOf(question.getType());
+
+        if (QuestionTypeEnum.UN.equals( questionType ))
+            throw new ServiceException(MessageConstant.MessageCode.QUESTION_NO_SUPPORT);
+
+        switch (questionType){
+            case SS:
+                validateExpectAnswerCount(items, new int[]{1});
+                break;
+            case MS:
+                validateExpectAnswerCount(items, new int[]{2,3,4,5,6,7,8,9,10});
+        }
+
         for(QuestionItem questionItem : items){
             questionItem.setQuestionCode(question.getCode());
             questionItem.setStatus(GenericState.Valid.code);
@@ -50,6 +64,28 @@ public class QuestionItemServiceImpl extends ServiceImpl<QuestionItemMapper, Que
 
         insertBatch(items);
     }
+
+    private void validateExpectAnswerCount(List<QuestionItem> items, int[] expectCounts) {
+
+        int expectAnswerCount = 0;
+        for(QuestionItem questionItem : items){
+            if (0 < questionItem.getExpect())
+                expectAnswerCount++;
+        }
+
+        boolean validate = false;
+        for(int expectCount : expectCounts){
+            if (expectCount == expectAnswerCount) {
+                validate = true;
+                break;
+            }
+        }
+
+        if (!validate)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_DATA_ILLEGAL, new String[]{"请设置正确的答案个数"});
+
+    }
+
 
     @Override
     public void update(Question question, List<QuestionItem> items) {

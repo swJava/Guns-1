@@ -11,6 +11,7 @@ import com.stylefeng.guns.modular.payMGR.PayRequestBuilderFactory;
 public enum PayMethodEnum {
     weixin(22, "微信支付"),
     unionpay(21, "银联支付"),
+    classic(20, "传统支付"),
     NULL(-1, "不支持")
     ;
 

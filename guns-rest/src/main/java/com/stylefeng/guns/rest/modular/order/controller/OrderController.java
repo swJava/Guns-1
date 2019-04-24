@@ -19,6 +19,7 @@ import com.stylefeng.guns.rest.core.SimpleResponser;
 import com.stylefeng.guns.rest.modular.education.responser.ClassResponser;
 import com.stylefeng.guns.rest.modular.order.requester.OrderPostRequester;
 import com.stylefeng.guns.rest.modular.order.responser.CartListResponser;
+import com.stylefeng.guns.rest.modular.order.responser.ClassOrderResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderListResponser;
 import com.stylefeng.guns.rest.modular.order.responser.OrderPostResponser;
 import io.swagger.annotations.*;
@@ -30,7 +31,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单
@@ -91,7 +95,7 @@ public class OrderController extends ApiController {
         if (null == classInfo)
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"班级 <" + classCode + ">"});
 
-        courseCartService.join(member, existStudent, classInfo);
+        courseCartService.doJoin(member, existStudent, classInfo, false);
 
         return SimpleResponser.success();
     }
@@ -217,18 +221,33 @@ public class OrderController extends ApiController {
 
         List<Order> orderList = orderService.selectList(queryWrapper);
 
-        List<ClassResponser> classOrderList = new ArrayList<ClassResponser>();
+        List<ClassOrderResponser> classOrderList = new ArrayList<ClassOrderResponser>();
         for(Order order : orderList){
             List<OrderItem> orderItemList = orderService.listItems(order.getAcceptNo(), OrderItemTypeEnum.Course);
 
             for(OrderItem classItem : orderItemList){
                 Class classInfo = classService.get(classItem.getItemObjectCode());
-
-                classOrderList.add(ClassResponser.me(classInfo));
+                classOrderList.add(ClassOrderResponser.me(order, ClassResponser.me(classInfo)));
             }
         }
 
         return OrderListResponser.me(classOrderList);
+    }
+
+    @ApiOperation(value="订单取消", httpMethod = "POST", response = SimpleResponser.class)
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderNo", value = "订单号", required = true, dataType = "String", example = "h1hj1901011508051789")
+    })
+    public Responser cancelOrder(
+            @RequestParam(name = "orderNo", required = true)
+            String orderNo
+    ){
+        Member member = currMember();
+
+        orderService.cancel(orderNo);
+
+        return SimpleResponser.success();
     }
 
     /**

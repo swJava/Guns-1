@@ -270,6 +270,8 @@ function extracted($, item, target, globalCollapsedFlag, options) {
                             }
                         }
                     });
+
+                    options.onLoadSuccess();
                 },
                 error: function (xhr, textStatus) {
                     var _errorMsg = '<tr><td colspan="' + options.columns.length + '"><div style="display: block;text-align: center;">' + xhr.responseText + '</div></td></tr>'
@@ -347,7 +349,7 @@ function extracted($, item, target, globalCollapsedFlag, options) {
         toolbar: null,//顶部工具条
         height: 0,
         expanderExpandedClass: 'glyphicon glyphicon-chevron-down',// 展开的按钮的图标
-        expanderCollapsedClass: 'glyphicon glyphicon-chevron-right'// 缩起的按钮的图标
-
+        expanderCollapsedClass: 'glyphicon glyphicon-chevron-right',// 缩起的按钮的图标
+        onLoadSuccess: function(){}
     };
 })(jQuery);

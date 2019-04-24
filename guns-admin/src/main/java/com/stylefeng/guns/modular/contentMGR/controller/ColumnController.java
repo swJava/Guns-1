@@ -107,33 +107,14 @@ public class ColumnController extends BaseController {
     @ResponseBody
     public Object list(String condition) {
         //分页查詢
-//        Page<Column> page = new PageFactory<Column>().defaultPage();
-//        Page<Map<String, Object>> pageMap = columnService.selectMapsPage(page, new EntityWrapper<Column>() {
-//            {
-//                //name条件分页
-//                if (StringUtils.isNotEmpty(condition)) {
-//                    like("name", condition);
-//                }
-//            }
-//        });
         Wrapper<Column> queryWrapper = new EntityWrapper<Column>();
         if (StringUtils.isNoneEmpty(condition)){
             queryWrapper.ge("name", condition);
-            queryWrapper.gt("na", condition);
-            queryWrapper.le("xeer", condition);
-            queryWrapper.lt("yy", condition);
-            queryWrapper.like("xzz", condition);
-            queryWrapper.eq("nd", condition);
         }
 
-        String select = queryWrapper.getSqlSelect();
-        String segment = queryWrapper.getSqlSegment();
-        Map<String, Object> pairs  = queryWrapper.getParamNameValuePairs();
         List<Map<String, Object>> columns = columnService.selectMaps(queryWrapper);
-        return super.warpObject(new ColumnWrapper(columns));
         //包装数据
-//        new ColumnWrapper(pageMap.getRecords()).warp();
-//        return super.packForBT(pageMap);
+        return super.warpObject(new ColumnWrapper(columns));
     }
 
     /**
@@ -186,12 +167,22 @@ public class ColumnController extends BaseController {
     }
 
     /**
-     * 删除栏目
+     * 停用栏目
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam Long columnId) {
-        columnService.deleteById(columnId);
+    public Object pause(@RequestParam String code) {
+        columnService.doPause(code);
+        return SUCCESS_TIP;
+    }
+
+    /**
+     * 启用栏目
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String code) {
+        columnService.doResume(code);
         return SUCCESS_TIP;
     }
 

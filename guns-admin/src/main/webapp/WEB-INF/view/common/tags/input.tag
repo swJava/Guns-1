@@ -8,8 +8,13 @@
     clickFun : 点击事件的方法名
     style : 附加的css属性
     maxlength 最大字符数
+    display : 是否显示
 @*/
+@if(isNotEmpty(display) && display == 'false') {
+<div class="form-group" style="display: none;">
+@}else{
 <div class="form-group">
+@}
     <label class="col-sm-3 control-label">${name}</label>
     <div class="col-sm-9">
         <input class="form-control" id="${id}" name="${id}"
@@ -48,8 +53,10 @@
         @}
     </div>
 </div>
-@if(isNotEmpty(underline) && underline == 'true'){
-    <div class="hr-line-dashed"></div>
+@if(isEmpty(display) || display == 'true') {
+    @if(isNotEmpty(underline) && underline == 'true'){
+        <div class="hr-line-dashed"></div>
+    @}
 @}
 
 

@@ -45,7 +45,7 @@ public class Question extends Model<Question> {
     /**
      * 试题学科：10数学 11语文 13化学
      */
-    @ApiModelProperty(value = "subject", name = "学科： 10数学 11语文 13化学", example = "10")
+    @ApiModelProperty(value = "subject", name = "学科", example = "5")
     private Integer subject;
     /**
      * 状态

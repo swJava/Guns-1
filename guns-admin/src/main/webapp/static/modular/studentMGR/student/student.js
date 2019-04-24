@@ -25,7 +25,14 @@ Student.initColumn = function () {
             {title: '在读年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '在读学校', field: 'school', visible: true, align: 'center', valign: 'middle'},
             {title: '目标学校', field: 'targetSchool', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',
+                formatter: function(value, row){
+                    if (1 == value)
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
+                    else
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" />';
+                }
+            }
     ];
 };
 
@@ -78,33 +85,67 @@ Student.openStudentDetail = function () {
 };
 
 /**
- * 删除学生管理
- */
-Student.delete = function () {
-    if (this.check()) {
-        var ajax = new $ax(Feng.ctxPath + "/student/delete", function (data) {
-            Feng.success("删除成功!");
-            Student.table.refresh();
-        }, function (data) {
-            Feng.error("删除失败!" + data.responseJSON.message + "!");
-        });
-        ajax.set("studentId",this.seItem.id);
-        ajax.start();
-    }
-};
-
-/**
  * 查询学生管理列表
  */
 Student.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['status'] = $("#status").val();
     Student.table.refresh({query: queryData});
 };
+
+Student.doUpdate = function(reqUrl, data){
+    var ajax = new $ax(reqUrl, function (data) {
+    }, function (data) {
+        Feng.error("操作失败!" + data.responseJSON.message + "!");
+    });
+
+    ajax.setData(data);
+    ajax.start();
+}
 
 $(function () {
     var defaultColunms = Student.initColumn();
     var table = new BSTable(Student.id, "/student/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        var switchers = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+
+        switchers.forEach(function(switcher) {
+            var switchery = new Switchery(switcher, {
+                size: 'small'
+            });
+            switcher.onchange = function(){
+                var state = switcher.checked;
+                console.log('<<< change student state' + $(switcher).attr('data-code') + ' : ' + state);
+
+                var reqUrl = '';
+                var postData = {
+                    code : $(switcher).attr('data-code')
+                };
+
+                if (state){
+                    // true 启用
+                    reqUrl = Feng.ctxPath + "/student/resume";
+                    Student.doUpdate(reqUrl, postData);
+                }else{
+                    // false 停用
+                    reqUrl = Feng.ctxPath + "/student/pause";
+                    var tip = '停用学员将导致所有该名学员的选课、测试信息失效，是否继续？';
+                    parent.layer.confirm(tip, {
+                        btn: ['确定', '取消']
+                    }, function (index) {
+                        Student.doUpdate(reqUrl, postData);
+                        parent.layer.close(index);
+                    }, function (index) {
+                        switchery.setPosition(true);
+                        switchery.handleOnchange(true);
+
+                        parent.layer.close(index);
+                    });
+                }
+            }
+        });
+    });
     Student.table = table.init();
 });

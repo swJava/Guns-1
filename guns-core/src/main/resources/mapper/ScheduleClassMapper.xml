@@ -5,9 +5,23 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ScheduleClass">
         <id column="id" property="id" />
-        <result column="clas_code" property="classCode" />
+        <result column="class_code" property="classCode" />
         <result column="outline_code" property="outlineCode" />
-        <result column="class_date" property="classDate" />
+        <result column="study_date" property="studyDate" />
+        <result column="week" property="week" />
+        <result column="class_time" property="classTime" />
+        <result column="end_time" property="endTime" />
+        <result column="outline" property="outline" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <resultMap id="DtoResultMap" type="com.stylefeng.guns.modular.classMGR.transfer.ClassPlan">
+        <id column="id" property="id" />
+        <result column="class_code" property="classCode" />
+        <result column="class_name" property="className" />
+        <result column="outline_code" property="outlineCode" />
+        <result column="study_date" property="studyDate" />
         <result column="week" property="week" />
         <result column="class_time" property="classTime" />
         <result column="end_time" property="endTime" />
@@ -18,7 +32,31 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, clas_code, outline_code, class_date, week, class_time, end_time, outline, sort, status
+        a.id, a.class_code, a.outline_code, a.study_date, a.week, a.class_time, a.end_time, a.outline, a.sort, a.status
     </sql>
+
+    <select id="selectPlanList" resultMap="DtoResultMap" parameterType="java.util.HashMap">
+        select cls.name as class_name,
+        <include refid="Base_Column_List" />
+        from tb_schedule_class a JOIN tb_class cls on a.class_code = cls.code
+        <where>
+            <if test="null != status">
+                and a.status = #{status}
+            </if>
+
+            <if test="null != classCode">
+                and a.class_code = #{classCode}
+            </if>
+
+            <if test="null != beginDate">
+                and a.study_date &gt;= #{beginDate}
+            </if>
+
+            <if test="null != endDate">
+                and a.study_date &lt; #{endDate}
+            </if>
+        </where>
+
+    </select>
 
 </mapper>

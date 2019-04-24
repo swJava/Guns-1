@@ -1,18 +1,16 @@
 package com.stylefeng.guns.modular.system.model;
 
-import com.baomidou.mybatisplus.enums.IdType;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.stylefeng.guns.common.constant.state.GenericState;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -50,49 +48,51 @@ public class Class extends Model<Class> {
     @ApiModelProperty(name = "grade", value = "年级", position = 2, example="1")
     private Integer grade;
 
+    @TableField("academic_year")
+    @ApiModelProperty(name = "academicYear", value = "学年", position = 3, example = "2019")
+    private Integer academicYear;
+
     /**
-     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类
+     * 学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班；5 暑假班 99 活动类
      */
-    @ApiModelProperty(name = "cycle", value = "学期", position = 3, example="2")
+    @ApiModelProperty(name = "cycle", value = "学期", position = 4, example="2")
     private Integer cycle;
 
     /**
      * 班次 1 启航； 2 敏学； 3 勤思； 4 创新； 5 诊断； 99 其他
      */
-    @ApiModelProperty(name = "ability", value = "班次", position = 4, example="4")
+    @ApiModelProperty(name = "ability", value = "班次", position = 5, example="4")
     private Integer ability;
     /**
      * 开课起始日期
      */
     @TableField("begin_date")
-    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 5, example="2018-11-30")
+    @ApiModelProperty(name = "beginDate", value = "开课起始日期", position = 6, example="2018-11-30")
     private Date beginDate;
     /**
      * 开课结束日期
      */
     @TableField("end_date")
-    @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 6, example="2018-12-30")
+    @ApiModelProperty(name = "beginDate", value = "开课结束日期", position = 7, example="2018-12-30")
     private Date endDate;
     /**
-     * 开课时间类型： 5 DAY_OF_MONTH ； 7 DAY_OF_WEEK
+     * 开课时间描述
      */
-    @TableField("study_time_type")
-    private Integer studyTimeType;
+    @TableField("study_time_desp")
+    @ApiModelProperty(name = "beginDate", value = "上课事件描述", position = 8, example="每周六 上午10：30 ～ 11：30")
+    private String studyTimeDesp;
     /**
-     * 开课时间
+     * 跨报开始时间
      */
-    @TableField("study_time_value")
-    private String studyTimeValue;
+    @TableField("cross_start_date")
+    @ApiModelProperty(name = "crossStartDate", value = "跨报开始时间", position = 9, example="2019-02-01")
+    private Date crossStartDate;
     /**
-     * 开始时间
+     * 跨报结束时间
      */
-    @TableField("begin_time")
-    private String beginTime;
-    /**
-     * 结束时间
-     */
-    @TableField("end_time")
-    private String endTime;
+    @TableField("cross_end_date")
+    @ApiModelProperty(name = "crossEndDate", value = "跨报结束时间", position = 10, example="2019-02-05")
+    private Date crossEndDate;
     /**
      * 单位：分钟
      */
@@ -130,11 +130,17 @@ public class Class extends Model<Class> {
      */
     private Long price;
     /**
-     * 剩余报名人数
+     * 开班人数
      */
     private Integer quato;
+
     /**
-     * 报名截止时间
+     * 报名开始日期
+     */
+    @TableField("sign_start_date")
+    private Date signStartDate;
+    /**
+     * 报名截止日期
      */
     @TableField("sign_end_date")
     private Date signEndDate;
@@ -164,11 +170,42 @@ public class Class extends Model<Class> {
     private String teacherSecond;
 
     /**
-     * 测试试卷编码
+     * 是否开放报名
      */
-    @TableField("examine_paper")
-    private String examinePaper;
+    private Integer signable;
+    /**
+     * 是否需要入学测试
+     */
+    private Integer examinable;
 
+    /**
+     * 是否允许跨报
+     */
+    private Integer crossable;
+
+    @TableField("presign_source_class_code")
+    @ApiModelProperty(name = "presignSourceClassCode", value = "续报班级编码", position = 11, example="BJ000001")
+    private String presignSourceClassCode;
+    /**
+     * 预报开始时间
+     */
+    @TableField("presign_start_date")
+    @ApiModelProperty(name = "presignStartDate", value = "预报开始时间", position = 12, example="2019-02-01")
+    private Date presignStartDate;
+    /**
+     * 预报结束时间
+     */
+    @TableField("presign_end_date")
+    @ApiModelProperty(name = "presignEndDate", value = "预报结束时间", position = 13, example="2019-02-05")
+    private Date presignEndDate;
+
+    /**
+     * 预报状态
+     * 0 未预报
+     * 1 已预报
+     */
+    @TableField("presign_status")
+    private Integer presignStatus = 0;
 
     public Long getId() {
         return id;
@@ -206,8 +243,25 @@ public class Class extends Model<Class> {
         return cycle;
     }
 
+    public Integer getAcademicYear() {
+        return academicYear;
+    }
+
+    public void setAcademicYear(Integer academicYear) {
+        this.academicYear = academicYear;
+    }
+
     public void setCycle(Integer cycle) {
         this.cycle = cycle;
+    }
+
+    public void setCycle(String cycle) {
+        if (null == cycle)
+            return;
+
+        try{
+            this.cycle = Integer.parseInt(cycle);
+        }catch(Exception e){}
     }
 
     public Integer getAbility() {
@@ -218,6 +272,14 @@ public class Class extends Model<Class> {
         this.ability = ability;
     }
 
+    public void setAbility(String ability) {
+        if (null == ability)
+            return;
+
+        try{
+            this.ability = Integer.parseInt(ability);
+        }catch(Exception e){}
+    }
     public Date getBeginDate() {
         return beginDate;
     }
@@ -234,36 +296,28 @@ public class Class extends Model<Class> {
         this.endDate = endDate;
     }
 
-    public Integer getStudyTimeType() {
-        return studyTimeType;
+    public String getStudyTimeDesp() {
+        return studyTimeDesp;
     }
 
-    public void setStudyTimeType(Integer studyTimeType) {
-        this.studyTimeType = studyTimeType;
+    public void setStudyTimeDesp(String studyTimeDesp) {
+        this.studyTimeDesp = studyTimeDesp;
     }
 
-    public String getStudyTimeValue() {
-        return studyTimeValue;
+    public Date getCrossStartDate() {
+        return crossStartDate;
     }
 
-    public void setStudyTimeValue(String studyTimeValue) {
-        this.studyTimeValue = studyTimeValue;
+    public void setCrossStartDate(Date crossStartDate) {
+        this.crossStartDate = crossStartDate;
     }
 
-    public String getBeginTime() {
-        return beginTime;
+    public Date getCrossEndDate() {
+        return crossEndDate;
     }
 
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setCrossEndDate(Date crossEndDate) {
+        this.crossEndDate = crossEndDate;
     }
 
     public Integer getDuration() {
@@ -338,6 +392,14 @@ public class Class extends Model<Class> {
         this.quato = quato;
     }
 
+    public Date getSignStartDate() {
+        return signStartDate;
+    }
+
+    public void setSignStartDate(Date signStartDate) {
+        this.signStartDate = signStartDate;
+    }
+
     public Date getSignEndDate() {
         return signEndDate;
     }
@@ -386,12 +448,60 @@ public class Class extends Model<Class> {
         this.teacherSecond = teacherSecond;
     }
 
-    public String getExaminePaper() {
-        return examinePaper;
+    public Integer getSignable() {
+        return signable;
     }
 
-    public void setExaminePaper(String examinePaper) {
-        this.examinePaper = examinePaper;
+    public void setSignable(Integer signable) {
+        this.signable = signable;
+    }
+
+    public Integer getExaminable() {
+        return examinable;
+    }
+
+    public void setExaminable(Integer examinable) {
+        this.examinable = examinable;
+    }
+
+    public Integer getCrossable() {
+        return crossable;
+    }
+
+    public void setCrossable(Integer crossable) {
+        this.crossable = crossable;
+    }
+
+    public String getPresignSourceClassCode() {
+        return presignSourceClassCode;
+    }
+
+    public void setPresignSourceClassCode(String presignSourceClassCode) {
+        this.presignSourceClassCode = presignSourceClassCode;
+    }
+
+    public Date getPresignStartDate() {
+        return presignStartDate;
+    }
+
+    public void setPresignStartDate(Date presignStartDate) {
+        this.presignStartDate = presignStartDate;
+    }
+
+    public Date getPresignEndDate() {
+        return presignEndDate;
+    }
+
+    public void setPresignEndDate(Date presignEndDate) {
+        this.presignEndDate = presignEndDate;
+    }
+
+    public Integer getPresignStatus() {
+        return presignStatus;
+    }
+
+    public void setPresignStatus(Integer presignStatus) {
+        this.presignStatus = presignStatus;
     }
 
     @Override
@@ -405,14 +515,15 @@ public class Class extends Model<Class> {
         "id=" + id +
         ", code=" + code +
         ", name=" + name +
+        ", grade=" + grade +
+        ", academicYear=" + academicYear +
         ", cycle=" + cycle +
         ", ability=" + ability +
         ", beginDate=" + beginDate +
         ", endDate=" + endDate +
-        ", studyTimeType=" + studyTimeType +
-        ", studyTimeValue=" + studyTimeValue +
-        ", beginTime=" + beginTime +
-        ", endTime=" + endTime +
+        ", studyTimeDesp=" + studyTimeDesp +
+        ", crossStartDate=" + crossStartDate +
+        ", crossEndDate=" + crossEndDate +
         ", duration=" + duration +
         ", period=" + period +
         ", classRoomCode=" + classRoomCode +
@@ -422,13 +533,20 @@ public class Class extends Model<Class> {
         ", star=" + star +
         ", price=" + price +
         ", quato=" + quato +
+        ", signStartDate=" + signStartDate +
         ", signEndDate=" + signEndDate +
         ", status=" + status +
         ", teacherCode=" + teacherCode +
         ", teacher=" + teacher +
         ", teacherSecondCode=" + teacherSecondCode +
         ", teacherSecond=" + teacherSecond +
-        ", examinePaper=" + examinePaper +
+        ", signable=" + signable +
+        ", examinable=" + examinable +
+        ", crossable=" + crossable +
+        ", presignSourceClassCode=" + presignSourceClassCode +
+        ", presignStartDate=" + presignStartDate +
+        ", presignEndDate=" + presignEndDate +
+        ", presignStatus=" + presignStatus +
         "}";
     }
 

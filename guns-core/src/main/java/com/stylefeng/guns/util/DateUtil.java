@@ -158,6 +158,8 @@ public class DateUtil {
      * 格式化日期
      */
     public static Date parse(String date, String pattern) {
+        if (null == date)
+            return null;
         try {
             return DateUtils.parseDate(date, pattern);
         } catch (ParseException e) {
@@ -285,5 +287,9 @@ public class DateUtil {
         minute = (int) ((endDate.getTime() - beginDate.getTime()) / ( 60  * 1000));
 
         return minute;
+    }
+
+    public static int compareDate(Date date1, Date date2, int truncateField) {
+        return DateUtils.truncate(date1, truncateField).compareTo(DateUtils.truncate(date2, truncateField));
     }
 }

@@ -1,9 +1,7 @@
 package com.stylefeng.guns.modular.payMGR.service;
 
+import com.stylefeng.guns.modular.payMGR.transfer.PayNotifier;
 import com.stylefeng.guns.modular.system.model.Order;
-import com.stylefeng.guns.modular.system.model.OrderItem;
-
-import java.util.List;
 
 /**
  * @Description //TODO
@@ -20,4 +18,11 @@ public interface IPayService {
      * @return 支付流水
      */
     String createPayOrder(Order order);
+
+    /**
+     * 支付通知
+     *
+     * @param notifier
+     */
+    void notify(PayNotifier notifier);
 }

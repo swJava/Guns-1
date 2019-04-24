@@ -17,6 +17,8 @@ import javax.validation.constraints.NotBlank;
  */
 @ApiModel(value = "ClassQueryRequester", description = "班级查询")
 public class ClassQueryRequester extends SimpleRequester {
+    @ApiModelProperty(name = "name", value = "班级名称", required = false, position = 1, example = "数学")
+    private String name;
     @ApiModelProperty(name = "subjects", value = "科目", required = false, position = 2, example = "语文,数学")
     private String subjects = "";
     @ApiModelProperty(name = "classCycles", value = "学期 1 春季班； 2 秋季班； 3 寒假班； 4 短期班； 99 活动类", required = false, position = 3, example = "2,3")
@@ -29,14 +31,26 @@ public class ClassQueryRequester extends SimpleRequester {
     private String weekdays = "";
     @ApiModelProperty(name = "grades", value = "年级", required = false, position = 7, example = "1,2,3")
     private String grades = "";
-    @ApiModelProperty(name = "teacherCode", value = "主讲老师", required = false, position = 8, example = "LS000001")
+    @ApiModelProperty(name = "teachers", value = "教师", required = false, position = 8, example = "LS000004,LS000007")
+    private String teachers = "";
+    @ApiModelProperty(name = "teacherCode", value = "主讲老师", required = false, position = 9, example = "LS000001")
     private String teacherCode;
-    @ApiModelProperty(name = "assisterCode", value = "辅导老师", required = false, position = 9, example = "LS000101")
+    @ApiModelProperty(name = "assisterCode", value = "辅导老师", required = false, position = 10, example = "LS000101")
     private String assisterCode;
-    @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 10, example = "JS000001")
+    @ApiModelProperty(name = "classroomCode", value = "教室", required = false, position = 11, example = "JS000001")
     private String classroomCode;
-    @ApiModelProperty(name = "status", value = "状态", required = false, position = 11, example = "1")
+    @ApiModelProperty(name = "signType", value = "报名方式: 1 正常报名； 2 跨报", required = false, position = 12, example = "1")
+    private Integer signType;
+    @ApiModelProperty(name = "status", value = "状态", required = false, position = 13, example = "1")
     private Integer status = GenericState.Valid.code;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getSubjects() {
         return subjects;
@@ -86,6 +100,14 @@ public class ClassQueryRequester extends SimpleRequester {
         this.grades = grades;
     }
 
+    public String getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(String teachers) {
+        this.teachers = teachers;
+    }
+
     public String getTeacherCode() {
         return teacherCode;
     }
@@ -108,6 +130,14 @@ public class ClassQueryRequester extends SimpleRequester {
 
     public void setClassroomCode(String classroomCode) {
         this.classroomCode = classroomCode;
+    }
+
+    public Integer getSignType() {
+        return signType;
+    }
+
+    public void setSignType(Integer signType) {
+        this.signType = signType;
     }
 
     public Integer getStatus() {

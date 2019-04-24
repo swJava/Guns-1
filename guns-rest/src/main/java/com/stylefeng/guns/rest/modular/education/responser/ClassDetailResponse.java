@@ -1,16 +1,13 @@
 package com.stylefeng.guns.rest.modular.education.responser;
 
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
 import com.stylefeng.guns.rest.core.Responser;
 import com.stylefeng.guns.rest.core.SimpleResponser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.beans.BeanUtils;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.List;
 
 /**
  * Created by 罗华.
@@ -19,71 +16,24 @@ import java.util.StringTokenizer;
 public class ClassDetailResponse extends SimpleResponser {
     private static final long serialVersionUID = -140511623928497259L;
 
-
-    private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
-    private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
-
-    static {
-        DayOfWeekMap.put(Calendar.MONDAY, "周一");
-        DayOfWeekMap.put(Calendar.THURSDAY, "周二");
-        DayOfWeekMap.put(Calendar.WEDNESDAY, "周三");
-        DayOfWeekMap.put(Calendar.THURSDAY, "周四");
-        DayOfWeekMap.put(Calendar.FRIDAY, "周五");
-        DayOfWeekMap.put(Calendar.SATURDAY, "周六");
-        DayOfWeekMap.put(Calendar.SUNDAY, "周日");
-    }
-
-    static {
-        DayOfMonthMap.put(Calendar.MONDAY, "1号");
-    }
-
     @ApiModelProperty(name = "data", value = "班级")
     private ClassResponser data;
 
-    public Class getData() {
+    public ClassResponser getData() {
         return data;
     }
 
-    public void setData(Class classInfo) {
-        ClassResponser dto = new ClassResponser();
-        BeanUtils.copyProperties(classInfo, dto);
-
-        // 格式化开课时间描述
-        int scheduleType = dto.getStudyTimeType();
-        StringTokenizer tokenizer = new StringTokenizer(dto.getStudyTimeValue(), ",");
-
-        StringBuffer despBuffer = new StringBuffer();
-        despBuffer.append("每");
-
-        while(tokenizer.hasMoreTokens()){
-            int scheduleDay = Integer.parseInt(tokenizer.nextToken());
-
-            switch(scheduleType){
-                case Calendar.DAY_OF_WEEK:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append("、");
-                    break;
-                case Calendar.DAY_OF_MONTH:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-            }
-        }
-
-        despBuffer.append(dto.getBeginTime().substring(0, 2)).append(":").append(dto.getBeginTime().substring(2));
-        despBuffer.append(" ~ ");
-        despBuffer.append(dto.getEndTime().substring(0, 2)).append(":").append(dto.getEndTime().substring(2));
-
-        dto.setClassTimeDesp(despBuffer.toString());
-
-        this.data = dto;
+    public void setData(ClassResponser data) {
+        this.data = data;
     }
 
-    public static Responser me(Class classInfo) {
+    public static Responser me(Class classInfo, List<ClassPlan> classPlanList) {
         ClassDetailResponse response = new ClassDetailResponse();
 
         response.setCode(SUCCEED);
         response.setMessage("查询成功");
 
-        response.setData(classInfo);
+        response.setData(ClassResponser.me(classInfo, classPlanList));
         return response;
     }
 }

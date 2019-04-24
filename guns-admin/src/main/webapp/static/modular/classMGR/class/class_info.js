@@ -5,6 +5,12 @@ var ClassInfoDlg = {
     courseTable : {
         id : 'courseTable'
     },
+    layerIndex: -1,
+    currClassId: $('#id').val(),
+    currClass: $('#code').val(),
+    otherPlanList: new Array(),
+    minePlanList: new Array(),
+    calendar: null,
     classInfoData : {},
     validateFields: {
         code: {
@@ -21,73 +27,11 @@ var ClassInfoDlg = {
                 }
             }
         },
-        beginDate: {
+        price: {
             validators: {
-                notEmpty: {
-                    message: '开课起始日期不能为空'
-                }
-            }
-        },
-        endDate: {
-            validators: {
-                notEmpty: {
-                    message: '开课结束日期不能为空'
-                }
-            }
-        },
-        studyTimeValue: {
-            validators: {
-                notEmpty: {
-                    message: '开课时间不能为空'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        beginTime: {
-            validators: {
-                notEmpty: {
-                    message: '开始时间不能为空'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        endTime: {
-            validators: {
-                notEmpty: {
-                    message: '结束时间'
-                },
-                regexp: {
-                    regexp: /^[0-9]{1,4}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        duration: {
-            validators: {
-                notEmpty: {
-                    message: '课时时长'
-                },
-                regexp: {
-                    regexp: /^[1-9][0-9]{0,3}$/,
-                    message: '4位数字内'
-                }
-            }
-        },
-        period: {
-            validators: {
-                notEmpty: {
-                    message: '课时数'
-                },
-                regexp: {
-                    regexp: /^[1-9][0-9]{0,3}$/,
-                    message: '4位数字内'
-                }
+                notEmpty: { message: '金额不能为空'},
+                numeric: { message: '无效的金额'},
+                between: { min: 0.00, max: 9999.99, message: '无效的金额'}
             }
         },
         classRoomCode: {
@@ -105,6 +49,13 @@ var ClassInfoDlg = {
                 regexp: {
                     regexp: /^[1-9][0-9]{0,9}$/,
                     message: '9位数字内'
+                }
+            }
+        },
+        signStartDate: {
+            validators: {
+                notEmpty: {
+                    message: '报名开始时间'
                 }
             }
         },
@@ -156,7 +107,10 @@ ClassInfoDlg.courseTable.initColumn = function () {
  * 清除数据
  */
 ClassInfoDlg.clearData = function() {
+    console.log('<--- clear Data --->');
     this.classInfoData = {};
+    console.log('<--- clear Data over --->');
+
 }
 
 /**
@@ -185,12 +139,15 @@ ClassInfoDlg.get = function(key) {
  */
 ClassInfoDlg.close = function() {
     parent.layer.close(window.parent.Class.layerIndex);
-}
+};
 
 /**
  * 收集数据
  */
 ClassInfoDlg.collectData = function() {
+
+    var submitPrice = Math.floor(100 * parseFloat($('#price').val(), 10));
+
     this
         .set('id')
         .set('code')
@@ -198,12 +155,6 @@ ClassInfoDlg.collectData = function() {
         .set('grade')
         .set('cycle')
         .set('ability')
-        .set('beginDate')
-        .set('endDate')
-        .set('studyTimeType')
-        .set('studyTimeValue')
-        .set('beginTime')
-        .set('endTime')
         .set('duration')
         .set('period')
         .set('courseCode')
@@ -211,6 +162,7 @@ ClassInfoDlg.collectData = function() {
         .set('star')
         .set('price')
         .set('quato')
+        .set('signStartDate')
         .set('signEndDate')
         .set('status')
         .set('teacherCode')
@@ -218,7 +170,10 @@ ClassInfoDlg.collectData = function() {
         .set('teacherSecondCode')
         .set('teacherSecond')
         .set('classRoomCode')
-        .set('classRoom');
+        .set('classRoom')
+        .set('studyTimeDesp');
+
+    this.classInfoData['price'] = submitPrice;
 }
 
 /**
@@ -234,7 +189,7 @@ ClassInfoDlg.validate = function () {
  * 提交添加
  */
 ClassInfoDlg.addSubmit = function() {
-
+    console.log('<<< add submit');
     this.clearData();
     if (!this.validate()) {
         return;
@@ -242,13 +197,7 @@ ClassInfoDlg.addSubmit = function() {
     $("#classRoom").val($("#classRoomCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
+
     this.collectData();
     
     //提交信息
@@ -259,7 +208,10 @@ ClassInfoDlg.addSubmit = function() {
     },function(data){
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
+    console.log(this.classInfoData);
+    console.log(ClassInfoDlg.minePlanList);
     ajax.set(this.classInfoData);
+    ajax.set('planList', JSON.stringify(ClassInfoDlg.minePlanList));
     ajax.start();
 }
 
@@ -267,7 +219,7 @@ ClassInfoDlg.addSubmit = function() {
  * 提交修改
  */
 ClassInfoDlg.editSubmit = function() {
-
+    console.log('<<< edit submit');
     this.clearData();
     if (!this.validate()) {
         return;
@@ -275,13 +227,7 @@ ClassInfoDlg.editSubmit = function() {
     $("#classRoom").val($("#classRoomCode option:selected").text());
     $("#teacher").val($("#teacherCode option:selected").text());
     $("#teacherSecond").val($("#teacherSecondCode option:selected").text());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
+
     this.collectData();
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/class/update", function(data){
@@ -292,8 +238,199 @@ ClassInfoDlg.editSubmit = function() {
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.classInfoData);
+    ajax.set('planList', JSON.stringify(this.minePlanList));
     ajax.start();
 }
+
+ClassInfoDlg.initCalendar = function(options){
+
+    var me = this;
+    console.log('<<< init calendar >>>');
+    console.log(options);
+    me.calendar = $('#calendar').fullCalendar({
+        //isRTL: true,
+        eventLimit: true,
+        defaultDate: options.today,
+        buttonText: {
+            today: '今天',
+            month: '月视图',
+            week: '周视图',
+            day: '日视图'
+        },
+        allDayText: "全天",
+        timeFormat: {
+            '': 'H(:mm)'
+        },
+        axisFormat: 'H时(:mm分)',
+        firstHour: 8,
+        minTime: 8,
+        buttonHtml: {
+            prev: '<i class="ace-icon fa fa-chevron-left"></i>',
+            next: '<i class="ace-icon fa fa-chevron-right"></i>'
+        },
+        titleFormat: {
+            month: 'YYYY年 MMMM月',
+            day: 'YYYY年 MMMM月DD日 dddd'
+        },
+        monthNames: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        dayNames: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        dayNamesShort: ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaDay'
+        },
+        events: options.calEvents
+        ,
+        selectable: true,
+        selectHelper: true,
+        select: function(start, end, allDay) {
+
+            var currView = me.calendar.fullCalendar('getView');
+            if ('month' == currView.name){
+                // 跳转视图到day
+                me.calendar.fullCalendar('changeView', 'agendaDay');
+                me.calendar.fullCalendar('gotoDate', start.format('YYYY-MM-DD'));
+            }else if ('agendaDay' == currView.name){
+                bootbox.prompt("排班描述:", function(title) {
+                    if (title !== null) {
+
+                        var beginTime = start.format('H:mm');
+                        var endTime = end.format('H:mm');
+                        var eventId = new Date().getTime();
+                        me.calendar.fullCalendar('renderEvent',
+                            {
+                                id: eventId,
+                                title: '|' + beginTime + ' ~ ' + endTime + ': ' + title,
+                                start: start,
+                                end: end
+                            },
+                            true // make the event "stick"
+                        );
+
+                        me.minePlanList.push({
+                            id: eventId,
+                            studyDate: start.format('YYYY-MM-DD'),
+                            classTime: start.format('HHmm'),
+                            endTime: end.format('HHmm'),
+                            week: start.format('E')
+                        });
+
+                        console.log(ClassInfoDlg.minePlanList);
+
+                        me.calendar.fullCalendar('changeView', 'month');
+                    }
+                });
+            }
+
+            me.calendar.fullCalendar('unselect');
+        }
+        ,
+        editable: true
+        ,
+        eventDrop: function(event, delta, revertFunc, jsEvent, ui, vie){
+            console.log('<<< event drop')
+            console.log(event);
+            var newEvent = $.extend({}, event);
+            newEvent.id = (new Date()).getTime();
+            console.log('new event' + newEvent.id);
+            me.calendar.fullCalendar('renderEvent',
+                {
+                    id: newEvent.id,
+                    title: event.title,
+                    start: event.start,
+                    end: event.end
+                },
+                true // make the event "stick"
+            );
+
+            me.minePlanList.push({
+                id: newEvent.id,
+                studyDate: event.start.format('YYYY-MM-DD'),
+                classTime: event.start.format('HHmm'),
+                endTime: event.end.format('HHmm'),
+                week: event.start.format('E')
+            });
+
+            revertFunc();
+        }
+        ,
+        eventClick: function(event, jsEvent, view) {
+            var eventId = parseInt(event.id, 10);
+            var _id = me.currClass + '_' + me.currClassId;
+            if (isNaN(eventId)) {
+                if ( 0 != event.id.indexOf(me.currClass) )
+                    return false;
+            }
+            //display a modal
+            var modal =
+                '<div class="modal fade">\
+                  <div class="modal-dialog">\
+                   <div class="modal-content">\
+                     <div class="modal-body">\
+                       <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
+                       <form class="no-margin">\
+                          <label>修改 &nbsp;</label>\
+                          <input class="middle" autocomplete="off" type="text" value="' + event.title + '" />\
+					 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> 保存修改</button>\
+				   </form>\
+				 </div>\
+				 <div class="modal-footer">\
+					<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> 删 除</button>\
+					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> 取 消</button>\
+				 </div>\
+			  </div>\
+			 </div>\
+			</div>';
+
+
+            var modal = $(modal).appendTo('body');
+            modal.find('form').on('submit', function(ev){
+                ev.preventDefault();
+
+                event.title = $(this).find("input[type=text]").val();
+                me.calendar.fullCalendar('updateEvent', event);
+                modal.modal("hide");
+            });
+            modal.find('button[data-action=delete]').on('click', function() {
+
+                me.calendar.fullCalendar('removeEvents' , function(ev){
+                    return (ev._id == event._id);
+                });
+
+                var newMinePlanList = new Array();
+
+                console.log('<<< start remove minePlanList');
+                console.log(me.minePlanList);
+                $.each(me.minePlanList, function(idx, eo){
+
+                    if (eo.id == event._id || me.currClass + '_' + eo.id == event._id){
+                        return true;
+                    }
+
+                    newMinePlanList.push({
+                        id: eo.id,
+                        studyDate: eo.studyDate,
+                        classTime: eo.classTime,
+                        endTime: eo.endTime,
+                        week: eo.week
+                    })
+                });
+
+                me.minePlanList = newMinePlanList;
+                console.log('>>> update over');
+                console.log(me.minePlanList);
+
+                modal.modal("hide");
+            });
+
+            modal.modal('show').on('hidden', function(){
+                modal.remove();
+            });
+        }
+    });
+};
+
 
 $(function() {
 
@@ -308,100 +445,56 @@ $(function() {
 
     var today = year + '-' + month + '-' + day;
     console.log('Calendar today : ' + today);
+    var initEvents = new Array();
 
-    var calendar = $('#calendar').fullCalendar({
-        //isRTL: true,
-        buttonHtml: {
-            prev: '<i class="ace-icon fa fa-chevron-left"></i>',
-            next: '<i class="ace-icon fa fa-chevron-right"></i>'
-        },
+    $.ajax({
+        async: true,
+        url: Feng.ctxPath + '/class/plan/list',
+        dataType: 'json',
+        data: {classCode: ClassInfoDlg.currClass},
+        success: function(response) {
+            console.log('<<< load events');
 
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay'
-        },
-        events: [
-            {
-                title: 'All Day Event',
-                start: '2019-01-21',
-                className: 'label-important'
-            }
-        ]
-        ,
-        selectable: true,
-        selectHelper: true,
-        select: function(start, end, allDay) {
+            console.log(response.classPlanList);
+            ClassInfoDlg.otherPlanList = ClassInfoDlg.otherPlanList.concat(response.allClassPlanList);
+            ClassInfoDlg.minePlanList = ClassInfoDlg.minePlanList.concat(response.classPlanList);
 
-            bootbox.prompt("New Event Title:", function(title) {
-                if (title !== null) {
-                    calendar.fullCalendar('renderEvent',
-                        {
-                            title: title,
-                            start: start,
-                            end: end,
-                            allDay: allDay
-                        },
-                        true // make the event "stick"
-                    );
-                }
+            console.log(ClassInfoDlg.minePlanList);
+/*
+            $(response.allClassPlanList).each(function(idx, eo) {
+                initEvents.push({
+                    id: eo.classCode + '_' + eo.id,
+                    title: eo.description,
+                    start: eo.classBeginTime,
+                    end: eo.classEndTime,
+                    editable: false,
+                    color: '#ffffff',
+                    backgroundColor: '#a0a0a0'
+                });
+            });
+            */
+            var newToday = null;
+            $(response.classPlanList).each(function(idx, eo) {
+                initEvents.push({
+                    id: eo.classCode + '_' + eo.id,
+                    title: eo.description,
+                    start: eo.classBeginTime,
+                    end: eo.classEndTime,
+                    color: '#ffffff',
+                    backgroundColor: '#82af6f'
+                });
+                if (null == newToday)
+                    newToday = eo.classBeginTime;
             });
 
+            if (null == newToday)
+                newToday = today;
 
-            calendar.fullCalendar('unselect');
-        }
-        ,
-        eventClick: function(calEvent, jsEvent, view) {
-
-            //display a modal
-            var modal =
-                '<div class="modal fade">\
-                  <div class="modal-dialog">\
-                   <div class="modal-content">\
-                     <div class="modal-body">\
-                       <button type="button" class="close" data-dismiss="modal" style="margin-top:-10px;">&times;</button>\
-                       <form class="no-margin">\
-                          <label>Change event name &nbsp;</label>\
-                          <input class="middle" autocomplete="off" type="text" value="' + calEvent.title + '" />\
-					 <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Save</button>\
-				   </form>\
-				 </div>\
-				 <div class="modal-footer">\
-					<button type="button" class="btn btn-sm btn-danger" data-action="delete"><i class="ace-icon fa fa-trash-o"></i> Delete Event</button>\
-					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
-				 </div>\
-			  </div>\
-			 </div>\
-			</div>';
-
-
-            var modal = $(modal).appendTo('body');
-            modal.find('form').on('submit', function(ev){
-                ev.preventDefault();
-
-                calEvent.title = $(this).find("input[type=text]").val();
-                calendar.fullCalendar('updateEvent', calEvent);
-                modal.modal("hide");
+            console.log(newToday);
+            ClassInfoDlg.initCalendar({
+                today: newToday,
+                calEvents: initEvents
             });
-            modal.find('button[data-action=delete]').on('click', function() {
-                calendar.fullCalendar('removeEvents' , function(ev){
-                    return (ev._id == calEvent._id);
-                })
-                modal.modal("hide");
-            });
-
-            modal.modal('show').on('hidden', function(){
-                modal.remove();
-            });
-
-
-            //console.log(calEvent.id);
-            //console.log(jsEvent);
-            //console.log(view);
-
-            // change the border color just for fun
-            //$(this).css('border-color', 'red');
-
         }
     });
 
@@ -409,6 +502,7 @@ $(function() {
     if ($('#' + ClassInfoDlg.courseTable.id)) {
         var courseDisplaColumns = ClassInfoDlg.courseTable.initColumn();
         var table = new BSTable(ClassInfoDlg.courseTable.id, "/course/list", courseDisplaColumns);
+        table.setPageSize(6);
         table.setItemSelectCallback(function (row) {
             console.log(row);
             $('#courseCode').val(row.code);
@@ -424,9 +518,20 @@ $(function() {
         table.setPaginationType("server");
         ClassInfoDlg.courseTable.table = table.init();
     }
+    //日期控件初始化
+    laydate.render({elem: '#signStartDate', min: today});
+    laydate.render({elem: '#signEndDate', min: today});
 
     //非空校验
     Feng.initValidator("classInfoForm", ClassInfoDlg.validateFields);
+
+    /*  学年 */
+    var html = "";
+    var academicYears = JSON.parse($('#academicYearsValue').val());
+    academicYears.forEach(function (item) {
+        html +="<option value="+item+">"+item+"学年</option>";
+    });
+    $("#academicYear").append(html);
     /* 教室 */
     var html = "";
     var ajax = new $ax(Feng.ctxPath + "/classroom/listRoom", function (data) {
@@ -457,19 +562,6 @@ $(function() {
     $('#ability').val($('#abilityValue').val());
     $("#teacherCode").val($("#teacherCodeValue").val());
     $("#teacherSecondCode").val($("#teacherSecondCodeValue").val());
-    var studyTimeValues = '';
-    $('input[name="studyTimeValue"]').each(function(idx, eo){
-        if ($(eo).is(':checked')) {
-            studyTimeValues = studyTimeValues + $(eo).val() + ',';
-        }
-    })
-    $('#studyTimeValue').val(studyTimeValues);
-    /*
-    $.each($('#studyTimeValueValue').val().split(','), function(i, eo) {
-        $('input[name="studyTimeValue"]').each(function(ii, eeo){
-            if ($(eeo).val() == eo)
-                $(eeo).attr('checked', true);
-        })
-    });
-    */
+    $("#academicYear").val($("#academicYearValue").val());
+
 });

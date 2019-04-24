@@ -20,11 +20,18 @@ public interface IQuestionService extends IService<Question> {
     Question get(String questionCode);
 
     /**
-     * 删除题目
+     * 停用题目
      *
-     * @param questionCode
+     * @param code
      */
-    void delete(String questionCode);
+    void doPause(String code);
+
+    /**
+     * 启用题目
+     *
+     * @param code
+     */
+    void doResume(String code);
 
     /**
      * 创建题目
@@ -50,4 +57,5 @@ public interface IQuestionService extends IService<Question> {
      * @return
      */
     Page<Map<String,Object>> selectMapsPage(Map<String, Object> conditionMap, Collection<String> workingQuestionList);
+
 }

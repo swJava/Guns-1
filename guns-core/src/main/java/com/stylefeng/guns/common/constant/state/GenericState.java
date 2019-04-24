@@ -7,8 +7,8 @@ package com.stylefeng.guns.common.constant.state;
  * @Version 1.0
  */
 public enum GenericState {
-    Valid(1, "有效"),
-    Invalid(0, "无效")
+    Valid(1, "启用"),
+    Invalid(0, "禁用")
     ;
 
     public int code;

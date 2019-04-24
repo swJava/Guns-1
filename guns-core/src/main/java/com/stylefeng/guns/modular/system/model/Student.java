@@ -51,31 +51,38 @@ public class Student extends Model<Student> {
      */
     @ApiModelProperty(name = "gender", value = "性别", position = 3, example="1")
     private Integer gender;
+
+    /**
+     * 年龄
+     */
+    @ApiModelProperty(name = "age", value = "年龄", position = 4, example="12")
+    private Integer age;
     /**
      * 在读年级
      */
-    @ApiModelProperty(name = "grade", value = "在读年级", position = 4, example="4")
+    @ApiModelProperty(name = "grade", value = "在读年级", position = 5, example="4")
     private Integer grade;
     /**
      * 在读学校
      */
-    @ApiModelProperty(name = "school", value = "在读学校", position = 5, example="谢家湾小学")
+    @ApiModelProperty(name = "school", value = "在读学校", position = 6, example="谢家湾小学")
     private String school;
     /**
      * 目标学校
      */
     @TableField("target_school")
-    @ApiModelProperty(name = "targetSchool", value = "目标学校", position = 6, example="重庆三中")
+    @ApiModelProperty(name = "targetSchool", value = "目标学校", position = 7, example="重庆三中")
     private String targetSchool;
     /**
      * 用户名
      */
     @TableField("user_name")
+    @ApiModelProperty(hidden = true)
     private String userName;
     /**
      * 状态
      */
-    @ApiModelProperty(name = "status", value = "状态", position = 7, example="1")
+    @ApiModelProperty(name = "status", value = "状态", position = 8, example="1")
     private Integer status;
 
 
@@ -122,6 +129,20 @@ public class Student extends Model<Student> {
     public void setGender(String gender) {
         try{
             setGender(Integer.parseInt(gender));
+        }catch(Exception e){}
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setAge(String age){
+        try{
+            setAge(Integer.parseInt(age));
         }catch(Exception e){}
     }
 
@@ -184,6 +205,7 @@ public class Student extends Model<Student> {
         ", name=" + name +
         ", avatar=" + avatar +
         ", gender=" + gender +
+        ", age=" + age +
         ", grade=" + grade +
         ", school=" + school +
         ", targetSchool=" + targetSchool +

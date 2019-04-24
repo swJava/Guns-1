@@ -1,12 +1,18 @@
 package com.stylefeng.guns.rest.modular.education.responser;
 
+import com.stylefeng.guns.modular.classMGR.transfer.ClassPlan;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ScheduleClass;
+import com.stylefeng.guns.util.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Description //TODO
@@ -17,23 +23,7 @@ import java.util.*;
 @ApiModel(value = "ClassResponser", description = "班级扩展")
 public class ClassResponser extends com.stylefeng.guns.modular.system.model.Class {
 
-    private static final Map<Integer, String> DayOfWeekMap = new HashMap<Integer, String>();
-    private static final Map<Integer, String> DayOfMonthMap = new HashMap<Integer, String>();
     private static final BigDecimal TRANSFORM = new BigDecimal(100);
-
-    static {
-        DayOfWeekMap.put(Calendar.MONDAY, "周一");
-        DayOfWeekMap.put(Calendar.TUESDAY, "周二");
-        DayOfWeekMap.put(Calendar.WEDNESDAY, "周三");
-        DayOfWeekMap.put(Calendar.THURSDAY, "周四");
-        DayOfWeekMap.put(Calendar.FRIDAY, "周五");
-        DayOfWeekMap.put(Calendar.SATURDAY, "周六");
-        DayOfWeekMap.put(Calendar.SUNDAY, "周日");
-    }
-
-    static {
-        DayOfMonthMap.put(Calendar.MONDAY, "1号");
-    }
 
     @ApiModelProperty(name = "classTimeDesp", value = "上课时间描述", example = "每周五、周六 09:00 ~ 10:30")
     private String classTimeDesp;
@@ -51,6 +41,9 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
 
     @ApiModelProperty(name = "canChange", value = "能否转班", example = "true")
     boolean canChange;
+
+    @ApiModelProperty(name = "planList", value = "排班计划")
+    private List<ClassPlan> planList = new ArrayList<ClassPlan>();
 
     public String getClassTimeDesp() {
         return classTimeDesp;
@@ -109,6 +102,14 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         this.canChange = canChange;
     }
 
+    public List<ClassPlan> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(List<ClassPlan> planList) {
+        this.planList = planList;
+    }
+
     public static ClassResponser me(Class classInfo) {
         ClassResponser dto = new ClassResponser();
         BeanUtils.copyProperties(classInfo, dto);
@@ -125,6 +126,13 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         return dto;
     }
 
+    public static ClassResponser me(Class classInfo, List<ClassPlan> classPlanList) {
+        ClassResponser response = me(classInfo);
+        response.setPlanList(classPlanList);
+
+        return response;
+    }
+
     private void setFormatPrice(Long price) {
         if (null == price)
             this.formatPrice = "0.00";
@@ -134,52 +142,37 @@ public class ClassResponser extends com.stylefeng.guns.modular.system.model.Clas
         this.formatPrice = bigPrice.divide(TRANSFORM).setScale(2).toString();
     }
 
-
+    /**
+     * 判断能否转班
+     *
+     * 在班级第一课时上课前，都是可以申请转班的
+     * @param dto
+     */
     private static void judgementChange(ClassResponser dto) {
         Date beginDate = dto.getBeginDate();
         Date now = new Date();
 
         dto.setCanChange(false);
-        if (now.before(beginDate))
+        if (DateUtil.compareDate(now, beginDate, Calendar.DAY_OF_MONTH) < 0)
             dto.setCanChange(true);
-
     }
 
+    /**
+     * 判断能否调课
+     *
+     * 在最后一次课时上课前都该班级都是可以调课的
+     * @param dto
+     */
     private static void judgementAdjust(ClassResponser dto) {
-        Date beginDate = dto.getBeginDate();
+        Date endDate = dto.getEndDate();
         Date now = new Date();
 
         dto.setCanAdjust(false);
-        if (now.before(beginDate))
+        if (DateUtil.compareDate(now, endDate, Calendar.DAY_OF_MONTH) < 0)
             dto.setCanAdjust(true);
-
     }
 
     private static void formatClassTime(ClassResponser dto) {
-        int scheduleType = dto.getStudyTimeType();
-        StringTokenizer tokenizer = new StringTokenizer(dto.getStudyTimeValue(), ",");
-
-        StringBuffer despBuffer = new StringBuffer();
-        despBuffer.append("每");
-
-        while(tokenizer.hasMoreTokens()){
-            int scheduleDay = Integer.parseInt(tokenizer.nextToken());
-
-            switch(scheduleType){
-                case Calendar.DAY_OF_WEEK:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append("、");
-                    break;
-                case Calendar.DAY_OF_MONTH:
-                    despBuffer.append(DayOfWeekMap.get(scheduleDay)).append(",");
-                    break;
-            }
-        }
-
-        despBuffer.append(dto.getBeginTime().substring(0, 2)).append(":").append(dto.getBeginTime().substring(2));
-        despBuffer.append(" ~ ");
-        despBuffer.append(dto.getEndTime().substring(0, 2)).append(":").append(dto.getEndTime().substring(2));
-
-        dto.setClassTimeDesp(despBuffer.toString());
-
+        dto.setClassTimeDesp(dto.getStudyTimeDesp());
     }
 }

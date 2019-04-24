@@ -5,19 +5,16 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
+import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerDetailService;
 import com.stylefeng.guns.modular.examineMGR.service.IExamineAnswerService;
 import com.stylefeng.guns.modular.system.dao.ExamineAnswerMapper;
-import com.stylefeng.guns.modular.system.model.ExamineAnswer;
-import com.stylefeng.guns.modular.system.model.ExamineAnswerStateEnum;
-import com.stylefeng.guns.modular.system.model.ExaminePaper;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.modular.system.model.*;
 import com.stylefeng.guns.util.CodeKit;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description //TODO
@@ -31,10 +28,15 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
     @Autowired
     private ExamineAnswerMapper examineAnswerMapper;
 
+    @Autowired
+    private IExamineAnswerDetailService examineAnswerDetailService;
+
     @Override
     public ExamineAnswer generatePaper(Student student, ExaminePaper examinePaper) {
 
         ExamineAnswer answerPaper = new ExamineAnswer();
+        Date now = new Date();
+
         answerPaper.setCode(CodeKit.generateAnswerPaper());
         answerPaper.setPaperCode(examinePaper.getCode());
         answerPaper.setStudentCode(student.getCode());
@@ -42,7 +44,8 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
         answerPaper.setTotalScore(examinePaper.getTotalScore());
         answerPaper.setExamTime(examinePaper.getExamTime());
         answerPaper.setStatus(ExamineAnswerStateEnum.Create.code);
-        answerPaper.setCreateDate(new Date());
+        answerPaper.setBeginDate(now);
+        answerPaper.setCreateDate(now);
 
         insert(answerPaper);
 
@@ -70,8 +73,63 @@ public class ExamineAnswerServiceImpl extends ServiceImpl<ExamineAnswerMapper, E
     public Page<Map<String, Object>> selectMapsPage(Map<String, Object> conditionMap) {
         Page<Map<String, Object>> page = new PageFactory<Map<String, Object>>().defaultPage();
 
-        List<Map<String, Object>> resultMap = examineAnswerMapper.selectPageMix(page, conditionMap);
+        Map<String, Object> arguments = buildQueryArguments(conditionMap);
+        List<Map<String, Object>> resultMap = examineAnswerMapper.selectPageMix(page, arguments);
         page.setRecords(resultMap);
         return page;
+    }
+
+    @Override
+    public void doAutoCheckPaper(ExamineAnswer examineAnswer) {
+
+        Wrapper<ExamineAnswerDetail> queryWrapper = new EntityWrapper<>();
+        queryWrapper.eq("answer_code", examineAnswer.getCode());
+        List<ExamineAnswerDetail> examineAnswerDetailList = examineAnswerDetailService.selectList(queryWrapper);
+
+        int getScore = 0;
+
+        for(ExamineAnswerDetail detail : examineAnswerDetailList){
+            String expectAnswer = detail.getAnswer();
+            String studentAnswer = detail.getStudentAnswer();
+
+            if (expectAnswer.equals(studentAnswer)){
+                detail.setStatus(ExamineAnswerDetailStateEnum.Right.code);
+                detail.setScore(detail.getTotalScore());
+                getScore += detail.getTotalScore();
+            }else{
+                detail.setStatus(ExamineAnswerDetailStateEnum.Wrong.code);
+                detail.setScore(0);
+            }
+        }
+
+        examineAnswerDetailService.updateBatchById(examineAnswerDetailList);
+
+        ExamineAnswer existExamineAnswer = get(examineAnswer.getCode());
+        existExamineAnswer.setStatus(ExamineAnswerStateEnum.Finish.code);
+        existExamineAnswer.setTeacher("科萃教育");
+        existExamineAnswer.setScore(getScore);
+
+        updateById(existExamineAnswer);
+    }
+
+
+    private Map<String, Object> buildQueryArguments(Map<String, Object> queryParams) {
+        Iterator<String> queryKeyIter = queryParams.keySet().iterator();
+        Map<String, Object> arguments = new HashMap<String, Object>();
+
+        while(queryKeyIter.hasNext()){
+            String key = queryKeyIter.next();
+            Object value = queryParams.get(key);
+
+            if (null == value)
+                continue;
+
+            if (String.class.equals(value.getClass())){
+                if (StringUtils.isEmpty((String) value))
+                    continue;
+            }
+            arguments.put(key, queryParams.get(key));
+        }
+        return arguments;
     }
 }

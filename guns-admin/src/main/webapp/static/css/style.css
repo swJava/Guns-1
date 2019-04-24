@@ -1516,7 +1516,8 @@ button.dim:active:before {
 
 .fc-event-time,
 .fc-event-title {
-    color: #717171;
+    /*color: #717171;*/
+    color: #ffffff;
     padding: 0 1px;
 }
 
@@ -3419,7 +3420,7 @@ a:focus {
     color: #ffffff;
     background-color: #ffffff;
     height: 1px;
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 .hr-line-solid {

@@ -48,7 +48,7 @@ public class ScheduleClass extends Model<ScheduleClass> {
      */
     @TableField("study_date")
     @ApiModelProperty(name = "classDate", value = "上课日期", example = "2018-11-27")
-    private Date classDate;
+    private Date studyDate;
 
     /**
      * 星期
@@ -108,12 +108,12 @@ public class ScheduleClass extends Model<ScheduleClass> {
         this.outlineCode = outlineCode;
     }
 
-    public Date getClassDate() {
-        return classDate;
+    public Date getStudyDate() {
+        return studyDate;
     }
 
-    public void setClassDate(Date classDate) {
-        this.classDate = classDate;
+    public void setStudyDate(Date studyDate) {
+        this.studyDate = studyDate;
     }
 
     public Integer getWeek() {
@@ -175,7 +175,7 @@ public class ScheduleClass extends Model<ScheduleClass> {
         "id=" + id +
         ", classCode=" + classCode +
         ", outlineCode=" + outlineCode +
-        ", classDate=" + classDate +
+        ", studyDate=" + studyDate +
         ", week=" + week +
         ", classTime=" + classTime +
         ", endTime=" + endTime +

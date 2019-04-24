@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>科萃教育</title>
+    <title>科萃培优-报名管理系统</title>
     <link rel="stylesheet" href="${ctxPath}/static/css/login_n.css">
 
-    <!--<link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
--->
     <!-- For-Mobile-Apps-and-Meta-Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Simple Login Form Widget Responsive, Login Form Web Template, Flat Pricing Tables, Flat Drop-Downs, Sign-Up Web Templates, Flat Web Templates, Login Sign-up Responsive Web Template, Smartphone Compatible Web Template, Free Web Designs for Nokia, Samsung, LG, Sony Ericsson, Motorola Web Design" />
     <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
     <!-- //For-Mobile-Apps-and-Meta-Tags -->
-
+    <script src="${ctxPath}/static/js/jquery.min.js?v=2.1.4"></script>
+    <script src="${ctxPath}/static/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="${ctxPath}/static/js/plugins/layer/layer.js"></script>
 </head>
 
 <body>
-<h1>科萃教育</h1>
+<script>
+    (function(){
+        if (parent.KC)
+            parent.location.reload();
+    })();
+</script>
+<h1>科 萃 培 优</h1>
 <div class="container w3">
     <h2>为教育添彩，为孩子赋能</h2>
     <form role="form" action="${ctxPath}/login" method="post">
@@ -30,11 +36,11 @@
             <input type="password" name="password" class="password" placeholder="密码" required="">
             <div class="clear"></div>
         </div>
-        <div class="rem-for-agile">
+        <!--<div class="rem-for-agile">
             <input type="checkbox" name="remember" class="remember">记得我
             <br>
-            <!--<a href="#">忘记了密码</a><br>-->
-        </div>
+            <a href="#">忘记了密码</a><br>
+        </div>-->
         <div class="login-w3">
             <input type="submit" class="login" value="登 录">
         </div>
@@ -42,7 +48,20 @@
     </form>
 </div>
 <div class="footer-w3l">
-    <p> 后台登录系统</p>
+    <p></p>
 </div>
+@if (has(tips)) {
+<script>
+    layer.open({
+        content: '${tips}'
+        , offset: 'rt'
+        , closeBtn: false
+        , time: 1000
+        , type: 0
+        , icon: 2
+        , title: false
+    });
+</script>
+@}
 </body>
 </html>

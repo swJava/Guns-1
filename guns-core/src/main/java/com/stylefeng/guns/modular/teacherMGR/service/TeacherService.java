@@ -22,4 +22,26 @@ public interface TeacherService extends IService<Teacher> {
      * @param teacher
      */
     void create(Teacher teacher);
+
+    /**
+     * 禁用教师
+     *
+     * @param code
+     */
+    boolean doPause(String code);
+
+    /**
+     * 启用教师
+     *
+     * @param code
+     */
+    boolean doResume(String code);
+
+    /**
+     * 获取老师信息
+     *
+     * @param code
+     * @return
+     */
+    Teacher get(String code);
 }

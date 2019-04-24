@@ -16,6 +16,8 @@ import com.stylefeng.guns.modular.examineMGR.transfer.AnswerDetailDto;
 import com.stylefeng.guns.modular.questionMGR.warpper.QuestionWrapper;
 import com.stylefeng.guns.modular.system.model.ExamineAnswer;
 import com.stylefeng.guns.modular.system.model.ExamineAnswerDetail;
+import com.stylefeng.guns.modular.system.model.ExamineAnswerStateEnum;
+import com.stylefeng.guns.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +88,30 @@ public class AnswerController extends BaseController {
     @ResponseBody
     public Object list(@RequestParam Map<String, Object> conditionMap) {
         //分页查詢
+        List<Integer> statusList = new ArrayList<>();
+        if (conditionMap.containsKey("status")){
+            if (ToolUtil.isNotEmpty(conditionMap.get("status"))){
+                int status = 0;
+                try {
+                    status = Integer.parseInt(conditionMap.get("status").toString());
+                }catch(Exception e){}
+
+                switch(status){
+                    case 1:
+                        statusList.add(ExamineAnswerStateEnum.Create.code);
+                        statusList.add(ExamineAnswerStateEnum.Pause.code);
+                        statusList.add(ExamineAnswerStateEnum.Testing.code);
+                        break;
+                    default:
+                        statusList.add(status);
+                        break;
+                }
+            }
+
+            conditionMap.remove("status");
+        }
+        conditionMap.put("statusList", statusList);
+
         Page<Map<String, Object>> pageMap = examineAnswerService.selectMapsPage(conditionMap);
         //包装数据
         new AnswerPaperWrapper(pageMap.getRecords()).warp();

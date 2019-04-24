@@ -1,0 +1,35 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<style>
+    .wizard-big.wizard > .content{
+        height: auto !important;
+        min-height: 400px;
+    }
+</style>
+        <div id="wizard" class="wizard-big">
+            @for(question in questionList){
+            <h1>${question.title}</h1>
+            <section>
+                <div class="row">
+                    <div class="col-sm-12">
+                        ${question.question}
+                    </div>
+                </div>
+                @for(answerItem in question.answerList){
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-xs-1">
+                            <label class="control-label" style="margin-top: 8px;"><#serialNumber type="letter" index="${answerItemLP.index - 1}" /></label>
+                        </div>
+                        <div class="col-xs-9">
+                            <pre>${answerItem.text}</pre>
+                        </div>
+                    </div>
+                </div>
+                @}
+            </section>
+            @}
+        </div>
+<#script src="/static/js/plugins/steps/jquery.steps.min.js" />
+<#script src="/static/modular/examineMGR/paper/paper_wizard_review.js" />
+@}

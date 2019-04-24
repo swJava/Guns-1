@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.memberMGR.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.modular.system.model.Class;
+import com.stylefeng.guns.modular.system.model.ClassSignAbility;
 import com.stylefeng.guns.modular.system.model.Member;
 
 import java.util.Map;
@@ -16,9 +17,16 @@ import java.util.Set;
  * @since 2018-10-09
  */
 public interface IMemberService extends IService<Member> {
+
+    /**
+     * 创建用户
+     * @param teacherMember
+     */
+    void createMember(Member teacherMember);
     /**
      * 新增用户
      *
+     * 适用于用户注册方式
      * @param stringObjectMap
      * @param userName
      * @param password
@@ -63,4 +71,38 @@ public interface IMemberService extends IService<Member> {
      * @return
      */
     Map<String, Set<Class>> findMyClasses(String userName, String student);
+
+    /**
+     * 判断用户报名类型
+     *
+     * @param member
+     * @return
+     */
+    ClassSignAbility getSignAbility(Member member);
+
+    /**
+     * 停用会员
+     *
+     * 逻辑删除，置会员状态为失效
+     *
+     * @param userName
+     * @return
+     */
+    boolean doPause(String userName);
+
+    /**
+     * 启用会员
+     *
+     * @param userName
+     * @return
+     */
+    boolean doResume(String userName);
+
+    /**
+     * 根据电话号码查找用户
+     *
+     * @param mobileNumber
+     * @return
+     */
+    Member getByMobile(String mobileNumber);
 }

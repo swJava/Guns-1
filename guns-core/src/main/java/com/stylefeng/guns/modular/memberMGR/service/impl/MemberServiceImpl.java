@@ -52,12 +52,43 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
     private String defaultPassword;
 
     @Override
+    public void createMember(Member member) {
+        // 电话号码，规则要求必须有
+        String number = member.getMobileNumber();
+
+        if (null == number)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"电话号码不能为空"});
+
+        // 判断手机号是否重复，并提示
+        Member existMember = (Member) selectOne(new EntityWrapper<Member>().eq("mobile_number", number).ne("status", MemberStateEnum.Invalid.code));
+        if (null != existMember) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE, new String[]{number});
+        }
+
+        // 指定用户名注册，判断用户名是否重复，并提示
+        existMember = (Member) selectOne(new EntityWrapper<Member>().eq("user_name", member.getUserName()).ne("status", MemberStateEnum.Invalid.code));
+        if (null != existMember) {
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_DUPLICATE, new String[]{member.getUserName()});
+        }
+
+        member.setPassword(new Sha256Hash(defaultPassword).toHex().toUpperCase());
+        member.setStatus(MemberStateEnum.Valid.code);
+        member.setJoinDate(new Date());
+        // 保存会员信息
+        insert(member);
+        // 构建会员认证信息
+        MemberAuth memberAuth = buildMemberAuthInfo(member);
+        // 保存会员认证信息
+        memberAuthMapper.insert(memberAuth);
+    }
+
+    @Override
     public Member createMember(String userName, String password, Map<String, Object> extraParams) {
         // 电话号码，规则要求必须有
         String number = getString(extraParams, "number");
 
         if (null == number)
-            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS);
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"电话号码不能为空"});
 
         // 判断手机号是否重复，并提示
         Member existMember = (Member) selectOne(new EntityWrapper<Member>().eq("mobile_number", number).ne("status", MemberStateEnum.Invalid.code));
@@ -203,7 +234,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
              studentList.addAll(studentService.listStudents(userName));
         }else{
             Student existStudent = studentService.get(student);
-            if (null != existStudent || existStudent.isValid()){
+            if (null != existStudent && existStudent.isValid()){
                 studentList.add(existStudent);
             }
         }
@@ -226,6 +257,56 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
         }
 
         return resultMap;
+    }
+
+    @Override
+    public ClassSignAbility getSignAbility(Member member) {
+        ClassSignAbility signType = ClassSignAbility.NORMAL;
+
+        return signType;
+    }
+
+    @Override
+    public boolean doPause(String userName) {
+        if (null == userName)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"用户"});
+
+        Member member = get(userName);
+
+        if (null == member)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"用户"});
+
+        member.setStatus(GenericState.Invalid.code);
+
+        updateById(member);
+        return true;
+    }
+
+    @Override
+    public boolean doResume(String userName) {
+        if (null == userName)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"用户"});
+
+        Member member = get(userName);
+
+        if (null == member)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"用户"});
+
+        member.setStatus(GenericState.Valid.code);
+
+        updateById(member);
+        return true;
+    }
+
+    @Override
+    public Member getByMobile(String number) {
+        if (null == number)
+            return null;
+
+        Wrapper<Member> queryWrapper = new EntityWrapper<Member>();
+        queryWrapper.eq("mobile_number", number);
+        queryWrapper.eq("status", GenericState.Valid.code);
+        return selectOne(queryWrapper);
     }
 
     private MemberAuth buildMemberAuthInfo(Member member) {

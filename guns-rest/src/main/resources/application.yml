@@ -1,6 +1,9 @@
 application:
   swagger-open: true
   sign-open: true #签名机制是否开启(true或false)
+  adjust:
+    auto:
+      enable: false
   pay:
     mock:
       enable: false
@@ -12,7 +15,12 @@ application:
       app-secret: eae820aa9d2d01c79bd2432854417b3b
       device-id: kc00000001
       order-url: https://api.mch.weixin.qq.com/pay/unifiedorder
-      notify-url: http://www.kecui.com.cn/api/pay/weixin/notify
+      notify-url: http://api.kecui.com.cn/pay/weixin/notify
+    unionpay:
+      certId: 1
+      merId: 777290058166500
+      order-url: https://gateway.test.95516.com/gateway/api/appTransReq.do
+      notify-url: http://api.kecui.com.cn/pay/weixin/notify
   message:
     captch.template: SMS_150742325
   education:
@@ -34,6 +42,8 @@ application:
       - /member/regist
       - /member/login*
       - /content/**
+      - /pay/weixin/notify
+      - /update/**
 
 mybatis-plus:
   typeAliasesPackage: com.stylefeng.guns.modular.system.model
@@ -123,7 +133,7 @@ logging:
 server:
   port: 18002
   servlet:
-    context-path: /api
+    context-path: /
   tomcat:
     max-connections: 1024
     uri-encoding: UTF-8
@@ -133,7 +143,7 @@ application:
   message:
     sms.sender.enable: true
   attachment:
-      visit-url: http://39.98.48.194/download
+      visit-url: http://www.kecui.com.cn/download
       store-path: /home/app/data/upload
 #启用shutdown
 management:

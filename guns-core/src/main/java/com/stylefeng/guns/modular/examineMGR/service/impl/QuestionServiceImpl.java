@@ -55,7 +55,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
-    public void delete(String code) {
+    public void doPause(String code) {
         if (null == code)
             throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
 
@@ -67,6 +67,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_ONAIR, new String[]{"题目"});
 
         question.setStatus(GenericState.Invalid.code);
+        updateById(question);
+    }
+
+    @Override
+    public void doResume(String code) {
+        if (null == code)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_MISSING_ARGUMENTS, new String[]{"题目"});
+
+        Question question = get(code);
+        if (null == question)
+            throw new ServiceException(MessageConstant.MessageCode.SYS_SUBJECT_NOT_FOUND, new String[]{"题目"});
+
+        question.setStatus(GenericState.Valid.code);
         updateById(question);
     }
 

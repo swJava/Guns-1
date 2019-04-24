@@ -3,7 +3,7 @@
 <mapper namespace="com.stylefeng.guns.modular.system.dao.OrderMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Order">
+    <resultMap id="BaseResultMap" type="java.util.HashMap">
         <id column="id" property="id" />
         <result column="accept_no" property="acceptNo" />
         <result column="accept_date" property="acceptDate" />
@@ -13,11 +13,103 @@
         <result column="pay_result" property="payResult" />
         <result column="pay_date" property="payDate" />
         <result column="pay_method" property="payMethod" />
+        <result column="user_name" property="userName" />
+        <result column="out_order_no" property="outOrderNo" />
+        <result column="out_sequence" property="outSequence" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, accept_no, accept_date, status, amount, pay_status, pay_result, pay_date, pay_method
+        o.id, o.accept_no, o.accept_date, o.status, o.amount, o.pay_status, o.pay_result, o.pay_date, o.pay_method, o.user_name, o.out_order_no, o.out_sequence
     </sql>
+
+    <sql id="Where_Statement">
+        <where>
+            <if test="null != orderNo">
+                and o.accept_no = #{orderNo}
+            </if>
+
+            <if test="null != teacher">
+                and cc.teacher like CONCAT('%',#{teacher},'%'))
+            </if>
+
+            <if test="null != student">
+                and (cc.student_code = #{student} or cc.student like CONCAT('%',#{student},'%'))
+            </if>
+
+            <if test="null != subject">
+                and cr.subject = #{subject}
+            </if>
+
+            <if test="null != ability">
+                and c.ability = #{ability}
+            </if>
+
+            <if test="null != cycle">
+                and c.cycle = #{cycle}
+            </if>
+
+        </where>
+    </sql>
+
+    <select id="queryForList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        (
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            (
+            (
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            (
+        </if>
+        <if test="null != subject">
+            (
+        </if>
+        tb_order o
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            join tb_order_item oi on oi.order_no = o.accept_no )
+            join tb_course_cart cc on cc.code = oi.course_cart_code )
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            join tb_class c on oi.item_object_code = c.code )
+        </if>
+        <if test="null != subject">
+            join tb_course cr on c.course_code = cr.code )
+        </if>
+        )
+        <include refid="Where_Statement" />
+    </select>
+
+    <select id="selectPageList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+            <include refid="Base_Column_List" />
+        from
+        (
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            (
+            (
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            (
+        </if>
+        <if test="null != subject">
+            (
+        </if>
+        tb_order o
+        <if test="null != teacher || null != student || null != subject || null != ability || null != cycle">
+            join tb_order_item oi on oi.order_no = o.accept_no )
+            join tb_course_cart cc on cc.code = oi.course_cart_code )
+        </if>
+        <if test="null != subject || null != ability || null != cycle">
+            join tb_class c on oi.item_object_code = c.code )
+        </if>
+        <if test="null != subject">
+            join tb_course cr on c.course_code = cr.code )
+        </if>
+        )
+        <include refid="Where_Statement" />
+    </select>
 
 </mapper>

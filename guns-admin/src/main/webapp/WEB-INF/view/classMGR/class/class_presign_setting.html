@@ -1,0 +1,118 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+<style>
+    .wizard-big.wizard > .content{
+        height: auto !important;
+        min-height: 600px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .pagination ul > li
+    {
+        display: inline !important;
+        padding: 0;
+    }
+</style>
+<input type="hidden" id="code" value="${classItem.code!}" />
+<div class="ibox float-e-margins" style="heigth: 100%;">
+    <div class="ibox-content">
+        <div id="wizard" class="wizard-big" style="height: auto !important; min-height: 600px;">
+            <h1>预报信息</h1>
+            <fieldset>
+                <form id="infoForm" class="form-horizontal">
+                    @if (has(sourceClass)) {
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+                            <#input id="sourceClassCode" name="班级编码" readonly="true" value="${sourceClass.code!}" underline="true"/>
+                            <#input id="gradeName" name="授课年级" readonly="true" value="${sourceCourse.gradeName}" underline="true"/>
+                            <#input id="period" name="总学时" readonly="true" value="${sourceClass.period!}" underline="true"/>
+                            <#input id="presignStartDate" name="开始时间" readonly="true" value="${classItem.presignStartDate!}" underline="true"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <#input id="subjectName" name="学科" readonly="true" value="${sourceCourse.subjectName!}" underline="true"/>
+                            <#input id="abilityName" name="班型" readonly="true" value="${sourceClass.abilityName!}" underline="true" />
+                            <#input id="teacher" name="授课老师" readonly="true" value="${sourceClass.teacher!}" underline="true" />
+                            <#input id="presignEndDate" name="结束时间" readonly="true" value="${classItem.presignEndDate!}" underline="true" />
+                        </div>
+                    </div>
+                    @}else{
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2>没有续报班级信息</h2>
+                        </div>
+                    </div>
+                    @}
+                </form>
+            </fieldset>
+            <h1>选择班级</h1>
+            <fieldset>
+                <form id="classForm" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="grade" name="年级" code="school_grade" placeholder="-- 选择年级 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="ability" name="班型" code="ability" placeholder="-- 选择班型 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="cycle" name="学期" code="cycle" placeholder="-- 选择学期 --" />
+                        </div>
+                        <div class="col-sm-3">
+                            <#NameCon id="teacherQueryString" name="授课老师" />
+                        </div>
+                        <div class="col-sm-1" style="float: right;">
+                            <#button name="搜 索" icon="fa-search" clickFun="SettingWizard.classSearch()"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input type="hidden" class="form-group" id="sourceClassCode" name="sourceClassCode" />
+                            <#table id="presignClassTable"/>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>设置时间</h1>
+            <fieldset>
+                <form id="settingForm" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+                            <#input id="presignStartDate" name="开始预报" underline="true" underline="true"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <#input id="presignEndDate" name="结束预报" underline="true"/>
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+            <h1>完成</h1>
+            <fieldset>
+                <form id="" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-sm-6 b-r">
+                            <#input id="confirm-source-className" name="班级名称" readonly="true" value="" underline="true"/>
+                            <#input id="confirm-source-gradeName" name="授课年级" readonly="true" value="" underline="true"/>
+                            <#input id="confirm-source-period" name="总学时" readonly="true" value="" underline="true"/>
+                            <#input id="confirm-presign-startDate" name="开始时间" readonly="true" value="" underline="true"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <#input id="confirm-source-subjectName" name="学科" readonly="true" value="" underline="true"/>
+                            <#input id="confirm-source-abilityName" name="班型" readonly="true" value="" underline="true" />
+                            <#input id="confirm-source-teacher" name="授课老师" readonly="true" value="" underline="true" />
+                            <#input id="confirm-presign-endDate" name="结束时间" readonly="true" value="" underline="true" />
+                        </div>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<#script src="/static/js/plugins/fullcalendar/jquery-ui.custom.min.js" />
+<#script src="/static/js/plugins/steps/jquery.steps.min.js" />
+<#script src="/static/modular/classMGR/class/class_presign_setting.js" />
+@}

@@ -1,0 +1,110 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-sm-12" id="itemsArea">
+                    <input type="hidden" id="itemSize" value="${subDicts.~size!0}" />
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">试卷编码</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="paperCode" type="text" value="${paper.code}">
+                        </div>
+
+                        <label class="col-sm-2 control-label">针对学科</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="subject" type="text" value="${paper.subjectName}">
+                        </div>
+
+                        <label class="col-sm-2 control-label">出题人</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="teacher" type="text" value="${paper.teacher}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">题目数量</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="count" type="text" value="${paper.count}">
+                        </div>
+
+                        <label class="col-sm-2 control-label">总分值</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="totalScore" type="text" value="${paper.totalScore}">
+                        </div>
+
+                        <div class="col-sm-2">
+                            <#button btnCss="info" name="增加" icon="fa-plus" clickFun="PaperUseDlg.addItem()"/>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    @for(item in itemList){
+                    <div class="form-group" name="dictItem" id="dictItem${itemLP.index}">
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="ability" name="班次" code="ability" placeholder="-- 选择班次 --" elid="name" value="${item.ability}"/>
+                        </div>
+                        <div class="col-sm-3">
+                            <#dictSelectorCondition id="cycle" name="学期" code="cycle" placeholder="-- 选择学期 --" elid="name" value="${item.cycle}"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">测试时间</button>
+                                </div>
+                                <input type="text" class="form-control" name="examTime" placeholder="0" value="${item.examTime}" />
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">及格分数</button>
+                                </div>
+                                <input type="text" class="form-control" name="passScore" placeholder="0" value="${item.passScore}" />
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="PaperUseDlg.deleteItem(event)"/>
+                        </div>
+                    </div>
+                    @}
+                </div>
+                <div class="row btn-group-m-t">
+                    <div class="col-sm-10 col-sm-offset-5">
+                        <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="PaperUseDlg.doSubmit()"/>
+                        <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PaperUseDlg.close()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/template" id="itemTemplate">
+    <div class="form-group" name="dictItem" id="dictItem">
+        <div class="col-sm-3">
+            <#dictSelectorCondition id="ability" name="班次" code="ability" placeholder="-- 选择班次 --" elid="name" />
+        </div>
+        <div class="col-sm-3">
+            <#dictSelectorCondition id="cycle" name="学期" code="cycle" placeholder="-- 选择学期 --" elid="name" />
+        </div>
+        <div class="col-sm-2">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">测试时间</button>
+                </div>
+                <input type="text" class="form-control" name="examTime" placeholder="0" />
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">及格分数</button>
+                </div>
+                <input type="text" class="form-control" name="passScore" placeholder="0" />
+            </div>
+        </div>
+        <div class="col-sm-1">
+            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="PaperUseDlg.deleteItem(event)"/>
+        </div>
+    </div>
+</script>
+<#script src="/static/modular/examineMGR/paper/paper_use.js" />
+@}

@@ -45,4 +45,18 @@ public interface IColumnService extends IService<Column> {
      * @param contentCodes
      */
     void removeContent(String column, Set<String> contentCodes);
+
+    /**
+     * 停用栏目
+     *
+     * @param code
+     */
+    void doPause(String code);
+
+    /**
+     * 启用栏目
+     *
+     * @param code
+     */
+    void doResume(String code);
 }

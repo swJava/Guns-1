@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<input type="hidden" id="batchCode" value="${batchCode}"/>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>批处理任务详情</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-3">
+                        <#SelectCon id="status" name="处理状态" >
+                            <option value="">全部</option>
+                            <option value="1">未处理</option>
+                            <option value="2">已失败</option>
+                            <option value="3">已完成</option>
+                        </#SelectCon>
+                    </div>
+                    <div class="col-sm-2" style="float: right;">
+                        <#button name="搜 索" icon="fa-search" clickFun="ProcessDetail.search()"/>
+                    </div>
+                </div>
+                <#table id="ProcessDetailTable"/>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<#script src="/static/modular/batchMGR/process_detail.js" />
+@}

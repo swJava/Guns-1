@@ -9,10 +9,10 @@ var QuestionInfoDlg = {
     answerItems: '',
     itemTemplate: $("#itemTemplate").html(),
     validateFields: {
-        code: {
+        question_content: {
             validators: {
-                notEmpty: {
-                    message: '编码不能为空'
+                content_not_empty_v: {
+                    message: '题目内容不能为空'
                 }
             }
         },
@@ -150,7 +150,6 @@ QuestionInfoDlg.addItem = function () {
 
     console.log('having ' + itemCount + ' answer item');
     $("#itemArea").append(this.itemTemplate);
-    console.log('');
     $('#itemArea [name="dictItem"]:last [name="itemCode"]').val(QuestionInfoDlg.itemIndex[itemCount]);
     $('#itemArea [name="dictItem"]:last [name="itemIndex"]').val(itemCount);
 
@@ -170,7 +169,7 @@ QuestionInfoDlg.addItem = function () {
 
             // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
             console.log(result);
-            var url = Feng.ctxPath + '/attachment/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+            var url = 'http://www.kecui.com.cn/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
             insertImg(url);
 
             // result 必须是一个 JSON 格式字符串！！！否则报错
@@ -216,11 +215,9 @@ QuestionInfoDlg.addSubmit = function() {
     this.clearData();
     this.collectData();
 
-
     if (!this.validate()) {
         return;
     }
-
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/question/add", function(data){
@@ -260,6 +257,21 @@ QuestionInfoDlg.editSubmit = function() {
 }
 
 $(function() {
+    $.fn.bootstrapValidator.validators.content_not_empty_v = {
+        validate: function(validator, $field, options) {
+            var content = QuestionInfoDlg.editor.txt.html();
+            console.log('content >>>' + content);
+            if (null == content || content.length == 0){
+                return false;
+            }
+
+            if ('<p><br></p>' == content) {
+                return false;
+            }
+
+            return true;
+        }
+    }
     //非空校验
     Feng.initValidator("questionInfoForm", QuestionInfoDlg.validateFields);
 
@@ -285,7 +297,7 @@ $(function() {
 
             // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
             console.log(result);
-            var url = Feng.ctxPath + '/attachment/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+            var url = 'http://www.kecui.com.cn/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
             insertImg(url);
 
             // result 必须是一个 JSON 格式字符串！！！否则报错

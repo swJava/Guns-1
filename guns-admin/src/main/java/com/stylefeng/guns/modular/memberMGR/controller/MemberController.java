@@ -8,8 +8,9 @@ import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.memberMGR.service.IMemberService;
 import com.stylefeng.guns.modular.memberMGR.warpper.MemberWrapper;
 import com.stylefeng.guns.modular.system.model.Member;
-import com.stylefeng.guns.modular.system.model.Student;
+import com.stylefeng.guns.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -67,14 +70,35 @@ public class MemberController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
+    public Object list(@RequestParam Map<String, String> queryMap) {
         //分页查詢
-        Page<Student> page = new PageFactory<Student>().defaultPage();
+        Page<Member> page = new PageFactory<Member>().defaultPage();
         Page<Map<String, Object>> pageMap = memberService.selectMapsPage(page, new EntityWrapper<Member>() {
             {
                 //name条件分页
-                if (StringUtils.isNotEmpty(condition)) {
-                    like("name", condition);
+                if (queryMap.containsKey("condition") && StringUtils.isNotEmpty(queryMap.get("condition"))) {
+                    like("name", queryMap.get("condition").toString());
+                    or();
+                    like("user_name", queryMap.get("condition").toString());
+                    or();
+                    like("nickname", queryMap.get("condition").toString());
+                }
+
+                Date beginQueryDate = DateUtil.parseDate(queryMap.get("beginQueryDate"));
+                if (null != beginQueryDate) {
+                    ge("join_date", DateUtils.truncate(beginQueryDate, Calendar.DAY_OF_MONTH));
+                }
+
+                Date endQueryDate = DateUtil.parseDate(queryMap.get("endQueryDate"));
+                if (null != endQueryDate) {
+                    lt("join_date", DateUtils.addDays(DateUtils.truncate(endQueryDate, Calendar.DAY_OF_MONTH), 1));
+                }
+
+                if (StringUtils.isNotEmpty(queryMap.get("status"))){
+                    try{
+                        int status = Integer.parseInt(queryMap.get("status"));
+                        eq("status", status);
+                    }catch(Exception e){}
                 }
             }
         });
@@ -95,12 +119,27 @@ public class MemberController extends BaseController {
     }
 
     /**
-     * 删除会员管理
+     * 停用会员管理
      */
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/pause")
     @ResponseBody
-    public Object delete(@RequestParam Integer memberId) {
-        memberService.deleteById(memberId);
+    public Object pause(@RequestParam String userName) {
+
+        memberService.doPause(userName);
+
+        return SUCCESS_TIP;
+    }
+
+
+    /**
+     * 启用会员管理
+     */
+    @RequestMapping(value = "/resume")
+    @ResponseBody
+    public Object resume(@RequestParam String userName) {
+
+        memberService.doResume(userName);
+
         return SUCCESS_TIP;
     }
 
@@ -121,5 +160,14 @@ public class MemberController extends BaseController {
     @ResponseBody
     public Object detail(@PathVariable("memberId") Integer memberId) {
         return memberService.selectById(memberId);
+    }
+
+    /**
+     * 会员管理详情
+     */
+    @RequestMapping(value = "/get/{userName}")
+    @ResponseBody
+    public Object get(@PathVariable("userName") String userName) {
+        return memberService.get(userName);
     }
 }

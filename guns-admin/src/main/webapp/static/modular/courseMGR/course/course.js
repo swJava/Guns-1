@@ -20,7 +20,14 @@ Course.initColumn = function () {
             {title: '授课学科', field: 'subjectName', visible: true, align: 'center', valign: 'middle'},
             {title: '授课年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
             {title: '授课课时数', field: 'period', visible: true, align: 'center', valign: 'middle'},
-            {title: '状态', field: 'statusName', visible: true, align: 'center', valign: 'middle'}
+            {title: '状态', field: 'status', visible: true, align: 'center', valign: 'middle',
+                formatter: function(value, row){
+                    if (1 == value)
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" checked />';
+                    else
+                        return '<input type="checkbox" class="js-switch" data-code="'+row.code+'" />';
+                }
+            }
     ];
 };
 
@@ -113,6 +120,9 @@ Course.openCourseOutline = function () {
 Course.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['grade'] = $("#grade").val();
+    queryData['subject'] = $("#subject").val();
+    queryData['status'] = $("#status").val();
     Course.table.refresh({query: queryData});
 };
 
@@ -120,5 +130,34 @@ $(function () {
     var defaultColunms = Course.initColumn();
     var table = new BSTable(Course.id, "/course/list", defaultColunms);
     table.setPaginationType("server");
+    table.setLoadSuccessCallback(function(){
+        var switchers = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+        switchers.forEach(function(switcher) {
+            var switchery = new Switchery(switcher, {
+                size: 'small'
+            });
+            switcher.onchange = function(){
+                var state = switcher.checked;
+                console.log('<<< change member state' + $(switcher).attr('data-code') + ' : ' + state);
+
+                var reqUrl = '';
+                if (state){
+                    // true 启用
+                    reqUrl = Feng.ctxPath + "/course/resume";
+                }else{
+                    // false 停用
+                    reqUrl = Feng.ctxPath + "/course/pause";
+                }
+
+                var ajax = new $ax(reqUrl, function (data) {
+                }, function (data) {
+                    Feng.error("操作失败!" + data.responseJSON.message + "!");
+                });
+                ajax.set("code",$(switcher).attr('data-code'));
+                ajax.start();
+
+            }
+        });
+    });
     Course.table = table.init();
 });

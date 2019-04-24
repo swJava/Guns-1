@@ -90,7 +90,7 @@ public class ConstantFactory implements IConstantFactory {
      * 通过角色ids获取角色名称
      */
     @Override
-    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.ROLES_NAME + "'+#roleIds")
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.ROLES_NAME + "'+#roleIds")
     public String getRoleName(String roleIds) {
         Integer[] roles = Convert.toIntArray(roleIds);
         StringBuilder sb = new StringBuilder();
@@ -107,7 +107,7 @@ public class ConstantFactory implements IConstantFactory {
      * 通过角色id获取角色名称
      */
     @Override
-    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_NAME + "'+#roleId")
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_NAME + "'+#roleId")
     public String getSingleRoleName(Integer roleId) {
         if (0 == roleId) {
             return "--";
@@ -123,7 +123,7 @@ public class ConstantFactory implements IConstantFactory {
      * 通过角色id获取角色英文名称
      */
     @Override
-    @Cacheable(value = Cache.CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_TIP + "'+#roleId")
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.SINGLE_ROLE_TIP + "'+#roleId")
     public String getSingleRoleTip(Integer roleId) {
         if (0 == roleId) {
             return "--";
@@ -223,6 +223,7 @@ public class ConstantFactory implements IConstantFactory {
      * @return
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#dictCode")
     public String getDictNameByCode(String dictCode) {
         List<Dict> dicts = dictMapper.selectByCode(dictCode);
         return CollectionUtils.isEmpty(dicts)?"":dicts.get(0).getName();
@@ -269,11 +270,13 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#code+#val")
     public String getDictsByCode(String code, String val) {
         return getDictsByCode(code, val, "");
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#code+#val")
     public String getDictsByCode(String code, String val, String defaultValue) {
         Dict temp = new Dict();
         temp.setCode(code);
@@ -299,6 +302,7 @@ public class ConstantFactory implements IConstantFactory {
      * @return
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.TEACHER_TYPE + "'+#teacherType")
     public String getTeacherTypeName(Integer teacherType) {
         return getDictsByName("教师类型", teacherType);
     }
@@ -309,6 +313,7 @@ public class ConstantFactory implements IConstantFactory {
      * @return
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_CODE + "'+#dictCode")
     public String getGradeName(Integer grade) {
         return getDictsByName("授课年级", grade);
     }
@@ -317,6 +322,7 @@ public class ConstantFactory implements IConstantFactory {
      * 获取性别名称
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.GENDER_TYPE + "'+#sex")
     public String getSexName(Integer sex) {
         return getDictsByName("性别", sex);
     }
@@ -333,6 +339,7 @@ public class ConstantFactory implements IConstantFactory {
      * 获取菜单状态
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.MENU_STATUS + "'+#status")
     public String getMenuStatusName(Integer status) {
         return MenuStatus.valueOf(status);
     }
@@ -341,6 +348,7 @@ public class ConstantFactory implements IConstantFactory {
      * 查询字典
      */
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_LIST + "'+#id")
     public List<Dict> findInDict(Integer id) {
         if (ToolUtil.isEmpty(id)) {
             return null;
@@ -427,7 +435,6 @@ public class ConstantFactory implements IConstantFactory {
         return getDictsByName("开课时间类型", studyTimeType);
     }
 
-
     @Override
     public String getContentTypeName(Integer type) {
         return getDictsByName("资讯类型", type);
@@ -439,11 +446,14 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.SUBJECT_TYPE + "'+#subject")
     public String getsubjectName(Integer subject) {
-        return getDictsByName("学科类型", subject);
+        return getDictsByCode("subject_type", String.valueOf(subject));
+//        return getDictsByName("学科类型", subject);
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.ROOM_TYPE + "'+#type")
     public String getClassRoomTypeName(Integer type) {
         return getDictsByCode("classroom_type", String.valueOf(type));
     }
@@ -465,16 +475,19 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.ADJUST_TYPE + "'+#type")
     public String getAdjustTypeName(Integer type) {
         return getDictsByName("调课类型", type);
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.CLASS_ABILITY + "'+#ability")
     public String getAbilityName(Integer ability) {
         return getDictsByName("班次", ability);
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.CLASS_CYCLE + "'+#cycle")
     public String getCycleName(Integer cycle) {
         return getDictsByName("学期", cycle);
     }
@@ -488,21 +501,25 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.COLUMN_TYPE + "'+#type")
     public String getColumnTypeName(Integer type) {
         return getDictsByName("栏目行为类型", type);
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.GENERIC_STATE + "'+#status")
     public String getMemberStatusName(Integer status) {
         return getDictsByCode("account_state", String.valueOf(status));
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.GENERIC_STATE + "'+#status")
     public Object getGenericStateName(Integer status) {
         return getDictsByCode("generic_state", String.valueOf(status));
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.COURSE_METHOD + "'+#method")
     public Object getCourseMethodname(Integer method) {
         return getDictsByCode("course_method", String.valueOf(method));
     }
@@ -513,6 +530,7 @@ public class ConstantFactory implements IConstantFactory {
     }
 
     @Override
+    @Cacheable(value = Cache.DICT_CONSTANT, key = "'" + CacheKey.DICT_MAP + "'+#dictCode")
     public Map<String, Object> getdictsMap(String dictCode) {
         Dict temp = new Dict();
         temp.setCode(dictCode);

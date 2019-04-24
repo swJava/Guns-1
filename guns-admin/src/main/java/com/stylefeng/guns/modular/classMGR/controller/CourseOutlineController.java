@@ -1,5 +1,7 @@
 package com.stylefeng.guns.modular.classMGR.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.log.LogObjectHolder;
 import com.stylefeng.guns.modular.classMGR.service.ICourseOutlineService;
@@ -12,6 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 课程大纲管理控制器
@@ -53,8 +59,20 @@ public class CourseOutlineController extends BaseController {
      */
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Object list(String condition) {
-        return courseOutlineService.selectList(null);
+    public Object list(@RequestParam  Map<String, Object> queryParams) {
+
+        Map<String, Object> arguments = buildQueryArguments(queryParams);
+
+        Wrapper<CourseOutline> queryWrapper = new EntityWrapper<CourseOutline>();
+        if (arguments.containsKey("courseCode"))
+            queryWrapper.eq("course_code", arguments.get("courseCode"));
+        List<CourseOutline> outlineList = courseOutlineService.selectList(queryWrapper);
+
+        Map<String , Object> resultMap = new HashMap<String, Object>();
+
+        resultMap.put("rows", outlineList);
+
+        return resultMap;
     }
 
     /**

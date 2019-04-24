@@ -129,7 +129,7 @@ public class ContentController extends BaseController {
     public Object add(Content content, String masterCode, String masterName) {
         Attachment icon = null;
         List<Attachment> attachmentList = attachmentService.listAttachment(masterName, masterCode);
-        if (null != attachmentList || attachmentList.size() > 0) {
+        if (null != attachmentList && attachmentList.size() > 0) {
             icon = attachmentList.get(0);
             content.setTimage(PathUtil.generate(iconVisitURL, String.valueOf(icon.getId())));
         }

@@ -31,13 +31,6 @@ var TeacherInfoDlg = {
                     message: '性别不能为空'
                 }
             }
-        },
-        identical: {
-            validators: {
-                notEmpty: {
-                    message: '状态不能为空'
-                }
-            }
         }
     }
 };
@@ -96,6 +89,7 @@ TeacherInfoDlg.collectData = function() {
     .set('status')
     .set('masterName')
     .set('masterCode')
+    .set('mobile')
     ;
 }
 
@@ -164,7 +158,6 @@ $(function() {
     $("#gender").val($("#genderValue").val());
     $("#type").val($("#typeValue").val());
     $("#grade").val($("#gradeValue").val());
-    $("#status").val($("#statusValue").val());
 
 
     // 初始化头像上传

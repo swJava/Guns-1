@@ -89,7 +89,7 @@ Marquee.delete = function () {
         }, function (data) {
             Feng.error("删除失败!" + data.responseJSON.message + "!");
         });
-        ajax.set("contentId",this.seItem.id);
+        ajax.set("contentCode",this.seItem.code);
         ajax.start();
     }
 };

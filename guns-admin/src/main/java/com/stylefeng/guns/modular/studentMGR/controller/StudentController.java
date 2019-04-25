@@ -187,8 +187,10 @@ public class StudentController extends BaseController {
             Member member = memberService.selectOne(new EntityWrapper<Member>() {{
                 eq("user_name", student.getUserName());
             }});
-            member.setMobileNumber(parentPhone);
-            memberService.updateById(member);
+            if( member != null ){
+                member.setMobileNumber(parentPhone);
+                memberService.updateById(member);
+            }
         }
         // 更新ICON资源
         if (null != icon && null != icon.getId())

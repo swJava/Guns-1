@@ -288,11 +288,9 @@ PaperWizard.collectData = function() {
     this
         .set('code')
         .set('id')
-        .set('grades')
+        .set('grade')
         .set('subject')
-        .set('ability')
-        .set('examTime')
-        .set('passScore');
+        .set('question')
 
     var questions = PaperWizard.SelectedQuestion.seCodes.slice(0);
     console.log(questions);
@@ -399,6 +397,10 @@ $(function () {
             if (step == 1 && step > prev){
                 // 正向进入到"选择题目"步骤时
                 $('#questionItemCount').val(PaperWizard.SelectedQuestion.seCodes.length);
+                // 学科
+                $('#subject').val($('#subject1').val());
+                // 年级
+                $('#grade').val($('#grade1').val());
             }
 
             if (step == 1 && step < prev){

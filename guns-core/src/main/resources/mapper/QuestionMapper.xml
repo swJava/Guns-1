@@ -53,6 +53,10 @@
             <if test="null != status">
                 and a.status = #{status}
             </if>
+            <if test="null != grade">
+                and a.grade = #{grade}
+            </if>
         </where>
+        order by a.id
     </select>
 </mapper>

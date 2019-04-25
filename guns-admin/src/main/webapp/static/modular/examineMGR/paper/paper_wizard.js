@@ -288,7 +288,7 @@ PaperWizard.collectData = function() {
     this
         .set('code')
         .set('id')
-        .set('grade')
+        .set('grades')
         .set('subject')
         .set('question')
 

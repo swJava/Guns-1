@@ -1,10 +1,10 @@
 package com.stylefeng.guns.jwt;
 
 import com.alibaba.fastjson.JSON;
-import com.stylefeng.guns.core.util.MD5Util;
-import com.stylefeng.guns.rest.common.SimpleObject;
 import com.stylefeng.guns.rest.modular.auth.converter.BaseTransferEntity;
 import com.stylefeng.guns.rest.modular.auth.security.impl.Base64SecurityAction;
+import com.stylefeng.guns.rest.modular.member.requester.RegistRequester;
+import com.stylefeng.guns.util.MD5Util;
 
 /**
  * jwt测试
@@ -18,13 +18,13 @@ public class DecryptTest {
 
         String salt = "0iqwhi";
 
-        SimpleObject simpleObject = new SimpleObject();
-        simpleObject.setUser("stylefeng");
-        simpleObject.setAge(12);
-        simpleObject.setName("ffff");
-        simpleObject.setTips("code");
+        RegistRequester requester = new RegistRequester();
+        requester.setUserName("18580255110");
+        requester.setPassword("e9cee71ab932fde863338d08be4de9dfe39ea049bdafb342ce659ec5450b69ae");
+        requester.setCaptcha("123456");
+        requester.setGrade(1);
 
-        String jsonString = JSON.toJSONString(simpleObject);
+        String jsonString = JSON.toJSONString(requester);
         String encode = new Base64SecurityAction().doAction(jsonString);
         String md5 = MD5Util.encrypt(encode + salt);
 

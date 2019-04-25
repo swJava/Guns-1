@@ -1,0 +1,48 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>试卷管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#SelectCon id="status" name="状态" >
+                                    <option value="">全部</option>
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </#SelectCon>
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="condition" name="关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="Paper.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="PaperTableToolbar" role="group">
+                            @if(shiro.hasPermission("/examine/paper/add")){
+                            <#button name="创建" icon="fa-plus" clickFun="Paper.openAddPaper();"/>
+                            @}
+                            @if(shiro.hasPermission("/examine/paper/update")){
+                            <#button name="修改" icon="fa-edit" clickFun="Paper.openPaperDetail();" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/examine/paper/copy")){
+                            <#button name="复制" icon="fa-clone" clickFun="Paper.copy();" space="true"/>
+                            @}
+                        </div>
+                        <#table id="PaperTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/examineMGR/paper/paper.js" />
+@}

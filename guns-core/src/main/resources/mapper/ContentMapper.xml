@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Content">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="type" property="type" />
+        <result column="timage" property="timage" />
+        <result column="title" property="title" />
+        <result column="introduce" property="introduce" />
+        <result column="author" property="author" />
+        <result column="publish_type" property="publishType" />
+        <result column="content" property="content" />
+        <result column="create_date" property="createDate" />
+        <result column="dead_date" property="deadDate" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id, a.code, a.type, a.timage, a.title, a.introduce, a.author, a.publish_type, a.content, a.create_date, a.dead_date, a.status
+    </sql>
+
+    <sql id="Outline_Column_List">
+        a.id, a.code, a.type, a.timage, a.title, a.introduce, a.author, a.publish_type, a.create_date, a.dead_date, a.status
+    </sql>
+
+    <select id="selectByColumn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_content a, tb_content_category b
+        <where>
+            a.code = b.content_code and b.column_code = #{column}
+        </where>
+    </select>
+
+    <select id="selectOutlineByColumn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Outline_Column_List" />
+        from tb_content a, tb_content_category b
+        <where>
+            a.code = b.content_code and b.column_code = #{column}
+        </where>
+    </select>
+
+    <select id="selectByColumns" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_content a
+        <where>
+            <if test="excludeList.size() > 0">
+                and not exists ( select 1 from tb_content_category where content_code = a.code and column_code in
+                <foreach collection="excludeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+                )
+            </if>
+            <if test="includeList.size() > 0">
+                and exists ( select 1 from tb_content_category where content_code = a.code and column_code in
+                <foreach collection="includeList" item="column" open="(" separator="," close=")">
+                    #{column}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+</mapper>

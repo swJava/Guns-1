@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ExamineAnswerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ExamineAnswer">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="paper_code" property="paperCode" />
+        <result column="student_code" property="studentCode" />
+        <result column="class_code" property="classCode" />
+        <result column="user_name" property="userName" />
+        <result column="quota" property="quota" />
+        <result column="total_score" property="totalScore" />
+        <result column="exam_time" property="examTime" />
+        <result column="answer_quota" property="answerQuota" />
+        <result column="last_answer_question" property="lastAnswerQuestion" />
+        <result column="last_answer_date" property="lastAnswerDate" />
+        <result column="status" property="status" />
+        <result column="create_date" property="createDate" />
+        <result column="score" property="score" />
+        <result column="begin_date" property="beginDate" />
+        <result column="end_date" property="endDate" />
+        <result column="duration" property="duration" />
+        <result column="teacher" property="teacher" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id, a.code, a.paper_code, a.class_code, a.user_name, a.student_code, a.quota, a.total_score, a.exam_time, a.answer_quota, a.last_answer_question, a.last_answer_date, a.status, a.create_date, a.score, a.begin_date, a.end_date, a.duration, a.teacher,
+        paper.subject, paper.grades
+    </sql>
+
+
+    <select id="selectPageMix" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        (
+        <if test="null != student">
+            (
+        </if>
+        tb_examine_answer a join tb_examine_paper paper on paper.code = a.paper_code
+        )
+        <if test="null != student">
+            left join tb_student stu on a.student_code = stu.code )
+        </if>
+        <where>
+            <if test="null != grade">
+                and paper.grades = #{grade}
+            </if>
+            <if test="null != student">
+                and ( a.student_code = #{student} or stu.name LIKE CONCAT('%',#{student},'%') )
+            </if>
+            <if test="null != subject">
+                and paper.subject = #{subject}
+            </if>
+            <if test="null != ability">
+                and paper.ability = #{ability}
+            </if>
+            <if test="null != beginScore">
+                and a.score &gt;= #{beginScore}
+            </if>
+            <if test="null != endScore">
+                and a.score &lt; #{endScore}
+            </if>
+            <if test="statusList.size() > 0">
+                and (
+                <foreach collection="statusList" item="state" open="" separator=" or " close="">
+                    a.status = #{state}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+</mapper>

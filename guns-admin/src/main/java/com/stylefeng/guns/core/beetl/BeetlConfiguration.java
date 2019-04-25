@@ -1,8 +1,10 @@
 package com.stylefeng.guns.core.beetl;
 
+import com.stylefeng.guns.core.tag.DictSelectorConditionTag;
 import com.stylefeng.guns.core.tag.DictSelectorTag;
-import com.stylefeng.guns.core.util.KaptchaUtil;
-import com.stylefeng.guns.core.util.ToolUtil;
+import com.stylefeng.guns.core.tag.SerialNumber;
+import com.stylefeng.guns.util.KaptchaUtil;
+import com.stylefeng.guns.util.ToolUtil;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 import org.beetl.core.Tag;
@@ -31,6 +33,11 @@ public class BeetlConfiguration extends BeetlGroupUtilConfiguration {
     @Autowired
     DictSelectorTag dictSelectorTag;
 
+    @Autowired
+    DictSelectorConditionTag dictSelectorConditionTag;
+
+    @Autowired
+    SerialNumber serialNumber;
 
 
     @Override
@@ -42,6 +49,18 @@ public class BeetlConfiguration extends BeetlGroupUtilConfiguration {
             @Override
             public Tag createTag() {
                 return dictSelectorTag;
+            }
+        });
+        groupTemplate.registerTagFactory("dictSelectorCondition", new TagFactory() {
+            @Override
+            public Tag createTag() {
+                return dictSelectorConditionTag;
+            }
+        });
+        groupTemplate.registerTagFactory("serialNumber", new TagFactory() {
+            @Override
+            public Tag createTag() {
+                return serialNumber;
             }
         });
 

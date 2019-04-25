@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.PayRequestMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.PayRequest">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="platform" property="platform" />
+        <result column="out_sequence" property="outSequence" />
+        <result column="req_date" property="reqDate" />
+        <result column="expire_date" property="expireDate" />
+        <result column="req_sign" property="reqSign" />
+        <result column="out_req_result" property="outReqResult" />
+        <result column="out_req_result_sign" property="outReqResultSign" />
+        <result column="out_req_result_code" property="outReqResultCode" />
+        <result column="out_req_result_msg" property="outReqResultMsg" />
+        <result column="out_pay_result" property="outPayResult" />
+        <result column="out_pay_result_sign" property="outPayResultSign" />
+        <result column="out_pay_date" property="outPayDate" />
+        <result column="out_order_no" property="outOrderNo" />
+        <result column="status" property="status" />
+        <result column="appid" property="appid" />
+        <result column="mch_id" property="mchId" />
+        <result column="device_info" property="deviceInfo" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no, platform, out_sequence, req_date, expire_date, req_sign, out_req_result, out_req_result_sign, out_req_result_code, out_req_result_msg, out_pay_result, out_pay_result_sign, out_pay_date, out_order_no, status, appid, mch_id, device_info
+    </sql>
+
+</mapper>

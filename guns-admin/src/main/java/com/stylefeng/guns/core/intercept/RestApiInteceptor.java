@@ -1,10 +1,10 @@
 package com.stylefeng.guns.core.intercept;
 
 import com.stylefeng.guns.core.base.tips.ErrorTip;
-import com.stylefeng.guns.core.common.constant.JwtConstants;
-import com.stylefeng.guns.core.common.exception.BizExceptionEnum;
-import com.stylefeng.guns.core.util.JwtTokenUtil;
-import com.stylefeng.guns.core.util.RenderUtil;
+import com.stylefeng.guns.common.constant.JwtConstants;
+import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.util.JwtTokenUtil;
+import com.stylefeng.guns.util.RenderUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

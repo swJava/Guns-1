@@ -1,0 +1,45 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>会员管理管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <#TimeCon id="beginQueryDate" name="开始加入时间" />
+                            </div>
+                            <div class="col-sm-4">
+                                <#TimeCon id="endQueryDate" name="结束加入时间" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#SelectCon id="status" name="用户状态" >
+                                    <option value="">全部</option>
+                                    <option value="1">启用</option>
+                                    <option value="0">禁用</option>
+                                </#SelectCon>
+                            </div>
+                            <div class="col-sm-11">
+                                <#NameCon id="condition" name="关键字" />
+                            </div>
+                            <div class="col-sm-1">
+                                <#button name="搜索" icon="fa-search" clickFun="Member.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="MemberTableToolbar" role="group">
+                            @if(shiro.hasPermission("/member/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="Member.openMemberDetail()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="MemberTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/memberMGR/member/member.js" />
+@}

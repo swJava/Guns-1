@@ -5,7 +5,8 @@ import com.stylefeng.guns.core.base.tips.SuccessTip;
 import com.stylefeng.guns.core.base.warpper.BaseControllerWarpper;
 import com.stylefeng.guns.core.page.PageInfoBT;
 import com.stylefeng.guns.core.support.HttpKit;
-import com.stylefeng.guns.core.util.FileUtil;
+import com.stylefeng.guns.util.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +25,9 @@ public class BaseController {
 
     protected static String REDIRECT = "redirect:";
     protected static String FORWARD = "forward:";
+
+    @Value("${application.attachment.visit-url}")
+    protected String iconVisitURL;
 
     protected static SuccessTip SUCCESS_TIP = new SuccessTip();
 

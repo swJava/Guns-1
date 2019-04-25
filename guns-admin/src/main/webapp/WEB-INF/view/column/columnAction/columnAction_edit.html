@@ -1,0 +1,42 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="columnActionInfoForm">
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="typeValue" value="${item.type}">
+            <input type="hidden" id="actionValue" value="${item.action}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="columnCodeValue" value="${item.columnCode}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">栏目名称</label>
+                                <div class="col-sm-9">
+                                    <select id="columnCode" name="栏目名称" class="form-control" style="width:75%px"></select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed" ></div >
+                            <#input id="name" name="动作名称" value="${item.name}" underline="true"/>
+                            <#dictSelector id="type" name ="类型" code="columnAction_type" label="类型"  underline="true"  width="75%"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#dictSelector id="action" name ="动作" code="columnAction_action" label="动作"  underline="true"  width="75%"/>
+                            <#input id="data" name="格式数据" value="${item.data}" underline="true"/>
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ColumnActionInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ColumnActionInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/column/columnAction/columnAction_info.js"></script>
+@}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.AdjustStudentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.AdjustStudent">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="student_code" property="studentCode" />
+        <result column="type" property="type" />
+        <result column="outline_code" property="outlineCode" />
+        <result column="source_class" property="sourceClass" />
+        <result column="target_class" property="targetClass" />
+        <result column="status" property="status" />
+        <result column="work_status" property="workStatus" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_name, student_code, type, outline_code, source_class, target_class, status, work_status, remark, create_time, update_time
+    </sql>
+
+    <select id="selectApplyMapsPage" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+      SELECT m.name as uname, m.mobile_number as number, s.name as sname,
+        (select c.name from tb_class c where code = a.source_class) as scname,
+        (select c.name from tb_class c where code = a.target_class) as dcname,
+        (select co.outline from tb_course_outline co where code = a.outline_code) as oname,
+        a.*
+      FROM tb_adjust_student a , tb_member m, tb_student s
+      <where>
+          AND a.user_name = m.user_name AND a.student_code = s.code
+          <if test="type != null">
+            AND a.type = #{type}
+              <if test="type == 1">
+                  AND a.outline_code is not NULL
+              </if>
+          </if>
+          <if test="status != null">
+              AND a.status = #{status}
+          </if>
+          <if test="workStatus != null">
+              AND a.work_status = #{workStatus}
+          </if>
+      </where>
+    </select>
+
+</mapper>

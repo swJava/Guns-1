@@ -1,7 +1,7 @@
 package com.stylefeng.guns.core.support;
 
 import com.stylefeng.guns.core.support.exception.ToolBoxException;
-import com.stylefeng.guns.core.util.Convert;
+import com.stylefeng.guns.util.Convert;
 
 import java.beans.*;
 import java.lang.reflect.Method;

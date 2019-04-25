@@ -1,0 +1,80 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="questionInfoForm">
+            <div class="row">
+                <div class="col-sm-11">
+                    <#dictSelector id="type" name ="type" code="question_type" label="试题类型"  underline="true"  width="75%"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-11">
+                    <#dictSelector id="subject" name ="subject" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
+                </div>
+            </div>
+            <div class="row" style="height: 150px;">
+                <div class="col-sm-11">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">题目内容</label>
+                        <div class="col-sm-9">
+                            <div id="editor" style="height: 120px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed" ></div >
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">答案选项</label>
+                        <div class="col-sm-9">
+                            <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed"></div >
+
+            <div class="row">
+                <div class="col-sm-12" id="itemArea">
+                    <!-- 答案项目 -->
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10 col-sm-offset-5">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="QuestionInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="QuestionInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/template" id="itemTemplate">
+    <div class="form-group" name="dictItem" id="dictItem" style="height: 90px; margin-top: 30px;">
+        <label class="col-sm-1 control-label">选项</label>
+        <div class="col-sm-1">
+            <input class="form-control" type="text" name="itemCode" readonly>
+            <input class="form-control" type="hidden" name="itemIndex" readonly>
+        </div>
+        <label class="col-sm-1 control-label" >答案内容</label>
+        <div class="col-sm-5">
+            <div id="answerEditor" style="height: 70px;"></div>
+        </div>
+        <div class="col-sm-2">
+            <input type="checkbox" name="itemValue"> &nbsp;&nbsp;期望答案
+        </div>
+        <div class="col-sm-2">
+            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="QuestionInfoDlg.deleteItem(event)"/>
+        </div>
+    </div>
+</script>
+<#script src="/static/js/plugins/wangEditor/wangEditor.js" />
+<#script src="/static/modular/questionMGR/question/question_info.js" />
+@}

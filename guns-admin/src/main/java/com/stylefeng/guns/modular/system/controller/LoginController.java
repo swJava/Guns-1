@@ -1,19 +1,18 @@
 package com.stylefeng.guns.modular.system.controller;
 
 import com.google.code.kaptcha.Constants;
+import com.stylefeng.guns.common.exception.InvalidKaptchaException;
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.base.controller.BaseController;
-import com.stylefeng.guns.core.common.exception.InvalidKaptchaException;
-import com.stylefeng.guns.core.log.LogManager;
-import com.stylefeng.guns.core.log.factory.LogTaskFactory;
 import com.stylefeng.guns.core.node.MenuNode;
 import com.stylefeng.guns.core.shiro.ShiroKit;
-import com.stylefeng.guns.core.shiro.ShiroUser;
-import com.stylefeng.guns.core.util.ApiMenuFilter;
-import com.stylefeng.guns.core.util.KaptchaUtil;
-import com.stylefeng.guns.core.util.ToolUtil;
+import com.stylefeng.guns.log.LogManager;
+import com.stylefeng.guns.log.factory.LogTaskFactory;
 import com.stylefeng.guns.modular.system.model.User;
 import com.stylefeng.guns.modular.system.service.IMenuService;
 import com.stylefeng.guns.modular.system.service.IUserService;
+import com.stylefeng.guns.util.KaptchaUtil;
+import com.stylefeng.guns.util.ToolUtil;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +54,13 @@ public class LoginController extends BaseController {
         }
         List<MenuNode> menus = menuService.getMenusByRoleIds(roleList);
         List<MenuNode> titles = MenuNode.buildTitle(menus);
-        titles = ApiMenuFilter.build(titles);
 
         model.addAttribute("titles", titles);
 
         //获取用户头像
         Integer id = ShiroKit.getUser().getId();
         User user = userService.selectById(id);
-        String avatar = user.getAvatar();
-        model.addAttribute("avatar", avatar);
+        model.addAttribute("user", user);
 
         return "/index.html";
     }
@@ -110,7 +107,7 @@ public class LoginController extends BaseController {
 
         currentUser.login(token);
 
-        ShiroUser shiroUser = ShiroKit.getUser();
+        Administrator shiroUser = ShiroKit.getUser();
         super.getSession().setAttribute("shiroUser", shiroUser);
         super.getSession().setAttribute("username", shiroUser.getAccount());
 

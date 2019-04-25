@@ -15,8 +15,10 @@
     multiple：(非必须) 是否开启多选,可选值[true,false],默认为false,type为select起效。
     underline:(非必须) 是否显示分割线,可选值[true,false],默认为false。
     onchange：(非必须) onchange事件方法名称,会传入更改后的值作为参数,例：onchange="myOnChange" function myOnChange(newVal){}。
-    readonly：(非必须)只读控件,可选值[true,false],默认false
+    readonly：(非必须) 只读控件,可选值[true,false],默认false
     disabled：(非必须) 禁用控件,可选值[true,false],默认false
+    startNum：(非必须) 下拉范围选择,num排序,默认0开始,建议设计数据库枚举以10为宽度
+    endNum：(非必须) 下拉范围选择,num排序,默认50结束
 
 
 

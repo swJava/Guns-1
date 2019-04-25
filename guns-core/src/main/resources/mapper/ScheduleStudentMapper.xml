@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.ScheduleStudentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.ScheduleStudent">
+        <id column="id" property="id" />
+        <result column="student_code" property="studentCode" />
+        <result column="student_name" property="studentName" />
+        <result column="class_code" property="classCode" />
+        <result column="class_name" property="className" />
+        <result column="outline_code" property="outlineCode" />
+        <result column="outline" property="outline" />
+        <result column="study_date" property="studyDate" />
+        <result column="pcode" property="pcode" />
+        <result column="fcode" property="fcode" />
+        <result column="pcodes" property="pcodes" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ss.id, ss.code, ss.student_code, ss.student_name, ss.class_code, ss.class_name, ss.outline_code, ss.outline, ss.study_date, ss.pcode, ss.fcode, ss.pcodes, ss.status, ss.remark
+    </sql>
+
+    <select id="selectPlanList" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_schedule_student ss
+        <where>
+            <!-- 学员 -->
+            <if test="students.size() > 0">
+                and (
+                <foreach collection="students" item="student" open="" separator=" or " close="">
+                    ss.student_code = #{student}
+                </foreach>
+                )
+            </if>
+            <!-- 班级 -->
+            <if test="null != classCode">
+                and ss.class_code = #{classCode}
+            </if>
+            <!-- 开始时间 -->
+            <if test="null != beginDate">
+                and ss.study_date &gt;= #{beginDate}
+            </if>
+            <!-- 结束时间 -->
+            <if test="null != endDate">
+                and ss.study_date &lt; #{endDate}
+            </if>
+            <!-- 状态 -->
+            <if test="null != status">
+                and ss.status = #{status}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,37 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="studentInfoForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="code" value="${item.code}">
+            <input type="hidden" id="genderValue" value="${item.gender}">
+            <input type="hidden" id="gradeValue" value="${item.grade}">
+            <input type="hidden" id="status" value="${item.status}">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#avatar id="${item.avatar}" name="avatar" label="头像" displayWidth="80" displayHeight="80" underline="true"/>
+                    <#input id="name" name="学员名称" value="${item.name}" underline="true"/>
+                    <#dictSelector id="gender" name ="性别" code="sys_sex" label="性别"  underline="true"  width="75%"/>
+                </div>
+
+                <div class="col-sm-6">
+                    <#dictSelector id="grade" name ="在读年级" code="school_grade" label="在读年级"  underline="true"  width="75%"/>
+                    <#input id="school" name="在读学校" value="${item.school}" underline="true"/>
+                    <#input id="targetSchool" name="目标学校" value="${item.targetSchool}" underline="true"/>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10 col-sm-offset-5">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="StudentInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="StudentInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<#script src="/static/modular/studentMGR/student/student_info.js" />
+@}

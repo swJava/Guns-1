@@ -1,0 +1,48 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-12" id="itemsArea">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">课程编码</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="courseCode" type="text" value="${item.code}" readonly />
+                        </div>
+                        <label class="col-sm-2 control-label">课程名称</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" id="courseName" type="text" value="${item.name}" readonly />
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+
+                    @for(outline in outlines){
+                    <div class="form-group" name="courseOutlineItem" id="courseOutlineItem${outlineLP.index}">
+                        <input type="hidden" name="sort" value="${outline.sort}" />
+                        <label class="col-sm-1 control-label">课时条目</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" name="outline" value="${outline.outline}">
+                        </div>
+                        <label class="col-sm-1 control-label" >简要说明</label>
+                        <div class="col-sm-5">
+                            <input class="form-control" type="text" name="description" value="${outline.description}">
+                        </div>
+                    </div>
+                    @}
+                    </input>
+
+                </div>
+            </div>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10 col-sm-offset-5">
+                    <#button btnCss="info" name="保 存" id="ensure" icon="fa-check" clickFun="CourseOutlineInfoDlg.saveSubmit()"/>
+                    <#button btnCss="danger" name="取 消" id="cancel" icon="fa-eraser" clickFun="CourseOutlineInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#script src="/static/modular/courseMGR/course/course_outline.js" />
+@}

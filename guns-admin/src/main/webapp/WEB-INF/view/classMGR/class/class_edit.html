@@ -1,0 +1,93 @@
+@layout("/common/_container.html"){
+<link href="${ctxPath}/static/css/plugins/fullcalendar/calendar.css?v=3.10.0" rel="stylesheet">
+<link href="${ctxPath}/static/css/plugins/fullcalendar/calendar.min.css?v=3.10.0" rel="stylesheet">
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="row row-lg">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="form-horizontal" id="classInfoForm">
+                        <input type="hidden" id="id" value="${classItem.id}">
+                        <input type="hidden" id="code" value="${classItem.code}">
+                        <input type="hidden" id="courseCode" value="${courseItem.code}">
+                        <input type="hidden" id="grade" value="${courseItem.grade}">
+                        <input type="hidden" id="subject" value="${courseItem.subject}">
+                        <input type="hidden" id="cycleValue" value="${classItem.cycle}">
+                        <input type="hidden" id="abilityValue" value="${classItem.ability}">
+                        <input type="hidden" id="teacherCodeValue" value="${classItem.teacherCode}">
+                        <input type="hidden" id="teacherSecondCodeValue" value="${classItem.teacherSecondCode}">
+                        <input type="hidden" id="classRoomCodeValue" value="${classItem.classRoomCode}">
+
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <#input id="courseName" name="课程名称" value="${courseItem.name}" readonly="true" underline="true"/>
+                                <#input id="gradeName" name="授课年级" value="${courseItem.grade}" readonly="true" underline="true"/>
+                                <#input id="period" name="总学时" value="${courseItem.period}" readonly="true" underline="true"/>
+
+                            </div>
+
+                            <div class="col-sm-6">
+                                <#input id="subjectName" name="学科" value="${courseItem.subjectName}" readonly="true" underline="true"/>
+                                <#input id="methodName" name="授课方式" value="${courseItem.methodName}" readonly="true" underline="true" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <#input id="name" name="班级名称" value="${classItem.name}" underline="true"/>
+                                <#dictSelector id="cycle" name="学期" code="cycle" label="学期"  underline="true" width="75%"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">讲师</label>
+                                    <div class="col-sm-9">
+                                        <select id="teacherCode" name="讲师" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <#input id="signStartDate" name="开始报名" value="${classItem.signStartDate}" underline="true"/>
+                                <#input id="quato" name="学员数" value="${classItem.quato}" underline="true"/>
+                                <#input id="sutdyTimeDesp" name="上课时间" value="${classItem.studyTimeDesp}" underline="true"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <#input id="price" name="价格(元)" value="${classItem.price}" underline="true"/>
+                                <#dictSelector id="ability" name="班次" code="ability" label="班次"  underline="true" width="75%"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">辅导员</label>
+                                    <div class="col-sm-9">
+                                        <select id="teacherSecondCode" name="辅导员" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                                <#input id="signEndDate" name="截止报名" value="${classItem.signEndDate}" underline="true"/>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">教室</label>
+                                    <div class="col-sm-9">
+                                        <select id="classRoomCode" name="教室" class="form-control" style="width:75%px"></select>
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed" ></div >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id='calendar'></div>
+                    </div>
+                </div>
+
+                <div class="row btn-group-m-t">
+                    <div class="col-sm-10 col-sm-offset-5">
+                        <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ClassInfoDlg.editSubmit()"/>
+                        <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ClassInfoDlg.close()"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/js/plugins/fullcalendar/jquery-ui.custom.min.js" />
+<#script src="/static/js/plugins/fullcalendar/moment.js" />
+<#script src="/static/js/plugins/fullcalendar/bootbox.js" />
+<#script src="/static/js/plugins/fullcalendar/calendar.js" />
+<#script src="/static/modular/classMGR/class/class_info.js" />
+@}

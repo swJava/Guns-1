@@ -1,26 +1,42 @@
 package com.stylefeng.guns.core.aop;
 
-import com.stylefeng.guns.core.common.exception.BizExceptionEnum;
-import com.stylefeng.guns.core.common.exception.InvalidKaptchaException;
+import com.alibaba.fastjson.JSON;
+import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.exception.InvalidKaptchaException;
+import com.stylefeng.guns.common.exception.ServiceException;
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.exception.GunsException;
-import com.stylefeng.guns.core.log.LogManager;
-import com.stylefeng.guns.core.log.factory.LogTaskFactory;
+import com.stylefeng.guns.core.message.MessageConstant;
+import com.stylefeng.guns.log.LogManager;
+import com.stylefeng.guns.log.factory.LogTaskFactory;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.CredentialsException;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.stylefeng.guns.core.support.HttpKit.getIp;
 import static com.stylefeng.guns.core.support.HttpKit.getRequest;
@@ -36,7 +52,11 @@ import static com.stylefeng.guns.core.support.HttpKit.getRequest;
 public class GlobalExceptionHandler {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
+    public static final String X_REQUESTED_WIDTH = "X-Requested-With";
+    public static final String XML_HTTP_REQUEST = "XMLHttpRequest";
 
+    @Autowired
+    private MessageSource messageSource;
     /**
      * 拦截业务异常
      */
@@ -94,6 +114,39 @@ public class GlobalExceptionHandler {
         LogManager.me().executeLog(LogTaskFactory.loginLog(username, "验证码错误", getIp()));
         model.addAttribute("tips", "验证码错误");
         return "/login.html";
+    }
+
+
+    /**
+     * 拦截ServiceException相关异常
+     */
+    @ExceptionHandler(ServiceException.class)
+    public Object serviceException(HttpServletRequest request, HttpServletResponse response, ServiceException e) throws IOException, ServletException {
+
+        String message = messageSource.getMessage("exception." + e.getMessageCode(), e.getMessageArgs(), Locale.CHINA);
+        Object result = null;
+        if (isAjaxRequest(request)){
+            ErrorTip errorTip = new ErrorTip(Integer.parseInt(e.getMessageCode()), "系统异常");
+            errorTip.setMessage(message);
+            log.error(message);
+
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(JSON.toJSONString(errorTip));
+        }else {
+            Map<String, Object> model = new HashMap<String, Object>();
+            request.setAttribute("title", e.getMessageCode());
+            request.setAttribute("tips", message);
+
+            result = new ModelAndView("forward:/global/error", model);
+        }
+
+        return result;
+    }
+
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        String xrHeader=request.getHeader(X_REQUESTED_WIDTH);
+        return(xrHeader!=null&&XML_HTTP_REQUEST.equalsIgnoreCase(xrHeader));
     }
 
     /**

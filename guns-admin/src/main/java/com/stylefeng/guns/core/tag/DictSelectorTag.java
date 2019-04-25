@@ -1,8 +1,8 @@
 package com.stylefeng.guns.core.tag;
 
-import com.stylefeng.guns.core.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.core.exception.GunsException;
-import com.stylefeng.guns.core.util.ToolUtil;
+import com.stylefeng.guns.util.ToolUtil;
 import com.stylefeng.guns.modular.system.model.Dict;
 import com.stylefeng.guns.modular.system.service.IDictService;
 import org.beetl.core.Tag;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +63,12 @@ public class DictSelectorTag extends Tag {
         String disabled = ToolUtil.isNotEmpty(attrs.get("disabled"))?attrs.get("disabled").toString():"";
         //searchnum 下拉选项数量达到多少启用搜索,默认10
         int searchnum = ToolUtil.isNum(attrs.get("searchnum"))?Integer.parseInt(attrs.get("searchnum").toString()):10;
+        //startNum 下拉选项数量达到多少启用搜索,默认10
+        String startNum = ToolUtil.isNotEmpty(attrs.get("startNum"))?attrs.get("startNum").toString():"0";
+        //endNum 下拉选项数量达到多少启用搜索,默认10
+        String endNum = ToolUtil.isNotEmpty(attrs.get("endNum"))?attrs.get("endNum").toString():"50";
         //根据code查询字典数据
-        List<Dict>  list = iDictService.selectByParentCode(code);
+        List<Dict>  list = iDictService.selectByParentCodeAndLimit(code,startNum,endNum);
 
         StringBuffer html = new StringBuffer();
         html.append("<div class=\"form-group\">\r\n");

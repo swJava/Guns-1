@@ -1,0 +1,61 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="paperInfoForm">
+            <input type="hidden" id="id" value="${item.id}" />
+            <input type="hidden" id="code" value="${item.code}" />
+            <input type="hidden" id="gradesValue" value="${item.grades}" />
+            <input type="hidden" id="subjectValue" value="${item.subject}" />
+            <input type="hidden" id="abilityValue" value="${item.ability}" />
+            <input type="hidden" id="questionCodes" value='${questionCodes}' />
+            <input type="hidden" id="questionScores" value='${questionScores}' />
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                    <#dictSelector id="grades" name ="grades" code="school_grade" label="适应年级"  underline="true"  width="75%"/>
+                    <#dictSelector id="ability" name ="ability" code="ability" label="适应班次"  underline="true"  width="75%"/>
+                </div>
+                <div class="col-sm-6">
+                    <#dictSelector id="subject" name ="subject" code="subject_type" label="适应学科"  underline="true"  width="75%"/>
+                    <#input id="examTime" name="测试时间" value="${item.examTime}"/>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed"></div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <#table id="UnSelectQuestionTable"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-2 col-sm-offset-6">
+                        <#button btnCss="info" name="" icon="fa-plus" clickFun="PaperDlg.join();"/>
+                        <#button btnCss="danger" name="" icon="fa-minus" clickFun="PaperDlg.remove();"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <#table id="SelectedQuestionTable"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed"></div >
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10 col-sm-offset-5">
+                    <#button btnCss="info" name="保存" id="ensure" icon="fa-check" clickFun="PaperDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PaperDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<#script src="/static/modular/examineMGR/paper/paper_info.js" />
+@}

@@ -1,9 +1,9 @@
 package com.stylefeng.guns.fastjson;
 
 import com.alibaba.fastjson.JSON;
-import com.stylefeng.guns.core.util.MD5Util;
-import com.stylefeng.guns.rest.common.SimpleObject;
 import com.stylefeng.guns.rest.modular.auth.converter.BaseTransferEntity;
+import com.stylefeng.guns.rest.modular.member.requester.RegistRequester;
+import com.stylefeng.guns.util.MD5Util;
 
 /**
  * json测试
@@ -19,11 +19,12 @@ public class JsonTest {
         String randomKey = "1xm7hw";
 
         BaseTransferEntity baseTransferEntity = new BaseTransferEntity();
-        SimpleObject simpleObject = new SimpleObject();
-        simpleObject.setUser("fsn");
+        RegistRequester requester = new RegistRequester();
+        requester.setUserName("18580255110");
+        requester.setPassword("e9cee71ab932fde863338d08be4de9dfe39ea049bdafb342ce659ec5450b69ae");
         baseTransferEntity.setObject("123123");
 
-        String json = JSON.toJSONString(simpleObject);
+        String json = JSON.toJSONString(requester);
 
         //md5签名
         String encrypt = MD5Util.encrypt(json + randomKey);

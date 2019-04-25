@@ -15,9 +15,10 @@
  */
 package com.stylefeng.guns.core.shiro;
 
-import com.stylefeng.guns.core.common.constant.Const;
-import com.stylefeng.guns.core.common.constant.factory.ConstantFactory;
-import com.stylefeng.guns.core.util.ToolUtil;
+import com.stylefeng.guns.common.constant.Const;
+import com.stylefeng.guns.common.constant.factory.ConstantFactory;
+import com.stylefeng.guns.core.admin.Administrator;
+import com.stylefeng.guns.util.ToolUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -81,11 +82,11 @@ public class ShiroKit {
      *
      * @return ShiroUser
      */
-    public static ShiroUser getUser() {
+    public static Administrator getUser() {
         if (isGuest()) {
             return null;
         } else {
-            return (ShiroUser) getSubject().getPrincipals().getPrimaryPrincipal();
+            return (Administrator) getSubject().getPrincipals().getPrimaryPrincipal();
         }
     }
 

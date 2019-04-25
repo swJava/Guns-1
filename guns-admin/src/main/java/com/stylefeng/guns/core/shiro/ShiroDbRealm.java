@@ -1,9 +1,10 @@
 package com.stylefeng.guns.core.shiro;
 
+import com.stylefeng.guns.core.admin.Administrator;
 import com.stylefeng.guns.core.shiro.factory.IShiro;
 import com.stylefeng.guns.core.shiro.factory.ShiroFactroy;
-import com.stylefeng.guns.core.util.ToolUtil;
 import com.stylefeng.guns.modular.system.model.User;
+import com.stylefeng.guns.util.ToolUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -30,7 +31,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         IShiro shiroFactory = ShiroFactroy.me();
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         User user = shiroFactory.user(token.getUsername());
-        ShiroUser shiroUser = shiroFactory.shiroUser(user);
+        Administrator shiroUser = shiroFactory.shiroUser(user);
         return shiroFactory.info(shiroUser, user, super.getName());
     }
 
@@ -40,7 +41,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         IShiro shiroFactory = ShiroFactroy.me();
-        ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+        Administrator shiroUser = (Administrator) principals.getPrimaryPrincipal();
         List<Integer> roleList = shiroUser.getRoleList();
 
         Set<String> permissionSet = new HashSet<>();

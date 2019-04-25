@@ -7,7 +7,8 @@ import com.alibaba.druid.support.spring.stat.BeanTypeAutoProxyCreator;
 import com.alibaba.druid.support.spring.stat.DruidStatInterceptor;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
-import com.stylefeng.guns.config.properties.GunsProperties;
+import com.stylefeng.guns.config.TxTransactionInterceptor;
+import com.stylefeng.guns.config.properties.ApplicationProperties;
 import com.stylefeng.guns.core.intercept.RestApiInteceptor;
 import com.stylefeng.guns.core.listener.ConfigListener;
 import com.stylefeng.guns.core.xss.XssFilter;
@@ -36,20 +37,6 @@ import java.util.Properties;
  */
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
-
-    @Autowired
-    private GunsProperties gunsProperties;
-
-    /**
-     * 增加swagger的支持
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if (gunsProperties.getSwaggerOpen()) {
-            registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-            registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-        }
-    }
 
     /**
      * 增加对rest api鉴权的spring mvc拦截器
@@ -129,7 +116,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public FilterRegistrationBean xssFilterRegistration() {
         XssFilter xssFilter = new XssFilter();
-        xssFilter.setUrlExclusion(Arrays.asList("/notice/update", "/notice/add"));
+        xssFilter.setUrlExclusion(Arrays.asList("/notice/update", "/notice/add","/content/update","/content/add", "/content/marquee/update", "/content/marquee/add", "/question/add", "/question/update"));
         FilterRegistrationBean registration = new FilterRegistrationBean(xssFilter);
         registration.addUrlPatterns("/*");
         return registration;

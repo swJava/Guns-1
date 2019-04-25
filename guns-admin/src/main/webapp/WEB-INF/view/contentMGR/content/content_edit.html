@@ -1,0 +1,50 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="contentInfoForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="typeValue" value="${item.type}">
+            <input type="hidden" id="publishTypeValue" value="${item.publishType}">
+            <input type="hidden" id="contentVal" value='${item.content}'>
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#avatar id="${item.id}" name="timage" label="标题图片" underline="true"/>
+                            <#input id="code" name="内容编码" value="${item.code}" underline="true"/>
+                            <#dictSelector id="type" name ="类型" code="content_type" label="类型"  underline="true"  width="75%"/>
+                            <#input id="title" name="标题" value="${item.title}" underline="true"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="introduce" name="一句话简介" value="${item.introduce}" underline="true" />
+                            <#input id="author" name="作者" value="${item.author}" underline="true"/>
+                            <#dictSelector id="publishType" name ="发布类型" code="content_type" label="发布类型"  underline="true"  width="75%"/>
+                            <#input id="deadDate" name="下架时间" value="${item.deadDate}" underline="true"/>
+                            <#dictSelector id="status" name ="状态" code="account_state" label="状态"  underline="true"  width="75%"/>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">发布内容</label>
+                        <div class="col-sm-11">
+                            <div id="editor" class="editorHeight">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="ContentInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="ContentInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
+<#script src="/static/modular/contentMGR/content/content_info.js" />
+@}

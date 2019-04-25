@@ -17,7 +17,8 @@
         this.parentCode = 'pcode';// 用于设置父子关系
         this.expandAll = false;// 是否默认全部展开
         this.toolbarId = bstableId + "Toolbar";
-        this.height = 665;						//默认表格高度665
+        this.rootCodeValue = null;
+        this.loadSuccess = function(){ console.log('<<< Data load success >>>')};
     };
 
     BSTreeTable.prototype = {
@@ -40,7 +41,7 @@
                     expandAll: this.expandAll,  //是否全部展开
                     columns: this.columns,		//列数组
                     toolbar: "#" + this.toolbarId,//顶部工具条
-                    height: this.height,
+                    onLoadSuccess: this.loadSuccess, // 成功加载回调
                 });
             return this;
         },
@@ -86,6 +87,12 @@
          */
         setHeight: function (height) {
         	this.height = height;
+        },
+        /**
+         * 设置数据成功加载回调
+         */
+        setLoadSuccessCallback: function(callback) {
+            this.loadSuccess = callback;
         },
         /**
          * 设置ajax post请求时候附带的参数

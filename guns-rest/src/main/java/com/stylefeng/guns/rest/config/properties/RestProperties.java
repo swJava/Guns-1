@@ -13,7 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = RestProperties.REST_PREFIX)
 public class RestProperties {
 
-    public static final String REST_PREFIX = "rest";
+    public static final String REST_PREFIX = "application";
+
+    private Boolean swaggerOpen = false;
 
     private boolean authOpen = true;
 
@@ -33,5 +35,13 @@ public class RestProperties {
 
     public void setSignOpen(boolean signOpen) {
         this.signOpen = signOpen;
+    }
+
+    public Boolean getSwaggerOpen() {
+        return swaggerOpen;
+    }
+
+    public void setSwaggerOpen(Boolean swaggerOpen) {
+        this.swaggerOpen = swaggerOpen;
     }
 }

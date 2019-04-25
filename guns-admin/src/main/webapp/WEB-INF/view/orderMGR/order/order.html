@@ -1,0 +1,58 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>订单管理管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#NameCon id="teacher" name="老师关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="student" name="学员关键字" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#NameCon id="orderNo" name="订单编号" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="subject" name="学科" code="subject_type" placeholder="-- 选择学科 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="ability" name="班次" code="ability" placeholder="-- 选择班次 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#dictSelectorCondition id="cycle" name="学期" code="cycle" placeholder="-- 选择学期 --" />
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="Order.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="OrderTableToolbar" role="group">
+                            @if(shiro.hasPermission("/order/class/update")){
+                                <!--<#button name="管理订单" icon="fa-edit" clickFun="Order.openOrderManager()" space="true"/>-->
+                            @}
+                            @if(shiro.hasPermission("/order/class/detail")){
+                                <#button name="查看详情" icon="fa-edit" clickFun="Order.openOrderDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/order/class/close")){
+                                <#button name="关闭订单" icon="fa-remove" clickFun="Order.close()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/order/class/export")){
+                            <#button name="导出订单" icon="fa-download" clickFun="Order.export()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="OrderTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#script src="/static/modular/orderMGR/order/order.js" />
+@}

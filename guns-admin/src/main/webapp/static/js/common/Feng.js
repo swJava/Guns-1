@@ -126,13 +126,17 @@ var Feng = {
             }
         });
     },
-    initValidator: function (formId, fields) {
+    initValidator: function (formId, fields, options) {
+        var excludes = [];
+        if (options && options.excludes)
+            $.extend(excludes, options.excludes);
         $('#' + formId).bootstrapValidator({
             feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
                 invalid: 'glyphicon glyphicon-remove',
                 validating: 'glyphicon glyphicon-refresh'
             },
+            excluded: excludes,
             fields: fields,
             live: 'enabled',
             message: '该字段不能为空'

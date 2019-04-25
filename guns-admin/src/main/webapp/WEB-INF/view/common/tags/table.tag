@@ -3,7 +3,7 @@
 
     id : table表格的id
 @*/
-<table id="${id}" data-mobile-responsive="true" data-click-to-select="true">
+<table id="${id}" data-mobile-responsive="true" data-click-to-select="true" data-classes="table table-bordered table-hover table-sm" >
     <thead>
         <tr>
             <th data-field="selectItem" data-checkbox="true"></th>

@@ -1,0 +1,142 @@
+@layout("/common/_container.html"){
+<script type="text/template" id="itemTemplate">
+    <div class="form-group" name="dictItem" id="dictItem" style="height: 90px; margin-top: 30px;">
+        <label class="col-sm-1 control-label">选项</label>
+        <div class="col-sm-1">
+            <input class="form-control" type="text" name="itemCode" readonly>
+            <input class="form-control" type="hidden" name="itemIndex" readonly>
+        </div>
+        <label class="col-sm-1 control-label" >答案内容</label>
+        <div class="col-sm-4">
+            <div id="answerEditor" style="height: 70px;"></div>
+        </div>
+        <div class="col-sm-2">
+            <input type="checkbox" name="itemValue"> &nbsp;&nbsp;期望答案
+        </div>
+        <div class="col-sm-2">
+            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="QuestionInfoDlg.deleteItem(event)"/>
+        </div>
+    </div>
+</script>
+<#script src="/static/js/plugins/wangEditor/wangEditor.js" />
+<#script src="/static/modular/questionMGR/question/question_info.js" />
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="questionInfoForm">
+
+            <input type="hidden" id="id" value="${item.id}">
+            <input type="hidden" id="code" value="${item.code}">
+            <input type="hidden" id="subjectValue" value="${item.subject}">
+            <input type="hidden" id="typeValue" value="${item.type}">
+            <input type="hidden" id="statusValue" value="${item.status}">
+            <input type="hidden" id="questionValue" value="${item.question}">
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <#dictSelector id="type" name="试题类型" code="question_type" label="试题类型"  underline="true"  width="75%"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <#dictSelector id="subject" name ="试题学科" code="subject_type" label="试题学科"  underline="true"  width="75%"/>
+                </div>
+            </div>
+
+            <div class="row" style="height: 150px;">
+                <div class="col-sm-11">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">题目内容</label>
+                        <div class="col-sm-9">
+                            <div id="editor" style="height: 120px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed" ></div >
+
+            <div class="row">
+                <div class="col-sm-11">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">答案选项</label>
+                        <div class="col-sm-9">
+                            <#button btnCss="info" name="增加" icon="fa-plus" clickFun="QuestionInfoDlg.addItem()"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hr-line-dashed" ></div >
+
+            <div class="row">
+                <div class="col-sm-12" id="itemArea">
+                    @for(answerItem in answerItemList){
+                    <div class="form-group" name="dictItem" id="dictItem${answerItemLP.index}" style="height: 90px;">
+                        <label class="col-sm-1 control-label">选项</label>
+                        <div class="col-sm-1">
+                            <input class="form-control" type="text" name="itemCode" readonly>
+                            <input class="form-control" type="hidden" name="itemIndex" value="${answerItemLP.index}" readonly>
+                        </div>
+                        <label class="col-sm-1 control-label" >答案内容</label>
+                        <div class="col-sm-5">
+                            <div id="answerEditor" style="height: 70px;"></div>
+                            <script>
+                                (function(){
+                                    var E = window.wangEditor;
+                                    var editor = new E('#answerEditor');
+                                    // 只保留图片上传功能
+                                    editor.customConfig.menus = [
+                                        'image'
+                                    ];
+                                    // 配置服务器端地址
+                                    editor.customConfig.uploadImgServer = Feng.ctxPath + '/attachment/upload/async';
+                                    editor.customConfig.uploadFileName = 'files';
+                                    editor.customConfig.uploadImgHooks = {
+                                        customInsert: function (insertImg, result, editor) {
+                                            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+                                            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+                                            // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+                                            console.log(result);
+                                            var url = Feng.ctxPath + '/attachment/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+                                            insertImg(url);
+
+                                            // result 必须是一个 JSON 格式字符串！！！否则报错
+                                        }
+                                    }
+                                    editor.create();
+                                    editor.txt.html('${answerItem.text}');
+                                    $('#answerEditor').attr('id', 'answerEditor${answerItemLP.index}');
+                                    QuestionInfoDlg.answerEditors.push(editor);
+                                })();
+                            </script>
+                        </div>
+                        <div class="col-sm-2">
+                            @if(answerItem.expect > 0){
+                            <input type="checkbox" name="itemValue" checked > &nbsp;&nbsp;期望答案
+                            @}
+
+                            @if(answerItem.expect == 0){
+                            <input type="checkbox" name="itemValue" > &nbsp;&nbsp;期望答案
+                            @}
+                        </div>
+                        <div class="col-sm-2">
+                            <#button btnCss="danger" name="删除" id="cancel" icon="fa-remove" clickFun="QuestionInfoDlg.deleteItem(event)"/>
+                        </div>
+                    </div>
+                    @}
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10 col-sm-offset-5">
+                    <#button btnCss="info" name="提 交" id="ensure" icon="fa-check" clickFun="QuestionInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取 消" id="cancel" icon="fa-eraser" clickFun="QuestionInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@}

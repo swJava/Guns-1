@@ -121,6 +121,21 @@ $(function () {
     //初始化编辑器
     var E = window.wangEditor;
     var editor = new E('#editor');
+    // 配置服务器端地址
+    editor.customConfig.uploadImgServer = Feng.ctxPath + '/attachment/upload/async';
+    editor.customConfig.uploadFileName = 'file';
+    editor.customConfig.uploadImgHooks = {
+        customInsert: function (insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+            // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+            var url = 'http://www.kecui.com.cn/download?masterName=' + result.data.name + '&masterCode=' + result.data.code;
+            insertImg(url);
+
+            // result 必须是一个 JSON 格式字符串！！！否则报错
+        }
+    }
     editor.create();
     editor.txt.html($("#contentVal").val());
     NoticeInfoDlg.editor = editor;

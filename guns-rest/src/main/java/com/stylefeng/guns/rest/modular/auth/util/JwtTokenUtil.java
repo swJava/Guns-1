@@ -1,7 +1,7 @@
 package com.stylefeng.guns.rest.modular.auth.util;
 
-import com.stylefeng.guns.core.util.ToolUtil;
-import com.stylefeng.guns.rest.config.properties.JwtProperties;
+import com.stylefeng.guns.util.ToolUtil;
+import com.stylefeng.guns.rest.config.properties.AuthProperties;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ import java.util.Map;
 public class JwtTokenUtil {
 
     @Autowired
-    private JwtProperties jwtProperties;
+    private AuthProperties jwtProperties;
 
     /**
      * 获取用户名从token中

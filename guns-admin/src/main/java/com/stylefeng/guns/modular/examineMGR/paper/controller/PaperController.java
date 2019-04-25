@@ -187,6 +187,13 @@ public class PaperController extends BaseController {
                 } catch (Exception e) {
                 }
             }
+            if (StringUtils.isNotEmpty(queryParams.get("grade"))) {
+                try {
+                    String grade = queryParams.get("grade");
+                    eq("grade", grade);
+                } catch (Exception e) {
+                }
+            }
         }});
         //包装数据
         new PaperWrapper(pageMap.getRecords()).warp();

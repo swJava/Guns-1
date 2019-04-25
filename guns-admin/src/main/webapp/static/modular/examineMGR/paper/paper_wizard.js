@@ -133,6 +133,7 @@ PaperWizard.SelectedQuestion.initColumn = function () {
         {title: '试题编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
         {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle'},
         {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
+        {title: '试题年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
         {title: '出题人', field: 'teacherName', visible: true, align: 'center', valign: 'middle'},
         {title: '分值', field: 'score', visible: true, align: 'center', valign: 'middle',
             formatter: function(val, row){
@@ -154,6 +155,7 @@ PaperWizard.UnSelectQuestion.initColumn = function () {
         {title: '试题编码', field: 'code', visible: false, align: 'center', valign: 'middle'},
         {title: '试题题目', field: 'question', visible: true, align: 'center', valign: 'middle'},
         {title: '试题类型', field: 'typeName', visible: true, align: 'center', valign: 'middle'},
+        {title: '试题年级', field: 'gradeName', visible: true, align: 'center', valign: 'middle'},
         {title: '出题人', field: 'teacherName', visible: true, align: 'center', valign: 'middle'},
         {title: '分值', field: 'score', visible: false, align: 'center', valign: 'middle'}
     ];
@@ -323,6 +325,7 @@ PaperWizard.unselectedQuestionSearch = function(){
     var queryData = {};
     queryData['condition'] = $("#condition").val();
     queryData['subject'] = $("#subject").val();
+    queryData['grade'] = $("#grade").val();
     queryData['status'] = 1;
     queryData['workingCodes'] = PaperWizard.SelectedQuestion.seCodes.join(',');
     PaperWizard.UnSelectQuestion.table.refresh({query: queryData});

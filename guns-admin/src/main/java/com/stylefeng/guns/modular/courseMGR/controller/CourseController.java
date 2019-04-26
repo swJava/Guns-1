@@ -150,7 +150,6 @@ public class CourseController extends BaseController {
                         eq("status", status);
                     }catch(Exception e){}
                 }
-
                 orderBy("id",false);
             }
         });

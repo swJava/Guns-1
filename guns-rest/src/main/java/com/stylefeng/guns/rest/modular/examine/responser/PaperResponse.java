@@ -108,7 +108,6 @@ public class PaperResponse {
 
         response.setClassName(name);
         response.setClassAbility(abilitiesDesp.substring(0, abilitiesDesp.length() - 1));
-        response.setExamTime(examinePaper.getExamTime());
         response.setPaperCode(examinePaper.getCode());
         return response;
     }

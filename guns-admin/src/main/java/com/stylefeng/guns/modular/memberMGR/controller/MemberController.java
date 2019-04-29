@@ -160,7 +160,7 @@ public class MemberController extends BaseController {
             Teacher teacher = teacherService.selectOne(new EntityWrapper<Teacher>() {{
                 eq("mobile", oldMemBer.getMobileNumber());
             }});
-            if( teacher != null ){
+            if( teacher != null && !teacher.getMobile().equals(member.getMobileNumber())){
                 teacher.setMobile(member.getMobileNumber());
                 teacherService.updateById(teacher);
             }

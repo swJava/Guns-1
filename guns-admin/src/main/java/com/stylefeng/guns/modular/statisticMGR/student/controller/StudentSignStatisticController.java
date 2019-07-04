@@ -63,6 +63,7 @@ public class StudentSignStatisticController extends BaseController {
             add("学员名称");
             add("家长电话");
             add("所报班级");
+            add("授课老师");
             add("报名时间");
         }
     };

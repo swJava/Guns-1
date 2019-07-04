@@ -7,13 +7,14 @@
         <result column="student_name" property="studentName" />
         <result column="class_code" property="classCode" />
         <result column="class_name" property="className" />
+        <result column="teacher_name" property="teacherName" />
         <result column="sign_date" property="signDate" />
         <result column="member_mobile" property="memberMobile" />
     </resultMap>
 
     <select id="statisticStudentSign" resultMap="StudentSignResultMap" parameterType="java.util.HashMap">
         select
-         s.code as student_code, s.name as student_name, c.code as class_code, c.name as class_name, o.accept_date as sign_date, m.mobile_number as member_mobile
+         s.code as student_code, s.name as student_name, c.code as class_code, c.name as class_name,c.teacher AS teacher_name, o.accept_date as sign_date, m.mobile_number as member_mobile
         from
         (
         (
@@ -60,6 +61,7 @@
                 and c.grade = #{grade}
             </if>
         </where>
+        ORDER BY o.accept_date desc
 
     </select>
 

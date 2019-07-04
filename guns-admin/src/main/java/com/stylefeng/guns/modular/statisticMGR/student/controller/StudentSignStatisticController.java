@@ -219,6 +219,7 @@ public class StudentSignStatisticController extends BaseController {
             addCell(valueRow, item.get("studentName"), valueStyle);
             addCell(valueRow, item.get("memberMobile"), valueStyle);
             addCell(valueRow, item.get("className"), valueStyle);
+            addCell(valueRow, item.get("teacherName"), valueStyle);
             addCell(valueRow, signDate, valueStyle);
         }
 

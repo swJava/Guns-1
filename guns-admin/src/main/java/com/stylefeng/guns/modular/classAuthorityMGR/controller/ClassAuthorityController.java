@@ -40,7 +40,8 @@ public class ClassAuthorityController extends BaseController {
      */
     @RequestMapping("/classAuthority_add")
     public String classAuthorityAdd() {
-        return PREFIX + "classAuthority_add.html";
+//        return PREFIX + "classAuthority_add.html";
+        return PREFIX + "sign_wizard.html";
     }
     /**
      * 跳转到添加关联学生

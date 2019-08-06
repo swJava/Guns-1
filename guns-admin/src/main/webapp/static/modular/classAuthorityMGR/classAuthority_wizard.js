@@ -1,7 +1,7 @@
 /**
  * 报名管理
  */
-var SignWizard = {
+var classAuthorityWizard = {
     Wizard: {
         id: 'wizard',
         classCode: $('#classCode').val(),
@@ -12,7 +12,7 @@ var SignWizard = {
         }
     },
     ClassPlan: {
-        id: "ClassAuthorityTable",	                //表格id
+        id: "classAuthorityTable",	                //表格id
         seItems: new Array(),		            //选中的条目
         table: null,
         layerIndex: -1,
@@ -95,7 +95,7 @@ var SignWizard = {
 /**
  * 初始化表格的列
  */
-SignWizard.ClassPlan.initColumn = function () {
+classAuthorityWizard.ClassPlan.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
         {title: 'ID', field: 'id', visible: false, align: 'center', valign: 'middle'},
@@ -159,7 +159,7 @@ SignWizard.ClassPlan.initColumn = function () {
  * @param key 数据的名称
  * @param val 数据的具体值
  */
-SignWizard.set = function(key, val) {
+classAuthorityWizard.set = function(key, val) {
     this.Wizard.postData[key] = (typeof val == "undefined") ? $("#" + key).val() : val;
     return this;
 };
@@ -167,14 +167,14 @@ SignWizard.set = function(key, val) {
 /**
  * 清除数据
  */
-SignWizard.clearData = function() {
+classAuthorityWizard.clearData = function() {
     this.Wizard.postData = {};
 };
 
 /**
  * 收集数据
  */
-SignWizard.collectData = function() {
+classAuthorityWizard.collectData = function() {
     this.Wizard.postData.payType = $('#payType').val();
     this.Wizard.postData.classInfo = {
         code : $('#classCode').val()
@@ -198,19 +198,19 @@ SignWizard.collectData = function() {
 /**
  * 关闭此对话框
  */
-SignWizard.close = function() {
+classAuthorityWizard.close = function() {
     parent.layer.close(window.parent.Sign.layerIndex);
 };
 
-SignWizard.ClassPlan.getQueryParams = function(){
-    return SignWizard.ClassPlan.queryParams;
+classAuthorityWizard.ClassPlan.getQueryParams = function(){
+    return classAuthorityWizard.ClassPlan.queryParams;
 }
 
 
 /**
  * 查询课程管理列表
  */
-SignWizard.ClassPlan.search = function () {
+classAuthorityWizard.ClassPlan.search = function () {
     var queryData = {};
     queryData['grades'] = $("#grade").val();
     queryData['subjects'] = $("#subject").val();
@@ -233,12 +233,12 @@ SignWizard.ClassPlan.search = function () {
     queryData['signDate'] = $("#signDate").val();
     queryData['offset'] = 0;
     // queryData['pageNumber'] = 1;
-    SignWizard.ClassPlan.queryParams = queryData;
-    SignWizard.ClassPlan.table.refresh({query: queryData});
+    classAuthorityWizard.ClassPlan.queryParams = queryData;
+    classAuthorityWizard.ClassPlan.table.refresh({query: queryData});
 };
 $(function () {
     console.log('<<< init result');
-    var wizard = $('#' + SignWizard.Wizard.id);
+    var wizard = $('#' + classAuthorityWizard.Wizard.id);
     wizard.steps({
         headerTag: "h1",
         bodyTag: "fieldset",
@@ -258,15 +258,15 @@ $(function () {
                 return true;
             }
 
-            if (step > SignWizard.forms.length - 1) {
+            if (step > classAuthorityWizard.forms.length - 1) {
                 console.log(' no validator match');
                 return true;
             }
 
-            Feng.initValidator(SignWizard.forms[step].id, SignWizard.forms[step].validateFields, {excludes: [":disabled"]});
-            $('#' + SignWizard.forms[step].id).data("bootstrapValidator").resetForm();
-            $('#' + SignWizard.forms[step].id).bootstrapValidator('validate');
-            return $('#' + SignWizard.forms[step].id).data('bootstrapValidator').isValid();
+            Feng.initValidator(classAuthorityWizard.forms[step].id, classAuthorityWizard.forms[step].validateFields, {excludes: [":disabled"]});
+            $('#' + classAuthorityWizard.forms[step].id).data("bootstrapValidator").resetForm();
+            $('#' + classAuthorityWizard.forms[step].id).bootstrapValidator('validate');
+            return $('#' + classAuthorityWizard.forms[step].id).data('bootstrapValidator').isValid();
         },
         onStepChanged: function(event, step, prev){
             console.log('<<< step ' + step + ' change from ' + prev);
@@ -288,31 +288,31 @@ $(function () {
             }
         },
         onFinished: function(){
-            SignWizard.clearData();
-            SignWizard.collectData();
+            classAuthorityWizard.clearData();
+            classAuthorityWizard.collectData();
 
             //提交信息
-            var ajax = new $ax(SignWizard.Wizard.postUrl['order'], function(data){
+            var ajax = new $ax(classAuthorityWizard.Wizard.postUrl['order'], function(data){
                 Feng.success("保存成功!");
-                SignWizard.close();
+                classAuthorityWizard.close();
             },function(data){
                 Feng.error("保存失败!" + data.responseJSON.message + "!");
             });
             ajax.setContentType("application/json");
-            ajax.setData(JSON.stringify(SignWizard.Wizard.postData));
+            ajax.setData(JSON.stringify(classAuthorityWizard.Wizard.postData));
             ajax.start();
             Feng.success("保存成功!");
-            SignWizard.close();
+            classAuthorityWizard.close();
         }
     });
 
 
-    var defaultColunms = SignWizard.ClassPlan.initColumn;
-    var table = new BSTable(SignWizard.ClassPlan.id, "/class/list", defaultColunms);
+    var defaultColunms = classAuthorityWizard.ClassPlan.initColumn;
+    var table = new BSTable(classAuthorityWizard.ClassPlan.id, "/class/list", defaultColunms);
     table.setPaginationType("server");
-    table.setQueryParams(SignWizard.ClassPlan.getQueryParams());
+    table.setQueryParams(classAuthorityWizard.ClassPlan.getQueryParams());
     console.log("初始化",table.init());
-    SignWizard.ClassPlan.table = table.init();
+    classAuthorityWizard.ClassPlan.table = table.init();
     // 日期条件初始化
     laydate.render({elem: '#studyDate'});
     laydate.render({elem: '#signDate'});

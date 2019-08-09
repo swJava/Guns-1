@@ -13,7 +13,7 @@ var classAuthorityWizard = {
     },
     ClassPlan: {
         id: "classAuthorityTable",	                //表格id
-        seItems: new Array(),		            //选中的条目
+        seItems: null,		            //选中的条目
         table: null,
         layerIndex: -1,
         queryParams: {
@@ -97,7 +97,7 @@ var classAuthorityWizard = {
  */
 classAuthorityWizard.ClassPlan.initColumn = function () {
     return [
-        {field: 'selectItem', radio: true},
+        {field: 'selectItem', radio: false },
         {title: 'ID', field: 'id', visible: false, align: 'center', valign: 'middle'},
         {title: '班级编码', field: 'code', visible: true, align: 'center', valign: 'middle'},
         {title: '班级名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
@@ -134,7 +134,7 @@ classAuthorityWizard.ClassPlan.initColumn = function () {
         {title: '主讲教师名称', field: 'teacher', visible: true, align: 'center', valign: 'middle'},
         {title: '辅导教师编码', field: 'teacherSecondCode', visible: false, align: 'center', valign: 'middle'},
         {title: '辅导教师名称', field: 'teacherSecond', visible: true, align: 'center', valign: 'middle'},
-        {title: '开放报名', field: 'signable', visible: true, align: 'center', valign: 'middle',
+        {title: '开放报名', field: 'signable', visible: false, align: 'center', valign: 'middle',
             formatter: function(value, row){
                 if (1 == value)
                     return '<input type="checkbox" class="js-switch-signable" data-code="'+row.code+'" checked />';
@@ -142,7 +142,7 @@ classAuthorityWizard.ClassPlan.initColumn = function () {
                     return '<input type="checkbox" class="js-switch-signable" data-code="'+row.code+'" />';
             }
         },
-        {title: '入学测试', field: 'examinable', visible: true, align: 'center', valign: 'middle',
+        {title: '入学测试', field: 'examinable', visible: false, align: 'center', valign: 'middle',
             formatter: function(value, row){
                 if (1 == value)
                     return '<input type="checkbox" class="js-switch-examinable" data-code="'+row.code+'" checked />';
@@ -236,6 +236,28 @@ classAuthorityWizard.ClassPlan.search = function () {
     classAuthorityWizard.ClassPlan.queryParams = queryData;
     classAuthorityWizard.ClassPlan.table.refresh({query: queryData});
 };
+
+/** 保存 */
+classAuthorityWizard.ClassPlan.save = function () {
+
+};
+
+function initClassTable(){
+    var defaultColunms = classAuthorityWizard.ClassPlan.initColumn();
+    var table = new BSTable(classAuthorityWizard.ClassPlan.id, "/class/list", defaultColunms);
+    table.setPaginationType("server");
+    table.setQueryParams(classAuthorityWizard.ClassPlan.getQueryParams());
+    classAuthorityWizard.ClassPlan.table = table.init();
+    console.log("初始化",table.init());
+    // 日期条件初始化
+    laydate.render({elem: '#studyDate'});
+    laydate.render({elem: '#signDate'});
+
+    //初始select选项
+    $("#grades").val($("#gradesValue").val());
+    $("#ability").val($("#abilityValue").val());
+    $("#subject").val($("#subjectValue").val());
+};
 $(function () {
     console.log('<<< init result');
     var wizard = $('#' + classAuthorityWizard.Wizard.id);
@@ -281,10 +303,11 @@ $(function () {
                 $('#student_genderName').val($("#gender").find("option:selected").text());
                 $('#student_school').val($('#school').val());
                 $('#student_targetSchool').val($('#targetSchool').val());
+
             }
 
             if (step == 2 && step  >  prev) {
-                // 发送验证码
+
             }
         },
         onFinished: function(){
@@ -306,23 +329,7 @@ $(function () {
         }
     });
 
-
-    var defaultColunms = classAuthorityWizard.ClassPlan.initColumn;
-    var table = new BSTable(classAuthorityWizard.ClassPlan.id, "/class/list", defaultColunms);
-    table.setPaginationType("server");
-    table.setQueryParams(classAuthorityWizard.ClassPlan.getQueryParams());
-    console.log("初始化",table.init());
-    classAuthorityWizard.ClassPlan.table = table.init();
-    // 日期条件初始化
-    laydate.render({elem: '#studyDate'});
-    laydate.render({elem: '#signDate'});
-
-    //初始select选项
-    $("#grades").val($("#gradesValue").val());
-    $("#ability").val($("#abilityValue").val());
-    $("#subject").val($("#subjectValue").val());
-
-
+    initClassTable();
     $('#studentCode').bind('change', function(){
         var val = $(this).val();
         console.log(val);

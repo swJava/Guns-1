@@ -7,13 +7,12 @@ var classAuthorityWizard = {
         classCode: $('#classCode').val(),
         postData: {},
         postUrl: {
-            'order': Feng.ctxPath + "/order/sign/doSign",
-            'update': Feng.ctxPath + "/examine/paper/update"
+            'classAuthorityUrl': Feng.ctxPath + "/classAuthority/add",
         }
     },
     ClassPlan: {
         id: "classAuthorityTable",	                //表格id
-        seItems: null,		            //选中的条目
+        seItem: null,		            //选中的条目
         table: null,
         layerIndex: -1,
         queryParams: {
@@ -172,13 +171,24 @@ classAuthorityWizard.clearData = function() {
 };
 
 /**
+ * 检查是否选中
+ */
+classAuthorityWizard.check = function () {
+    var selected = $('#' + classAuthorityWizard.ClassPlan.id).bootstrapTable('getSelections');
+    if(selected.length == 0){
+        Feng.info("请先选中表格中的某一记录！");
+        return false;
+    }else{
+        classAuthorityWizard.ClassPlan.seItem = selected;
+        return true;
+    }
+};
+
+/**
  * 收集数据
  */
 classAuthorityWizard.collectData = function() {
-    this.Wizard.postData.payType = $('#payType').val();
-    this.Wizard.postData.classInfo = {
-        code : $('#classCode').val()
-    };
+    this.Wizard.postData.classInfoList =  classAuthorityWizard.ClassPlan.seItem;
     this.Wizard.postData.student = {
         code : $('#studentCode').val(),
         name : $('#student').val(),
@@ -239,6 +249,22 @@ classAuthorityWizard.ClassPlan.search = function () {
 
 /** 保存 */
 classAuthorityWizard.ClassPlan.save = function () {
+    classAuthorityWizard.clearData();
+    classAuthorityWizard.check();
+    classAuthorityWizard.collectData();
+
+    //提交信息
+    var ajax = new $ax(classAuthorityWizard.Wizard.postUrl['classAuthorityUrl'], function(data){
+        Feng.success("保存成功!");
+        classAuthorityWizard.close();
+    },function(data){
+        Feng.error("保存失败!" + data.responseJSON.message + "!");
+    });
+    ajax.setContentType("application/json");
+    ajax.setData(JSON.stringify(classAuthorityWizard.Wizard.postData));
+    ajax.start();
+    Feng.success("保存成功!");
+    classAuthorityWizard.close();
 
 };
 
@@ -294,16 +320,6 @@ $(function () {
             console.log('<<< step ' + step + ' change from ' + prev);
 
             if (step == 1){
-                // 进入到"订单确认"步骤
-                $('#member_mobileNumber').val($('#mobileNumber').val());
-                $('#member_name').val($('#memberName').val());
-                $('#student_name').val($('#student').val());
-                $('#student_age').val($('#age').val());
-                $('#student_gradeName').val($("#grade").find("option:selected").text());
-                $('#student_genderName').val($("#gender").find("option:selected").text());
-                $('#student_school').val($('#school').val());
-                $('#student_targetSchool').val($('#targetSchool').val());
-
             }
 
             if (step == 2 && step  >  prev) {
@@ -311,21 +327,7 @@ $(function () {
             }
         },
         onFinished: function(){
-            classAuthorityWizard.clearData();
-            classAuthorityWizard.collectData();
-
-            //提交信息
-            var ajax = new $ax(classAuthorityWizard.Wizard.postUrl['order'], function(data){
-                Feng.success("保存成功!");
-                classAuthorityWizard.close();
-            },function(data){
-                Feng.error("保存失败!" + data.responseJSON.message + "!");
-            });
-            ajax.setContentType("application/json");
-            ajax.setData(JSON.stringify(classAuthorityWizard.Wizard.postData));
-            ajax.start();
-            Feng.success("保存成功!");
-            classAuthorityWizard.close();
+            classAuthorityWizard.ClassPlan.save();
         }
     });
 
